@@ -34,9 +34,6 @@ def test_create_mesh_with_mocked_gmsh(tmp_path):
     Args:
         tmp_path: A pytest fixture providing a temporary directory path.
     """
-    # We need to import the module *after* the patch is in place
-    from horn.simulation import meshing
-
     # Arrange
     step_file = "/path/to/fake_horn.stp"
     output_dir = tmp_path
@@ -58,5 +55,5 @@ def test_create_mesh_with_mocked_gmsh(tmp_path):
     meshing.gmsh.option.setNumber.assert_any_call("Mesh.MshFileVersion", 2.2)
     
     # Check that the output path is correctly formed
-    expected_file = output_dir / "fake_horn.msh"
+    expected_file = tmp_path / "fake_horn.msh"
     assert output_path == str(expected_file)

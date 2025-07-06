@@ -9,8 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-venv \
     python-is-python3 \
     freecad \
-    gmsh \
-    python3-gmsh \
     && rm -rf /var/lib/apt/lists/*
 
 # Create and activate a virtual environment
@@ -29,5 +27,4 @@ COPY . .
 ENV PYTHONPATH="/usr/lib/freecad/lib:${PYTHONPATH:-}"
 
 # Final verification
-RUN python -c "import pytest; print('Pytest found.')"
 RUN python -c "import FreeCAD; print(f'Successfully imported FreeCAD version: {FreeCAD.Version()}')" 

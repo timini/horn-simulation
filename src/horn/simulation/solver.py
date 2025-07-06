@@ -1,45 +1,52 @@
+from typing import Tuple, Dict, Any
+from pathlib import Path
 import os
-import pandas as pd
-import numpy as np
-from typing import Tuple, Dict
+import meshio
 
-def run_simulation(mesh_file_path: str, driver_params: Dict, freq_range_hz: Tuple[float, float]) -> str:
+try:
+    from dolfinx import mesh, fem
+    from mpi4py import MPI
+except ImportError:
+    # This is expected if running outside the solver container (e.g., for local tests)
+    fem = None
+    MPI = None
+    mesh = None
+
+def run_simulation(
+    mesh_file: str,
+    freq_range: Tuple[float, float],
+    driver_params: Dict[str, Any],
+    output_dir: Path,
+) -> Path:
     """
-    Runs the FEM/BEM simulation using FEniCSx and Bempp.
-
-    This is currently a placeholder. It creates a dummy CSV file with
-    mock results to be used by the analysis stage.
-
-    Args:
-        mesh_file_path: The path to the input mesh file.
-        driver_params: A dictionary of the driver's T/S parameters.
-        freq_range_hz: A tuple containing the start and end frequencies in Hz.
-
-    Returns:
-        The path to the generated CSV file containing simulation results.
+    Runs the BEM/FEM simulation using FEniCSx and Bempp.
     """
-    start_freq, end_freq = freq_range_hz
-    print(f"Running simulation for '{mesh_file_path}'...")
-    print(f"Driver parameters: {driver_params}")
-    print(f"Frequency range: {start_freq} Hz to {end_freq} Hz")
+    if not fem:
+        raise ImportError("FEniCSx (dolfinx) is required for the simulation.")
+
+    # Read mesh from file and convert to a DOLFINx mesh
+    msh = meshio.read(mesh_file)
     
-    # Generate mock data
-    freqs = np.linspace(start_freq, end_freq, 100)
-    # Generate a plausible-looking mock SPL curve
-    spl = 95 + 5 * np.sin(np.log(freqs) * 2) - 10 * (np.exp(-(freqs - 200)**2 / (2 * 80**2)))
-    impedance = 8 + 20 * np.exp(-(freqs - driver_params.get('fs_hz', 40))**2 / (2 * 10**2))
+    # Extract cells and points for the volume mesh
+    cells = msh.get_cells_type("tetra")
+    tetra_mesh = meshio.Mesh(points=msh.points, cells=[("tetra", cells)])
     
-    results_df = pd.DataFrame({
-        'frequency': freqs,
-        'spl': spl,
-        'impedance': impedance,
-    })
+    domain = mesh.create_mesh(MPI.COMM_WORLD, tetra_mesh.cells_dict["tetra"], msh.points, mesh.GhostMode.none)
+    
+    print(f"Successfully loaded mesh: {domain.name} with {domain.num_cells()} cells.")
 
-    # Mock return value
-    base_name = os.path.basename(mesh_file_path).replace('.msh', '')
-    output_path = f"/tmp/{base_name}_{int(start_freq)}-{int(end_freq)}hz_results.csv"
+    # --- This is where the real solver logic will go ---
 
-    results_df.to_csv(output_path, index=False)
-    print(f"Wrote dummy simulation results to: {output_path}")
+    # For now, return the same placeholder output
+    min_freq, max_freq = freq_range
+    base_name = os.path.splitext(os.path.basename(mesh_file))[0]
+    output_filename = f"{base_name}_{min_freq}-{max_freq}hz.csv"
+    output_path = output_dir / output_filename
+    
+    # Write a dummy header to make the file non-empty
+    with open(output_path, "w") as f:
+        f.write("frequency,spl")
 
+    print(f"Successfully generated dummy results: {output_path}")
+    
     return output_path

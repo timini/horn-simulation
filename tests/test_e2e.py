@@ -1,64 +1,63 @@
 import pytest
-from unittest.mock import patch
+import tempfile
+from unittest.mock import patch, call
 from horn import main
 from horn.geometry.parameters import HornParameters, FlareProfile
 
 @pytest.mark.e2e
 @pytest.mark.db
-@patch('horn.main.horn_generator.create_horn')
-@patch('horn.main.meshing.create_mesh')
-def test_full_pipeline_e2e_mocked(mock_create_mesh, mock_create_horn):
+@patch('horn.main.subprocess.run')
+@patch('horn.main.driver_db.get_driver_parameters')
+def test_full_pipeline_orchestration_e2e(mock_get_driver, mock_subprocess_run):
     """
-    An end-to-end test for the full pipeline, mocking the containerized
-    geometry and meshing stages.
+    An end-to-end test for the pipeline orchestrator.
 
-    This test verifies that the main orchestrator can correctly sequence
-    all stages of the pipeline.
+    This test mocks the database and the Docker calls to verify that the main
+    orchestrator correctly sequences the stages and calls the containers
+    with the correct arguments and volume mounts.
     """
-    # Arrange: Configure the mocks to behave like the real functions
-    mock_create_horn.return_value = "/tmp/mock_horn_conical_0.6m.stp"
-    mock_create_mesh.return_value = "/tmp/mock_horn_conical_0.6m_1000hz.msh"
-    
-    # Define the inputs for the pipeline
+    # --- Arrange ---
+    # 1. Mock the database call
+    mock_get_driver.return_value = {
+        'manufacturer': 'TestCorp',
+        'model_name': 'Test-1'
+    }
+
+    # 2. Define pipeline inputs
     driver_id = "test_driver_001"
     horn_params = HornParameters(
         flare_profile=FlareProfile.CONICAL,
-        throat_radius=0.03,
-        mouth_radius=0.3,
-        length=0.6
+        throat_radius=0.01,
+        mouth_radius=0.1,
+        length=0.2
     )
-    freq_range = (20, 1000) # Hz
+    freq_range = (100, 1000)
 
-    # Act: Run the main pipeline function
+    # --- Act ---
     final_report = main.run_pipeline(driver_id, horn_params, freq_range)
 
-    # Assert
-    # 1. Check that our mocks were called correctly
-    mock_create_horn.assert_called_once()
-    mock_create_mesh.assert_called_once()
+    # --- Assert ---
+    # 1. Verify the Docker call for the FreeCAD container
+    freecad_call = mock_subprocess_run.call_args_list[0]
+    freecad_args = freecad_call.args[0]
 
-    # 2. Verify the final output
-    assert isinstance(final_report, dict)
-    assert "metrics" in final_report
-    assert "plots" in final_report
-    assert "score" in final_report["metrics"]
+    assert "horn-freecad-app" in freecad_args
+    assert "/data" in freecad_args[-1] # output-dir
+    assert horn_params.flare_profile.value in freecad_args
+    assert str(horn_params.length) in freecad_args
     
-    # 3. Check that the file paths are plausible, based on the mock output
-    plot_path = final_report["plots"][0]
-    assert "mock_horn_conical" in plot_path
-    assert plot_path.endswith("_spl.png")
+    # 2. For now, the solver stage is a placeholder. We can add assertions
+    #    for the solver container call here in the future.
 
-    # Verify the final output
+    # 3. Verify the final (placeholder) report
     assert isinstance(final_report, dict)
     assert "metrics" in final_report
     assert "plots" in final_report
-    assert "score" in final_report["metrics"]
     assert final_report["metrics"]["score"] > 0
     assert isinstance(final_report["plots"], list)
-    assert len(final_report["plots"]) == 2
+    assert len(final_report["plots"]) == 1
     
     # Check that the plot paths are plausible
     plot_path = final_report["plots"][0]
-    assert plot_path.startswith("/tmp") # Check it's in a temporary-like directory
-    assert plot_path.endswith("_spl.png")
-    assert "conical" in plot_path 
+    assert plot_path.startswith(tempfile.gettempdir())
+    assert "spl.png" in plot_path 

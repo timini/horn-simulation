@@ -24,6 +24,7 @@ psycopg2-binary = "^2.9.9"
 # bempp = "..."
 # gmsh = "..."
 # freecad = "..."
+bempp-cl = "^0.4.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"

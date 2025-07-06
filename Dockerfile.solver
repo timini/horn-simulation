@@ -1,0 +1,18 @@
+# Use the official, pre-built FEniCSx image as our base
+FROM dolfinx/dolfinx:stable
+
+# Install our additional dependencies using pip
+RUN pip install --no-cache-dir \
+    gmsh \
+    pandas \
+    psycopg2-binary \
+    pytest \
+    pytest-mock
+
+# Copy the application code
+WORKDIR /app
+COPY . .
+
+# Verify installations
+RUN python3 -c "import gmsh; print('gmsh OK')"
+RUN python3 -c "import dolfinx; print('dolfinx OK')" 
