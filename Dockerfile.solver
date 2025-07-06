@@ -4,6 +4,7 @@ FROM dolfinx/dolfinx:stable
 # Install our additional dependencies using pip
 RUN pip install --no-cache-dir \
     gmsh \
+    meshio \
     pandas \
     psycopg2-binary \
     pytest \

@@ -42,14 +42,30 @@ def run_pipeline(driver_id: str, horn_params: HornParameters, freq_range_hz: Tup
         ], check=True)
         print(f"Successfully generated STEP file: {step_file_path}")
 
-        # --- Stage 3 & 4: Meshing and Solving (in Docker) ---
-        print(f"\n--- Stage 3 & 4: Meshing and Solving ---")
+        # --- Stage 3: Meshing (in Docker) ---
+        print(f"\n--- Stage 3: Meshing ---")
+        mesh_file_name = step_file_path.name.replace(".stp", ".msh")
+        mesh_file_path = tmpdir_path / mesh_file_name
+        
+        subprocess.run([
+            "docker", "run", "--rm",
+            "-v", f"{tmpdir_path}:/data",
+            "horn-solver-app",
+            "python", "-m", "horn.simulation.meshing_runner",
+            "--step-file", f"/data/{step_file_path.name}",
+            "--output-dir", "/data",
+            "--max-freq", str(max_freq)
+        ], check=True)
+        print(f"Successfully generated mesh file: {mesh_file_path}")
+
+        # --- Stage 4: Solving (in Docker) ---
+        print(f"\n--- Stage 4: Solving ---")
         # This will be another Docker command using horn-solver-app
         # For now, create a dummy results file
         results_csv = tmpdir_path / "results.csv"
         with open(results_csv, "w") as f:
             f.write("frequency,spl\n100,95\n")
-        print(f"Placeholder: Meshing and solving complete. Results at {results_csv}")
+        print(f"Placeholder: Solving complete. Results at {results_csv}")
         
         # --- Stage 5: Analysis and Visualization (Local) ---
         # This will be updated to read the real results

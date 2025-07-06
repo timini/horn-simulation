@@ -40,15 +40,20 @@ def test_full_pipeline_orchestration_e2e(mock_get_driver, mock_subprocess_run):
     # 1. Verify the Docker call for the FreeCAD container
     freecad_call = mock_subprocess_run.call_args_list[0]
     freecad_args = freecad_call.args[0]
-
     assert "horn-freecad-app" in freecad_args
     assert "/data" in freecad_args[-1] # output-dir
     assert horn_params.flare_profile.value in freecad_args
     assert str(horn_params.length) in freecad_args
     
-    # 2. For now, the solver stage is a placeholder. We can add assertions
-    #    for the solver container call here in the future.
-
+    # 2. Verify the Docker call for the Solver container (meshing stage)
+    solver_call = mock_subprocess_run.call_args_list[1]
+    solver_args = solver_call.args[0]
+    assert "horn-solver-app" in solver_args
+    assert "horn.simulation.meshing_runner" in solver_args
+    assert solver_args[-6] == "--step-file"
+    assert "horn_conical_0.2m.stp" in solver_args[-5]
+    assert solver_args[-2] == "--max-freq"
+    
     # 3. Verify the final (placeholder) report
     assert isinstance(final_report, dict)
     assert "metrics" in final_report
