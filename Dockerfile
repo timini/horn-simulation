@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-venv \
     python-is-python3 \
     freecad \
+    gmsh \
+    python3-gmsh \
     && rm -rf /var/lib/apt/lists/*
 
 # Create and activate a virtual environment

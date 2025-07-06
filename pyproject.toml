@@ -44,4 +44,5 @@ markers = [
     "e2e: marks end-to-end tests",
     "integration: marks integration tests that require external services (e.g., Docker)",
     "freecad: marks tests that require a FreeCAD installation",
+    "gmsh: marks tests that require a Gmsh installation",
 ] 
