@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "horn"
+version = "0.1.0"
+description = "A cloud-deployable horn loudspeaker simulation pipeline."
+authors = ["AI Assistant <ai@cursor.sh>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+# Core scientific libraries
+pandas = "^2.0.0"
+scipy = "^1.10.0"
+matplotlib = "^3.7.0"
+# PDF parsing
+pdfplumber = "^0.10.0"
+regex = "^2023.10.3"
+# Database
+psycopg2-binary = "^2.9.9"
+
+# Simulation tools - These are complex dependencies and often installed
+# outside of pip. We list them for completeness but will rely on
+# containerization (Docker) to provide them in the environment.
+# fenicsx = "..."
+# bempp = "..."
+# gmsh = "..."
+# freecad = "..."
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+black = "^23.11.0"
+isort = "^5.12.0"
+flake8 = "^6.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
+markers = [
+    "db: marks tests as requiring the database",
+    "e2e: marks end-to-end tests",
+    "integration: marks integration tests that require external services (e.g., Docker)",
+    "freecad: marks tests that require a FreeCAD installation",
+] 
