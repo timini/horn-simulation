@@ -53,8 +53,17 @@ def test_full_pipeline_orchestration_e2e(mock_get_driver, mock_subprocess_run):
     assert solver_args[-6] == "--step-file"
     assert "horn_conical_0.2m.stp" in solver_args[-5]
     assert solver_args[-2] == "--max-freq"
+
+    # 3. Verify the Docker call for the Solver container (solver stage)
+    solver_run_call = mock_subprocess_run.call_args_list[2]
+    solver_run_args = solver_run_call.args[0]
+    assert "horn-solver-app" in solver_run_args
+    assert "horn.simulation.solver_runner" in solver_run_args
+    assert solver_run_args[-10] == "--mesh-file"
+    assert "horn_conical_0.2m.msh" in solver_run_args[-9]
+    assert solver_run_args[-2] == "--driver-params-json"
     
-    # 3. Verify the final (placeholder) report
+    # 4. Verify the final (placeholder) report
     assert isinstance(final_report, dict)
     assert "metrics" in final_report
     assert "plots" in final_report

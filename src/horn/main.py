@@ -3,6 +3,7 @@ import tempfile
 import subprocess
 from typing import Tuple, Dict, Any
 from pathlib import Path
+import json
 
 from horn.data_ingestion import driver_db
 from horn.geometry.parameters import HornParameters
@@ -60,13 +61,25 @@ def run_pipeline(driver_id: str, horn_params: HornParameters, freq_range_hz: Tup
 
         # --- Stage 4: Solving (in Docker) ---
         print(f"\n--- Stage 4: Solving ---")
-        # This will be another Docker command using horn-solver-app
-        # For now, create a dummy results file
-        results_csv = tmpdir_path / "results.csv"
-        with open(results_csv, "w") as f:
-            f.write("frequency,spl\n100,95\n")
-        print(f"Placeholder: Solving complete. Results at {results_csv}")
-        
+        results_file_name = mesh_file_path.name.replace(".msh", ".csv")
+        results_file_path = tmpdir_path / results_file_name
+
+        # Serialize driver params to pass as a JSON string
+        driver_params_json = json.dumps(driver_params)
+
+        subprocess.run([
+            "docker", "run", "--rm",
+            "-v", f"{tmpdir_path}:/data",
+            "horn-solver-app",
+            "python", "-m", "horn.simulation.solver_runner",
+            "--mesh-file", f"/data/{mesh_file_path.name}",
+            "--output-dir", "/data",
+            "--freq-min", str(min_freq),
+            "--freq-max", str(max_freq),
+            "--driver-params-json", driver_params_json,
+        ], check=True)
+        print(f"Successfully generated results file: {results_file_path}")
+
         # --- Stage 5: Analysis and Visualization (Local) ---
         # This will be updated to read the real results
         final_report = {
