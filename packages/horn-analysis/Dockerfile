@@ -1,17 +1,15 @@
 # --- Base Image ---
-# It is based on the dolfinx image because that image is guaranteed
-# to have a working gmsh installation.
-FROM dolfinx/dolfinx:v0.8.0 as base
+FROM python:3.10-slim as base
 
 # --- Builder Stage ---
 # This stage installs our package along with its dependencies
 FROM base as builder
 RUN pip install uv
 WORKDIR /app
-COPY ./packages/horn-geometry/pyproject.toml .
+COPY ./packages/horn-analysis/pyproject.toml .
 COPY ./packages/horn-core /app/packages/horn-core
-COPY ./packages/horn-geometry /app/packages/horn-geometry
-RUN uv pip install --system /app/packages/horn-geometry
+COPY ./packages/horn-analysis /app/packages/horn-analysis
+RUN uv pip install --system /app/packages/horn-analysis
 
 # --- Production Stage ---
 # This is the final, clean image for the service.
@@ -19,10 +17,7 @@ FROM base as production
 WORKDIR /app
 
 # Copy the installed packages from the builder stage.
-COPY --from=builder /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
-
-# Copy the generator script, which is the entrypoint.
-COPY --from=builder /app/packages/horn-geometry/src/horn_geometry/generator.py /app/generator.py
+COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
 # Create and switch to a non-root user
 RUN useradd --create-home --shell /bin/bash appuser
@@ -37,11 +32,11 @@ WORKDIR /app
 
 # The production stage already contains the main dependencies.
 # We just need to copy the source again to install the '[test]' extras.
-COPY ./packages/horn-geometry/pyproject.toml .
-COPY ./packages/horn-geometry /app/packages/horn-geometry
-RUN pip install /app/packages/horn-geometry[test]
+COPY ./packages/horn-analysis/pyproject.toml .
+COPY ./packages/horn-analysis /app/packages/horn-analysis
+RUN pip install /app/packages/horn-analysis[test]
 
 # Copy the tests themselves
-COPY ./packages/horn-geometry/tests /app/tests
+COPY ./packages/horn-analysis/tests /app/tests
 
-USER appuser
+USER appuser 

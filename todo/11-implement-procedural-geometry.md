@@ -2,7 +2,7 @@
 
 **Date:** 2024-07-26
 
-**Status:** Not Started
+**Status:** Paused
 
 ## 1. Goal
 

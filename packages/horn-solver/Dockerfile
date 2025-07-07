@@ -19,7 +19,7 @@ ENV PYTHONPATH=/usr/local/dolfinx-complex/lib/python3.10/dist-packages:$PYTHONPA
 ENV LD_LIBRARY_PATH=/usr/local/dolfinx-complex/lib:$LD_LIBRARY_PATH
 
 WORKDIR /app
-COPY pyproject.toml .
+COPY ./packages/horn-solver/pyproject.toml .
 COPY ./packages /app/packages
 RUN uv pip install --system /app/packages/horn-solver
 

@@ -1,10 +1,13 @@
 [project]
 name = "horn-geometry"
 version = "0.1.0"
-description = "FreeCAD-based horn geometry generation."
+description = "Procedural geometry generation for the Horn project."
 dependencies = [
-    "horn-core"
+    "numpy",
 ]
+
+[project.scripts]
+horn-geometry = "horn_geometry.generator:main"
 
 [project.optional-dependencies]
 test = [
@@ -12,4 +15,8 @@ test = [
 ]
 
 [tool.uv.sources]
-horn-core = { workspace = true } 
+horn-core = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build" 
