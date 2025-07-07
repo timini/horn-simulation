@@ -9,9 +9,16 @@ from dolfinx.io import gmshio
 # Define physical group tags for boundaries
 INLET_TAG, OUTLET_TAG, WALL_TAG = 2, 3, 4
 
+# Physical constants
+C0 = 343.0  # Speed of sound in air (m/s)
+RHO0 = 1.225 # Density of air (kg/m^3)
+
 try:
     from dolfinx import mesh, fem
+    from dolfinx.fem.petsc import LinearProblem
     from mpi4py import MPI
+    import ufl
+    from petsc4py.PETSc import ScalarType
 except ImportError as e:
     # This is expected if running outside the solver container (e.g., for local tests)
     print(f"DEBUG: Caught ImportError: {e}")
@@ -104,26 +111,57 @@ def run_simulation(
     output_file: str,
 ) -> Path:
     """
-    Runs the BEM/FEM simulation using a dolfinx mesh object.
+    Runs the FEM simulation for the Helmholtz equation using a dolfinx mesh object.
     """
-    # For now, return the same placeholder output
+    # For now, solve for a single frequency, then we will implement the sweep
     min_freq, max_freq = freq_range
-    output_path = Path(output_file)
-    
-    # Create a dummy DataFrame with some numerical results
-    num_points = 10
-    frequencies = np.linspace(min_freq, max_freq, num_points)
-    # Generate some plausible, random SPL data
-    spl_values = 90 + 5 * np.random.randn(num_points)
-    
-    results_df = pd.DataFrame({
-        "frequency": frequencies,
-        "spl": spl_values
-    })
+    frequency = (min_freq + max_freq) / 2.0
 
-    # Write the dataframe to the CSV file
+    # --- FEM Problem Setup ---
+    # Define function space for complex pressure
+    V = fem.functionspace(domain, ("Lagrange", 1))
+
+    # Define trial and test functions
+    p = ufl.TrialFunction(V)
+    q = ufl.TestFunction(V)
+
+    # Physical parameters
+    omega = 2 * np.pi * frequency # angular frequency
+    k = omega / C0 # wave number
+
+    # Define the variational problem (weak form of Helmholtz equation)
+    # LHS: Integral over the domain volume. Use ufl.inner for complex problems.
+    a = ufl.inner(ufl.grad(p), ufl.grad(q)) * ufl.dx - k**2 * ufl.inner(p, q) * ufl.dx
+    # Add Robin boundary condition for the outlet (radiation condition)
+    a -= 1j * k * ufl.inner(p, q) * ufl.ds(OUTLET_TAG)
+
+    # RHS: Define the driver velocity at the inlet. Use ufl.inner.
+    u_n = fem.Constant(domain, ScalarType(1.0))
+    L = -1j * RHO0 * omega * ufl.inner(u_n, q) * ufl.ds(INLET_TAG)
+
+    # --- Solve ---
+    # Set up and solve the linear problem. The JIT compilation will happen automatically.
+    problem = LinearProblem(a, L, bcs=[], petsc_options={"ksp_type": "preonly", "pc_type": "lu"})
+    p_h = problem.solve()
+
+    # --- Post-processing ---
+    # For now, we compute a placeholder SPL from the L2-norm of the solution
+    # In the future, we will integrate pressure over the outlet surface
+    p_ref = 20e-6 # Reference pressure for SPL
+    # Calculate L2 norm of the complex pressure field. ufl.inner(p,p) is equivalent
+    # to p*conj(p) for complex fields.
+    norm_p_L2_squared = fem.assemble_scalar(fem.form(ufl.inner(p_h, p_h) * ufl.dx))
+    norm_p_L2 = np.sqrt(domain.comm.allreduce(norm_p_L2_squared, op=MPI.SUM))
+    spl = 20 * np.log10(norm_p_L2 / p_ref)
+
+    # --- Output Generation ---
+    output_path = Path(output_file)
+    results_df = pd.DataFrame({
+        "frequency": [frequency],
+        "spl": [spl]
+    })
     results_df.to_csv(output_path, index=False)
 
-    print(f"Successfully generated dummy results: {output_path}")
+    print(f"Successfully ran simulation and generated results: {output_path}")
     
     return output_path
