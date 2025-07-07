@@ -2,7 +2,7 @@
 
 **Date:** 2024-07-26
 
-**Status:** In Progress
+**Status:** Completed
 
 ## 1. Goal
 
@@ -34,4 +34,16 @@ We will pursue the following strategies in order.
 
 ## 3. Current Action
 
-Proceeding with **Strategy 2: Deconstruct the Canonical Demo**, as it provides the most direct comparison against a known-good implementation. 
+Proceeding with **Strategy 2: Deconstruct the Canonical Demo**, as it provides the most direct comparison against a known-good implementation.
+
+## 4. Resolution
+
+The issue was successfully resolved. The root cause was not an error in the Python code's use of the UFL API, but a fundamental misunderstanding of the Docker environment.
+
+-   **Discovery:** Running a canonical demo script inside the container revealed the true issue: the `dolfinx/dolfinx:v0.8.0` image, while containing a complex-enabled build of PETSc, **defaults to a real-only environment**.
+
+-   **Initial Flawed Fix:** The initial attempt to fix this was to `RUN . /usr/local/bin/dolfinx-complex-mode` in the Dockerfile. This failed because each `RUN` command executes in a separate shell, and the environment variables set by the script did not persist.
+
+-   **The Correct Solution:** The `dolfinx-complex-mode` script was inspected to identify the five environment variables it sets (`PKG_CONFIG_PATH`, `CMAKE_PREFIX_PATH`, `PETSC_ARCH`, `PYTHONPATH`, `LD_LIBRARY_PATH`). These were then permanently set in the `Dockerfile` using the `ENV` instruction.
+
+This ensured that all subsequent build steps and the final container runtime were executed within the correct complex-valued environment, which immediately resolved the persistent `ValueError`. Subsequent minor API mismatches were then easily debugged and fixed. 
