@@ -122,4 +122,14 @@ dmypy.json
 tmp/
 
 # Example file
-run_example.py 
+run_example.py
+
+# Nextflow
+.nextflow/
+.nextflow.log*
+work/
+trace.txt
+timeline.html
+report.html
+dag.dot
+dag.png 

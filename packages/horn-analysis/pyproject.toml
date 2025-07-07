@@ -10,6 +10,9 @@ dependencies = [
     "psycopg2-binary",
 ]
 
+[project.scripts]
+horn-plotter = "horn_analysis.plotter:main"
+
 [project.optional-dependencies]
 test = [
     "pytest"

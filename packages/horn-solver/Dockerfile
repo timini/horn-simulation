@@ -1,4 +1,3 @@
-# --- Base Image ---
 # Reverting to a specific, stable version of the official dolfinx image.
 # This is a last resort, as other methods have failed.
 FROM dolfinx/dolfinx:v0.8.0 as base
@@ -10,13 +9,10 @@ FROM base as production
 # We only need to install uv.
 RUN pip install uv
 
-# Activate the complex-mode environment permanently.
-# This is the crucial step that was missing.
-ENV PKG_CONFIG_PATH=/usr/local/dolfinx-complex/lib/pkgconfig:$PKG_CONFIG_PATH
-ENV CMAKE_PREFIX_PATH=/usr/local/dolfinx-complex/lib/cmake:$CMAKE_PREFIX_PATH
-ENV PETSC_ARCH=linux-gnu-complex128-32
-ENV PYTHONPATH=/usr/local/dolfinx-complex/lib/python3.10/dist-packages:$PYTHONPATH
-ENV LD_LIBRARY_PATH=/usr/local/dolfinx-complex/lib:$LD_LIBRARY_PATH
+# Set up the entrypoint to activate complex mode.
+COPY ./packages/horn-solver/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 WORKDIR /app
 COPY ./packages/horn-solver/pyproject.toml .

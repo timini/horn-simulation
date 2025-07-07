@@ -9,6 +9,9 @@ dependencies = [
     "mpi4py",
 ]
 
+[project.scripts]
+horn-solver = "horn_solver.solver:main"
+
 [project.optional-dependencies]
 test = [
     "pytest",

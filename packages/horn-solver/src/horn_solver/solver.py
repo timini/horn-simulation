@@ -165,3 +165,26 @@ def run_simulation(
     print(f"Successfully ran simulation and generated results: {output_path}")
     
     return output_path
+
+def main():
+    """Command-line interface for the solver."""
+    import argparse
+    parser = argparse.ArgumentParser(description="Run FEM simulation on a horn STEP file.")
+    parser.add_argument("--step-file", type=str, required=True, help="Path to the input STEP file.")
+    parser.add_argument("--output-file", type=str, required=True, help="Path to save the output CSV results.")
+    parser.add_argument("--min-freq", type=float, default=100.0, help="Minimum frequency in Hz.")
+    parser.add_argument("--max-freq", type=float, default=1000.0, help="Maximum frequency in Hz.")
+    parser.add_argument("--mesh-size", type=float, default=0.01, help="Mesh element size.")
+    args = parser.parse_args()
+
+    run_simulation_from_step(
+        step_file=args.step_file,
+        freq_range=(args.min_freq, args.max_freq),
+        driver_params={},  # Dummy params for now
+        output_file=args.output_file,
+        max_freq_mesh=args.max_freq, # Use max_freq for this for now
+        mesh_size=args.mesh_size,
+    )
+
+if __name__ == "__main__":
+    main()
