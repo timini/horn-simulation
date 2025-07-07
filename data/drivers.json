@@ -1,0 +1,26 @@
+{
+    "d220ti": {
+        "driver_id": "d220ti",
+        "manufacturer": "JBL/Selenium",
+        "model_name": "D220Ti",
+        "fs_hz": 500.0,
+        "qts": 1.2,
+        "vas_liters": 0.02,
+        "sd_sq_meters": 0.0032,
+        "re_ohms": 6.0,
+        "le_mh": 0.6,
+        "xmax_mm": 0.6
+    },
+    "de250": {
+        "driver_id": "de250",
+        "manufacturer": "B&C",
+        "model_name": "DE250",
+        "fs_hz": 550.0,
+        "qts": 0.8,
+        "vas_liters": 0.025,
+        "sd_sq_meters": 0.0032,
+        "re_ohms": 6.3,
+        "le_mh": 0.5,
+        "xmax_mm": 0.8
+    }
+} 

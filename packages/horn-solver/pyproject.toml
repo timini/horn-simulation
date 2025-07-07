@@ -1,0 +1,15 @@
+[project]
+name = "horn-solver"
+version = "0.1.0"
+description = "FEniCSx-based horn simulation and meshing."
+dependencies = [
+    "meshio",
+    "pandas",
+    "numpy",
+    "mpi4py",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+] 

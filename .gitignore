@@ -116,4 +116,10 @@ venv.bak/
 dmypy.json
 
 # Pyre type checker
-.pyre/ 
+.pyre/
+
+# Temporary files
+tmp/
+
+# Example file
+run_example.py 

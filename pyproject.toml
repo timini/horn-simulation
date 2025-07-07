@@ -1,3 +1,19 @@
+[tool.uv.workspace]
+members = [
+    "packages/horn-core",
+    "packages/horn-geometry",
+    "packages/horn-solver",
+]
+
+[project]
+name = "horn"
+version = "0.1.0"
+# Dependencies here are for development tools available across the workspace.
+dependencies = [
+    "pytest",
+    "pytest-mock"
+]
+
 [tool.poetry]
 name = "horn"
 version = "0.1.0"

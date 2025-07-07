@@ -1,0 +1,15 @@
+[project]
+name = "horn-geometry"
+version = "0.1.0"
+description = "FreeCAD-based horn geometry generation."
+dependencies = [
+    "horn-core"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+
+[tool.uv.sources]
+horn-core = { workspace = true } 
