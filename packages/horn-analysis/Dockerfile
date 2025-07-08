@@ -14,6 +14,7 @@ RUN uv pip install --system /app/packages/horn-analysis
 # --- Production Stage ---
 # This is the final, clean image for the service.
 FROM base as production
+RUN apt-get update && apt-get install -y procps && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # Copy the installed packages from the builder stage.

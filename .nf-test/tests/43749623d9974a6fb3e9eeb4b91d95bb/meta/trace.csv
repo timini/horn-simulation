@@ -1,0 +1,2 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+1	30/05e6b8	5900	generate_geometry	COMPLETED	0	2025-07-08 10:54:05.735	624ms	314ms	50.7%	19.4 MB	25.9 MB	4.2 MB	13.5 KB

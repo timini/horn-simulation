@@ -1,21 +1,120 @@
-test("Should run the generate_geometry process") {
+nextflow_process {
 
-    when {
-        workflow {
-            """
-            include { generate_geometry } from '../main.nf'
+    name "Test Process generate_geometry"
+    script "../main.nf"
+    process "generate_geometry"
+    config "../nextflow.config"
+    profile "docker"
 
-            workflow {
-                generate_geometry(0.05, 0.2, 0.5)
+    test("Should run the generate_geometry process") {
+        when {
+            process {
+                """
+                input[0] = 0.05
+                input[1] = 0.2
+                input[2] = 0.5
+                """
             }
-            """
+        }
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+    }
+}
+
+nextflow_process {
+
+    name "Test Process run_simulation"
+    script "../main.nf"
+    process "run_simulation"
+    config "../nextflow.config"
+    profile "docker"
+
+    setup {
+        // Create a dummy step file
+        file("tests/data/horn.step").withWriter('UTF-8') { writer ->
+            writer.writeLine("dummy content")
         }
     }
 
-    then {
-        assert workflow.success
-        assert workflow.process("generate_geometry").success
-        assert snapshot(workflow.process("generate_geometry").out).match()
+    test("Should run the simulation") {
+        when {
+            process {
+                """
+                input[0] = tuple(file("tests/data/horn.step"), 0)
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+    }
+}
+
+nextflow_process {
+
+    name "Test Process merge_results"
+    script "../main.nf"
+    process "merge_results"
+    config "../nextflow.config"
+    profile "docker"
+
+    setup {
+        file("tests/data/results_0.csv").withWriter('UTF-8') { writer ->
+            writer.writeLine("frequency,spl")
+            writer.writeLine("100,10")
+        }
+        file("tests/data/results_1.csv").withWriter('UTF-8') { writer ->
+            writer.writeLine("frequency,spl")
+            writer.writeLine("200,20")
+        }
     }
 
+    test("Should merge results") {
+        when {
+            process {
+                """
+                input[0] = [file("tests/data/results_0.csv"), file("tests/data/results_1.csv")]
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+    }
+}
+
+nextflow_process {
+
+    name "Test Process generate_plots"
+    script "../main.nf"
+    process "generate_plots"
+    config "../nextflow.config"
+    profile "docker"
+
+    setup {
+        file("tests/data/final_results.csv").withWriter('UTF-8') { writer ->
+            writer.writeLine("frequency,spl")
+            writer.writeLine("100,10")
+            writer.writeLine("200,20")
+        }
+    }
+
+    test("Should generate plots") {
+        // TODO: This test is broken. The input file is not found in the container.
+        when {
+            process {
+                """
+                input[0] = file('tests/data/final_results.csv')
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+    }
 }

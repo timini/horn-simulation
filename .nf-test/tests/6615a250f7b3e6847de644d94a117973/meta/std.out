@@ -1,0 +1,49 @@
+ERROR ~ Error executing process > 'generate_plots'
+
+Caused by:
+  Process `generate_plots` terminated with an error exit status (1)
+
+
+Command executed:
+
+  python3 -m horn_analysis.plotter         --input final_results.csv         --output frequency_response.png
+
+Command exit status:
+  1
+
+Command output:
+  (empty)
+
+Command error:
+  Traceback (most recent call last):
+    File "/usr/local/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+      return _run_code(code, main_globals, None,
+    File "/usr/local/lib/python3.10/runpy.py", line 86, in _run_code
+      exec(code, run_globals)
+    File "/usr/local/lib/python3.10/site-packages/horn_analysis/plotter.py", line 32, in <module>
+      main() 
+    File "/usr/local/lib/python3.10/site-packages/horn_analysis/plotter.py", line 29, in main
+      plot_results(args.input, args.output)
+    File "/usr/local/lib/python3.10/site-packages/horn_analysis/plotter.py", line 10, in plot_results
+      df = pd.read_csv(input_file)
+    File "/usr/local/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+      return _read(filepath_or_buffer, kwds)
+    File "/usr/local/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+      parser = TextFileReader(filepath_or_buffer, **kwds)
+    File "/usr/local/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+      self._engine = self._make_engine(f, self.engine)
+    File "/usr/local/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+      self.handles = get_handle(
+    File "/usr/local/lib/python3.10/site-packages/pandas/io/common.py", line 873, in get_handle
+      handle = open(
+  FileNotFoundError: [Errno 2] No such file or directory: 'final_results.csv'
+
+Work dir:
+  /Users/timrichardson/projects/horn/.nf-test/tests/6615a250f7b3e6847de644d94a117973/work/80/71c04c64a568b4c8def89b2ef33748
+
+Container:
+  horn-analysis:latest
+
+Tip: when you have fixed the problem you can continue the execution adding the option `-resume` to the run command line
+
+ -- Check '/Users/timrichardson/projects/horn/.nf-test/tests/6615a250f7b3e6847de644d94a117973/meta/nextflow.log' file for details

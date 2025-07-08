@@ -13,6 +13,8 @@ params.mesh_size = 0.01    // Target mesh element size in meters
 
 // Execution Settings
 params.num_bands = 8       // Number of parallel jobs for the solver
+params.outdir = "./results"
+params.test_outdir = null  // for testing purposes
 
 process generate_geometry {
     publishDir "${params.outdir}", mode: 'copy'

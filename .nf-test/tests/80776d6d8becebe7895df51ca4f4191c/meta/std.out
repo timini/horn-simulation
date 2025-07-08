@@ -1,0 +1,46 @@
+ERROR ~ Error executing process > 'run_simulation'
+
+Caused by:
+  Process `run_simulation` terminated with an error exit status (1)
+
+
+Command executed:
+
+  echo "Running band 0: 500.0 Hz to 1437.5 Hz"
+  python3 -m horn_solver.solver         --step-file horn.step         --output-file results_0.csv         --min-freq 500.0         --max-freq 1437.5         --num-intervals 12         --length 0.5
+
+Command exit status:
+  1
+
+Command output:
+  Running band 0: 500.0 Hz to 1437.5 Hz
+
+Command error:
+  Running band 0: 500.0 Hz to 1437.5 Hz
+  Error   : Could not read file 'horn.step'
+  Traceback (most recent call last):
+    File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+      return _run_code(code, main_globals, None,
+    File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+      exec(code, run_globals)
+    File "/usr/local/lib/python3.10/dist-packages/horn_solver/solver.py", line 229, in <module>
+      main()
+    File "/usr/local/lib/python3.10/dist-packages/horn_solver/solver.py", line 218, in main
+      run_simulation_from_step(
+    File "/usr/local/lib/python3.10/dist-packages/horn_solver/solver.py", line 114, in run_simulation_from_step
+      domain, facet_tags = create_mesh_from_step(step_file, mesh_size, horn_length)
+    File "/usr/local/lib/python3.10/dist-packages/horn_solver/solver.py", line 37, in create_mesh_from_step
+      gmsh.model.occ.importShapes(step_file)
+    File "/usr/local/lib/gmsh.py", line 8593, in importShapes
+      raise Exception(logger.getLastError())
+  Exception: Could not read file 'horn.step'
+
+Work dir:
+  /Users/timrichardson/projects/horn/.nf-test/tests/80776d6d8becebe7895df51ca4f4191c/work/3b/c35c256d5d07932094e1c4e9e65925
+
+Container:
+  horn-solver:latest
+
+Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
+
+ -- Check '/Users/timrichardson/projects/horn/.nf-test/tests/80776d6d8becebe7895df51ca4f4191c/meta/nextflow.log' file for details

@@ -1,0 +1,2 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+1	80/71c04c	10226	generate_plots	FAILED	1	2025-07-08 11:11:33.365	1.7s	1.6s	-	-	-	-	-

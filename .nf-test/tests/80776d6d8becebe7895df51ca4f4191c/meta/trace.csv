@@ -1,0 +1,2 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+1	3b/c35c25	6219	run_simulation	FAILED	1	2025-07-08 10:54:39.495	1.4s	1.3s	-	-	-	-	-
