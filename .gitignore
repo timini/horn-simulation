@@ -133,4 +133,5 @@ timeline.html
 report.html
 dag.dot
 dag.png
-results/ 
+results/
+nf-test 

@@ -1,0 +1,21 @@
+test("Should run the generate_geometry process") {
+
+    when {
+        workflow {
+            """
+            include { generate_geometry } from '../main.nf'
+
+            workflow {
+                generate_geometry(0.05, 0.2, 0.5)
+            }
+            """
+        }
+    }
+
+    then {
+        assert workflow.success
+        assert workflow.process("generate_geometry").success
+        assert snapshot(workflow.process("generate_geometry").out).match()
+    }
+
+}
