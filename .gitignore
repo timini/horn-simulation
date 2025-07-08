@@ -132,4 +132,5 @@ trace.txt
 timeline.html
 report.html
 dag.dot
-dag.png 
+dag.png
+results/ 

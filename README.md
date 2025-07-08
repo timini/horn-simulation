@@ -19,38 +19,81 @@ This project is structured as a monorepo managed by `uv`, with a strong emphasis
 ### Prerequisites
 
 - [Docker](https://www.docker.com/get-started)
-- [Python 3.10+](https://www.python.org/downloads/)
-- `uv` (can be installed via `pip install uv`)
+- [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html#installation)
 
 ### Setup
 
-1.  **Activate the virtual environment**:
-    This project uses `uv` to manage dependencies for the local development environment (e.g., for IDE support).
+1.  **Build the Docker images**:
+    The pipeline relies on Docker images for each of the core packages. Build them using the `Makefile`.
 
     ```bash
-    uv venv
-    source .venv/bin/activate
+    make build
     ```
 
-2.  **Install development dependencies**:
-    This will install all packages and their dependencies, including `pytest`, into the virtual environment.
+## Running the Pipeline
 
-    ```bash
-    uv pip install -e .
-    ```
+The simulation is orchestrated using Nextflow. The main script is `main.nf`. You can customize the simulation by passing parameters on the command line.
 
-## Running Tests
+### Parameters
 
-All tests should be executed via the `Makefile`. This is the canonical way to ensure tests run in the correct, isolated container environment.
+The following parameters can be set using the `--<param_name>` syntax (e.g., `--min_freq 20`).
 
-To run the tests for a specific package, use the `make test` command with the `package` variable.
+| Parameter          | Description                                                              | Default Value |
+| ------------------ | ------------------------------------------------------------------------ | ------------- |
+| `outdir`           | The directory where all output files will be saved.                      | (required)    |
+| **Horn Geometry**  |                                                                          |               |
+| `throat_radius`    | Radius of the horn's throat (the narrow end) in meters.                  | `0.05`        |
+| `mouth_radius`     | Radius of the horn's mouth (the wide end) in meters.                     | `0.2`         |
+| `length`           | Length of the horn along the Z-axis in meters.                           | `0.5`         |
+| **Simulation**     |                                                                          |               |
+| `min_freq`         | Minimum frequency for the simulation sweep in Hz.                        | `500`         |
+| `max_freq`         | Maximum frequency for the simulation sweep in Hz.                        | `8000`        |
+| `num_intervals`    | The number of frequency steps to simulate in the sweep.                  | `100`         |
+| `mesh_size`        | The target mesh element size in meters for the FEM simulation.           | `0.01`        |
+| **Execution**      |                                                                          |               |
+| `num_bands`        | Number of parallel jobs to split the frequency sweep into.               | `8`           |
 
-**Example: Run tests for `horn-geometry`**
+### Example Usage
+
+#### 1. Quick Development Run
+This is useful for quickly testing the pipeline with low-resolution settings.
+
 ```bash
-make test package=geometry
+nextflow run main.nf --outdir ./results/dev_test --num_intervals 10
 ```
 
-**Example: Run tests for `horn-solver`**
+#### 2. Full Resolution Analysis
+This runs a detailed simulation suitable for final analysis. This may take a significant amount of time.
+
 ```bash
-make test package=solver
-``` 
+nextflow run main.nf --outdir ./results/full_run \
+    --min_freq 20 \
+    --max_freq 20000 \
+    --num_intervals 2000
+```
+
+#### 3. Comparing Two Horn Designs
+You can run the pipeline multiple times with different geometric parameters and save the results to different directories.
+
+First, run the simulation for "Horn A":
+```bash
+nextflow run main.nf --outdir ./results/horn_A \
+    --throat_radius 0.05 --mouth_radius 0.2 --length 0.5
+```
+
+Next, run the simulation for "Horn B" with a different length:
+```bash
+nextflow run main.nf --outdir ./results/horn_B \
+    --throat_radius 0.05 --mouth_radius 0.2 --length 0.8
+```
+
+After the runs are complete, you can use the `compare_horns.py` script to plot both results on the same graph:
+
+```bash
+python3 -m horn_analysis.compare_horns \
+    results/horn_A/final_results.csv "Horn A" \
+    results/horn_B/final_results.csv "Horn B" \
+    results/comparison.png
+```
+
+This will generate `comparison.png` in the `results/` directory. 
