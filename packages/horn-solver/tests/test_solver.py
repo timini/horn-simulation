@@ -49,14 +49,38 @@ def test_e2e_meshing_and_solving(tmp_path):
         step_file=str(step_file),
         driver_params=driver_params,
         freq_range=freq_range,
+        num_intervals=10,
         output_file=str(output_file),
         max_freq_mesh=freq_range[1],
         mesh_size=1.0,  # Use a very coarse mesh for speed
     )
     print("run_simulation_from_step finished.")
 
-    # Assert the output file was created
+    # --- Assertions ---
     print("Asserting results...")
-    assert result_path.exists()
+    assert result_path.exists(), "The simulation output CSV was not created."
     assert result_path.name == "results.csv"
-    print("--- Test finished ---\n")
+
+    # 2. Check the CSV content
+    import pandas as pd
+    results_df = pd.read_csv(result_path)
+    assert "frequency" in results_df.columns
+    assert "spl" in results_df.columns
+    # The test runs with 10 intervals, so we expect 10 rows
+    assert len(results_df) == 10, f"Expected 10 data rows, but found {len(results_df)}"
+
+    # 3. Run the plotting script
+    print("Running plotting script...")
+    plot_image_file = tmp_path / "spl_plot.png"
+    # Note: We need to find the plotter script relative to the project root
+    # This is a bit fragile, but required for testing from the package level
+    from horn_analysis.plotter import plot_spl_vs_frequency
+    plot_spl_vs_frequency(str(result_path), str(plot_image_file))
+
+    # 4. Assert that the plot was created
+    assert plot_image_file.exists(), "The plot image file was not created."
+    assert plot_image_file.stat().st_size > 0, "The plot image file is empty."
+    
+    print(f"Successfully created plot: {plot_image_file}")
+    print("--- Test finished ---
+")

@@ -2,7 +2,7 @@
 
 **Date:** 2024-07-26
 
-**Status:** In Progress
+**Status:** Done
 
 ## 1. Goal
 

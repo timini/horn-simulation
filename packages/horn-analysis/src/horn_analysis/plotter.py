@@ -1,32 +1,39 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import argparse
-from pathlib import Path
 
-def plot_results(input_file: str, output_file: str):
+def plot_spl_vs_frequency(csv_file: str, output_image_file: str):
     """
-    Reads simulation results from a CSV and generates a frequency response plot.
+    Reads simulation results from a CSV and plots SPL vs. Frequency.
+
+    Args:
+        csv_file: Path to the input CSV file.
+        output_image_file: Path to save the output plot image.
     """
-    df = pd.read_csv(input_file)
-    plt.figure()
-    plt.plot(df["frequency"], df["spl"])
-    plt.xlabel("Frequency (Hz)")
-    plt.ylabel("SPL (dB)")
-    plt.title("Frequency Response")
+    # Read the data using pandas
+    data = pd.read_csv(csv_file)
+
+    # Create the plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(data['frequency'], data['spl'], marker='o', linestyle='-')
     plt.grid(True)
-    plt.savefig(output_file)
-    print(f"Plot saved to {output_file}")
+    plt.title('Sound Pressure Level (SPL) vs. Frequency')
+    plt.xlabel('Frequency (Hz)')
+    plt.ylabel('SPL (dB)')
+    plt.xscale('log') # Frequency is often better viewed on a log scale
+    
+    # Save the plot to a file
+    plt.savefig(output_image_file)
+    print(f"Plot saved to {output_image_file}")
 
 def main():
-    parser = argparse.ArgumentParser(description="Plot horn simulation results.")
-    parser.add_argument("--input", type=str, required=True, help="Input CSV file.")
-    parser.add_argument("--output", type=str, required=True, help="Output PNG file.")
+    """Command-line interface for the plotting script."""
+    parser = argparse.ArgumentParser(description="Plot SPL vs. Frequency from a CSV file.")
+    parser.add_argument("csv_file", type=str, help="Path to the input CSV file.")
+    parser.add_argument("output_image_file", type=str, help="Path to save the output plot image.")
     args = parser.parse_args()
     
-    # Ensure output directory exists
-    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
-    
-    plot_results(args.input, args.output)
+    plot_spl_vs_frequency(args.csv_file, args.output_image_file)
 
 if __name__ == "__main__":
-    main() 
+    main()
