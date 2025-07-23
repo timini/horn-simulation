@@ -8,6 +8,7 @@ FROM base as production
 # The base image already contains a compatible FEniCSx environment.
 # We only need to install uv.
 RUN pip install uv
+RUN uv pip install --system bempp-cl
 
 # Set up the entrypoint to activate complex mode.
 COPY ./packages/horn-solver/entrypoint.sh /usr/local/bin/
@@ -34,6 +35,6 @@ WORKDIR /app
 COPY ./packages/horn-solver/tests /app/packages/horn-solver/tests
 
 # Install test dependencies
-RUN uv pip install --system /app/packages/horn-solver[test]
+RUN uv pip install --system /app/packages/horn-solver[test] /app/packages/horn-analysis
 
 USER appuser

@@ -14,9 +14,5 @@ horn-solver = "horn_solver.solver:main"
 
 [project.optional-dependencies]
 test = [
-    """pytest = "^8.2.2"
-
-[tool.rye.scripts]
-run = "horn-solver"
-"""
+    "pytest>=8.2.2"
 ] 

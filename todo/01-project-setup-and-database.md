@@ -1,22 +1,18 @@
-# 01: Project Setup and Database Integration
-
+# 01: Project Setup and Driver Data
 **Status:** Completed ✅
 
-This task covered the initial setup of the project structure and the integration of a containerized PostgreSQL database.
+This task covered the initial setup of the project structure and the implementation of a system for managing loudspeaker driver parameters.
 
 ## Key Accomplishments
 
 - **Project Skeleton**:
-    - Created a modular directory structure for source code (`src/horn`) and tests (`tests`).
-    - Set up a `pyproject.toml` file using Poetry for dependency management.
+    - Created a modular directory structure for packages (`packages/`) and tests (`tests`).
+    - Set up `pyproject.toml` files for each package.
     - Added a `README.md` with project information and a `.gitignore` file.
 - **Test-Driven Development (TDD)**:
     - Established a TDD workflow with `pytest`.
-    - Wrote an initial failing test for the (now-defunct) PDF parsing module and made it pass.
-- **Database Setup**:
-    - Created a `docker-compose.yml` file to run a PostgreSQL database in a Docker container.
-    - Wrote an `init.sql` script to create the `drivers` table and seed it with a sample driver.
-    - Implemented a `driver_db.py` module to handle database connections and fetch driver data.
-- **Database Testing**:
-    - Wrote tests for the `driver_db` module to ensure data could be retrieved successfully and errors were handled correctly.
-    - Configured `pytest` to mark and run database-dependent tests. 
+- **Driver Data**:
+    - Created a `drivers.json` file to store loudspeaker driver parameters.
+    - Implemented a `get_driver_params.py` script to read driver data from the JSON file.
+- **Data Access Testing**:
+    - Wrote tests for the `get_driver_params` script to ensure data could be retrieved successfully. 

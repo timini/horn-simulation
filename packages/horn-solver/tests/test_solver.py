@@ -14,6 +14,7 @@ def test_mesh_boundary_tagging():
     domain, facet_tags = create_mesh_from_step(
         step_file=str(step_file),
         mesh_size=1.0, # Coarse mesh for speed
+        horn_length=1.0, # Dummy value for testing
     )
 
     # Check that the facet tags have been created and contain the correct markers
@@ -82,5 +83,4 @@ def test_e2e_meshing_and_solving(tmp_path):
     assert plot_image_file.stat().st_size > 0, "The plot image file is empty."
     
     print(f"Successfully created plot: {plot_image_file}")
-    print("--- Test finished ---
-")
+    print("--- Test finished ---")

@@ -2,20 +2,10 @@
 
 **Status:** Completed ✅
 
-This task covered the implementation of placeholders for the core computational stages of the pipeline: meshing and solving.
+This task covered the implementation of the core computational stages of the pipeline: meshing and solving.
 
 ## Key Accomplishments
 
-- **Meshing Module**:
-    - Implemented a placeholder `create_mesh` function in `meshing.py`.
-    - Wrote unit tests to verify its behavior.
-    - Integrated the meshing stage into the main pipeline.
-- **Solver Module**:
-    - Implemented a placeholder `run_simulation` function in `solver.py`.
-    - Wrote unit tests for the solver placeholder.
-    - Integrated the solver stage into the main pipeline, completing the simulation section's data flow.
-- **E2E Verification**: Updated and verified the end-to-end test to ensure correct orchestration of the full data ingestion, geometry, and simulation workflow.
-
-## Current Goal
-
-The immediate goal is to implement the placeholder for the FEM/BEM solver. This involves creating the `
+- **Meshing**: Implemented a `create_mesh_from_step` function in `horn_solver/solver.py` that uses `gmsh` to generate a mesh from a STEP file and tag boundaries for simulation.
+- **Solver**: Implemented a `run_simulation` function that uses `dolfinx` to solve the Helmholtz equation for acoustic pressure.
+- **E2E Integration**: Integrated the simulation stage into the main Nextflow pipeline.

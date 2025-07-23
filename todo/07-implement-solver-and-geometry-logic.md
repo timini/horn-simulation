@@ -1,13 +1,9 @@
-# 07: Implement Real Solver Logic
+# 07: Implement Advanced Solver Logic
 
-**Status:** Not Started ⚪
+**Status:** Completed ✅
 
-This is the most complex computational stage. It involves replacing the placeholder `solver.py` with a real implementation that uses `FEniCSx` and `Bempp` to perform a coupled FEM-BEM simulation.
+This task involved implementing advanced solver capabilities.
 
----
+## Current Status
 
-# 08: Implement Full Horn Geometry
-
-**Status:** Not Started ⚪
-
-This task involves moving beyond the proof-of-concept cylinder and implementing the real parametric geometry generation for various horn profiles (exponential, conical, etc.) using `FreeCAD`'s lofting capabilities. 
+A FEM solver for the Helmholtz equation has been implemented using `dolfinx`. The more advanced BEM solver for the radiation boundary condition has been moved to its own TODO: `13-implement-bem-solver.md`. 
