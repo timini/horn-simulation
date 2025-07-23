@@ -1,7 +1,7 @@
-# Horn BEM Solver
+# Horn BEM Solver (Archived)
 
-This package is intended to provide a Boundary Element Method (BEM) solver for the Horn project.
+This package was initially created to house the Boundary Element Method (BEM) solver. However, due to the tightly coupled nature of the FEM-BEM simulation, the BEM logic has been integrated directly into the `horn-solver` package.
 
-As of 2025-07-23, this package is under development. A major challenge has been the setup of a stable Docker environment with the required scientific computing libraries (`bempp-cl`, `fenics-dolfinx`) on an ARM64 architecture.
+**This package is now considered redundant and is no longer in use.**
 
-A detailed summary of the environment setup challenges can be found in `docs/challenges/02-bem-solver-environment-setup-challenges.md`.
+The coupled FEM-BEM logic can be found in the `horn-solver` package.

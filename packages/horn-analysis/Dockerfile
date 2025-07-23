@@ -38,6 +38,7 @@ COPY ./packages/horn-analysis /app/packages/horn-analysis
 RUN pip install /app/packages/horn-analysis[test]
 
 # Copy the tests themselves
-COPY ./packages/horn-analysis/tests /app/tests
+COPY ./packages/horn-analysis/tests /app/packages/horn-analysis/tests
+RUN mkdir -p /home/appuser/.cache && chown -R appuser:appuser /home/appuser/.cache
 
 USER appuser 

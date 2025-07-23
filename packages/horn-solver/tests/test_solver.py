@@ -84,3 +84,23 @@ def test_e2e_meshing_and_solving(tmp_path):
     
     print(f"Successfully created plot: {plot_image_file}")
     print("--- Test finished ---")
+
+def test_e2e_with_bem(tmp_path):
+    print("\n--- Running test: test_e2e_with_bem ---\n")
+    step_file = Path(__file__).parent / "test_box.stp"
+    output_file = tmp_path / "results.csv"
+
+    driver_params = {"Bl": 5.0, "Re": 6.0}
+    freq_range = (100.0, 1000.0)
+
+    result_path = run_simulation_from_step(
+        step_file=str(step_file),
+        driver_params=driver_params,
+        freq_range=freq_range,
+        num_intervals=10,
+        output_file=str(output_file),
+        max_freq_mesh=freq_range[1],
+        mesh_size=1.0,
+    )
+
+    assert result_path.exists(), "The simulation output CSV was not created."

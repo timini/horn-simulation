@@ -7,6 +7,7 @@ dependencies = [
     "pandas",
     "numpy",
     "mpi4py",
+    "bempp-cl",
 ]
 
 [project.scripts]

@@ -22,9 +22,11 @@ test:
 	@for pkg in $(PACKAGES); do \
 		echo "Running tests for $$pkg..."; \
 		if [ "$$pkg" = "horn-solver" ]; then \
-			docker run --rm "$$pkg:test" /bin/bash -c "echo '--- Verifying Environment ---'; echo 'PETSC_ARCH: $$PETSC_ARCH'; echo 'PYTHONPATH: $$PYTHONPATH'; python3 -c 'from petsc4py import PETSc; print(f\"PETSc.ScalarType: {PETSc.ScalarType}\")'; echo '--- Running Tests ---'; pytest /app/packages/horn-solver/tests"; \
+			docker run --rm "$pkg:test" pytest /app/packages/horn-solver/tests; \
 		else \
-			docker run --rm "$$pkg:test" pytest /app/tests; \
+			            else
+			docker run --rm "$pkg:test" pytest /app/packages/horn-analysis/tests;
+		fi \
 		fi \
 		done
 

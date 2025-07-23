@@ -13,19 +13,12 @@ INLET_TAG, OUTLET_TAG, WALL_TAG = 2, 3, 4
 C0 = 343.0  # Speed of sound in air (m/s)
 RHO0 = 1.225 # Density of air (kg/m^3)
 
-try:
-    from dolfinx import mesh, fem
-    from dolfinx.fem.petsc import LinearProblem
-    from mpi4py import MPI
-    import ufl
-    from petsc4py.PETSc import ScalarType
-except ImportError as e:
-    # This is expected if running outside the solver container (e.g., for local tests)
-    print(f"DEBUG: Caught ImportError: {e}")
-    dolfinx = None
-    fem = None
-    MPI = None
-    mesh = None
+from dolfinx import mesh, fem
+from dolfinx.fem.petsc import LinearProblem
+from mpi4py import MPI
+import ufl
+from petsc4py.PETSc import ScalarType
+from . import bem_solver
 
 def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float) -> Tuple["mesh.Mesh", "mesh.MeshTags"]:
     """
@@ -155,8 +148,6 @@ def run_simulation(
         # Define the variational problem (weak form of Helmholtz equation)
         # LHS: Integral over the domain volume. Use ufl.inner for complex problems.
         a = ufl.inner(ufl.grad(p), ufl.grad(q)) * ufl.dx - k**2 * ufl.inner(p, q) * ufl.dx
-        # Add Robin boundary condition for the outlet (radiation condition)
-        a -= 1j * k * ufl.inner(p, q) * ufl.ds(OUTLET_TAG)
 
         # RHS: Define the driver velocity at the inlet.
         # We now use a strong Dirichlet condition to enforce p=1 at the inlet,
@@ -177,6 +168,12 @@ def run_simulation(
         # Set up and solve the linear problem. The JIT compilation will happen automatically.
         problem = LinearProblem(a, L, bcs=[bc], petsc_options={"ksp_type": "preonly", "pc_type": "lu"})
         p_h = problem.solve()
+
+        # --- BEM Solve ---
+        dp_h = bem_solver.solve_bem(domain, facet_tags, OUTLET_TAG, k, p_h)
+
+        # Update the variational form with the BEM solution
+        a += ufl.inner(dp_h, q) * ufl.ds(OUTLET_TAG)
 
         # --- Post-processing ---
         # For now, we compute a placeholder SPL from the L2-norm of the solution

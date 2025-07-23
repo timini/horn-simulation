@@ -35,6 +35,6 @@ WORKDIR /app
 COPY ./packages/horn-solver/tests /app/packages/horn-solver/tests
 
 # Install test dependencies
-RUN uv pip install --system /app/packages/horn-solver[test] /app/packages/horn-analysis
+RUN pip install /app/packages/horn-solver[test] /app/packages/horn-analysis
 
 USER appuser
