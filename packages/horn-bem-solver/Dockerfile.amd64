@@ -1,0 +1,32 @@
+# Dockerfile for amd64 build
+# This Dockerfile leverages pre-built packages from conda-forge for the
+# linux/amd64 architecture. It provides a rapid path to a functional
+# environment but will run under emulation on ARM64 hosts, which has
+# significant performance implications.
+#
+# To build and run this image on an ARM64 host (e.g., Apple Silicon):
+# 1. Build the image specifying the target platform:
+#    docker build --platform linux/amd64 -t horn-bem-solver-amd64 . -f Dockerfile.amd64
+#
+# 2. Run the container, again specifying the platform for emulation:
+#    docker run --platform linux/amd64 -it horn-bem-solver-amd64 /bin/bash
+
+FROM continuumio/miniconda3:latest
+
+# Install dependencies using conda from the conda-forge channel
+RUN conda install -y -c conda-forge \
+    fenics-dolfinx \
+    bempp-cl \
+    mpich \
+    pyvista
+
+# Set up the environment to be activated on login
+SHELL ["conda", "run", "n", "base", "/bin/bash", "-c"]
+
+# Set a working directory for application code
+WORKDIR /app
+
+# The rest of the Dockerfile to copy application code...
+# For example:
+# COPY ./src /app/src
+# ENTRYPOINT ["conda", "run", "-n", "base", "python", "src/horn_bem_solver/solver.py"]
