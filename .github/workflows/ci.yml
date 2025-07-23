@@ -18,12 +18,13 @@ jobs:
           sudo mv nextflow /usr/local/bin/
       - name: Install nf-test
         run: |
-          curl -fsSL https://code.askimed.com/install/nf-test | bash
+          wget https://github.com/askimed/nf-test/releases/download/v0.8.4/nf-test-0.8.4-linux-amd64 -O nf-test
+          chmod +x nf-test
           sudo mv nf-test /usr/local/bin/
       - name: Build Docker images
         run: make build
       - name: Run nf-test
-        run: nf-test test tests/main.nf.test
+        run: make test-nextflow
 
   test_packages:
     runs-on: ubuntu-latest

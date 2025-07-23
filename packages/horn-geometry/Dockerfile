@@ -35,6 +35,8 @@ FROM production as test
 USER root
 WORKDIR /app
 ENV PYTHONPATH /app
+RUN mkdir -p /app/.pytest_cache && chown -R appuser:appuser /app/.pytest_cache
+RUN mkdir -p /app/.pytest_cache && chown -R appuser:appuser /app/.pytest_cache
 
 # The production stage already contains the main dependencies.
 # We just need to copy the source again to install the '[test]' extras.

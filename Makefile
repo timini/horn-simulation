@@ -27,6 +27,10 @@ test:
 run:
 	nextflow run main.nf -profile docker
 
+test-nextflow:
+	nf-test test tests/main.nf.test
+
+
 clean:
 	@echo "Cleaning up Docker images..."
 	@docker rmi -f $(addsuffix :latest,$(PACKAGES)) $(addsuffix :test,$(PACKAGES)) || true

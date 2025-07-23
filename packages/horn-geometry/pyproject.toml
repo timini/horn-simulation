@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Procedural geometry generation for the Horn project."
 dependencies = [
     "numpy",
+    "gmsh"
 ]
 
 [project.scripts]
