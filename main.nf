@@ -87,9 +87,7 @@ process generate_plots {
 
     script:
     """
-    python3 -m horn_analysis.plotter \
-        --input ${final_csv} \
-        --output frequency_response.png
+    python3 -m horn_analysis.plotter         ${final_csv}         frequency_response.png
     """
 }
 
