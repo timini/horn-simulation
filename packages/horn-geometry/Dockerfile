@@ -42,6 +42,6 @@ COPY ./packages/horn-geometry /app/packages/horn-geometry
 RUN pip install /app/packages/horn-geometry[test]
 
 # Copy the tests themselves
-COPY ./packages/horn-geometry/tests /app/tests
+COPY ./packages/horn-geometry/tests /app/packages/horn-geometry/tests
 
 USER appuser

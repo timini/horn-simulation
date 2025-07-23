@@ -8,11 +8,11 @@ help:
 	@echo "Usage: make [target]"
 	@echo ""
 	@echo "Targets:"
-	@echo "  all		- Display this help message"
-	@echo "  build		- Build all Docker images"
-	@echo "  test		- Run all tests"
-	@echo "  run		- Run the Nextflow pipeline"
-	@echo "  clean		- Clean up Docker images and Nextflow files"
+	@echo "  all\t\t- Display this help message"
+	@echo "  build\t\t- Build all Docker images"
+	@echo "  test\t\t- Run all tests"
+	@echo "  run\t\t- Run the Nextflow pipeline"
+	@echo "  clean\t\t- Clean up Docker images and Nextflow files"
 
 build:
 	$(foreach pkg,$(PACKAGES),docker build -t $(pkg):latest --target production -f ./packages/$(pkg)/Dockerfile .;)
@@ -22,11 +22,11 @@ test:
 	@for pkg in $(PACKAGES); do \
 		echo "Running tests for $$pkg..."; \
 		if [ "$$pkg" = "horn-solver" ]; then \
-			docker run --rm "$pkg:test" pytest /app/packages/horn-solver/tests; \
+			docker run --rm "$$pkg:test" pytest /app/packages/horn-solver/tests; \
+		elif [ "$$pkg" = "horn-geometry" ]; then \
+			docker run --rm "$$pkg:test" pytest /app/packages/horn-geometry/tests; \
 		else \
-			            else
-			docker run --rm "$pkg:test" pytest /app/packages/horn-analysis/tests;
-		fi \
+			docker run --rm "$$pkg:test" pytest /app/packages/horn-analysis/tests; \
 		fi \
 		done
 

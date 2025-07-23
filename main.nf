@@ -78,7 +78,6 @@ process merge_results {
 
 process generate_plots {
     publishDir "${params.outdir}", mode: 'copy'
-    workDir "."
 
     input:
     path final_csv

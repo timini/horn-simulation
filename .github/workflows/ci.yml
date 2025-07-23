@@ -23,7 +23,7 @@ jobs:
       - name: Build Docker images
         run: make build
       - name: Run nf-test
-        run: nf-test test tests/main.nf.test
+        run: nf-test test tests/main.nf.test --work-dir /tmp/nf-test
 
   test_packages:
     runs-on: ubuntu-latest
