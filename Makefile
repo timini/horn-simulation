@@ -21,14 +21,8 @@ test:
 	$(foreach pkg,$(PACKAGES),docker build -t $(pkg):test --target test -f ./packages/$(pkg)/Dockerfile .;)
 	@for pkg in $(PACKAGES); do \
 		echo "Running tests for $$pkg..."; \
-		if [ "$$pkg" = "horn-solver" ]; then \
-			docker run --rm "$$pkg:test" pytest /app/packages/horn-solver/tests; \
-		elif [ "$$pkg" = "horn-geometry" ]; then \
-			docker run --rm "$$pkg:test" pytest /app/packages/horn-geometry/tests; \
-		else \
-			docker run --rm "$$pkg:test" pytest /app/packages/horn-analysis/tests; \
-		fi \
-		done
+		docker run --rm "$$pkg:test" pytest /app/packages/$$pkg/tests; \
+	done
 
 run:
 	nextflow run main.nf -profile docker

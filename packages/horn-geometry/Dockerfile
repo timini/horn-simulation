@@ -34,6 +34,7 @@ WORKDIR /home/appuser
 FROM production as test
 USER root
 WORKDIR /app
+ENV PYTHONPATH /app
 
 # The production stage already contains the main dependencies.
 # We just need to copy the source again to install the '[test]' extras.

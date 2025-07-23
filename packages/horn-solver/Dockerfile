@@ -30,6 +30,7 @@ WORKDIR /home/appuser
 FROM production as test
 USER root
 WORKDIR /app
+ENV PYTHONPATH /app
 
 # Copy test-specific files
 COPY ./packages/horn-solver/tests /app/packages/horn-solver/tests
