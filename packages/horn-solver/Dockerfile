@@ -6,9 +6,9 @@ FROM dolfinx/dolfinx:v0.8.0 as base
 FROM base as production
 
 # The base image already contains a compatible FEniCSx environment.
-# We only need to install uv.
-RUN pip install uv
-RUN uv pip install --system bempp-cl
+# Use pip (not uv) for bempp-cl to ensure it goes to Debian's dist-packages
+# where Python's default sys.path can find it.
+RUN pip install bempp-cl
 
 # gmsh is pre-installed in the dolfinx image at /usr/local/lib (non-standard path
 # without a RECORD file). Install a fresh copy to dist-packages so Python finds it.
@@ -22,7 +22,7 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 WORKDIR /app
 COPY ./packages/horn-solver/pyproject.toml .
 COPY ./packages /app/packages
-RUN uv pip install --system /app/packages/horn-solver
+RUN pip install /app/packages/horn-solver
 
 # --- Test Stage ---
 FROM production as test
