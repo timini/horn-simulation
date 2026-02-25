@@ -6,5 +6,6 @@ dependencies = [
     "numpy"
 ]
 
-[tool.uv.sources]
-horn-core = { path = "." } 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

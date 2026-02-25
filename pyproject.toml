@@ -1,0 +1,13 @@
+[project]
+name = "horn-simulation"
+version = "0.1.0"
+description = "Horn loudspeaker simulation pipeline"
+requires-python = ">=3.10"
+
+[tool.uv.workspace]
+members = [
+    "packages/horn-core",
+    "packages/horn-geometry",
+    "packages/horn-solver",
+    "packages/horn-analysis",
+]
