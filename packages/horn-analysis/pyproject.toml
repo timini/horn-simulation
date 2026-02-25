@@ -10,6 +10,10 @@ dependencies = [
 
 [project.scripts]
 horn-plotter = "horn_analysis.plotter:main"
+horn-kpi = "horn_analysis.kpi:main"
+horn-compare = "horn_analysis.compare:main"
+horn-impedance-plot = "horn_analysis.impedance_plot:main"
+horn-phase-plot = "horn_analysis.phase_plot:main"
 
 [project.optional-dependencies]
 test = [

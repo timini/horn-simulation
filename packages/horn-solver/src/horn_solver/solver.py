@@ -197,8 +197,41 @@ def run_simulation(
         p_ref = 20e-6
         spl = 20 * np.log10(p_rms / p_ref + 1e-12)
 
-        print(f"      -> p_rms = {p_rms:.4f}, SPL = {spl:.2f} dB")
-        results.append({"frequency": frequency, "spl": spl})
+        # Phase response: average complex pressure at outlet
+        p_outlet_integral = fem.assemble_scalar(fem.form(p_h * ds(OUTLET_TAG)))
+        p_outlet_integral = domain.comm.allreduce(p_outlet_integral, op=MPI.SUM)
+        p_avg = p_outlet_integral / outlet_area if outlet_area > 0 else 0.0
+        phase_deg = float(np.degrees(np.angle(p_avg)))
+
+        # Throat impedance: Z = p_avg_inlet / v_n_inlet
+        # At the inlet, p = 1 (Dirichlet BC), so p_avg_inlet = 1.0
+        # Normal velocity: v_n = -(1/jωρ₀) * dp/dn
+        # We compute dp/dn via grad(p) · n on the inlet facets
+        n = ufl.FacetNormal(domain)
+        dp_dn_form = fem.form(ufl.dot(ufl.grad(p_h), n) * ds(INLET_TAG))
+        dp_dn_integral = fem.assemble_scalar(dp_dn_form)
+        dp_dn_integral = domain.comm.allreduce(dp_dn_integral, op=MPI.SUM)
+        inlet_area_val = fem.assemble_scalar(fem.form(one * ds(INLET_TAG)))
+        inlet_area_val = domain.comm.allreduce(inlet_area_val, op=MPI.SUM).real
+        dp_dn_avg = dp_dn_integral / inlet_area_val if inlet_area_val > 0 else 0.0
+
+        # v_n = -dp_dn / (j * omega * rho0), Z = p / v_n = p * (j * omega * rho0) / (-dp_dn)
+        # With p_inlet = 1:
+        if abs(dp_dn_avg) > 1e-30:
+            z_throat = (1j * omega * RHO0) / (-dp_dn_avg)
+        else:
+            z_throat = 0.0 + 0.0j
+        z_real = float(np.real(z_throat))
+        z_imag = float(np.imag(z_throat))
+
+        print(f"      -> p_rms = {p_rms:.4f}, SPL = {spl:.2f} dB, phase = {phase_deg:.1f}°, Z = {z_real:.1f} + {z_imag:.1f}j")
+        results.append({
+            "frequency": frequency,
+            "spl": spl,
+            "phase_deg": phase_deg,
+            "z_real": z_real,
+            "z_imag": z_imag,
+        })
 
     # --- Output Generation ---
     output_path = Path(output_file)
