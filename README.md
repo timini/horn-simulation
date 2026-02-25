@@ -12,7 +12,7 @@ This project is structured as a monorepo managed by `uv`, with a strong emphasis
   - `horn-solver`: FEM acoustic solver using `FEniCSx`.
   - `horn-dagster`: A Dagster pipeline for orchestrating the geometry and solver services.
 - **Containerization**: Each package has its own `Dockerfile` with a multi-stage build process. This creates lean, optimized images for production and separate environments for testing.
-- **Testing**: All tests are run via a top-level `Makefile`. This ensures that tests are executed in a clean, consistent, and isolated Docker environment, preventing "it works on my machine" issues.
+- **Testing**: All tests are run via a top-level `justfile`. This ensures that tests are executed in a clean, consistent, and isolated Docker environment, preventing "it works on my machine" issues.
 
 ## Getting Started
 
@@ -24,10 +24,10 @@ This project is structured as a monorepo managed by `uv`, with a strong emphasis
 ### Setup
 
 1.  **Build the Docker images**:
-    The pipeline relies on Docker images for each of the core packages. Build them using the `Makefile`.
+    The pipeline relies on Docker images for each of the core packages. Build them using the `justfile`.
 
     ```bash
-    make build
+    just build
     ```
 
 ## Running the Pipeline
