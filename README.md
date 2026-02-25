@@ -139,6 +139,81 @@ python3 -m horn_analysis.compare_horns \
     results/comparison.png
 ```
 
+## Acoustic Modelling
+
+### Governing equation
+
+The solver computes the steady-state acoustic pressure field inside the horn by solving the **time-harmonic Helmholtz equation**:
+
+```
+∇²p + k²p = 0
+```
+
+where `p` is complex acoustic pressure, `k = 2πf / c₀` is the wave number, `f` is frequency, and `c₀ = 343 m/s` is the speed of sound in air.
+
+This is discretised using the **Finite Element Method (FEM)** via FEniCSx/dolfinx. The weak (variational) form used is:
+
+```
+∫_Ω [∇p · ∇q − k²pq] dx = 0
+```
+
+where `q` is a test function from a first-order Lagrange (P1) finite element space on the tetrahedral volume mesh. The linear system is solved with a direct LU factorisation via PETSc at each frequency.
+
+### Boundary conditions
+
+The horn mesh has three tagged boundary regions, identified automatically by the z-coordinate of each surface's centre of mass:
+
+| Boundary | Tag | Location | Condition |
+|----------|-----|----------|-----------|
+| **Inlet** (throat) | 2 | z = 0 | Dirichlet: p = 1 Pa (unit driving pressure) |
+| **Outlet** (mouth) | 3 | z = length | Neumann: ∂p/∂n = 0 (rigid termination) |
+| **Walls** | 4 | Remaining surfaces | Neumann: ∂p/∂n = 0 (sound-hard walls) |
+
+The Neumann conditions are natural (satisfied implicitly by the variational form). The inlet Dirichlet condition models a piston driver producing a uniform pressure at the throat.
+
+### Meshing and adaptive element sizing
+
+The STEP geometry is imported into gmsh's OpenCASCADE kernel, which generates a 3D tetrahedral mesh with uniform element size. To ensure accurate wave resolution, the solver enforces a **λ/6 rule**: the element size must not exceed one-sixth of the shortest wavelength being simulated:
+
+```
+h_adaptive = c₀ / (6 × f_max)
+```
+
+The actual mesh size used is the finer of the user-specified `mesh_size` and `h_adaptive`. Since each frequency band has its own `f_max`, lower bands automatically get coarser (faster) meshes while higher bands get finer meshes.
+
+For example, at `f_max = 8000 Hz`: λ_min = 43 mm, so h_adaptive = 7.1 mm.
+
+### SPL calculation
+
+Sound Pressure Level is computed from the RMS pressure integrated over the **outlet surface** (horn mouth), giving a physically meaningful metric independent of mesh refinement or horn volume:
+
+```
+p_rms = √( ∫_outlet |p|² ds  /  A_outlet )
+
+SPL = 20 × log₁₀(p_rms / p_ref)
+```
+
+where `p_ref = 20 µPa` is the standard acoustic reference pressure. The outlet area `A_outlet` is computed once before the frequency loop since the mesh is static.
+
+### Frequency sweep
+
+Frequencies are logarithmically spaced using `np.geomspace`, providing finer resolution at lower frequencies where acoustic behaviour changes more rapidly. The total range is split into `num_bands` independent sub-ranges that run in parallel as separate Nextflow processes, each in its own Docker container. Results are merged and sorted by frequency after all bands complete.
+
+### Physical constants
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| c₀ | 343.0 m/s | Speed of sound in air (~20 °C) |
+| ρ₀ | 1.225 kg/m³ | Air density at sea level |
+| p_ref | 20 µPa | SPL reference pressure |
+
+### Limitations
+
+- **No exterior radiation**: The outlet uses a rigid (Neumann) termination. BEM coupling for exterior radiation impedance is planned (see issue #39).
+- **Sound-hard walls**: No absorption or damping. Walls are perfectly rigid.
+- **Constant air properties**: Temperature and humidity dependence not modelled.
+- **Conical profiles only**: The geometry generator currently produces straight conical frustums. Exponential, hyperbolic, or tractrix profiles are not yet supported.
+
 ## Architecture
 
 This is a monorepo with each package in `packages/`. Each package has its own Dockerfile with multi-stage builds (base → production → test). Tests run inside Docker containers to ensure reproducibility.
@@ -147,4 +222,4 @@ The pipeline is orchestrated by Nextflow (`main.nf`), which maps each process to
 
 ## Current Status
 
-The pipeline runs end-to-end for the FEM-only path. The BEM coupling (exterior radiation from the horn mouth) is not yet functional — `bempp.x.dolfinx` coupling layer is not available in any pip release of bempp-cl. The SPL metric currently uses an L2 norm over the full volume as a placeholder. See GitHub issues for the detailed roadmap.
+The pipeline runs end-to-end for the FEM-only path. SPL is computed from the outlet-surface RMS pressure. The BEM coupling for exterior radiation from the horn mouth is not yet functional and is tracked as issue #39. See GitHub issues for the detailed roadmap.
