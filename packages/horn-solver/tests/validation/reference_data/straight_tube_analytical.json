@@ -1,0 +1,23 @@
+{
+    "description": "Straight tube with Dirichlet inlet (p=1) and Robin outlet (dp/dn = -jkp)",
+    "physics": "Forward-traveling plane wave p(z) = exp(-jkz), giving |p(L)| = 1.0 at all frequencies",
+    "geometry": {
+        "type": "cylinder",
+        "throat_radius_m": 0.05,
+        "mouth_radius_m": 0.05,
+        "length_m": 0.5
+    },
+    "expected": {
+        "spl_db": 93.98,
+        "spl_formula": "20 * log10(1.0 / 20e-6)",
+        "tolerance_db": 0.5,
+        "behavior": "constant across all frequencies"
+    },
+    "frequency_range": {
+        "min_hz": 200,
+        "max_hz": 4000,
+        "num_points": 20,
+        "spacing": "logarithmic"
+    },
+    "source": "Analytical solution for 1D wave equation with impedance-matched termination"
+}

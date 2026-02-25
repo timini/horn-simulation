@@ -1,0 +1,23 @@
+{
+    "description": "Conical horn frustum validated against Webster horn equation analytical solution",
+    "physics": "Webster equation for conical horn: p(x) = (x_t/x) * [A*exp(-jkx) + B*exp(jkx)]",
+    "geometry": {
+        "type": "conical_frustum",
+        "throat_radius_m": 0.025,
+        "mouth_radius_m": 0.1,
+        "length_m": 0.5,
+        "expansion_ratio": 4.0
+    },
+    "expected": {
+        "tolerance_db": 3.0,
+        "behavior": "SPL generally increases with frequency in passband",
+        "notes": "Webster is 1D plane-wave approximation; FEM is full 3D. Agreement is qualitative."
+    },
+    "frequency_range": {
+        "min_hz": 200,
+        "max_hz": 4000,
+        "num_points": 20,
+        "spacing": "logarithmic"
+    },
+    "source": "Analytical solution of Webster horn equation for conical frustum geometry"
+}

@@ -35,15 +35,29 @@ The `test_solver.py` will be updated to perform these steps:
 
 Passing this test will give us high confidence that the solver code is correctly implementing the physics of the Helmholtz equation.
 
-## 3. Validation Strategy (Future Work)
+## 3. Validation Suite
 
-Once the solver is **verified**, the next stage is **validation**. This involves comparing the simulation results to real-world data. This is out of scope for the current task but will be essential for the project's long-term success.
+The validation suite lives in `tests/validation/` and proves the solver produces physically correct results at three tiers of confidence:
 
-Future validation steps will include:
+| Case | Tier | Tolerance | Reference |
+|------|------|-----------|-----------|
+| V1: Straight tube | Tier 1 (exact) | 0.5 dB | Analytical forward-traveling wave |
+| V2: Conical horn | Tier 1 (approximate) | 3 dB | Webster horn equation |
+| V3: Community horn | Tier 2 (cross-validation) | 6 dB | Published measurements |
+
+Run with: `pytest packages/horn-solver/tests/validation/ -v -m validation`
+
+See `tests/validation/README.md` for full documentation of each case, tolerance rationale, and instructions for adding new reference data.
+
+## 4. Validation Strategy (Future Work)
+
+Once the solver is **verified**, the next stage is **validation** against real-world measurements. This involves:
 
 1.  **Physical Measurements:** Measure a real driver and horn combination with a calibrated microphone.
 2.  **Model Physical Horn:** Accurately model the exact geometry of the measured horn.
 3.  **Model Physical Driver:** Use the measured Thiele/Small parameters of the driver as input to the simulation.
 4.  **Compare Results:** Compare the simulated SPL curve to the measured SPL curve. Discrepancies will inform refinements to the physics model (e.g., adding air viscosity, more complex boundary conditions).
 
-By following this two-stage process—verification first, then validation—we can build a simulation tool that is not only functional but also trustworthy. 
+V3 in the validation suite provides the infrastructure for this: add digitized measurement data as CSV, and the test framework handles the comparison automatically.
+
+By following this two-stage process—verification first, then validation—we can build a simulation tool that is not only functional but also trustworthy.

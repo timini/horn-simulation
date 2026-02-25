@@ -26,4 +26,4 @@ WORKDIR /app
 COPY ./packages/horn-solver/tests /app/packages/horn-solver/tests
 
 # Install test dependencies
-RUN pip install /app/packages/horn-solver[test] /app/packages/horn-analysis
+RUN pip install /app/packages/horn-solver[test] /app/packages/horn-analysis /app/packages/horn-geometry
