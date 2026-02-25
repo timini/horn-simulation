@@ -45,10 +45,10 @@ process run_simulation {
     path "results_${band_index}.csv"
 
     script:
-    def band_width = (params.max_freq - params.min_freq) / params.num_bands
+    def band_width = (params.max_freq - params.min_freq) / (params.num_bands as double)
     def min_f = params.min_freq + band_width * band_index
     def max_f = params.min_freq + band_width * (band_index + 1)
-    def num_intervals_per_band = params.num_intervals / params.num_bands
+    def num_intervals_per_band = Math.ceil(params.num_intervals / (params.num_bands as double)) as int
     """
     echo "Running band ${band_index}: ${min_f} Hz to ${max_f} Hz"
     python3 -m horn_solver.solver \
@@ -56,8 +56,9 @@ process run_simulation {
         --output-file results_${band_index}.csv \
         --min-freq ${min_f} \
         --max-freq ${max_f} \
-        --num-intervals ${num_intervals_per_band as int} \
-        --length ${params.length}
+        --num-intervals ${num_intervals_per_band} \
+        --length ${params.length} \
+        --mesh-size ${params.mesh_size}
     """
 }
 

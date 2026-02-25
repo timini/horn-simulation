@@ -9,7 +9,7 @@ FROM base as production
 # bempp-cl 0.4+ renamed the module from 'bempp' to 'bempp_cl'; our code
 # uses 'import bempp.api' so we need <0.4.
 RUN pip install 'bempp-cl<0.4'
-RUN pip install --ignore-installed gmsh
+# gmsh is already provided by the dolfinx base image (system package)
 
 # Set up the entrypoint to activate complex mode.
 COPY ./packages/horn-solver/entrypoint.sh /usr/local/bin/

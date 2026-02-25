@@ -34,7 +34,7 @@ class TestConicalHornValidation:
         """
         output_dir = tmp_path_factory.mktemp("horn_test")
         step_file = create_conical_horn(
-            output_dir=output_dir,
+            output_file=output_dir / "horn.step",
             **horn_parameters
         )
         # Load the shape from the generated STEP file
