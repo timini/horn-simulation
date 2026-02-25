@@ -21,10 +21,12 @@ jobs:
           wget https://github.com/askimed/nf-test/releases/download/v0.8.4/nf-test-0.8.4-linux-amd64 -O nf-test
           chmod +x nf-test
           sudo mv nf-test /usr/local/bin/
+      - name: Install just
+        uses: extractions/setup-just@v2
       - name: Build Docker images
-        run: make build
+        run: just build
       - name: Run nf-test
-        run: make test-nextflow
+        run: just test-nextflow
 
   test_packages:
     runs-on: ubuntu-latest
