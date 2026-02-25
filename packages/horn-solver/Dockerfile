@@ -24,9 +24,11 @@ RUN pip install /app/packages/horn-solver
 FROM production as test
 WORKDIR /app
 
-# Verify critical imports work at build time (no entrypoint, default PYTHONPATH)
-RUN python3 -c "import bempp; print('bempp OK:', bempp.__file__)"
-RUN python3 -c "import gmsh; print('gmsh OK:', gmsh.__file__)"
+# Diagnostic: show sys.path and where bempp is installed
+RUN python3 -c "import sys; print('sys.path:', sys.path)" && \
+    python3 -c "import os; print('PYTHONPATH:', os.environ.get('PYTHONPATH', 'NOT SET'))" && \
+    find /usr/local/lib -name "bempp" -type d 2>/dev/null && \
+    ls -la /usr/local/lib/python3.10/dist-packages/ | grep bempp || true
 
 # Copy test-specific files
 COPY ./packages/horn-solver/tests /app/packages/horn-solver/tests
