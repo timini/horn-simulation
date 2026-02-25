@@ -35,7 +35,7 @@ run:
 
 # Run Nextflow tests
 test-nextflow:
-    nf-test test tests/main.nf.test
+    nf-test test tests/
 
 # Clean up Docker images and Nextflow files
 clean:

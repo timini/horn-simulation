@@ -6,9 +6,6 @@ FROM dolfinx/dolfinx:v0.8.0 as base
 FROM base as production
 
 # The base image already contains a compatible FEniCSx environment.
-# bempp-cl 0.4+ renamed the module from 'bempp' to 'bempp_cl'; our code
-# uses 'import bempp.api' so we need <0.4.
-RUN pip install 'bempp-cl<0.4'
 # gmsh is already provided by the dolfinx base image (system package)
 
 # Set up the entrypoint to activate complex mode.

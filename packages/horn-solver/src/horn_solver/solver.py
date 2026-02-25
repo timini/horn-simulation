@@ -160,6 +160,9 @@ def run_simulation(
         # LHS: Integral over the domain volume. Use ufl.inner for complex problems.
         a = ufl.inner(ufl.grad(p), ufl.grad(q)) * ufl.dx - k**2 * ufl.inner(p, q) * ufl.dx
 
+        # Radiation impedance BC at outlet (first-order Sommerfeld condition: dp/dn = -jkp)
+        a -= 1j * k * ufl.inner(p, q) * ds(OUTLET_TAG)
+
         # RHS: Define the driver velocity at the inlet.
         # We now use a strong Dirichlet condition to enforce p=1 at the inlet,
         # mirroring the successful test case.
@@ -180,7 +183,7 @@ def run_simulation(
         problem = LinearProblem(a, L, bcs=[bc], petsc_options={"ksp_type": "preonly", "pc_type": "lu"})
         p_h = problem.solve()
 
-        # TODO: BEM exterior radiation coupling — see issue #39
+        # Robin BC (radiation impedance) is applied in the bilinear form above
 
         # --- Post-processing ---
         # Integrate |p|^2 over the outlet surface for physically meaningful SPL

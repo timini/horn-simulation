@@ -77,4 +77,80 @@ def test_plane_wave_produces_non_zero_solution():
     spl = 20 * np.log10(norm_p_L2 / p_ref + epsilon)
     
     print(f"Test SPL: {spl}")
-    assert norm_p_L2 > 1e-6, "The L2 norm of the pressure should be non-zero." 
+    assert norm_p_L2 > 1e-6, "The L2 norm of the pressure should be non-zero."
+
+
+def test_robin_bc_reduces_resonance_peak():
+    """
+    At a cavity resonance, the Neumann (rigid) outlet creates a strong
+    standing wave with high energy. The Robin BC (radiation impedance) damps
+    this resonance, reducing the peak energy.
+
+    For a tube with p=1 (Dirichlet) at z=0 and dp/dn=0 (Neumann) at z=L,
+    the resonance frequencies are f_n = (2n-1)*c0/(4*L). We solve near f_1
+    to maximise the contrast.
+    """
+    L = 1.0
+    domain = mesh.create_box(MPI.COMM_WORLD,
+                             [np.array([0, 0, 0]), np.array([0.1, 0.1, L])],
+                             [3, 3, 20], cell_type=mesh.CellType.hexahedron)
+
+    # First quarter-wave resonance of the tube
+    frequency = C0 / (4 * L)  # ~85.75 Hz
+    V = fem.functionspace(domain, ("Lagrange", 1))
+
+    omega = 2 * np.pi * frequency
+    k = omega / C0
+
+    # Locate inlet (z=0) and outlet (z=L) facets
+    inlet_facets_idx = mesh.locate_entities_boundary(
+        domain, domain.topology.dim - 1, lambda x: np.isclose(x[2], 0))
+    outlet_facets_idx = mesh.locate_entities_boundary(
+        domain, domain.topology.dim - 1, lambda x: np.isclose(x[2], L))
+
+    # Mark outlet facets for the ds measure
+    tdim = domain.topology.dim
+    fdim = tdim - 1
+    domain.topology.create_connectivity(fdim, tdim)
+    num_facets = domain.topology.index_map(fdim).size_local
+    facet_indices = np.arange(num_facets, dtype=np.int32)
+    facet_values = np.zeros(num_facets, dtype=np.int32)
+    outlet_set = set(outlet_facets_idx)
+    for i in range(num_facets):
+        if i in outlet_set:
+            facet_values[i] = OUTLET_TAG
+    facet_tags_obj = mesh.meshtags(domain, fdim, facet_indices, facet_values)
+    ds = ufl.Measure("ds", domain=domain, subdomain_data=facet_tags_obj)
+
+    # Shared inlet BC
+    inlet_pressure = fem.Function(V)
+    inlet_pressure.x.array[:] = 1.0 + 0j
+    inlet_dofs = fem.locate_dofs_topological(V, fdim, inlet_facets_idx)
+    bc = fem.dirichletbc(inlet_pressure, inlet_dofs)
+
+    def solve_energy(use_robin):
+        p = ufl.TrialFunction(V)
+        q = ufl.TestFunction(V)
+        a_form = (ufl.inner(ufl.grad(p), ufl.grad(q)) * ufl.dx
+                  - k**2 * ufl.inner(p, q) * ufl.dx)
+        if use_robin:
+            a_form -= 1j * k * ufl.inner(p, q) * ds(OUTLET_TAG)
+        L_form = ufl.inner(fem.Constant(domain, ScalarType(0.0)), q) * ufl.dx
+        problem = fem.petsc.LinearProblem(
+            a_form, L_form, bcs=[bc],
+            petsc_options={"ksp_type": "preonly", "pc_type": "lu"})
+        p_h = problem.solve()
+        energy = fem.assemble_scalar(fem.form(ufl.inner(p_h, p_h) * ufl.dx))
+        return domain.comm.allreduce(energy, op=MPI.SUM).real
+
+    energy_neumann = solve_energy(False)
+    energy_robin = solve_energy(True)
+
+    print(f"Energy at resonance: Neumann={energy_neumann:.6f}, Robin={energy_robin:.6f}")
+    assert energy_neumann > 0, "Neumann solution should be non-zero"
+    assert energy_robin > 0, "Robin solution should be non-zero"
+    assert energy_robin < energy_neumann, (
+        f"Robin BC should reduce resonance energy: {energy_robin} >= {energy_neumann}")
+    relative_diff = (energy_neumann - energy_robin) / energy_neumann
+    assert relative_diff > 0.01, (
+        f"Energy difference should be measurable (>1%): {relative_diff:.4f}") 
