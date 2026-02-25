@@ -17,10 +17,7 @@ jobs:
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
       - name: Install nf-test
-        run: |
-          wget https://github.com/askimed/nf-test/releases/download/v0.8.4/nf-test-0.8.4-linux-amd64 -O nf-test
-          chmod +x nf-test
-          sudo mv nf-test /usr/local/bin/
+        uses: nf-core/setup-nf-test@v1
       - name: Install just
         uses: extractions/setup-just@v2
       - name: Build Docker images
@@ -48,4 +45,4 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.package }}:latest
       - name: Run tests
-        run: docker run --rm ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.package }}:latest pytest
+        run: docker run --rm ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.package }}:latest pytest packages/${{ matrix.package }}/tests

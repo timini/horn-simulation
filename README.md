@@ -1,6 +1,6 @@
 # Horn Loudspeaker Simulation Pipeline
 
-This project provides a complete, containerized pipeline for the simulation and analysis of horn loudspeakers. It includes packages for procedural geometry generation, FEM-based acoustic solving, and a Dagster-based orchestration pipeline.
+This project provides a complete, containerized pipeline for the simulation and analysis of horn loudspeakers. It includes packages for procedural geometry generation, FEM-based acoustic solving, and a Nextflow-based orchestration pipeline.
 
 ## Architecture
 
@@ -8,9 +8,9 @@ This project is structured as a monorepo managed by `uv`, with a strong emphasis
 
 - **Packages**: The core logic is divided into distinct Python packages located in the `packages/` directory.
   - `horn-core`: Common data structures and utilities shared across packages.
-  - `horn-geometry`: Procedural generation of horn geometries using `gmsh` and `FreeCAD`.
+  - `horn-geometry`: Procedural generation of horn geometries using `gmsh`.
   - `horn-solver`: FEM acoustic solver using `FEniCSx`.
-  - `horn-dagster`: A Dagster pipeline for orchestrating the geometry and solver services.
+  - `horn-analysis`: Post-processing and analysis of simulation results.
 - **Containerization**: Each package has its own `Dockerfile` with a multi-stage build process. This creates lean, optimized images for production and separate environments for testing.
 - **Testing**: All tests are run via a top-level `justfile`. This ensures that tests are executed in a clean, consistent, and isolated Docker environment, preventing "it works on my machine" issues.
 
@@ -40,7 +40,7 @@ The following parameters can be set using the `--<param_name>` syntax (e.g., `--
 
 | Parameter          | Description                                                              | Default Value |
 | ------------------ | ------------------------------------------------------------------------ | ------------- |
-| `outdir`           | The directory where all output files will be saved.                      | (required)    |
+| `outdir`           | The directory where all output files will be saved.                      | `./results`   |
 | **Horn Geometry**  |                                                                          |               |
 | `throat_radius`    | Radius of the horn's throat (the narrow end) in meters.                  | `0.05`        |
 | `mouth_radius`     | Radius of the horn's mouth (the wide end) in meters.                     | `0.2`         |

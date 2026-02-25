@@ -18,7 +18,7 @@ The pipeline consists of the following four stages:
 
 -   **Responsibility:** Generates a 3D model of the horn based on a set of input parameters (e.g., throat size, mouth size, flare rate, length).
 -   **Inputs:** A configuration file (e.g., JSON or YAML) specifying the horn's parameters.
--   **Technology:** FreeCAD (or another CAD kernel) accessed programmatically.
+-   **Technology:** `gmsh` (OpenCASCADE kernel), accessed via its Python API.
 -   **Output:** A standard 3D geometry file, such as a `.stp` (STEP) file.
 
 ### Stage 2: Meshing (`horn-solver`)
@@ -54,8 +54,8 @@ The pipeline consists of the following four stages:
 -   `horn-core`: A central package for shared data structures, constants, and utilities used across the pipeline (e.g., defining a standard `Driver` or `HornParameters` class).
 -   `horn-geometry`: The implementation of the Geometry Generation stage.
 -   `horn-solver`: The implementation of both the Meshing and Solving stages, as they are tightly coupled by the `dolfinx` and `gmsh` dependencies.
--   `horn-analysis`: (To be created) The implementation of the Analysis & Visualization stage.
+-   `horn-analysis`: The implementation of the Analysis & Visualization stage.
 
 ## 4. Orchestration
 
-A master script or orchestrator (`main.py`) will be responsible for executing the pipeline in sequence, passing the output of one stage as the input to the next. For development, this can be a simple Python script; for production, this could be a more robust workflow manager like Airflow or a simple shell script that runs the containers in order. 
+The pipeline is orchestrated using Nextflow (`main.nf`). Run with `nextflow run main.nf -profile docker`.
