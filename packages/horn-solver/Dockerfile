@@ -27,7 +27,7 @@ RUN uv pip install --system /app/packages/horn-solver
 # --- Test Stage ---
 FROM production as test
 WORKDIR /app
-ENV PYTHONPATH /app
+ENV PYTHONPATH /app:/usr/local/lib
 
 # Copy test-specific files
 COPY ./packages/horn-solver/tests /app/packages/horn-solver/tests
