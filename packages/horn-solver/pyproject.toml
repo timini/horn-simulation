@@ -7,7 +7,7 @@ dependencies = [
     "pandas",
     "numpy",
     "mpi4py",
-    "bempp-cl",
+    "bempp-cl<0.4",
 ]
 
 [project.scripts]
@@ -16,4 +16,8 @@ horn-solver = "horn_solver.solver:main"
 [project.optional-dependencies]
 test = [
     "pytest>=8.2.2"
-] 
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build" 

@@ -20,15 +20,9 @@ WORKDIR /app
 # Copy the installed packages from the builder stage.
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
-# Create and switch to a non-root user
-RUN useradd --create-home --shell /bin/bash appuser
-USER appuser
-WORKDIR /home/appuser
-
 # --- Test Stage ---
 # This stage adds test files and dependencies to the production image.
 FROM production as test
-USER root
 WORKDIR /app
 ENV PYTHONPATH /app
 
@@ -40,6 +34,3 @@ RUN pip install /app/packages/horn-analysis[test]
 
 # Copy the tests themselves
 COPY ./packages/horn-analysis/tests /app/packages/horn-analysis/tests
-RUN mkdir -p /home/appuser/.cache && chown -R appuser:appuser /home/appuser/.cache
-
-USER appuser 
