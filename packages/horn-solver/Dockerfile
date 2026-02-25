@@ -10,9 +10,9 @@ FROM base as production
 RUN pip install uv
 RUN uv pip install --system bempp-cl
 
-# gmsh is in the dolfinx image but only on PYTHONPATH after sourcing
-# dolfinx-complex-mode. Install it explicitly so it's always importable.
-RUN pip install gmsh
+# gmsh is pre-installed in the dolfinx image at /usr/local/lib (non-standard).
+# Force-reinstall so it lands in dist-packages where Python can always find it.
+RUN pip install --force-reinstall gmsh
 
 # Set up the entrypoint to activate complex mode.
 COPY ./packages/horn-solver/entrypoint.sh /usr/local/bin/
@@ -27,8 +27,6 @@ RUN uv pip install --system /app/packages/horn-solver
 # --- Test Stage ---
 FROM production as test
 WORKDIR /app
-ENV PYTHONPATH=/app:/usr/local/lib:${PYTHONPATH}
-
 # Copy test-specific files
 COPY ./packages/horn-solver/tests /app/packages/horn-solver/tests
 

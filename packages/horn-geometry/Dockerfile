@@ -28,8 +28,6 @@ COPY --from=builder /app/packages/horn-geometry/src/horn_geometry/generator.py /
 # This stage adds test files and dependencies to the production image.
 FROM production as test
 WORKDIR /app
-ENV PYTHONPATH=/app:/usr/local/lib:${PYTHONPATH}
-
 # The production stage already contains the main dependencies.
 # We just need to copy the source again to install the '[test]' extras.
 COPY ./packages/horn-geometry/pyproject.toml .
