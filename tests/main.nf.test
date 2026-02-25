@@ -22,3 +22,68 @@ nextflow_process {
         }
     }
 }
+
+nextflow_process {
+
+    name "Test Process merge_results"
+    script "../main.nf"
+    process "merge_results"
+    config "../nextflow.config"
+    profile "docker"
+
+    setup {
+        file("tests/data/results_0.csv").withWriter('UTF-8') { writer ->
+            writer.writeLine("frequency,spl")
+            writer.writeLine("100,10")
+        }
+        file("tests/data/results_1.csv").withWriter('UTF-8') { writer ->
+            writer.writeLine("frequency,spl")
+            writer.writeLine("200,20")
+        }
+    }
+
+    test("Should merge results") {
+        when {
+            process {
+                """
+                input[0] = [file("tests/data/results_0.csv"), file("tests/data/results_1.csv")]
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+    }
+}
+
+nextflow_process {
+
+    name "Test Process generate_plots"
+    script "../main.nf"
+    process "generate_plots"
+    config "../nextflow.config"
+    profile "docker"
+
+    setup {
+        file("tests/data/final_results.csv").withWriter('UTF-8') { writer ->
+            writer.writeLine("frequency,spl")
+            writer.writeLine("100,10")
+            writer.writeLine("200,20")
+        }
+    }
+
+    test("Should generate plots") {
+        when {
+            process {
+                """
+                input[0] = file('tests/data/final_results.csv')
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+    }
+}

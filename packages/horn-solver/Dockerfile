@@ -20,15 +20,8 @@ COPY ./packages/horn-solver/pyproject.toml .
 COPY ./packages /app/packages
 RUN uv pip install --system /app/packages/horn-solver
 
-# Create a non-root user to run the application
-RUN useradd --create-home --shell /bin/bash appuser
-USER appuser
-WORKDIR /home/appuser
-
-
 # --- Test Stage ---
 FROM production as test
-USER root
 WORKDIR /app
 ENV PYTHONPATH /app
 
@@ -37,5 +30,3 @@ COPY ./packages/horn-solver/tests /app/packages/horn-solver/tests
 
 # Install test dependencies
 RUN pip install /app/packages/horn-solver[test] /app/packages/horn-analysis
-
-USER appuser

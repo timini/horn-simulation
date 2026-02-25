@@ -24,19 +24,11 @@ COPY --from=builder /usr/local/lib/python3.10/dist-packages /usr/local/lib/pytho
 # Copy the generator script, which is the entrypoint.
 COPY --from=builder /app/packages/horn-geometry/src/horn_geometry/generator.py /app/generator.py
 
-# Create and switch to a non-root user
-RUN useradd --create-home --shell /bin/bash appuser
-USER appuser
-WORKDIR /home/appuser
-
 # --- Test Stage ---
 # This stage adds test files and dependencies to the production image.
 FROM production as test
-USER root
 WORKDIR /app
 ENV PYTHONPATH /app
-RUN mkdir -p /app/.pytest_cache && chown -R appuser:appuser /app/.pytest_cache
-RUN mkdir -p /app/.pytest_cache && chown -R appuser:appuser /app/.pytest_cache
 
 # The production stage already contains the main dependencies.
 # We just need to copy the source again to install the '[test]' extras.
@@ -46,5 +38,3 @@ RUN pip install /app/packages/horn-geometry[test]
 
 # Copy the tests themselves
 COPY ./packages/horn-geometry/tests /app/packages/horn-geometry/tests
-
-USER appuser

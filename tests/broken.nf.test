@@ -1,8 +1,6 @@
-// These tests are currently broken and excluded from CI.
-// See GitHub issues for details:
-// - run_simulation: passes dummy STEP file that gmsh cannot parse (#16)
-// - merge_results: missing nf-test snapshot (#18)
-// - generate_plots: container user lacks write permission to nf-test work dir (#17)
+// This test is broken: it passes a dummy text file as a STEP file,
+// which gmsh cannot parse. See GitHub issue #16.
+// Re-enable once a real STEP fixture is generated.
 
 nextflow_process {
 
@@ -13,7 +11,6 @@ nextflow_process {
     profile "docker"
 
     setup {
-        // Create a dummy step file
         file("tests/data/horn.step").withWriter('UTF-8') { writer ->
             writer.writeLine("dummy content")
         }
@@ -24,71 +21,6 @@ nextflow_process {
             process {
                 """
                 input[0] = tuple(file("tests/data/horn.step"), 0)
-                """
-            }
-        }
-        then {
-            assert process.success
-            assert snapshot(process.out).match()
-        }
-    }
-}
-
-nextflow_process {
-
-    name "Test Process merge_results"
-    script "../main.nf"
-    process "merge_results"
-    config "../nextflow.config"
-    profile "docker"
-
-    setup {
-        file("tests/data/results_0.csv").withWriter('UTF-8') { writer ->
-            writer.writeLine("frequency,spl")
-            writer.writeLine("100,10")
-        }
-        file("tests/data/results_1.csv").withWriter('UTF-8') { writer ->
-            writer.writeLine("frequency,spl")
-            writer.writeLine("200,20")
-        }
-    }
-
-    test("Should merge results") {
-        when {
-            process {
-                """
-                input[0] = [file("tests/data/results_0.csv"), file("tests/data/results_1.csv")]
-                """
-            }
-        }
-        then {
-            assert process.success
-            assert snapshot(process.out).match()
-        }
-    }
-}
-
-nextflow_process {
-
-    name "Test Process generate_plots"
-    script "../main.nf"
-    process "generate_plots"
-    config "../nextflow.config"
-    profile "docker"
-
-    setup {
-        file("tests/data/final_results.csv").withWriter('UTF-8') { writer ->
-            writer.writeLine("frequency,spl")
-            writer.writeLine("100,10")
-            writer.writeLine("200,20")
-        }
-    }
-
-    test("Should generate plots") {
-        when {
-            process {
-                """
-                input[0] = file('tests/data/final_results.csv')
                 """
             }
         }
