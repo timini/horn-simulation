@@ -21,11 +21,7 @@ Tolerance: 3 dB (Webster is 1D approximation of 3D).
 import numpy as np
 import pytest
 
-from .conftest import (
-    assert_spl_within_tolerance,
-    run_solver_and_get_spl,
-    load_reference,
-)
+from .conftest import assert_spl_within_tolerance
 
 
 def webster_conical_spl(
@@ -67,48 +63,14 @@ def webster_conical_spl(
     for i, freq in enumerate(frequencies):
         k = 2 * np.pi * freq / c0
 
-        # At the throat (x = x_t), p(x_t) = 1:
-        #   (1/x_t) * [A*exp(-jk*x_t) + B*exp(jk*x_t)] = 1
-        #
-        # At the mouth (x = x_m), Robin BC: dp/dx = -jk*p
-        #   dp/dx = (-1/x^2)*[A*exp(-jkx) + B*exp(jkx)]
-        #         + (1/x)*[-jk*A*exp(-jkx) + jk*B*exp(jkx)]
-        #
-        # Setting dp/dx(x_m) = -jk * p(x_m):
-        #   (-1/x_m^2)*[A*e_m + B*f_m] + (1/x_m)*[-jk*A*e_m + jk*B*f_m]
-        #     = -jk * (1/x_m)*[A*e_m + B*f_m]
-        #
-        # where e_m = exp(-jk*x_m), f_m = exp(jk*x_m)
-
         e_t = np.exp(-1j * k * x_t)
         f_t = np.exp(1j * k * x_t)
         e_m = np.exp(-1j * k * x_m)
         f_m = np.exp(1j * k * x_m)
 
-        # From throat BC: A*e_t + B*f_t = x_t  (multiply both sides by x_t)
-        # From mouth Robin BC, after simplification:
-        #   (-1/x_m)*[A*e_m + B*f_m] + [-jk*A*e_m + jk*B*f_m] = -jk*[A*e_m + B*f_m]
-        #   (-1/x_m)*[A*e_m + B*f_m] + jk*B*f_m - jk*A*e_m + jk*A*e_m + jk*B*f_m = 0
-        # Wait, let me redo this carefully.
-        #
-        # dp/dx at x_m:
-        #   = -(1/x_m^2)(A*e_m + B*f_m) + (1/x_m)(-jk*A*e_m + jk*B*f_m)
-        #
-        # Robin: dp/dx = -jk*p means:
-        #   -(1/x_m^2)(A*e_m + B*f_m) + (1/x_m)(-jk*A*e_m + jk*B*f_m)
-        #     = -jk*(1/x_m)(A*e_m + B*f_m)
-        #
-        # Multiply through by x_m^2:
-        #   -(A*e_m + B*f_m) + x_m*(-jk*A*e_m + jk*B*f_m) = -jk*x_m*(A*e_m + B*f_m)
-        #   -(A*e_m + B*f_m) - jk*x_m*A*e_m + jk*x_m*B*f_m + jk*x_m*A*e_m + jk*x_m*B*f_m = 0
-        #   -(A*e_m + B*f_m) + 2*jk*x_m*B*f_m = 0
-        #   A*e_m*(-1) + B*f_m*(-1 + 2*jk*x_m) = 0
-        #
-        # So the 2x2 system is:
-        #   [e_t,                    f_t                ] [A]   [x_t]
-        #   [-e_m,   f_m*(-1 + 2jk*x_m)] [B] = [0   ]
-
-        # Build 2x2 system
+        # 2x2 system from throat Dirichlet + mouth Robin BCs:
+        #   Row 1 (throat): A*e_t + B*f_t = x_t
+        #   Row 2 (mouth):  -A*e_m + B*f_m*(-1 + 2jk*x_m) = 0
         M = np.array([
             [e_t, f_t],
             [-e_m, f_m * (-1 + 2j * k * x_m)],
@@ -131,22 +93,11 @@ def webster_conical_spl(
 class TestConicalHornWebster:
     """V2 validation: conical horn FEM vs Webster equation."""
 
-    def test_spl_within_webster_tolerance(self, conical_horn_step, tmp_path):
+    def test_spl_within_webster_tolerance(self, conical_horn_results):
         """FEM SPL should be within 3 dB of Webster prediction at each frequency."""
-        step_file, ref = conical_horn_step
+        frequencies, fem_spl, ref = conical_horn_results
         geom = ref["geometry"]
-        freq_cfg = ref["frequency_range"]
         tolerance = ref["expected"]["tolerance_db"]
-
-        # Run FEM solver
-        frequencies, fem_spl = run_solver_and_get_spl(
-            step_file=step_file,
-            freq_range=(freq_cfg["min_hz"], freq_cfg["max_hz"]),
-            num_intervals=freq_cfg["num_points"],
-            horn_length=geom["length_m"],
-            mesh_size=0.005,
-            tmp_dir=tmp_path,
-        )
 
         # Compute Webster analytical reference
         webster_spl = webster_conical_spl(
@@ -164,20 +115,9 @@ class TestConicalHornWebster:
             label="V2 conical horn (FEM vs Webster)",
         )
 
-    def test_spl_increases_with_frequency(self, conical_horn_step, tmp_path):
+    def test_spl_increases_with_frequency(self, conical_horn_results):
         """SPL should generally increase with frequency in the horn passband."""
-        step_file, ref = conical_horn_step
-        geom = ref["geometry"]
-        freq_cfg = ref["frequency_range"]
-
-        frequencies, spl = run_solver_and_get_spl(
-            step_file=step_file,
-            freq_range=(freq_cfg["min_hz"], freq_cfg["max_hz"]),
-            num_intervals=freq_cfg["num_points"],
-            horn_length=geom["length_m"],
-            mesh_size=0.005,
-            tmp_dir=tmp_path,
-        )
+        frequencies, spl, ref = conical_horn_results
 
         # Compare first quarter and last quarter averages
         n = len(spl)
@@ -194,9 +134,7 @@ class TestConicalHornWebster:
         )
 
     def test_webster_function_sanity(self):
-        """Sanity check: Webster solution for a cylinder should give ~94 dB."""
-        # A cylinder (r_t == r_m) is degenerate for the conical Webster formula
-        # (x_t -> infinity), so instead test a very mild cone.
+        """Sanity check: Webster solution for a mild cone gives reasonable SPL."""
         frequencies = np.array([1000.0])
         spl = webster_conical_spl(
             frequencies=frequencies,

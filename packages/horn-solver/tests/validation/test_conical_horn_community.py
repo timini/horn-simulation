@@ -114,7 +114,7 @@ class TestConicalHornCommunity:
             freq_range=freq_range,
             num_intervals=len(ref_freq),
             horn_length=horn_length,
-            mesh_size=0.003,  # Fine mesh for small geometry
+            mesh_size=0.004,  # Smaller than throat radius (5mm)
             tmp_dir=tmp_path,
         )
 
