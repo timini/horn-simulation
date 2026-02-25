@@ -26,7 +26,7 @@ def test_generator_creates_step_file_smoke_test(tmp_path):
         throat_radius=0.025,
         mouth_radius=0.25,
         length=0.35,
-        output_dir=output_dir,
+        output_file=output_dir / "horn.step",
     )
 
     # Assert the file was created

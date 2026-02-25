@@ -103,7 +103,12 @@ def run_simulation_from_step(
     # This will be passed from main.nf
     horn_length = driver_params.get("length", 0.4) # Default for safety
 
-    domain, facet_tags = create_mesh_from_step(step_file, mesh_size, horn_length)
+    # Frequency-adaptive meshing: element size < λ/6 = c/(6*f_max)
+    adaptive_size = C0 / (6.0 * max_freq_mesh)
+    final_mesh_size = min(mesh_size, adaptive_size)
+    print(f"Mesh size: user={mesh_size}, adaptive={adaptive_size:.4f}, using={final_mesh_size:.4f}")
+
+    domain, facet_tags = create_mesh_from_step(step_file, final_mesh_size, horn_length)
     print(f"Successfully loaded mesh: {domain.name} with {domain.topology.index_map(domain.topology.dim).size_global} cells.")
 
     # --- Solving ---
@@ -127,6 +132,13 @@ def run_simulation(
     # --- FEM Problem Setup ---
     # Define function space for complex pressure
     V = fem.functionspace(domain, ("Lagrange", 1))
+
+    # --- Boundary measure and outlet area (computed once, mesh doesn't change) ---
+    ds = ufl.Measure("ds", domain=domain, subdomain_data=facet_tags)
+    one = fem.Constant(domain, ScalarType(1.0))
+    outlet_area = fem.assemble_scalar(fem.form(one * ds(OUTLET_TAG)))
+    outlet_area = domain.comm.allreduce(outlet_area, op=MPI.SUM).real
+    print(f"Outlet surface area: {outlet_area:.6f} m^2")
 
     # --- Store results ---
     results = []
@@ -168,26 +180,21 @@ def run_simulation(
         problem = LinearProblem(a, L, bcs=[bc], petsc_options={"ksp_type": "preonly", "pc_type": "lu"})
         p_h = problem.solve()
 
-        # --- BEM Solve ---
-        from . import bem_solver
-        dp_h = bem_solver.solve_bem(domain, facet_tags, OUTLET_TAG, k, p_h)
-
-        # Update the variational form with the BEM solution
-        a += ufl.inner(dp_h, q) * ufl.ds(OUTLET_TAG)
+        # TODO: BEM exterior radiation coupling — see issue #39
 
         # --- Post-processing ---
-        # For now, we compute a placeholder SPL from the L2-norm of the solution
-        # In the future, we will integrate pressure over the outlet surface
-        p_ref = 20e-6 # Reference pressure for SPL
-        # Add a small epsilon to avoid log(0)
-        epsilon = 1e-12 
-        # Calculate L2 norm of the complex pressure field. ufl.inner(p,p) is equivalent
-        # to p*conj(p) for complex fields.
-        norm_p_L2_squared = fem.assemble_scalar(fem.form(ufl.inner(p_h, p_h) * ufl.dx))
-        norm_p_L2 = np.sqrt(domain.comm.allreduce(norm_p_L2_squared, op=MPI.SUM).real)
-        spl = 20 * np.log10(norm_p_L2 / p_ref + epsilon)
-        
-        print(f"      -> L2-norm = {norm_p_L2:.4f}, SPL = {spl:.2f} dB")
+        # Integrate |p|^2 over the outlet surface for physically meaningful SPL
+        p_outlet_sq = fem.assemble_scalar(fem.form(ufl.inner(p_h, p_h) * ds(OUTLET_TAG)))
+        p_outlet_sq = domain.comm.allreduce(p_outlet_sq, op=MPI.SUM).real
+
+        # RMS pressure at outlet
+        p_rms = np.sqrt(p_outlet_sq / outlet_area) if outlet_area > 0 else 0.0
+
+        # SPL relative to 20 µPa reference
+        p_ref = 20e-6
+        spl = 20 * np.log10(p_rms / p_ref + 1e-12)
+
+        print(f"      -> p_rms = {p_rms:.4f}, SPL = {spl:.2f} dB")
         results.append({"frequency": frequency, "spl": spl})
 
     # --- Output Generation ---
