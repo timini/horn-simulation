@@ -1,0 +1,30 @@
+nextflow_process {
+
+    name "Test Process run_simulation"
+    script "../main.nf"
+    process "run_simulation"
+    config "../nextflow.config"
+    profile "docker"
+
+    test("Should run the simulation with a real STEP fixture") {
+        when {
+            params {
+                length = 1.0
+                mesh_size = 1.0
+                min_freq = 500
+                max_freq = 1000
+                num_bands = 1
+                num_intervals = 3
+            }
+            process {
+                """
+                input[0] = tuple(file("${projectDir}/tests/data/test_box.stp"), 0)
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out[0].size() > 0
+        }
+    }
+}

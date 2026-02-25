@@ -85,12 +85,12 @@ def test_e2e_meshing_and_solving(tmp_path):
     print(f"Successfully created plot: {plot_image_file}")
     print("--- Test finished ---")
 
-def test_e2e_with_bem(tmp_path):
-    print("\n--- Running test: test_e2e_with_bem ---\n")
+def test_e2e_with_radiation_bc(tmp_path):
+    print("\n--- Running test: test_e2e_with_radiation_bc ---\n")
     step_file = Path(__file__).parent / "test_box.stp"
     output_file = tmp_path / "results.csv"
 
-    driver_params = {"Bl": 5.0, "Re": 6.0}
+    driver_params = {"Bl": 5.0, "Re": 6.0, "length": 1.0}
     freq_range = (100.0, 1000.0)
 
     result_path = run_simulation_from_step(
@@ -104,3 +104,11 @@ def test_e2e_with_bem(tmp_path):
     )
 
     assert result_path.exists(), "The simulation output CSV was not created."
+
+    # Verify SPL varies with frequency (evidence of radiation damping)
+    import pandas as pd
+    results_df = pd.read_csv(result_path)
+    spl_values = results_df["spl"].values
+    assert np.std(spl_values) > 0.1, (
+        f"SPL should vary with frequency (radiation damping), but std={np.std(spl_values):.4f}"
+    )

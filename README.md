@@ -1,6 +1,6 @@
 # Horn Loudspeaker Simulation Pipeline
 
-A containerized pipeline for simulating and analysing horn loudspeaker acoustic performance. Built with FEniCSx (FEM), Bempp (BEM), gmsh, and orchestrated by Nextflow.
+A containerized pipeline for simulating and analysing horn loudspeaker acoustic performance. Built with FEniCSx (FEM), gmsh, and orchestrated by Nextflow.
 
 ## Pipeline Overview
 
@@ -23,7 +23,7 @@ The pipeline takes horn geometry parameters and driver characteristics as input,
               v               v               v        parallelisation
         +-----------+   +-----------+   +-----------+
         |  solve    |   |  solve    |   |  solve    |  horn-solver container
-        |  band 0   |   |  band 1   |   |  band N   |  FEniCSx FEM + Bempp BEM
+        |  band 0   |   |  band 1   |   |  band N   |  FEniCSx FEM
         +-----------+   +-----------+   +-----------+
               |               |               |
          results_0.csv   results_1.csv   results_N.csv
@@ -52,7 +52,7 @@ The pipeline takes horn geometry parameters and driver characteristics as input,
 | Package | Purpose | Key Dependencies |
 |---------|---------|-----------------|
 | `horn-geometry` | Procedural horn geometry generation | gmsh (OpenCASCADE) |
-| `horn-solver` | FEM acoustic solving + meshing | FEniCSx/dolfinx, gmsh, bempp-cl |
+| `horn-solver` | FEM acoustic solving + meshing | FEniCSx/dolfinx, gmsh |
 | `horn-analysis` | Result merging, plotting, scoring | pandas, matplotlib, scipy |
 | `horn-core` | Shared data structures (WIP) | — |
 
@@ -154,10 +154,10 @@ where `p` is complex acoustic pressure, `k = 2πf / c₀` is the wave number, `f
 This is discretised using the **Finite Element Method (FEM)** via FEniCSx/dolfinx. The weak (variational) form used is:
 
 ```
-∫_Ω [∇p · ∇q − k²pq] dx = 0
+∫_Ω [∇p · ∇q − k²pq] dx − jk ∫_outlet pq ds = 0
 ```
 
-where `q` is a test function from a first-order Lagrange (P1) finite element space on the tetrahedral volume mesh. The linear system is solved with a direct LU factorisation via PETSc at each frequency.
+where `q` is a test function from a first-order Lagrange (P1) finite element space on the tetrahedral volume mesh. The surface integral implements the first-order Sommerfeld radiation condition at the outlet. The linear system is solved with a direct LU factorisation via PETSc at each frequency.
 
 ### Boundary conditions
 
@@ -166,10 +166,10 @@ The horn mesh has three tagged boundary regions, identified automatically by the
 | Boundary | Tag | Location | Condition |
 |----------|-----|----------|-----------|
 | **Inlet** (throat) | 2 | z = 0 | Dirichlet: p = 1 Pa (unit driving pressure) |
-| **Outlet** (mouth) | 3 | z = length | Neumann: ∂p/∂n = 0 (rigid termination) |
+| **Outlet** (mouth) | 3 | z = length | Robin: ∂p/∂n = −jkp (radiation impedance) |
 | **Walls** | 4 | Remaining surfaces | Neumann: ∂p/∂n = 0 (sound-hard walls) |
 
-The Neumann conditions are natural (satisfied implicitly by the variational form). The inlet Dirichlet condition models a piston driver producing a uniform pressure at the throat.
+The wall Neumann condition is natural (satisfied implicitly by the variational form). The inlet Dirichlet condition models a piston driver producing a uniform pressure at the throat. The outlet Robin condition (first-order Sommerfeld radiation condition) is implemented as `a -= jk ∫_outlet p·q ds`, which adds radiation damping and is accurate for ka < ~3.
 
 ### Meshing and adaptive element sizing
 
@@ -209,7 +209,7 @@ Frequencies are logarithmically spaced using `np.geomspace`, providing finer res
 
 ### Limitations
 
-- **No exterior radiation**: The outlet uses a rigid (Neumann) termination. BEM coupling for exterior radiation impedance is planned (see issue #39).
+- **First-order radiation BC**: The outlet uses a first-order Sommerfeld (Robin) condition, which is accurate for ka < ~3 but increasingly reflective at higher frequencies/larger apertures.
 - **Sound-hard walls**: No absorption or damping. Walls are perfectly rigid.
 - **Constant air properties**: Temperature and humidity dependence not modelled.
 - **Conical profiles only**: The geometry generator currently produces straight conical frustums. Exponential, hyperbolic, or tractrix profiles are not yet supported.
@@ -222,4 +222,4 @@ The pipeline is orchestrated by Nextflow (`main.nf`), which maps each process to
 
 ## Current Status
 
-The pipeline runs end-to-end for the FEM-only path. SPL is computed from the outlet-surface RMS pressure. The BEM coupling for exterior radiation from the horn mouth is not yet functional and is tracked as issue #39. See GitHub issues for the detailed roadmap.
+The pipeline runs end-to-end. SPL is computed from the outlet-surface RMS pressure with a Robin (radiation impedance) BC at the horn mouth. See GitHub issues for the detailed roadmap.
