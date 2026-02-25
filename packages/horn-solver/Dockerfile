@@ -10,9 +10,9 @@ FROM base as production
 RUN pip install uv
 RUN uv pip install --system bempp-cl
 
-# gmsh is pre-installed in the dolfinx image at /usr/local/lib (non-standard).
-# Force-reinstall so it lands in dist-packages where Python can always find it.
-RUN pip install --force-reinstall gmsh
+# gmsh is pre-installed in the dolfinx image at /usr/local/lib (non-standard path
+# without a RECORD file). Install a fresh copy to dist-packages so Python finds it.
+RUN pip install --ignore-installed gmsh
 
 # Set up the entrypoint to activate complex mode.
 COPY ./packages/horn-solver/entrypoint.sh /usr/local/bin/
