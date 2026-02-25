@@ -18,7 +18,6 @@ from dolfinx.fem.petsc import LinearProblem
 from mpi4py import MPI
 import ufl
 from petsc4py.PETSc import ScalarType
-from . import bem_solver
 
 def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float) -> Tuple["mesh.Mesh", "mesh.MeshTags"]:
     """
@@ -170,6 +169,7 @@ def run_simulation(
         p_h = problem.solve()
 
         # --- BEM Solve ---
+        from . import bem_solver
         dp_h = bem_solver.solve_bem(domain, facet_tags, OUTLET_TAG, k, p_h)
 
         # Update the variational form with the BEM solution

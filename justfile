@@ -12,7 +12,7 @@ build:
         docker build -t "$pkg:latest" --target production -f "./packages/$pkg/Dockerfile" .
     done
 
-# Run all tests
+# Run all package tests (build then test)
 test:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -23,6 +23,11 @@ test:
         echo "Running tests for $pkg..."
         docker run --rm "$pkg:test" pytest "/app/packages/$pkg/tests"
     done
+
+# Build and test a single package: just test-package horn-solver
+test-package pkg:
+    docker build -t "{{pkg}}:test" --target test -f "./packages/{{pkg}}/Dockerfile" .
+    docker run --rm "{{pkg}}:test" pytest "/app/packages/{{pkg}}/tests" -v
 
 # Run the Nextflow pipeline
 run:

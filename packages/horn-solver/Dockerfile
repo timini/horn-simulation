@@ -6,8 +6,9 @@ FROM dolfinx/dolfinx:v0.8.0 as base
 FROM base as production
 
 # The base image already contains a compatible FEniCSx environment.
-# Install bempp-cl and gmsh to standard dist-packages.
-RUN pip install bempp-cl
+# bempp-cl 0.4+ renamed the module from 'bempp' to 'bempp_cl'; our code
+# uses 'import bempp.api' so we need <0.4.
+RUN pip install 'bempp-cl<0.4'
 RUN pip install --ignore-installed gmsh
 
 # Set up the entrypoint to activate complex mode.
@@ -23,12 +24,6 @@ RUN pip install /app/packages/horn-solver
 # --- Test Stage ---
 FROM production as test
 WORKDIR /app
-
-# Diagnostic: show sys.path and where bempp is installed
-RUN python3 -c "import sys; print('sys.path:', sys.path)" && \
-    python3 -c "import os; print('PYTHONPATH:', os.environ.get('PYTHONPATH', 'NOT SET'))" && \
-    find /usr/local/lib -name "bempp" -type d 2>/dev/null && \
-    ls -la /usr/local/lib/python3.10/dist-packages/ | grep bempp || true
 
 # Copy test-specific files
 COPY ./packages/horn-solver/tests /app/packages/horn-solver/tests
