@@ -22,3 +22,49 @@ nextflow_process {
         }
     }
 }
+
+nextflow_process {
+
+    name "Test Process merge_results"
+    script "../main.nf"
+    process "merge_results"
+    config "../nextflow.config"
+    profile "docker"
+
+    test("Should merge CSV result files") {
+        when {
+            process {
+                """
+                input[0] = [file("${projectDir}/tests/data/final_results.csv")]
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out[0].size() > 0
+        }
+    }
+}
+
+nextflow_process {
+
+    name "Test Process generate_plots"
+    script "../main.nf"
+    process "generate_plots"
+    config "../nextflow.config"
+    profile "docker"
+
+    test("Should generate a frequency response plot") {
+        when {
+            process {
+                """
+                input[0] = file("${projectDir}/tests/data/final_results.csv")
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out[0].size() > 0
+        }
+    }
+}
