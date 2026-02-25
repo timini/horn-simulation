@@ -1,0 +1,13 @@
+# Community horn cross-validation reference data
+# Source: [placeholder - add digitized data from published measurements]
+# Geometry: conical horn, throat_radius=0.005, mouth_radius=0.0285, length=0.25
+# Measurement conditions: 1W/1m, free-field
+# Date digitized: [placeholder]
+# Notes: This file is a placeholder. Add actual reference data as CSV columns below.
+#
+# To add data:
+#   1. Digitize published frequency response from datasheet or paper
+#   2. Record source, measurement conditions, and geometry in header comments
+#   3. Columns: frequency_hz, spl_db
+#   4. Update test_conical_horn_community.py geometry parameters to match
+frequency_hz,spl_db

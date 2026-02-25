@@ -222,4 +222,26 @@ The pipeline is orchestrated by Nextflow (`main.nf`), which maps each process to
 
 ## Current Status
 
-The pipeline runs end-to-end. SPL is computed from the outlet-surface RMS pressure with a Robin (radiation impedance) BC at the horn mouth. See GitHub issues for the detailed roadmap.
+The pipeline runs end-to-end. SPL is computed from the outlet-surface RMS pressure with a Robin (radiation impedance) BC at the horn mouth. A validation suite verifies the solver against analytical solutions (straight tube, Webster equation) and provides infrastructure for cross-validation against published data.
+
+## Roadmap
+
+Prioritised capabilities for reaching feature parity with tools like AKABAK. See linked GitHub issues for details.
+
+### Priority 1 — Near-term
+
+- Interior field visualisation (VTK/ParaView export from dolfinx) — [#45](https://github.com/timini/horn-simulation/issues/45)
+- Profile diversity: exponential, tractrix, hyperbolic horn profiles — [#46](https://github.com/timini/horn-simulation/issues/46)
+- Arbitrary STEP file import workflow (user-supplied geometry) — [#47](https://github.com/timini/horn-simulation/issues/47)
+
+### Priority 2 — Medium-term
+
+- Exterior radiation / directivity (Kirchhoff-Helmholtz integral post-processing) — [#48](https://github.com/timini/horn-simulation/issues/48)
+- Flexible boundary tagging (replace z-coordinate heuristic with surface naming) — [#49](https://github.com/timini/horn-simulation/issues/49)
+- Driver coupling (Thiele-Small parameters → velocity BC) — [#50](https://github.com/timini/horn-simulation/issues/50)
+
+### Priority 3 — Longer-term
+
+- Complex geometry support (folded horns, phase plugs, back-loaded horns) — [#51](https://github.com/timini/horn-simulation/issues/51)
+- Wall absorption / damping materials
+- Second-order radiation BC for large ka

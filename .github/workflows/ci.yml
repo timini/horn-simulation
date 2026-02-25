@@ -35,7 +35,7 @@ jobs:
       - name: Build test image
         run: docker build -t ${{ matrix.package }}:test --target test -f ./packages/${{ matrix.package }}/Dockerfile .
       - name: Run tests
-        run: docker run --rm ${{ matrix.package }}:test pytest packages/${{ matrix.package }}/tests
+        run: docker run --rm ${{ matrix.package }}:test pytest packages/${{ matrix.package }}/tests -v
       - name: Login to Docker Hub
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: docker/login-action@v2
