@@ -49,15 +49,17 @@ pytest packages/horn-solver/tests/validation/test_straight_tube.py -v
 
 ---
 
-### V3: Community Horn Cross-Validation (Tier 2 — published data)
+### V3: Community Horn Cross-Validation (Tier 2 — published geometry)
 
 **File:** `test_conical_horn_community.py`
 
-**Status:** Infrastructure ready, data pending. Tests skip automatically when CSV has no data.
+**Geometry:** IJERT Type A air horn (throat=5mm, mouth=28.5mm, length=250mm, 32:1 area expansion). Geometry from Choudhari et al., IJERT Vol.3 Issue 2, 2014.
 
-**Approach:** Compare FEM results against digitized frequency response data from published datasheets, measurement articles, or FEM validation papers.
+**Reference data:** Webster equation SPL computed at 20 log-spaced frequencies (200-4000 Hz) for the published geometry. Stored as CSV to decouple from V2's Webster implementation.
 
-**Tolerance:** 6 dB — accounts for different physics models, driver assumptions, and measurement conditions.
+**Why this geometry:** It has a high expansion ratio and small throat, exercising different solver behaviour than V2. The IJERT paper includes ANSYS simulation and experimental data for validation context.
+
+**Tolerance:** 6 dB — accounts for 3D vs 1D model mismatch and higher-order mode effects at the small throat.
 
 ## Tolerance Rationale
 
@@ -97,4 +99,4 @@ pytest packages/horn-solver/tests/validation/test_straight_tube.py -v
 |------|------|--------|--------|
 | `straight_tube_analytical.json` | V1 | Analytical plane wave solution | Complete |
 | `conical_horn_webster.json` | V2 | Webster horn equation | Complete |
-| `conical_horn_hornresp.csv` | V3 | Published measurements (TBD) | Placeholder |
+| `conical_horn_hornresp.csv` | V3 | Webster SPL for IJERT Type A geometry | Complete |
