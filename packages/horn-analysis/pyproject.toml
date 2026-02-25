@@ -6,8 +6,6 @@ dependencies = [
     "pandas",
     "scipy",
     "matplotlib",
-    "pdfplumber",
-    "psycopg2-binary",
 ]
 
 [project.scripts]
