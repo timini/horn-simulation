@@ -26,6 +26,7 @@ def plot_spl_vs_frequency(csv_file: str, output_image_file: str):
     
     # Save the plot to a file
     plt.savefig(output_image_file)
+    plt.close()
     print(f"Plot saved to {output_image_file}")
 
 def main():

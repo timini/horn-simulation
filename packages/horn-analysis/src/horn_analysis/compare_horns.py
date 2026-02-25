@@ -32,6 +32,7 @@ def plot_comparison(file_a, label_a, file_b, label_b, output_file):
 
     # Save the plot
     plt.savefig(output_file)
+    plt.close()
     print(f"Comparison plot saved to {output_file}")
 
 if __name__ == "__main__":
