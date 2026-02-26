@@ -7,6 +7,7 @@ requires-python = ">=3.10"
 [tool.uv.workspace]
 members = [
     "packages/horn-core",
+    "packages/horn-drivers",
     "packages/horn-geometry",
     "packages/horn-solver",
     "packages/horn-analysis",

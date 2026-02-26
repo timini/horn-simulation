@@ -6,6 +6,9 @@ dependencies = [
     "pandas",
     "scipy",
     "matplotlib",
+    "numpy",
+    "horn-core",
+    "horn-drivers",
 ]
 
 [project.scripts]
@@ -14,6 +17,8 @@ horn-kpi = "horn_analysis.kpi:main"
 horn-compare = "horn_analysis.compare:main"
 horn-impedance-plot = "horn_analysis.impedance_plot:main"
 horn-phase-plot = "horn_analysis.phase_plot:main"
+horn-screen-drivers = "horn_analysis.transfer_function:main"
+horn-score = "horn_analysis.scoring:main"
 
 [project.optional-dependencies]
 test = [
@@ -23,6 +28,10 @@ test = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv.sources]
+horn-core = { workspace = true }
+horn-drivers = { workspace = true }
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/horn_analysis"] 
