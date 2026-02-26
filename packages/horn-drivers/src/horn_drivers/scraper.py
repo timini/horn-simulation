@@ -321,20 +321,29 @@ def discover_drivers(
     return drivers
 
 
+def _save_driver(db_dir: Path, driver: dict) -> None:
+    """Write a single driver dict to its JSON file."""
+    manufacturer = driver.get("manufacturer", "unknown")
+    driver_id = driver["driver_id"]
+    mfr_dir = db_dir / manufacturer
+    mfr_dir.mkdir(parents=True, exist_ok=True)
+    driver_file = mfr_dir / f"{driver_id}.json"
+    driver_file.write_text(json.dumps(driver, indent=4) + "\n")
+
+
 def scrape_all(
+    db_dir: Optional[Path] = None,
     max_manufacturers: Optional[int] = None,
     manufacturer_filter: Optional[List[str]] = None,
     delay: float = 1.0,
-) -> List[dict]:
-    """Scrape all drivers from loudspeakerdatabase.com.
+) -> int:
+    """Scrape drivers from loudspeakerdatabase.com.
 
-    Args:
-        max_manufacturers: Limit number of manufacturers to scrape.
-        manufacturer_filter: Only scrape these manufacturers (case-insensitive).
-        delay: Seconds between HTTP requests (rate limiting).
+    When *db_dir* is provided, each driver is written to disk immediately
+    after scraping (one JSON file per driver).  When *db_dir* is ``None``
+    (dry-run mode), drivers are printed but not saved.
 
-    Returns:
-        List of driver dicts ready for database insertion.
+    Returns the number of drivers successfully scraped.
     """
     import requests
 
@@ -359,7 +368,7 @@ def scrape_all(
     if max_manufacturers:
         manufacturer_slugs = manufacturer_slugs[:max_manufacturers]
 
-    drivers: List[dict] = []
+    total_scraped = 0
 
     for i, mfr_slug in enumerate(manufacturer_slugs):
         print(f"\n[{i + 1}/{len(manufacturer_slugs)}] {mfr_slug}")
@@ -368,9 +377,10 @@ def scrape_all(
         driver_entries = discover_drivers(session, mfr_slug, delay=delay)
         print(f"  Found {len(driver_entries)} drivers")
 
+        mfr_scraped = 0
         for entry in driver_entries:
             time.sleep(delay)
-            print(f"  Scraping: {entry['name']}")
+            print(f"  Scraping: {entry['name']}", end="", flush=True)
 
             params = None
             for attempt in range(MAX_RETRIES):
@@ -380,21 +390,21 @@ def scrape_all(
                 except Exception as e:
                     if attempt < MAX_RETRIES - 1:
                         wait = delay * (attempt + 2)
-                        print(f"    RETRY ({attempt + 1}/{MAX_RETRIES}): {e}, "
-                              f"waiting {wait:.0f}s")
+                        print(f"\n    RETRY ({attempt + 1}/{MAX_RETRIES}): {e}, "
+                              f"waiting {wait:.0f}s", end="", flush=True)
                         time.sleep(wait)
                     else:
-                        print(f"    ERROR after {MAX_RETRIES} attempts: {e}")
+                        print(f"\n    ERROR after {MAX_RETRIES} attempts: {e}")
                         break
 
             if params is None:
-                print("    SKIP: no T-S parameters found")
+                print(" -> SKIP (no params)")
                 continue
 
             # Check essential params
             missing = [p for p in ESSENTIAL_PARAMS if p not in params]
             if missing:
-                print(f"    SKIP: missing {', '.join(missing)}")
+                print(f" -> SKIP (missing {', '.join(missing)})")
                 continue
 
             sd = params["sd_m2"]
@@ -415,39 +425,18 @@ def scrape_all(
             if nominal_diameter:
                 driver["nominal_diameter"] = nominal_diameter
 
-            drivers.append(driver)
-            print(f"    OK: {driver_id} ({driver_type}"
-                  f"{', ' + nominal_diameter if nominal_diameter else ''})")
+            # Write immediately
+            if db_dir is not None:
+                _save_driver(db_dir, driver)
 
-    return drivers
+            mfr_scraped += 1
+            total_scraped += 1
+            tag = f"{driver_type}, {nominal_diameter}" if nominal_diameter else driver_type
+            print(f" -> OK ({tag})")
 
+        print(f"  {mfr_slug}: {mfr_scraped}/{len(driver_entries)} scraped")
 
-def save_drivers_to_dir(db_dir: Path, new_drivers: List[dict]) -> Tuple[int, int]:
-    """Save scraped drivers as individual JSON files.
-
-    Layout: ``db_dir/{Manufacturer}/{driver-id}.json``
-
-    Returns (added, updated) counts.
-    """
-    added, updated = 0, 0
-
-    for drv in new_drivers:
-        manufacturer = drv.get("manufacturer", "unknown")
-        driver_id = drv["driver_id"]
-
-        mfr_dir = db_dir / manufacturer
-        mfr_dir.mkdir(parents=True, exist_ok=True)
-        driver_file = mfr_dir / f"{driver_id}.json"
-
-        if driver_file.exists():
-            updated += 1
-        else:
-            added += 1
-
-        driver_file.write_text(json.dumps(drv, indent=4) + "\n")
-
-    print(f"\nSave result: {added} added, {updated} updated")
-    return added, updated
+    return total_scraped
 
 
 def main():
@@ -480,21 +469,17 @@ def main():
     if args.manufacturers:
         mfr_filter = [m.strip() for m in args.manufacturers.split(",")]
 
-    drivers = scrape_all(
+    db_dir = None if args.dry_run else Path(args.db)
+    count = scrape_all(
+        db_dir=db_dir,
         max_manufacturers=args.max_manufacturers,
         manufacturer_filter=mfr_filter,
         delay=args.delay,
     )
-    print(f"\nScraped {len(drivers)} drivers total.")
-
-    if args.dry_run:
-        print(json.dumps(drivers, indent=2))
-        return
-
-    db_dir = Path(args.db)
-    save_drivers_to_dir(db_dir, drivers)
-    total = sum(1 for _ in db_dir.rglob("*.json"))
-    print(f"Database directory: {db_dir} ({total} drivers)")
+    print(f"\nScraped {count} drivers total.")
+    if db_dir:
+        total = sum(1 for _ in db_dir.rglob("*.json"))
+        print(f"Database: {db_dir} ({total} drivers)")
 
 
 if __name__ == "__main__":
