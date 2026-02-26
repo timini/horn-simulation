@@ -4,6 +4,8 @@
 params.throat_radius = 0.05 // Radius of the horn's throat in meters
 params.mouth_radius = 0.2  // Radius of the horn's mouth in meters
 params.length = 0.5        // Length of the horn in meters
+params.profile = "conical" // Horn flare profile: conical, exponential, hyperbolic
+params.num_sections = 20   // Number of cross-sections for lofting
 
 // Simulation Settings
 params.min_freq = 500      // Minimum frequency for the sweep in Hz
@@ -23,6 +25,8 @@ process generate_geometry {
     val throat_radius
     val mouth_radius
     val length
+    val profile
+    val num_sections
 
     output:
     path "horn.step"
@@ -33,6 +37,8 @@ process generate_geometry {
         --throat-radius ${throat_radius} \
         --mouth-radius ${mouth_radius} \
         --length ${length} \
+        --profile ${profile} \
+        --num-sections ${num_sections} \
         --output-file horn.step
     """
 }
@@ -77,12 +83,27 @@ process merge_results {
     """
 }
 
+process extract_kpis {
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    path final_csv
+
+    output:
+    path "kpis.json"
+
+    script:
+    """
+    python3 -m horn_analysis.kpi ${final_csv} --output kpis.json
+    """
+}
+
 process generate_plots {
     publishDir "${params.outdir}", mode: 'copy'
 
     input:
     path final_csv
-    
+
     output:
     path "frequency_response.png"
 
@@ -92,12 +113,44 @@ process generate_plots {
     """
 }
 
+process generate_impedance_plot {
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    path final_csv
+
+    output:
+    path "impedance.png"
+
+    script:
+    """
+    python3 -m horn_analysis.impedance_plot ${final_csv} impedance.png
+    """
+}
+
+process generate_phase_plot {
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    path final_csv
+
+    output:
+    path "phase_response.png"
+
+    script:
+    """
+    python3 -m horn_analysis.phase_plot ${final_csv} phase_response.png --group-delay
+    """
+}
+
 workflow {
     // 1. Generate geometry once
     ch_step_file = generate_geometry(
         params.throat_radius,
         params.mouth_radius,
-        params.length
+        params.length,
+        params.profile,
+        params.num_sections
     )
 
     // 2. Create a channel of band indices
@@ -112,6 +165,13 @@ workflow {
     // 5. Collect and merge results
     ch_merged_results = merge_results(ch_band_results.collect())
 
-    // 6. Plot final results
+    // 6. Extract KPIs
+    extract_kpis(ch_merged_results)
+
+    // 7. Plot final results
     generate_plots(ch_merged_results)
+
+    // 8. Impedance and phase plots
+    generate_impedance_plot(ch_merged_results)
+    generate_phase_plot(ch_merged_results)
 } 
