@@ -1,5 +1,11 @@
 #!/usr/bin/env nextflow
 
+// ========================================================================
+// Mode: "single" (default) runs one horn profile; "auto" runs all 3
+// profiles and ranks driver-horn combinations.
+// ========================================================================
+params.mode = "single"
+
 // Horn Geometry
 params.throat_radius = 0.05 // Radius of the horn's throat in meters
 params.mouth_radius = 0.2  // Radius of the horn's mouth in meters
@@ -18,18 +24,15 @@ params.num_bands = 8       // Number of parallel jobs for the solver
 params.outdir = "./results"
 params.test_outdir = null  // for testing purposes
 
-// Auto-select mode settings
-params.mode = "single"              // "single" or "auto_select"
-params.target_f_low = 500           // Target low frequency (Hz)
-params.target_f_high = 4000         // Target high frequency (Hz)
-params.max_length = 0.5             // Max horn length (m)
-params.max_mouth_radius = 0.2       // Max mouth radius (m)
+// Auto mode settings
+params.target_f_low = 500
+params.target_f_high = 4000
 params.drivers_db = "data/drivers.json"
-params.top_n = 5                    // Number of top candidates for Phase B
+params.top_n = 10
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SHARED PROCESSES (used by both single and auto_select modes)
-// ─────────────────────────────────────────────────────────────────────────────
+// ========================================================================
+// Shared processes
+// ========================================================================
 
 process generate_geometry {
     publishDir "${params.outdir}", mode: 'copy'
@@ -156,223 +159,209 @@ process generate_phase_plot {
     """
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// AUTO-SELECT PROCESSES
-// ─────────────────────────────────────────────────────────────────────────────
+// ========================================================================
+// Auto mode processes
+// ========================================================================
 
-process generate_candidates {
-    publishDir "${params.outdir}/auto_select", mode: 'copy'
+process prescreen_drivers {
+    publishDir "${params.outdir}/auto", mode: 'copy'
+
+    input:
+    val target_f_low
+    val target_f_high
+    val mouth_radius
+    val length
+    path drivers_db
 
     output:
-    path "candidates.csv"
+    path "prescreen_result.json"
 
     script:
-    def profiles_arg = ""
     """
-    python3 -m horn_core.candidates \
-        --target-f-low ${params.target_f_low} \
-        --target-f-high ${params.target_f_high} \
-        --max-length ${params.max_length} \
-        --max-mouth-radius ${params.max_mouth_radius} \
-        --output candidates.csv
+    python3 -m horn_analysis.prescreen \
+        --drivers-db ${drivers_db} \
+        --target-f-low ${target_f_low} \
+        --target-f-high ${target_f_high} \
+        --mouth-radius ${mouth_radius} \
+        --length ${length} \
+        --output prescreen_result.json
     """
 }
 
-process generate_candidate_geometry {
+process generate_auto_geometry {
     input:
-    tuple val(candidate_id), val(profile), val(throat_radius), val(mouth_radius), val(length)
+    tuple val(profile), val(throat_radius)
 
     output:
-    tuple val(candidate_id), val(throat_radius), val(length), path("${candidate_id}.step")
+    tuple val(profile), path("horn_${profile}.step")
 
     script:
     """
     python3 -m horn_geometry.generator \
         --throat-radius ${throat_radius} \
-        --mouth-radius ${mouth_radius} \
-        --length ${length} \
+        --mouth-radius ${params.mouth_radius} \
+        --length ${params.length} \
         --profile ${profile} \
-        --num-sections 20 \
-        --output-file ${candidate_id}.step
+        --num-sections ${params.num_sections} \
+        --output-file horn_${profile}.step
     """
 }
 
-process run_candidate_simulation {
+process run_auto_simulation {
     input:
-    tuple val(candidate_id), val(throat_radius), val(length), path(step_file)
+    tuple val(profile), path(horn_step), val(band_index)
 
     output:
-    tuple val(candidate_id), val(throat_radius), path("${candidate_id}_results.csv")
+    tuple val(profile), path("results_${profile}_${band_index}.csv")
 
     script:
+    def band_width = (params.max_freq - params.min_freq) / (params.num_bands as double)
+    def min_f = params.min_freq + band_width * band_index
+    def max_f = params.min_freq + band_width * (band_index + 1)
+    def num_intervals_per_band = Math.ceil(params.num_intervals / (params.num_bands as double)) as int
     """
+    echo "Running ${profile} band ${band_index}: ${min_f} Hz to ${max_f} Hz"
     python3 -m horn_solver.solver \
-        --step-file ${step_file} \
-        --output-file ${candidate_id}_results.csv \
-        --min-freq ${params.target_f_low} \
-        --max-freq ${params.target_f_high} \
-        --num-intervals ${params.num_intervals} \
-        --length ${length} \
+        --step-file ${horn_step} \
+        --output-file results_${profile}_${band_index}.csv \
+        --min-freq ${min_f} \
+        --max-freq ${max_f} \
+        --num-intervals ${num_intervals_per_band} \
+        --length ${params.length} \
         --mesh-size ${params.mesh_size}
     """
 }
 
-process screen_drivers {
-    publishDir "${params.outdir}/auto_select/screening", mode: 'copy'
+process merge_auto_results {
+    publishDir "${params.outdir}/auto", mode: 'copy'
 
     input:
-    tuple val(candidate_id), val(throat_radius), path(solver_csv)
+    tuple val(profile), path(csv_files)
 
     output:
-    tuple val(candidate_id), path("${candidate_id}_screening.csv")
+    tuple val(profile), path("${profile}_results.csv")
 
     script:
     """
-    python3 -m horn_analysis.transfer_function \
-        --solver-csv ${solver_csv} \
-        --drivers-db ${params.drivers_db} \
-        --throat-radius ${throat_radius} \
-        --output-dir . && \
-    mv screening_summary.csv ${candidate_id}_screening.csv
+    python3 -c "
+import pandas as pd, glob
+files = glob.glob('results_${profile}_*.csv')
+df = pd.concat((pd.read_csv(f) for f in files), ignore_index=True)
+df.sort_values(by='frequency').to_csv('${profile}_results.csv', index=False)
+"
     """
 }
 
-process rank_candidates {
-    publishDir "${params.outdir}/auto_select", mode: 'copy'
+process score_and_rank {
+    publishDir "${params.outdir}/auto", mode: 'copy'
 
     input:
-    path(screening_csvs)
-    path(solver_csvs)
+    path solver_csvs
+    path prescreen_json
+    path drivers_db
 
     output:
-    path "ranked_candidates.json"
-    path "top_candidates.csv"
+    path "ranked_results.json"
 
     script:
     """
-    python3 << 'PYEOF'
+    python3 -c "
 import json, glob
-import pandas as pd
 from pathlib import Path
-from horn_analysis.kpi import extract_kpis
-from horn_analysis.scoring import TargetSpec, compute_selection_score, rank_candidates
+from horn_drivers.loader import load_drivers
+from horn_analysis.rank_pipeline import rank_horn_drivers
+from horn_analysis.scoring import TargetSpec
+
+prescreen = json.loads(Path('${prescreen_json}').read_text())
+throat_radius = prescreen['throat_radius_m']
+target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high})
+
+# Load only pre-screened drivers
+all_drivers = load_drivers('${drivers_db}')
+driver_ids = set(prescreen['drivers'])
+drivers = [d for d in all_drivers if d.driver_id in driver_ids]
+
+all_results = []
+for csv_path in sorted(glob.glob('*_results.csv')):
+    profile = Path(csv_path).stem.replace('_results', '')
+    results = rank_horn_drivers(
+        solver_csv=csv_path,
+        horn_label=profile,
+        throat_radius=throat_radius,
+        drivers=drivers,
+        target=target,
+        top_n=${params.top_n},
+    )
+    all_results.extend(results)
+
+# Sort all by composite score and take overall top N
+all_results.sort(key=lambda r: r['composite_score'], reverse=True)
+all_results = all_results[:${params.top_n}]
+
+Path('ranked_results.json').write_text(json.dumps(all_results, indent=2))
+print(f'Ranked {len(all_results)} driver-horn combinations')
+"
+    """
+}
+
+process generate_auto_report {
+    publishDir "${params.outdir}/auto", mode: 'copy'
+
+    input:
+    path ranked_json
+    path solver_csvs
+    path drivers_db
+    path prescreen_json
+
+    output:
+    path "report/auto_ranking.json"
+    path "report/auto_comparison.png"
+    path "report/auto_summary.txt"
+    path "report/auto_report.html"
+
+    script:
+    """
+    python3 -c "
+import json
+from pathlib import Path
+from horn_drivers.loader import load_drivers
+from horn_analysis.scoring import TargetSpec
+from horn_analysis.auto_report import generate_auto_report
+
+prescreen = json.loads(Path('${prescreen_json}').read_text())
+throat_radius = prescreen['throat_radius_m']
+
+all_ranked = json.loads(Path('${ranked_json}').read_text())
+
+import glob
+solver_csvs = {}
+for csv_path in sorted(glob.glob('*_results.csv')):
+    profile = Path(csv_path).stem.replace('_results', '')
+    solver_csvs[profile] = csv_path
+
+driver_list = load_drivers('${drivers_db}')
+drivers = {d.driver_id: d for d in driver_list}
 
 target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high})
 
-# Collect all screening results
-screening_files = sorted(glob.glob("*_screening.csv"))
-solver_files = sorted(glob.glob("*_results.csv"))
-
-all_scores = []
-for sf in solver_files:
-    candidate_id = Path(sf).stem.replace("_results", "")
-    kpi = extract_kpis(sf)
-
-    # Find matching screening file
-    screen_file = f"{candidate_id}_screening.csv"
-    if Path(screen_file).exists():
-        screen_df = pd.read_csv(screen_file)
-        for _, row in screen_df.iterrows():
-            score = compute_selection_score(
-                kpi, target,
-                driver_id=row["driver_id"],
-                horn_label=candidate_id,
-            )
-            all_scores.append(score)
-
-top = rank_candidates(all_scores, top_n=${params.top_n})
-
-# Write ranked JSON
-ranked_data = [s.to_dict() for s in top]
-Path("ranked_candidates.json").write_text(json.dumps(ranked_data, indent=2))
-
-# Write CSV for Phase B
-rows = [{"candidate_id": s.horn_label, "driver_id": s.driver_id,
-         "composite_score": s.composite_score} for s in top]
-pd.DataFrame(rows).to_csv("top_candidates.csv", index=False)
-
-print(f"Ranked {len(all_scores)} combinations, selected top {len(top)}")
-for s in top:
-    print(f"  {s.horn_label} + {s.driver_id}: score={s.composite_score:.3f}")
-PYEOF
+generate_auto_report(
+    all_ranked=all_ranked,
+    solver_csvs=solver_csvs,
+    drivers=drivers,
+    throat_radius=throat_radius,
+    target=target,
+    output_dir='report',
+    top_n=5,
+)
+"
     """
 }
 
-process run_neumann_simulation {
-    publishDir "${params.outdir}/auto_select/phase_b", mode: 'copy'
+// ========================================================================
+// Workflow definitions
+// ========================================================================
 
-    input:
-    tuple val(candidate_id), val(driver_id), val(throat_radius), val(length), path(step_file), path(phase_a_csv)
-
-    output:
-    tuple val(candidate_id), val(driver_id), path("${candidate_id}_${driver_id}_neumann.csv")
-
-    script:
-    """
-    python3 -m horn_solver.solver \
-        --step-file ${step_file} \
-        --output-file ${candidate_id}_${driver_id}_neumann.csv \
-        --min-freq ${params.target_f_low} \
-        --max-freq ${params.target_f_high} \
-        --num-intervals ${params.num_intervals} \
-        --length ${length} \
-        --mesh-size ${params.mesh_size} \
-        --bc-mode neumann \
-        --driver-json ${params.drivers_db} \
-        --driver-id ${driver_id} \
-        --throat-area \$(python3 -c "import math; print(math.pi * ${throat_radius}**2)") \
-        --phase-a-csv ${phase_a_csv}
-    """
-}
-
-process generate_selection_report {
-    publishDir "${params.outdir}/auto_select", mode: 'copy'
-
-    input:
-    path(neumann_csvs)
-    path(ranked_json)
-
-    output:
-    path "selection_report.png"
-    path "selection_summary.json"
-
-    script:
-    """
-    python3 << 'PYEOF'
-import json, glob
-from pathlib import Path
-from horn_analysis.compare import plot_multi_comparison
-from horn_analysis.kpi import extract_kpis
-
-# Collect Phase B results
-neumann_files = sorted(glob.glob("*_neumann.csv"))
-file_label_pairs = []
-summary = []
-
-for f in neumann_files:
-    name = Path(f).stem.replace("_neumann", "")
-    file_label_pairs.append((f, name))
-    kpi = extract_kpis(f)
-    summary.append({"label": name, "kpis": kpi.to_dict()})
-
-if file_label_pairs:
-    plot_multi_comparison(file_label_pairs, "selection_report.png", kpi_table=True)
-
-# Combine with ranking data
-ranked = json.loads(Path("ranked_candidates.json").read_text())
-report = {"ranked_candidates": ranked, "phase_b_results": summary}
-Path("selection_summary.json").write_text(json.dumps(report, indent=2))
-
-print(f"Selection report generated with {len(neumann_files)} Phase B results")
-PYEOF
-    """
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// WORKFLOW DEFINITIONS
-// ─────────────────────────────────────────────────────────────────────────────
-
-workflow single_horn {
+workflow single {
     // 1. Generate geometry once
     ch_step_file = generate_geometry(
         params.throat_radius,
@@ -405,71 +394,64 @@ workflow single_horn {
     generate_phase_plot(ch_merged_results)
 }
 
-workflow auto_select {
-    // ── Phase A: Generate candidates and run Dirichlet simulations ──
-
-    // 1. Generate candidate geometries
-    ch_candidates_csv = generate_candidates()
-
-    // 2. Parse CSV into per-candidate channels
-    ch_candidates = ch_candidates_csv
-        .splitCsv(header: true)
-        .map { row -> tuple(
-            row.candidate_id, row.profile,
-            row.throat_radius, row.mouth_radius, row.length
-        )}
-
-    // 3. Generate STEP geometry for each candidate
-    ch_candidate_steps = generate_candidate_geometry(ch_candidates)
-
-    // 4. Run Phase A (Dirichlet) simulation for each candidate
-    ch_candidate_results = run_candidate_simulation(ch_candidate_steps)
-
-    // 5. Screen all drivers against each candidate geometry
-    ch_screening = screen_drivers(ch_candidate_results)
-
-    // 6. Rank all driver-horn combinations
-    ch_ranked = rank_candidates(
-        ch_screening.map { it[1] }.collect(),
-        ch_candidate_results.map { it[2] }.collect()
+workflow auto {
+    // 1. Pre-screen drivers
+    ch_drivers_db = Channel.fromPath(params.drivers_db)
+    ch_prescreen = prescreen_drivers(
+        params.target_f_low,
+        params.target_f_high,
+        params.mouth_radius,
+        params.length,
+        ch_drivers_db,
     )
 
-    // ── Phase B: Re-simulate top candidates with Neumann BC ──
+    // 2. Generate geometry for each profile using throat radius from prescreen
+    ch_profiles = Channel.from("conical", "exponential", "hyperbolic")
 
-    // 7. Parse top candidates and join with geometry/solver data
-    ch_top = ch_ranked[1]
-        .splitCsv(header: true)
-        .map { row -> tuple(row.candidate_id, row.driver_id) }
+    // Extract throat radius from prescreen result
+    ch_throat_radius = ch_prescreen.map { json_file ->
+        def data = new groovy.json.JsonSlurper().parse(json_file)
+        data.throat_radius_m
+    }
 
-    // Join top candidates with their step files and Phase A CSV
-    // ch_candidate_steps emits: (candidate_id, throat_radius, length, step_file)
-    // ch_candidate_results emits: (candidate_id, throat_radius, results_csv)
-    ch_step_lookup = ch_candidate_steps
-        .map { tuple(it[0], it[1], it[2], it[3]) }  // (id, throat_r, length, step)
+    // Combine profiles with throat radius
+    ch_geom_inputs = ch_profiles.combine(ch_throat_radius)
 
-    ch_csv_lookup = ch_candidate_results
-        .map { tuple(it[0], it[2]) }  // (id, csv)
+    // 3. Generate geometries (3 parallel jobs)
+    ch_geometries = generate_auto_geometry(ch_geom_inputs)
 
-    ch_neumann_inputs = ch_top
-        .combine(ch_step_lookup, by: 0)  // join on candidate_id
-        .combine(ch_csv_lookup, by: 0)   // join on candidate_id
-        .map { tuple(it[0], it[1], it[2], it[3], it[4], it[5]) }
-        // (candidate_id, driver_id, throat_radius, length, step_file, phase_a_csv)
+    // 4. Create band indices and combine with geometries
+    ch_band_indices = Channel.from(0..<params.num_bands)
+    ch_sim_inputs = ch_geometries.combine(ch_band_indices)
 
-    // 8. Run Neumann simulations for top candidates
-    ch_neumann_results = run_neumann_simulation(ch_neumann_inputs)
+    // 5. Run simulations (3 profiles x num_bands parallel jobs)
+    ch_band_results = run_auto_simulation(ch_sim_inputs)
 
-    // 9. Generate final selection report
-    generate_selection_report(
-        ch_neumann_results.map { it[2] }.collect(),
-        ch_ranked[0]
+    // 6. Group by profile and merge
+    ch_grouped = ch_band_results.groupTuple()
+    ch_merged = merge_auto_results(ch_grouped)
+
+    // 7. Score and rank all combinations
+    ch_all_csvs = ch_merged.map { profile, csv -> csv }.collect()
+    ch_ranked = score_and_rank(
+        ch_all_csvs,
+        ch_prescreen,
+        ch_drivers_db,
+    )
+
+    // 8. Generate report
+    generate_auto_report(
+        ch_ranked,
+        ch_all_csvs,
+        ch_drivers_db,
+        ch_prescreen,
     )
 }
 
 workflow {
-    if (params.mode == "auto_select") {
-        auto_select()
+    if (params.mode == "auto") {
+        auto()
     } else {
-        single_horn()
+        single()
     }
 }

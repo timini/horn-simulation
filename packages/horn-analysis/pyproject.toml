@@ -19,6 +19,9 @@ horn-impedance-plot = "horn_analysis.impedance_plot:main"
 horn-phase-plot = "horn_analysis.phase_plot:main"
 horn-screen-drivers = "horn_analysis.transfer_function:main"
 horn-score = "horn_analysis.scoring:main"
+horn-prescreen = "horn_analysis.prescreen:main"
+horn-rank = "horn_analysis.rank_pipeline:main"
+horn-auto-report = "horn_analysis.auto_report:main"
 
 [project.optional-dependencies]
 test = [
@@ -34,4 +37,4 @@ horn-core = { workspace = true }
 horn-drivers = { workspace = true }
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/horn_analysis"] 
+packages = ["src/horn_analysis"]

@@ -24,6 +24,7 @@ WORKDIR /app
 
 # Copy the installed packages from the builder stage.
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # --- Test Stage ---
 # This stage adds test files and dependencies to the production image.
