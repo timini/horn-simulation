@@ -11,6 +11,9 @@ WORKDIR /app
 COPY ./packages/horn-geometry/pyproject.toml .
 COPY ./packages/horn-core /app/packages/horn-core
 COPY ./packages/horn-geometry /app/packages/horn-geometry
+# Strip [tool.uv.sources] sections — uv rejects workspace refs outside a workspace
+RUN find /app/packages -name pyproject.toml \
+    -exec sed -i '/\[tool\.uv\.sources\]/d; /workspace = true/d' {} +
 RUN uv pip install --system /app/packages/horn-geometry
 
 # --- Production Stage ---

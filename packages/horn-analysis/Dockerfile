@@ -9,6 +9,9 @@ WORKDIR /app
 COPY ./packages/horn-core /app/packages/horn-core
 COPY ./packages/horn-drivers /app/packages/horn-drivers
 COPY ./packages/horn-analysis /app/packages/horn-analysis
+# Strip [tool.uv.sources] sections — uv rejects workspace refs outside a workspace
+RUN find /app/packages -name pyproject.toml \
+    -exec sed -i '/\[tool\.uv\.sources\]/d; /workspace = true/d' {} +
 RUN uv pip install --system --no-deps /app/packages/horn-core \
     && uv pip install --system --no-deps /app/packages/horn-drivers \
     && uv pip install --system /app/packages/horn-analysis
