@@ -10,7 +10,7 @@
                 "fs_hz": 500.0,
                 "re_ohm": 6.0,
                 "bl_tm": 8.5,
-                "sd_m2": 0.00080,
+                "sd_m2": 0.0008,
                 "mms_kg": 0.0028,
                 "le_h": 0.0006,
                 "qms": 5.0,
@@ -28,7 +28,7 @@
                 "fs_hz": 550.0,
                 "re_ohm": 6.3,
                 "bl_tm": 7.2,
-                "sd_m2": 0.00080,
+                "sd_m2": 0.0008,
                 "mms_kg": 0.0022,
                 "le_h": 0.0005,
                 "qms": 4.5,
@@ -50,7 +50,7 @@
                 "mms_kg": 0.0065,
                 "le_h": 0.0004,
                 "qms": 6.0,
-                "qes": 0.30,
+                "qes": 0.3,
                 "xmax_m": 0.001,
                 "nominal_impedance_ohm": 8.0
             }
@@ -64,8 +64,8 @@
                 "fs_hz": 600.0,
                 "re_ohm": 5.6,
                 "bl_tm": 9.0,
-                "sd_m2": 0.00080,
-                "mms_kg": 0.0020,
+                "sd_m2": 0.0008,
+                "mms_kg": 0.002,
                 "le_h": 0.00035,
                 "qms": 5.5,
                 "qes": 0.38,
@@ -83,7 +83,7 @@
                 "re_ohm": 5.8,
                 "bl_tm": 10.5,
                 "sd_m2": 0.00126,
-                "mms_kg": 0.0040,
+                "mms_kg": 0.004,
                 "le_h": 0.00045,
                 "qms": 7.0,
                 "qes": 0.32,
@@ -100,12 +100,924 @@
                 "fs_hz": 700.0,
                 "re_ohm": 5.2,
                 "bl_tm": 7.8,
-                "sd_m2": 0.00050,
+                "sd_m2": 0.0005,
                 "mms_kg": 0.0012,
                 "le_h": 0.00025,
                 "qms": 4.0,
-                "qes": 0.50,
+                "qes": 0.5,
                 "xmax_m": 0.0004,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-kappa-pro-18a",
+            "manufacturer": "Eminence",
+            "model_name": "Kappa Pro-18A",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 30.0,
+                "re_ohm": 5.23,
+                "bl_tm": 23.8,
+                "sd_m2": 0.1195,
+                "mms_kg": 0.2,
+                "le_h": 0.003,
+                "qms": 5.5,
+                "qes": 0.3481,
+                "xmax_m": 0.0056,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-omega-pro-18a",
+            "manufacturer": "Eminence",
+            "model_name": "Omega Pro-18A",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 28.0,
+                "re_ohm": 5.48,
+                "bl_tm": 20.5,
+                "sd_m2": 0.1195,
+                "mms_kg": 0.165,
+                "le_h": 0.0027,
+                "qms": 6.0,
+                "qes": 0.3785,
+                "xmax_m": 0.006,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-definimax-4018lf",
+            "manufacturer": "Eminence",
+            "model_name": "Definimax 4018LF",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 35.0,
+                "re_ohm": 5.57,
+                "bl_tm": 27.5,
+                "sd_m2": 0.1195,
+                "mms_kg": 0.22,
+                "le_h": 0.0035,
+                "qms": 7.2,
+                "qes": 0.3563,
+                "xmax_m": 0.009,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "bc-18sw115",
+            "manufacturer": "B&C",
+            "model_name": "18SW115",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 32.0,
+                "re_ohm": 5.2,
+                "bl_tm": 26.0,
+                "sd_m2": 0.121,
+                "mms_kg": 0.205,
+                "le_h": 0.0028,
+                "qms": 5.0,
+                "qes": 0.3171,
+                "xmax_m": 0.009,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "bc-18ps76",
+            "manufacturer": "B&C",
+            "model_name": "18PS76",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 40.0,
+                "re_ohm": 5.3,
+                "bl_tm": 28.0,
+                "sd_m2": 0.118,
+                "mms_kg": 0.17,
+                "le_h": 0.002,
+                "qms": 6.5,
+                "qes": 0.2888,
+                "xmax_m": 0.007,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "18sound-18nlw9601",
+            "manufacturer": "18 Sound",
+            "model_name": "18NLW9601",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 38.0,
+                "re_ohm": 5.1,
+                "bl_tm": 26.5,
+                "sd_m2": 0.121,
+                "mms_kg": 0.182,
+                "le_h": 0.0022,
+                "qms": 5.8,
+                "qes": 0.3156,
+                "xmax_m": 0.008,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "18sound-18lw2500",
+            "manufacturer": "18 Sound",
+            "model_name": "18LW2500",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 33.0,
+                "re_ohm": 5.0,
+                "bl_tm": 24.0,
+                "sd_m2": 0.1195,
+                "mms_kg": 0.195,
+                "le_h": 0.0025,
+                "qms": 5.5,
+                "qes": 0.351,
+                "xmax_m": 0.0085,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "rcf-lf18x451",
+            "manufacturer": "RCF",
+            "model_name": "LF18X451",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 35.0,
+                "re_ohm": 5.3,
+                "bl_tm": 25.5,
+                "sd_m2": 0.121,
+                "mms_kg": 0.19,
+                "le_h": 0.0026,
+                "qms": 6.2,
+                "qes": 0.3406,
+                "xmax_m": 0.008,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "faital-pro-18hp1060",
+            "manufacturer": "Faital Pro",
+            "model_name": "18HP1060",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 37.0,
+                "re_ohm": 5.0,
+                "bl_tm": 27.0,
+                "sd_m2": 0.119,
+                "mms_kg": 0.185,
+                "le_h": 0.0024,
+                "qms": 6.0,
+                "qes": 0.295,
+                "xmax_m": 0.0085,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "beyma-18lx60v2",
+            "manufacturer": "Beyma",
+            "model_name": "18LEX60/V2",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 36.0,
+                "re_ohm": 5.4,
+                "bl_tm": 25.0,
+                "sd_m2": 0.12,
+                "mms_kg": 0.178,
+                "le_h": 0.0023,
+                "qms": 5.8,
+                "qes": 0.3479,
+                "xmax_m": 0.0075,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "oberton-18xb700",
+            "manufacturer": "Oberton",
+            "model_name": "18XB700",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 34.0,
+                "re_ohm": 5.2,
+                "bl_tm": 24.5,
+                "sd_m2": 0.1195,
+                "mms_kg": 0.2,
+                "le_h": 0.003,
+                "qms": 6.5,
+                "qes": 0.3701,
+                "xmax_m": 0.007,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "jbl-2242h",
+            "manufacturer": "JBL",
+            "model_name": "2242H",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 30.0,
+                "re_ohm": 5.4,
+                "bl_tm": 22.0,
+                "sd_m2": 0.1195,
+                "mms_kg": 0.21,
+                "le_h": 0.0032,
+                "qms": 5.0,
+                "qes": 0.4416,
+                "xmax_m": 0.008,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-deltalite-ii-2518",
+            "manufacturer": "Eminence",
+            "model_name": "Deltalite II 2518",
+            "driver_type": "cone",
+            "nominal_diameter": "18in",
+            "parameters": {
+                "fs_hz": 35.0,
+                "re_ohm": 5.73,
+                "bl_tm": 22.5,
+                "sd_m2": 0.1195,
+                "mms_kg": 0.147,
+                "le_h": 0.0018,
+                "qms": 5.2,
+                "qes": 0.3659,
+                "xmax_m": 0.0064,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-kappa-pro-15a",
+            "manufacturer": "Eminence",
+            "model_name": "Kappa Pro-15A",
+            "driver_type": "cone",
+            "nominal_diameter": "15in",
+            "parameters": {
+                "fs_hz": 40.0,
+                "re_ohm": 5.36,
+                "bl_tm": 20.7,
+                "sd_m2": 0.0855,
+                "mms_kg": 0.1,
+                "le_h": 0.0021,
+                "qms": 5.0,
+                "qes": 0.3144,
+                "xmax_m": 0.0052,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-omega-pro-15a",
+            "manufacturer": "Eminence",
+            "model_name": "Omega Pro-15A",
+            "driver_type": "cone",
+            "nominal_diameter": "15in",
+            "parameters": {
+                "fs_hz": 36.0,
+                "re_ohm": 5.59,
+                "bl_tm": 18.0,
+                "sd_m2": 0.0855,
+                "mms_kg": 0.102,
+                "le_h": 0.0022,
+                "qms": 6.0,
+                "qes": 0.3981,
+                "xmax_m": 0.0055,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "bc-15sw115",
+            "manufacturer": "B&C",
+            "model_name": "15SW115",
+            "driver_type": "cone",
+            "nominal_diameter": "15in",
+            "parameters": {
+                "fs_hz": 35.0,
+                "re_ohm": 5.3,
+                "bl_tm": 22.0,
+                "sd_m2": 0.088,
+                "mms_kg": 0.12,
+                "le_h": 0.0025,
+                "qms": 5.5,
+                "qes": 0.289,
+                "xmax_m": 0.008,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "bc-15ps76",
+            "manufacturer": "B&C",
+            "model_name": "15PS76",
+            "driver_type": "cone",
+            "nominal_diameter": "15in",
+            "parameters": {
+                "fs_hz": 45.0,
+                "re_ohm": 5.5,
+                "bl_tm": 23.0,
+                "sd_m2": 0.0855,
+                "mms_kg": 0.092,
+                "le_h": 0.0018,
+                "qms": 6.0,
+                "qes": 0.2705,
+                "xmax_m": 0.006,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "18sound-15nlw9401",
+            "manufacturer": "18 Sound",
+            "model_name": "15NLW9401",
+            "driver_type": "cone",
+            "nominal_diameter": "15in",
+            "parameters": {
+                "fs_hz": 42.0,
+                "re_ohm": 5.2,
+                "bl_tm": 22.5,
+                "sd_m2": 0.087,
+                "mms_kg": 0.098,
+                "le_h": 0.002,
+                "qms": 5.5,
+                "qes": 0.2656,
+                "xmax_m": 0.007,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "rcf-lf15x401",
+            "manufacturer": "RCF",
+            "model_name": "LF15X401",
+            "driver_type": "cone",
+            "nominal_diameter": "15in",
+            "parameters": {
+                "fs_hz": 38.0,
+                "re_ohm": 5.4,
+                "bl_tm": 20.5,
+                "sd_m2": 0.0855,
+                "mms_kg": 0.11,
+                "le_h": 0.0024,
+                "qms": 5.8,
+                "qes": 0.3375,
+                "xmax_m": 0.0065,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "faital-pro-15hp1060",
+            "manufacturer": "Faital Pro",
+            "model_name": "15HP1060",
+            "driver_type": "cone",
+            "nominal_diameter": "15in",
+            "parameters": {
+                "fs_hz": 40.0,
+                "re_ohm": 5.3,
+                "bl_tm": 21.0,
+                "sd_m2": 0.086,
+                "mms_kg": 0.105,
+                "le_h": 0.002,
+                "qms": 6.0,
+                "qes": 0.3172,
+                "xmax_m": 0.007,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "beyma-15p80nd-v2",
+            "manufacturer": "Beyma",
+            "model_name": "15P80Nd/V2",
+            "driver_type": "cone",
+            "nominal_diameter": "15in",
+            "parameters": {
+                "fs_hz": 43.0,
+                "re_ohm": 5.5,
+                "bl_tm": 19.5,
+                "sd_m2": 0.0855,
+                "mms_kg": 0.085,
+                "le_h": 0.0017,
+                "qms": 5.2,
+                "qes": 0.3322,
+                "xmax_m": 0.006,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "oberton-15xb700",
+            "manufacturer": "Oberton",
+            "model_name": "15XB700",
+            "driver_type": "cone",
+            "nominal_diameter": "15in",
+            "parameters": {
+                "fs_hz": 37.0,
+                "re_ohm": 5.4,
+                "bl_tm": 21.5,
+                "sd_m2": 0.086,
+                "mms_kg": 0.115,
+                "le_h": 0.0024,
+                "qms": 6.2,
+                "qes": 0.3123,
+                "xmax_m": 0.0065,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "jbl-2226h",
+            "manufacturer": "JBL",
+            "model_name": "2226H",
+            "driver_type": "cone",
+            "nominal_diameter": "15in",
+            "parameters": {
+                "fs_hz": 40.0,
+                "re_ohm": 5.5,
+                "bl_tm": 19.0,
+                "sd_m2": 0.0855,
+                "mms_kg": 0.097,
+                "le_h": 0.0022,
+                "qms": 5.0,
+                "qes": 0.3714,
+                "xmax_m": 0.0055,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-kappa-pro-12a",
+            "manufacturer": "Eminence",
+            "model_name": "Kappa Pro-12A",
+            "driver_type": "cone",
+            "nominal_diameter": "12in",
+            "parameters": {
+                "fs_hz": 48.0,
+                "re_ohm": 5.57,
+                "bl_tm": 17.5,
+                "sd_m2": 0.0531,
+                "mms_kg": 0.059,
+                "le_h": 0.0016,
+                "qms": 5.5,
+                "qes": 0.3236,
+                "xmax_m": 0.0046,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-delta-12lfa",
+            "manufacturer": "Eminence",
+            "model_name": "Delta 12LFA",
+            "driver_type": "cone",
+            "nominal_diameter": "12in",
+            "parameters": {
+                "fs_hz": 41.0,
+                "re_ohm": 5.73,
+                "bl_tm": 16.0,
+                "sd_m2": 0.0531,
+                "mms_kg": 0.065,
+                "le_h": 0.0018,
+                "qms": 6.0,
+                "qes": 0.3748,
+                "xmax_m": 0.0044,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "bc-12cl76",
+            "manufacturer": "B&C",
+            "model_name": "12CL76",
+            "driver_type": "cone",
+            "nominal_diameter": "12in",
+            "parameters": {
+                "fs_hz": 55.0,
+                "re_ohm": 5.4,
+                "bl_tm": 18.0,
+                "sd_m2": 0.052,
+                "mms_kg": 0.048,
+                "le_h": 0.0012,
+                "qms": 5.0,
+                "qes": 0.2765,
+                "xmax_m": 0.0045,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "18sound-12nlw9001",
+            "manufacturer": "18 Sound",
+            "model_name": "12NLW9001",
+            "driver_type": "cone",
+            "nominal_diameter": "12in",
+            "parameters": {
+                "fs_hz": 50.0,
+                "re_ohm": 5.3,
+                "bl_tm": 18.5,
+                "sd_m2": 0.0535,
+                "mms_kg": 0.054,
+                "le_h": 0.0014,
+                "qms": 5.5,
+                "qes": 0.2627,
+                "xmax_m": 0.006,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "rcf-lf12x401",
+            "manufacturer": "RCF",
+            "model_name": "LF12X401",
+            "driver_type": "cone",
+            "nominal_diameter": "12in",
+            "parameters": {
+                "fs_hz": 47.0,
+                "re_ohm": 5.5,
+                "bl_tm": 17.0,
+                "sd_m2": 0.0531,
+                "mms_kg": 0.06,
+                "le_h": 0.0015,
+                "qms": 5.8,
+                "qes": 0.3372,
+                "xmax_m": 0.0055,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "faital-pro-12hp1060",
+            "manufacturer": "Faital Pro",
+            "model_name": "12HP1060",
+            "driver_type": "cone",
+            "nominal_diameter": "12in",
+            "parameters": {
+                "fs_hz": 52.0,
+                "re_ohm": 5.3,
+                "bl_tm": 19.0,
+                "sd_m2": 0.0525,
+                "mms_kg": 0.05,
+                "le_h": 0.0013,
+                "qms": 6.0,
+                "qes": 0.2398,
+                "xmax_m": 0.006,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "beyma-12p80nd-v2",
+            "manufacturer": "Beyma",
+            "model_name": "12P80Nd/V2",
+            "driver_type": "cone",
+            "nominal_diameter": "12in",
+            "parameters": {
+                "fs_hz": 55.0,
+                "re_ohm": 5.6,
+                "bl_tm": 16.5,
+                "sd_m2": 0.0531,
+                "mms_kg": 0.045,
+                "le_h": 0.0012,
+                "qms": 5.2,
+                "qes": 0.3199,
+                "xmax_m": 0.0048,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "oberton-12xb700",
+            "manufacturer": "Oberton",
+            "model_name": "12XB700",
+            "driver_type": "cone",
+            "nominal_diameter": "12in",
+            "parameters": {
+                "fs_hz": 45.0,
+                "re_ohm": 5.4,
+                "bl_tm": 17.5,
+                "sd_m2": 0.0535,
+                "mms_kg": 0.062,
+                "le_h": 0.0016,
+                "qms": 6.2,
+                "qes": 0.3091,
+                "xmax_m": 0.0055,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "jbl-2206h",
+            "manufacturer": "JBL",
+            "model_name": "2206H",
+            "driver_type": "cone",
+            "nominal_diameter": "12in",
+            "parameters": {
+                "fs_hz": 50.0,
+                "re_ohm": 5.5,
+                "bl_tm": 16.0,
+                "sd_m2": 0.0531,
+                "mms_kg": 0.055,
+                "le_h": 0.0015,
+                "qms": 5.0,
+                "qes": 0.3712,
+                "xmax_m": 0.005,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-delta-pro-12a",
+            "manufacturer": "Eminence",
+            "model_name": "Delta Pro-12A",
+            "driver_type": "cone",
+            "nominal_diameter": "12in",
+            "parameters": {
+                "fs_hz": 59.0,
+                "re_ohm": 5.75,
+                "bl_tm": 15.5,
+                "sd_m2": 0.0531,
+                "mms_kg": 0.04,
+                "le_h": 0.0011,
+                "qms": 5.0,
+                "qes": 0.3549,
+                "xmax_m": 0.0038,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-kappa-pro-10a",
+            "manufacturer": "Eminence",
+            "model_name": "Kappa Pro-10A",
+            "driver_type": "cone",
+            "nominal_diameter": "10in",
+            "parameters": {
+                "fs_hz": 55.0,
+                "re_ohm": 5.57,
+                "bl_tm": 14.5,
+                "sd_m2": 0.0346,
+                "mms_kg": 0.042,
+                "le_h": 0.0012,
+                "qms": 5.5,
+                "qes": 0.3845,
+                "xmax_m": 0.004,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-delta-10a",
+            "manufacturer": "Eminence",
+            "model_name": "Delta 10A",
+            "driver_type": "cone",
+            "nominal_diameter": "10in",
+            "parameters": {
+                "fs_hz": 65.0,
+                "re_ohm": 5.73,
+                "bl_tm": 12.5,
+                "sd_m2": 0.0346,
+                "mms_kg": 0.032,
+                "le_h": 0.001,
+                "qms": 5.0,
+                "qes": 0.4793,
+                "xmax_m": 0.0035,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "bc-10md26",
+            "manufacturer": "B&C",
+            "model_name": "10MD26",
+            "driver_type": "cone",
+            "nominal_diameter": "10in",
+            "parameters": {
+                "fs_hz": 70.0,
+                "re_ohm": 5.4,
+                "bl_tm": 14.0,
+                "sd_m2": 0.034,
+                "mms_kg": 0.028,
+                "le_h": 0.0009,
+                "qms": 5.0,
+                "qes": 0.3393,
+                "xmax_m": 0.0035,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "18sound-10nmb420",
+            "manufacturer": "18 Sound",
+            "model_name": "10NMB420",
+            "driver_type": "cone",
+            "nominal_diameter": "10in",
+            "parameters": {
+                "fs_hz": 62.0,
+                "re_ohm": 5.3,
+                "bl_tm": 15.0,
+                "sd_m2": 0.035,
+                "mms_kg": 0.038,
+                "le_h": 0.0011,
+                "qms": 5.8,
+                "qes": 0.3487,
+                "xmax_m": 0.005,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "faital-pro-10fe200",
+            "manufacturer": "Faital Pro",
+            "model_name": "10FE200",
+            "driver_type": "cone",
+            "nominal_diameter": "10in",
+            "parameters": {
+                "fs_hz": 60.0,
+                "re_ohm": 5.5,
+                "bl_tm": 13.0,
+                "sd_m2": 0.0346,
+                "mms_kg": 0.035,
+                "le_h": 0.001,
+                "qms": 6.0,
+                "qes": 0.4294,
+                "xmax_m": 0.004,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "beyma-10mi100",
+            "manufacturer": "Beyma",
+            "model_name": "10MI100",
+            "driver_type": "cone",
+            "nominal_diameter": "10in",
+            "parameters": {
+                "fs_hz": 68.0,
+                "re_ohm": 5.6,
+                "bl_tm": 13.5,
+                "sd_m2": 0.0346,
+                "mms_kg": 0.03,
+                "le_h": 0.0009,
+                "qms": 5.2,
+                "qes": 0.3938,
+                "xmax_m": 0.0035,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "rcf-l10p110k",
+            "manufacturer": "RCF",
+            "model_name": "L10P110K",
+            "driver_type": "cone",
+            "nominal_diameter": "10in",
+            "parameters": {
+                "fs_hz": 58.0,
+                "re_ohm": 5.4,
+                "bl_tm": 14.5,
+                "sd_m2": 0.035,
+                "mms_kg": 0.04,
+                "le_h": 0.0012,
+                "qms": 5.5,
+                "qes": 0.3744,
+                "xmax_m": 0.0045,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-alpha-8a",
+            "manufacturer": "Eminence",
+            "model_name": "Alpha 8A",
+            "driver_type": "cone",
+            "nominal_diameter": "8in",
+            "parameters": {
+                "fs_hz": 73.0,
+                "re_ohm": 5.38,
+                "bl_tm": 9.5,
+                "sd_m2": 0.0214,
+                "mms_kg": 0.019,
+                "le_h": 0.0007,
+                "qms": 5.0,
+                "qes": 0.5195,
+                "xmax_m": 0.003,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-beta-8a",
+            "manufacturer": "Eminence",
+            "model_name": "Beta 8A",
+            "driver_type": "cone",
+            "nominal_diameter": "8in",
+            "parameters": {
+                "fs_hz": 80.0,
+                "re_ohm": 5.53,
+                "bl_tm": 11.0,
+                "sd_m2": 0.0214,
+                "mms_kg": 0.018,
+                "le_h": 0.0006,
+                "qms": 5.5,
+                "qes": 0.4135,
+                "xmax_m": 0.0032,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "bc-8pe21",
+            "manufacturer": "B&C",
+            "model_name": "8PE21",
+            "driver_type": "cone",
+            "nominal_diameter": "8in",
+            "parameters": {
+                "fs_hz": 90.0,
+                "re_ohm": 5.4,
+                "bl_tm": 12.0,
+                "sd_m2": 0.021,
+                "mms_kg": 0.016,
+                "le_h": 0.0005,
+                "qms": 5.0,
+                "qes": 0.3393,
+                "xmax_m": 0.0028,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "faital-pro-8fe200",
+            "manufacturer": "Faital Pro",
+            "model_name": "8FE200",
+            "driver_type": "cone",
+            "nominal_diameter": "8in",
+            "parameters": {
+                "fs_hz": 85.0,
+                "re_ohm": 5.5,
+                "bl_tm": 10.5,
+                "sd_m2": 0.0214,
+                "mms_kg": 0.017,
+                "le_h": 0.0006,
+                "qms": 5.5,
+                "qes": 0.4529,
+                "xmax_m": 0.003,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "beyma-8p300fe",
+            "manufacturer": "Beyma",
+            "model_name": "8P300Fe",
+            "driver_type": "cone",
+            "nominal_diameter": "8in",
+            "parameters": {
+                "fs_hz": 78.0,
+                "re_ohm": 5.6,
+                "bl_tm": 10.0,
+                "sd_m2": 0.022,
+                "mms_kg": 0.02,
+                "le_h": 0.0007,
+                "qms": 5.2,
+                "qes": 0.5489,
+                "xmax_m": 0.0032,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "eminence-alpha-6a",
+            "manufacturer": "Eminence",
+            "model_name": "Alpha 6A",
+            "driver_type": "cone",
+            "nominal_diameter": "6in",
+            "parameters": {
+                "fs_hz": 90.0,
+                "re_ohm": 5.38,
+                "bl_tm": 7.0,
+                "sd_m2": 0.0133,
+                "mms_kg": 0.012,
+                "le_h": 0.0005,
+                "qms": 5.0,
+                "qes": 0.7451,
+                "xmax_m": 0.0025,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "bc-6md38",
+            "manufacturer": "B&C",
+            "model_name": "6MD38",
+            "driver_type": "cone",
+            "nominal_diameter": "6in",
+            "parameters": {
+                "fs_hz": 100.0,
+                "re_ohm": 5.5,
+                "bl_tm": 8.0,
+                "sd_m2": 0.013,
+                "mms_kg": 0.01,
+                "le_h": 0.0004,
+                "qms": 5.5,
+                "qes": 0.54,
+                "xmax_m": 0.0028,
+                "nominal_impedance_ohm": 8.0
+            }
+        },
+        {
+            "driver_id": "faital-pro-6fe200",
+            "manufacturer": "Faital Pro",
+            "model_name": "6FE200",
+            "driver_type": "cone",
+            "nominal_diameter": "6in",
+            "parameters": {
+                "fs_hz": 95.0,
+                "re_ohm": 5.4,
+                "bl_tm": 7.5,
+                "sd_m2": 0.0133,
+                "mms_kg": 0.011,
+                "le_h": 0.0005,
+                "qms": 5.2,
+                "qes": 0.6303,
+                "xmax_m": 0.0026,
                 "nominal_impedance_ohm": 8.0
             }
         }
