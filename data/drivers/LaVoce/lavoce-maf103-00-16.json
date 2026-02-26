@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-maf103-00-16",
+    "manufacturer": "LaVoce",
+    "model_name": "MAF103.00-16",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 90.0,
+        "re_ohm": 10.3,
+        "bl_tm": 26.48,
+        "sd_m2": 0.035,
+        "mms_kg": 0.04070000000000001,
+        "le_h": 0.00079,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0024,
+        "qms": 5.94,
+        "qes": 0.34
+    },
+    "nominal_diameter": "10in"
+}

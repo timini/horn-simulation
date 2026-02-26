@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-10ndl88",
+    "manufacturer": "BC",
+    "model_name": "10NDL88",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 61.0,
+        "re_ohm": 5.1,
+        "bl_tm": 20.0,
+        "sd_m2": 0.032,
+        "mms_kg": 0.0535,
+        "le_h": 0.00118,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0081,
+        "qms": 7.3,
+        "qes": 0.26
+    },
+    "nominal_diameter": "10in"
+}

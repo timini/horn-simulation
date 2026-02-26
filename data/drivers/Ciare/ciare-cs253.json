@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cs253",
+    "manufacturer": "Ciare",
+    "model_name": "CS253",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 44.0,
+        "re_ohm": 6.0,
+        "bl_tm": 12.82,
+        "sd_m2": 0.03537,
+        "mms_kg": 0.0414,
+        "le_h": 0.00029,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 2.95,
+        "qes": 0.43
+    },
+    "nominal_diameter": "10in"
+}

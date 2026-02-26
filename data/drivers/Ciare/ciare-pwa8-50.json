@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pwa8-50",
+    "manufacturer": "Ciare",
+    "model_name": "PWA8.50",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 74.0,
+        "re_ohm": 5.0,
+        "bl_tm": 12.7,
+        "sd_m2": 0.0227,
+        "mms_kg": 0.028,
+        "le_h": 0.00082,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0068,
+        "qms": 5.5,
+        "qes": 0.41
+    },
+    "nominal_diameter": "8in"
+}

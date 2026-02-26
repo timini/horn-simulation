@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-pc105-8",
+    "manufacturer": "Dayton",
+    "model_name": "PC105-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 84.8,
+        "re_ohm": 6.7,
+        "bl_tm": 4.1,
+        "sd_m2": 0.00528,
+        "mms_kg": 0.004200000000000001,
+        "le_h": 0.00054,
+        "qts": 0.64,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 2.29,
+        "qes": 0.88
+    },
+    "nominal_diameter": "6in"
+}

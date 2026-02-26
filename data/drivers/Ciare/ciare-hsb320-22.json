@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hsb320-22",
+    "manufacturer": "Ciare",
+    "model_name": "HSB320-22",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 34.0,
+        "re_ohm": 3.0,
+        "bl_tm": 12.0,
+        "sd_m2": 0.051070000000000004,
+        "mms_kg": 0.095,
+        "le_h": 0.0007,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0075,
+        "qms": 5.6,
+        "qes": 0.44
+    },
+    "nominal_diameter": "12in"
+}

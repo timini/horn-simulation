@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hwb205",
+    "manufacturer": "Ciare",
+    "model_name": "HWB205",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 28.0,
+        "re_ohm": 6.2,
+        "bl_tm": 9.26,
+        "sd_m2": 0.0223,
+        "mms_kg": 0.023600000000000003,
+        "le_h": 0.00041,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 6.83,
+        "qes": 0.3
+    },
+    "nominal_diameter": "8in"
+}

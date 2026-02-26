@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-pss555-8",
+    "manufacturer": "Dayton",
+    "model_name": "PSS555-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 27.6,
+        "re_ohm": 5.4,
+        "bl_tm": 29.7,
+        "sd_m2": 0.17350000000000002,
+        "mms_kg": 0.316,
+        "le_h": 0.0018000000000000002,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.011,
+        "qms": 10.7,
+        "qes": 0.34
+    },
+    "nominal_diameter": "18in"
+}

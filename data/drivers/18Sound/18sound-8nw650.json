@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-8nw650",
+    "manufacturer": "18Sound",
+    "model_name": "8NW650",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 63.0,
+        "re_ohm": 6.1,
+        "bl_tm": 15.2,
+        "sd_m2": 0.023,
+        "mms_kg": 0.026000000000000002,
+        "le_h": 0.00071,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 3.7,
+        "qes": 0.27
+    },
+    "nominal_diameter": "8in"
+}

@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce4249n-4",
+    "manufacturer": "Dayton",
+    "model_name": "CE4249N-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 184.0,
+        "re_ohm": 3.3,
+        "bl_tm": 2.94,
+        "sd_m2": 0.00066,
+        "mms_kg": 0.0012,
+        "le_h": 0.00013000000000000002,
+        "qts": 0.49,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0016,
+        "qms": 6.67,
+        "qes": 0.53
+    }
+}

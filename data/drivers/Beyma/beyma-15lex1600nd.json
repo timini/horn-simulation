@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-15lex1600nd",
+    "manufacturer": "Beyma",
+    "model_name": "15LEX1600Nd",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 41.0,
+        "re_ohm": 5.5,
+        "bl_tm": 25.7,
+        "sd_m2": 0.08800000000000001,
+        "mms_kg": 0.17500000000000002,
+        "le_h": 0.0016,
+        "qts": 0.359,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0145,
+        "qms": 6.6,
+        "qes": 0.38
+    },
+    "nominal_diameter": "15in"
+}

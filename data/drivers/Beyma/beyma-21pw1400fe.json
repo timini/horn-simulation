@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-21pw1400fe",
+    "manufacturer": "Beyma",
+    "model_name": "21PW1400Fe",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 5.2,
+        "bl_tm": 28.2,
+        "sd_m2": 0.1734,
+        "mms_kg": 0.298,
+        "le_h": 0.0013000000000000002,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.01,
+        "qms": 7.4,
+        "qes": 0.36
+    },
+    "nominal_diameter": "18in"
+}

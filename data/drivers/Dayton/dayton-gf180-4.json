@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-gf180-4",
+    "manufacturer": "Dayton",
+    "model_name": "GF180-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 49.0,
+        "re_ohm": 4.4,
+        "bl_tm": 6.5,
+        "sd_m2": 0.01302,
+        "mms_kg": 0.0148,
+        "le_h": 0.0011,
+        "qts": 0.42,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.004,
+        "qms": 3.43,
+        "qes": 0.48
+    },
+    "nominal_diameter": "6in"
+}

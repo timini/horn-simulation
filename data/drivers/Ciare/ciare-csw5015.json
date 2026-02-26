@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-csw5015",
+    "manufacturer": "Ciare",
+    "model_name": "CSW5015",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 36.0,
+        "re_ohm": 2.6,
+        "bl_tm": 14.0,
+        "sd_m2": 0.08296,
+        "mms_kg": 0.27,
+        "le_h": 0.0016,
+        "qts": 0.62,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.014,
+        "qms": 11.7,
+        "qes": 0.65
+    },
+    "nominal_diameter": "15in"
+}

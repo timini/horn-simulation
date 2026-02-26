@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ftr18-4080fd",
+    "manufacturer": "Celestion",
+    "model_name": "FTR18-4080FD",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 25.2,
+        "re_ohm": 5.62,
+        "bl_tm": 22.81,
+        "sd_m2": 0.113412,
+        "mms_kg": 0.178,
+        "le_h": 0.0015,
+        "qts": 0.286,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0085,
+        "qms": 4.75,
+        "qes": 0.3
+    },
+    "nominal_diameter": "18in"
+}

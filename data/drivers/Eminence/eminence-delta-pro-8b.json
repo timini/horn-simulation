@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-delta-pro-8b",
+    "manufacturer": "Eminence",
+    "model_name": "DELTA_PRO-8B",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 71.0,
+        "re_ohm": 10.5,
+        "bl_tm": 17.6,
+        "sd_m2": 0.021890000000000003,
+        "mms_kg": 0.018000000000000002,
+        "le_h": 0.0009000000000000001,
+        "qts": 0.27,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.003,
+        "qms": 7.47,
+        "qes": 0.27
+    },
+    "nominal_diameter": "8in"
+}

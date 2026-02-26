@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tn1530",
+    "manufacturer": "Celestion",
+    "model_name": "TN1530",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 42.5,
+        "re_ohm": 5.38,
+        "bl_tm": 19.29,
+        "sd_m2": 0.08553,
+        "mms_kg": 0.0926,
+        "le_h": 0.00111,
+        "qts": 0.315,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00375,
+        "qms": 2.62,
+        "qes": 0.36
+    },
+    "nominal_diameter": "15in"
+}

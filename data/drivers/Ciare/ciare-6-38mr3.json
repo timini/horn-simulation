@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-6-38mr3",
+    "manufacturer": "Ciare",
+    "model_name": "6.38MR3",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 230.0,
+        "re_ohm": 5.21,
+        "bl_tm": 10.9,
+        "sd_m2": 0.01404,
+        "mms_kg": 0.0064,
+        "le_h": 0.00023,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00025,
+        "qms": 1.35,
+        "qes": 0.53
+    },
+    "nominal_diameter": "6in"
+}

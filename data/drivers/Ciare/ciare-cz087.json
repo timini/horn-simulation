@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-cz087",
+    "manufacturer": "Ciare",
+    "model_name": "CZ087",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 177.0,
+        "re_ohm": 3.5,
+        "bl_tm": 1.74,
+        "sd_m2": 0.0032700000000000003,
+        "mms_kg": 0.002,
+        "le_h": 0.00012,
+        "qts": 1.76,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0016,
+        "qms": 5.56,
+        "qes": 2.57
+    }
+}

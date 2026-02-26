@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-8d1-5cs",
+    "manufacturer": "SICA",
+    "model_name": "8D1,5CS",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 62.0,
+        "re_ohm": 6.6,
+        "bl_tm": 11.18,
+        "sd_m2": 0.021380000000000003,
+        "mms_kg": 0.016800000000000002,
+        "le_h": 0.00035,
+        "qts": 0.3,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0025,
+        "qms": 2.21,
+        "qes": 0.35
+    },
+    "nominal_diameter": "8in"
+}

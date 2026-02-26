@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-ps180-8",
+    "manufacturer": "Dayton",
+    "model_name": "PS180-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 58.5,
+        "re_ohm": 6.4,
+        "bl_tm": 6.82,
+        "sd_m2": 0.013269999999999999,
+        "mms_kg": 0.007,
+        "le_h": 0.00063,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0046,
+        "qms": 3.64,
+        "qes": 0.36
+    },
+    "nominal_diameter": "6in"
+}

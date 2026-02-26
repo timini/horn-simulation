@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hw202",
+    "manufacturer": "Ciare",
+    "model_name": "HW202",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 6.0,
+        "bl_tm": 6.74,
+        "sd_m2": 0.021400000000000002,
+        "mms_kg": 0.021,
+        "le_h": 0.00066,
+        "qts": 0.44,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 3.0,
+        "qes": 0.52
+    },
+    "nominal_diameter": "8in"
+}

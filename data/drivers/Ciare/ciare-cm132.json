@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cm132",
+    "manufacturer": "Ciare",
+    "model_name": "CM132",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 115.0,
+        "re_ohm": 3.5,
+        "bl_tm": 4.43,
+        "sd_m2": 0.0079,
+        "mms_kg": 0.004,
+        "le_h": 0.00012,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0016,
+        "qms": 2.11,
+        "qes": 0.55
+    },
+    "nominal_diameter": "6in"
+}

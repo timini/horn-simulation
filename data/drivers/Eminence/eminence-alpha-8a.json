@@ -1,19 +1,20 @@
 {
     "driver_id": "eminence-alpha-8a",
     "manufacturer": "Eminence",
-    "model_name": "Alpha 8A",
+    "model_name": "ALPHA-8A",
     "driver_type": "cone",
-    "nominal_diameter": "8in",
     "parameters": {
         "fs_hz": 73.0,
-        "re_ohm": 5.38,
-        "bl_tm": 9.5,
-        "sd_m2": 0.0214,
-        "mms_kg": 0.019,
-        "le_h": 0.0007,
-        "qms": 5.0,
-        "qes": 0.5195,
-        "xmax_m": 0.003,
-        "nominal_impedance_ohm": 8.0
-    }
+        "re_ohm": 5.3,
+        "bl_tm": 7.8,
+        "sd_m2": 0.021,
+        "mms_kg": 0.017,
+        "le_h": 0.00044,
+        "qts": 0.59,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0032,
+        "qms": 4.6,
+        "qes": 0.68
+    },
+    "nominal_diameter": "8in"
 }

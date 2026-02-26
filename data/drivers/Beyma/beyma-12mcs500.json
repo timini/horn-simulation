@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-12mcs500",
+    "manufacturer": "Beyma",
+    "model_name": "12MCS500",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.0,
+        "re_ohm": 5.6,
+        "bl_tm": 17.6,
+        "sd_m2": 0.055,
+        "mms_kg": 0.059000000000000004,
+        "le_h": 0.0011,
+        "qts": 0.362,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 7.8,
+        "qes": 0.38
+    },
+    "nominal_diameter": "12in"
+}

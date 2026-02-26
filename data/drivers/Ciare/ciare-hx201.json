@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hx201",
+    "manufacturer": "Ciare",
+    "model_name": "HX201",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.4,
+        "re_ohm": 5.39,
+        "bl_tm": 6.6,
+        "sd_m2": 0.020900000000000002,
+        "mms_kg": 0.012199999999999999,
+        "le_h": 0.00017,
+        "qts": 0.47,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00175,
+        "qms": 6.41,
+        "qes": 0.51
+    },
+    "nominal_diameter": "8in"
+}

@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce58n-10",
+    "manufacturer": "Dayton",
+    "model_name": "CE58N-10",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 177.0,
+        "re_ohm": 9.2,
+        "bl_tm": 4.17,
+        "sd_m2": 0.0014500000000000001,
+        "mms_kg": 0.0015,
+        "le_h": 0.00011,
+        "qts": 0.69,
+        "nominal_impedance_ohm": 10.0,
+        "xmax_m": 0.0021000000000000003,
+        "qms": 3.13,
+        "qes": 0.89
+    }
+}

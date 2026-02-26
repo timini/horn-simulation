@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-18qlex1600fe",
+    "manufacturer": "Beyma",
+    "model_name": "18QLEX1600Fe",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 5.3,
+        "bl_tm": 36.4,
+        "sd_m2": 0.1255,
+        "mms_kg": 0.323,
+        "le_h": 0.0039,
+        "qts": 0.231,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.013000000000000001,
+        "qms": 6.5,
+        "qes": 0.24
+    },
+    "nominal_diameter": "18in"
+}

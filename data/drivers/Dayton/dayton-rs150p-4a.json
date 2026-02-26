@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rs150p-4a",
+    "manufacturer": "Dayton",
+    "model_name": "RS150P-4A",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 43.7,
+        "re_ohm": 3.5,
+        "bl_tm": 4.4,
+        "sd_m2": 0.0085,
+        "mms_kg": 0.0086,
+        "le_h": 0.00039000000000000005,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0044,
+        "qms": 1.85,
+        "qes": 0.42
+    },
+    "nominal_diameter": "6in"
+}

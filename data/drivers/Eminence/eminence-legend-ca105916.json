@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-legend-ca105916",
+    "manufacturer": "Eminence",
+    "model_name": "Legend_CA105916",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 46.0,
+        "re_ohm": 12.03,
+        "bl_tm": 18.1,
+        "sd_m2": 0.035010000000000006,
+        "mms_kg": 0.027,
+        "le_h": 0.00085,
+        "qts": 0.26,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0047,
+        "qms": 2.61,
+        "qes": 0.29
+    },
+    "nominal_diameter": "10in"
+}

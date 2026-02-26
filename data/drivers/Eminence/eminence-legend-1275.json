@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-legend-1275",
+    "manufacturer": "Eminence",
+    "model_name": "LEGEND_1275",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 111.0,
+        "re_ohm": 7.36,
+        "bl_tm": 11.95,
+        "sd_m2": 0.055200000000000006,
+        "mms_kg": 0.03,
+        "le_h": 0.00055,
+        "qts": 1.02,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00047,
+        "qms": 15.07,
+        "qes": 1.09
+    },
+    "nominal_diameter": "12in"
+}

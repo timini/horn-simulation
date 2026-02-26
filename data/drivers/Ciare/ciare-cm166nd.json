@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cm166nd",
+    "manufacturer": "Ciare",
+    "model_name": "CM166ND",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 91.5,
+        "re_ohm": 3.1,
+        "bl_tm": 11.07,
+        "sd_m2": 0.013330000000000002,
+        "mms_kg": 0.012400000000000001,
+        "le_h": 0.00032,
+        "qts": 0.17,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.00425,
+        "qms": 4.7,
+        "qes": 0.18
+    },
+    "nominal_diameter": "6in"
+}

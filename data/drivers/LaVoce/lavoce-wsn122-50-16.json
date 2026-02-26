@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wsn122-50-16",
+    "manufacturer": "LaVoce",
+    "model_name": "WSN122.50-16",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.0,
+        "re_ohm": 13.1,
+        "bl_tm": 23.03,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.054700000000000006,
+        "le_h": 0.0014,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0046,
+        "qms": 3.88,
+        "qes": 0.45
+    },
+    "nominal_diameter": "12in"
+}

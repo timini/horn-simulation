@@ -1,0 +1,19 @@
+{
+    "driver_id": "lavoce-fsf030-70",
+    "manufacturer": "LaVoce",
+    "model_name": "FSF030.70",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 123.0,
+        "re_ohm": 6.3,
+        "bl_tm": 3.47,
+        "sd_m2": 0.0033,
+        "mms_kg": 0.0022,
+        "le_h": 6e-05,
+        "qts": 0.77,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0021000000000000003,
+        "qms": 5.87,
+        "qes": 0.89
+    }
+}

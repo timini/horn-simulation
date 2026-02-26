@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ftx0617",
+    "manufacturer": "Celestion",
+    "model_name": "FTX0617",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 100.0,
+        "re_ohm": 5.52,
+        "bl_tm": 6.59,
+        "sd_m2": 0.015394,
+        "mms_kg": 0.0116,
+        "le_h": 0.00027,
+        "qts": 0.738,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 3.65,
+        "qes": 0.93
+    },
+    "nominal_diameter": "6in"
+}

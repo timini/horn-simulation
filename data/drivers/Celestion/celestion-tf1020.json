@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tf1020",
+    "manufacturer": "Celestion",
+    "model_name": "TF1020",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 69.4,
+        "re_ohm": 5.45,
+        "bl_tm": 14.1,
+        "sd_m2": 0.034636,
+        "mms_kg": 0.031100000000000003,
+        "le_h": 0.0006,
+        "qts": 0.323,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 2.45,
+        "qes": 0.37
+    },
+    "nominal_diameter": "10in"
+}

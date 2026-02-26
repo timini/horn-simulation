@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rss265he-22",
+    "manufacturer": "Dayton",
+    "model_name": "RSS265HE-22",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 4.3,
+        "bl_tm": 21.7,
+        "sd_m2": 0.0316,
+        "mms_kg": 0.07840000000000001,
+        "le_h": 0.0021000000000000003,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.025,
+        "qms": 4.34,
+        "qes": 0.42
+    },
+    "nominal_diameter": "10in"
+}

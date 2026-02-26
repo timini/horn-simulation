@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-cf1230bmb",
+    "manufacturer": "Celestion",
+    "model_name": "CF1230BMB",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 43.4,
+        "re_ohm": 5.84,
+        "bl_tm": 18.38,
+        "sd_m2": 0.053092999999999994,
+        "mms_kg": 0.0884,
+        "le_h": 0.000713,
+        "qts": 0.381,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 4.45,
+        "qes": 0.42
+    },
+    "nominal_diameter": "12in"
+}

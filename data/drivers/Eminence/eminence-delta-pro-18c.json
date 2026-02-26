@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-delta-pro-18c",
+    "manufacturer": "Eminence",
+    "model_name": "DELTA_PRO-18C",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 27.0,
+        "re_ohm": 3.8,
+        "bl_tm": 16.5,
+        "sd_m2": 0.1188,
+        "mms_kg": 0.137,
+        "le_h": 0.00265,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0067,
+        "qms": 13.24,
+        "qes": 0.32
+    },
+    "nominal_diameter": "18in"
+}

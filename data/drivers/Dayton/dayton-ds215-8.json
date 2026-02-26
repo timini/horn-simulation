@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-ds215-8",
+    "manufacturer": "Dayton",
+    "model_name": "DS215-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 34.3,
+        "re_ohm": 5.8,
+        "bl_tm": 9.89,
+        "sd_m2": 0.02112,
+        "mms_kg": 0.0297,
+        "le_h": 0.00125,
+        "qts": 0.31,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 1.75,
+        "qes": 0.38
+    },
+    "nominal_diameter": "8in"
+}

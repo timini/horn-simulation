@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cme250",
+    "manufacturer": "Ciare",
+    "model_name": "CME250",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 48.0,
+        "re_ohm": 3.0,
+        "bl_tm": 7.5,
+        "sd_m2": 0.038,
+        "mms_kg": 0.035500000000000004,
+        "le_h": 0.0004,
+        "qts": 0.48,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 5.7,
+        "qes": 0.53
+    },
+    "nominal_diameter": "10in"
+}

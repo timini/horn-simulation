@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-ssf102-50l",
+    "manufacturer": "LaVoce",
+    "model_name": "SSF102.50L",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 44.0,
+        "re_ohm": 5.7,
+        "bl_tm": 14.71,
+        "sd_m2": 0.035,
+        "mms_kg": 0.0745,
+        "le_h": 0.00133,
+        "qts": 0.49,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0114,
+        "qms": 5.6,
+        "qes": 0.54
+    },
+    "nominal_diameter": "10in"
+}

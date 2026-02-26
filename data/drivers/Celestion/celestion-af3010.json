@@ -1,0 +1,19 @@
+{
+    "driver_id": "celestion-af3010",
+    "manufacturer": "Celestion",
+    "model_name": "AF3010",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 128.9,
+        "re_ohm": 10.48,
+        "bl_tm": 5.98,
+        "sd_m2": 0.003318,
+        "mms_kg": 0.0035499999999999998,
+        "le_h": 0.00026000000000000003,
+        "qts": 0.74,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.00275,
+        "qms": 6.1,
+        "qes": 0.84
+    }
+}

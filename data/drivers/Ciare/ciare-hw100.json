@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hw100",
+    "manufacturer": "Ciare",
+    "model_name": "HW100",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 70.0,
+        "re_ohm": 6.0,
+        "bl_tm": 5.6,
+        "sd_m2": 0.005,
+        "mms_kg": 0.00426,
+        "le_h": 0.00037,
+        "qts": 0.31,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0043,
+        "qms": 2.0,
+        "qes": 0.37
+    },
+    "nominal_diameter": "6in"
+}

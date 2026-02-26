@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-maverick",
+    "manufacturer": "Eminence",
+    "model_name": "MAVERICK",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 82.0,
+        "re_ohm": 5.99,
+        "bl_tm": 8.71,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.028,
+        "le_h": 0.00048,
+        "qts": 1.09,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00047,
+        "qms": 16.77,
+        "qes": 1.17
+    },
+    "nominal_diameter": "12in"
+}

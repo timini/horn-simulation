@@ -1,0 +1,19 @@
+{
+    "driver_id": "celestion-f12-x200",
+    "manufacturer": "Celestion",
+    "model_name": "F12-X200",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 69.8,
+        "re_ohm": 5.91,
+        "bl_tm": 12.5,
+        "sd_m2": 0.056900000000000006,
+        "mms_kg": 0.0502,
+        "le_h": 0.000102,
+        "qts": 0.777,
+        "nominal_impedance_ohm": 8.0,
+        "qms": 12.01,
+        "qes": 0.83
+    },
+    "nominal_diameter": "12in"
+}

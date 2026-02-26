@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-beta-8cx",
+    "manufacturer": "Eminence",
+    "model_name": "BETA-8CX",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 62.0,
+        "re_ohm": 5.37,
+        "bl_tm": 11.21,
+        "sd_m2": 0.021,
+        "mms_kg": 0.019,
+        "le_h": 0.00067,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0032,
+        "qms": 6.57,
+        "qes": 0.31
+    },
+    "nominal_diameter": "8in"
+}

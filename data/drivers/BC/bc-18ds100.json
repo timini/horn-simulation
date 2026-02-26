@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-18ds100",
+    "manufacturer": "BC",
+    "model_name": "18DS100",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 32.0,
+        "re_ohm": 2.5,
+        "bl_tm": 24.3,
+        "sd_m2": 0.12100000000000001,
+        "mms_kg": 0.3,
+        "le_h": 0.00282,
+        "qts": 0.24,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.014,
+        "qms": 10.0,
+        "qes": 0.24
+    },
+    "nominal_diameter": "18in"
+}

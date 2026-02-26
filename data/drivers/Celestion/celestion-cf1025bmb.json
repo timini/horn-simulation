@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-cf1025bmb",
+    "manufacturer": "Celestion",
+    "model_name": "CF1025BMB",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.9,
+        "re_ohm": 6.04,
+        "bl_tm": 15.28,
+        "sd_m2": 0.034636,
+        "mms_kg": 0.0559,
+        "le_h": 0.00115,
+        "qts": 0.355,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0066500000000000005,
+        "qms": 7.95,
+        "qes": 0.37
+    },
+    "nominal_diameter": "10in"
+}

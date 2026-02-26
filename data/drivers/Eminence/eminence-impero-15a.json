@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-impero-15a",
+    "manufacturer": "Eminence",
+    "model_name": "IMPERO_15A",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 43.0,
+        "re_ohm": 5.42,
+        "bl_tm": 19.18,
+        "sd_m2": 0.08563,
+        "mms_kg": 0.101,
+        "le_h": 0.00147,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0073,
+        "qms": 15.33,
+        "qes": 0.4
+    },
+    "nominal_diameter": "15in"
+}

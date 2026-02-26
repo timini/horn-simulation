@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cmr200",
+    "manufacturer": "Ciare",
+    "model_name": "CMR200",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 94.0,
+        "re_ohm": 3.41,
+        "bl_tm": 8.55,
+        "sd_m2": 0.0216,
+        "mms_kg": 0.0189,
+        "le_h": 0.00042,
+        "qts": 0.46,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0038,
+        "qms": 3.82,
+        "qes": 0.52
+    },
+    "nominal_diameter": "8in"
+}

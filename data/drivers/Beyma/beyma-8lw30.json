@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-8lw30",
+    "manufacturer": "Beyma",
+    "model_name": "8LW30",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 70.0,
+        "re_ohm": 5.8,
+        "bl_tm": 12.0,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.022,
+        "le_h": 0.0011,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 7.0,
+        "qes": 0.39
+    },
+    "nominal_diameter": "8in"
+}

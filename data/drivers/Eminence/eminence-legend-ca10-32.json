@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-legend-ca10-32",
+    "manufacturer": "Eminence",
+    "model_name": "LEGEND_CA10-32",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 55.0,
+        "re_ohm": 22.12,
+        "bl_tm": 19.74,
+        "sd_m2": 0.035010000000000006,
+        "mms_kg": 0.029,
+        "le_h": 0.00207,
+        "qts": 0.53,
+        "nominal_impedance_ohm": 32.0,
+        "xmax_m": 0.00302,
+        "qms": 7.16,
+        "qes": 0.58
+    },
+    "nominal_diameter": "10in"
+}

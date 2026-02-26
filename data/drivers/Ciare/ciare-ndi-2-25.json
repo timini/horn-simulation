@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-ndi-2-25",
+    "manufacturer": "Ciare",
+    "model_name": "NDI_2.25",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 100.0,
+        "re_ohm": 7.1,
+        "bl_tm": 5.9,
+        "sd_m2": 0.00132,
+        "mms_kg": 0.00215,
+        "le_h": 0.0002,
+        "qts": 0.27,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0025,
+        "qms": 5.3,
+        "qes": 0.29
+    }
+}

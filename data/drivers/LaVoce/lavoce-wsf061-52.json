@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wsf061-52",
+    "manufacturer": "LaVoce",
+    "model_name": "WSF061.52",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 91.0,
+        "re_ohm": 5.5,
+        "bl_tm": 10.81,
+        "sd_m2": 0.0143,
+        "mms_kg": 0.013300000000000001,
+        "le_h": 0.00042,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0038,
+        "qms": 5.42,
+        "qes": 0.36
+    },
+    "nominal_diameter": "6in"
+}

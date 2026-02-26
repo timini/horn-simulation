@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-cm100",
+    "manufacturer": "Ciare",
+    "model_name": "CM100",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 160.0,
+        "re_ohm": 3.4,
+        "bl_tm": 4.09,
+        "sd_m2": 0.0048000000000000004,
+        "mms_kg": 0.004,
+        "le_h": 0.00017999999999999998,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0019,
+        "qms": 2.75,
+        "qes": 0.52
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-waf124-01",
+    "manufacturer": "LaVoce",
+    "model_name": "WAF124.01",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 42.3,
+        "re_ohm": 5.2,
+        "bl_tm": 25.4,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.10300000000000001,
+        "le_h": 0.00145,
+        "qts": 0.22,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0083,
+        "qms": 4.1,
+        "qes": 0.23
+    },
+    "nominal_diameter": "12in"
+}

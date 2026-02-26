@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-ga-sc59",
+    "manufacturer": "Eminence",
+    "model_name": "GA-SC59",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 89.0,
+        "re_ohm": 7.4,
+        "bl_tm": 13.55,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.028,
+        "le_h": 0.00061,
+        "qts": 0.61,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00161,
+        "qms": 19.73,
+        "qes": 0.63
+    },
+    "nominal_diameter": "12in"
+}

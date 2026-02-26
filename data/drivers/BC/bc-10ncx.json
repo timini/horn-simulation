@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-10ncx",
+    "manufacturer": "BC",
+    "model_name": "10NCX",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.0,
+        "re_ohm": 5.6,
+        "bl_tm": 12.7,
+        "sd_m2": 0.032,
+        "mms_kg": 0.028,
+        "le_h": 0.0012,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 3.7,
+        "qes": 0.35
+    },
+    "nominal_diameter": "10in"
+}

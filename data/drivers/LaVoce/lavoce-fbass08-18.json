@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-fbass08-18",
+    "manufacturer": "LaVoce",
+    "model_name": "FBASS08-18",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.0,
+        "re_ohm": 5.6,
+        "bl_tm": 11.42,
+        "sd_m2": 0.023506000000000003,
+        "mms_kg": 0.030100000000000002,
+        "le_h": 0.00059,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 6.89,
+        "qes": 0.43
+    },
+    "nominal_diameter": "8in"
+}

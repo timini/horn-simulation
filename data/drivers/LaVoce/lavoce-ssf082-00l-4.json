@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-ssf082-00l-4",
+    "manufacturer": "LaVoce",
+    "model_name": "SSF082.00L-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 49.0,
+        "re_ohm": 3.2,
+        "bl_tm": 12.79,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.0725,
+        "le_h": 0.00185,
+        "qts": 0.41,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0103,
+        "qms": 7.54,
+        "qes": 0.44
+    },
+    "nominal_diameter": "8in"
+}

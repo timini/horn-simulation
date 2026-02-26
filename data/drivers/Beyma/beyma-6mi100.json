@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-6mi100",
+    "manufacturer": "Beyma",
+    "model_name": "6MI100",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 128.0,
+        "re_ohm": 6.0,
+        "bl_tm": 10.8,
+        "sd_m2": 0.014,
+        "mms_kg": 0.014,
+        "le_h": 0.0002,
+        "qts": 0.517,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 8.6,
+        "qes": 0.55
+    },
+    "nominal_diameter": "6in"
+}

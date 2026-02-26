@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-cn1025b",
+    "manufacturer": "Celestion",
+    "model_name": "CN1025B",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 79.5,
+        "re_ohm": 10.76,
+        "bl_tm": 20.31,
+        "sd_m2": 0.034636,
+        "mms_kg": 0.0315,
+        "le_h": 0.00075,
+        "qts": 0.364,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0021000000000000003,
+        "qms": 3.27,
+        "qes": 0.41
+    },
+    "nominal_diameter": "10in"
+}

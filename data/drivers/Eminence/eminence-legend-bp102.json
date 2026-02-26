@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-legend-bp102",
+    "manufacturer": "Eminence",
+    "model_name": "LEGEND_BP102",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 5.59,
+        "bl_tm": 10.0,
+        "sd_m2": 0.03345,
+        "mms_kg": 0.038,
+        "le_h": 0.00083,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006200000000000001,
+        "qms": 5.36,
+        "qes": 0.47
+    },
+    "nominal_diameter": "10in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-6ntlw2000",
+    "manufacturer": "18Sound",
+    "model_name": "6NTLW2000",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 86.0,
+        "re_ohm": 5.1,
+        "bl_tm": 11.6,
+        "sd_m2": 0.013300000000000001,
+        "mms_kg": 0.019,
+        "le_h": 0.00022,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004900000000000001,
+        "qms": 5.0,
+        "qes": 0.38
+    },
+    "nominal_diameter": "6in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-waf153-02",
+    "manufacturer": "LaVoce",
+    "model_name": "WAF153.02",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 36.0,
+        "re_ohm": 5.1,
+        "bl_tm": 18.51,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.0866,
+        "le_h": 0.00049,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004900000000000001,
+        "qms": 8.72,
+        "qes": 0.3
+    },
+    "nominal_diameter": "15in"
+}

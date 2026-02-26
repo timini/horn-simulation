@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-12ncx750",
+    "manufacturer": "18Sound",
+    "model_name": "12NCX750",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 58.0,
+        "re_ohm": 5.4,
+        "bl_tm": 17.5,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.048,
+        "le_h": 0.00062,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 6.42,
+        "qes": 0.31
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-es180tia-8",
+    "manufacturer": "Dayton",
+    "model_name": "ES180TiA-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 33.7,
+        "re_ohm": 7.4,
+        "bl_tm": 9.8,
+        "sd_m2": 0.013269999999999999,
+        "mms_kg": 0.0268,
+        "le_h": 0.00113,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0053,
+        "qms": 4.9,
+        "qes": 0.44
+    },
+    "nominal_diameter": "6in"
+}

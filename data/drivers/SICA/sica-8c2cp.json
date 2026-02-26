@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-8c2cp",
+    "manufacturer": "SICA",
+    "model_name": "8C2CP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 78.5,
+        "re_ohm": 6.1,
+        "bl_tm": 13.5,
+        "sd_m2": 0.021380000000000003,
+        "mms_kg": 0.0182,
+        "le_h": 0.0008,
+        "qts": 0.3,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 4.55,
+        "qes": 0.32
+    },
+    "nominal_diameter": "8in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ftr08-2011d",
+    "manufacturer": "Celestion",
+    "model_name": "FTR08-2011D",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 86.1,
+        "re_ohm": 5.82,
+        "bl_tm": 12.71,
+        "sd_m2": 0.022698,
+        "mms_kg": 0.027800000000000002,
+        "le_h": 0.00038,
+        "qts": 0.436,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 2.24,
+        "qes": 0.54
+    },
+    "nominal_diameter": "8in"
+}

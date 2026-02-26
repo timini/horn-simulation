@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-21nlw9600",
+    "manufacturer": "18Sound",
+    "model_name": "21NLW9600",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 29.0,
+        "re_ohm": 6.0,
+        "bl_tm": 43.5,
+        "sd_m2": 0.16620000000000001,
+        "mms_kg": 0.39,
+        "le_h": 0.003,
+        "qts": 0.22,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.014,
+        "qms": 9.32,
+        "qes": 0.23
+    },
+    "nominal_diameter": "18in"
+}

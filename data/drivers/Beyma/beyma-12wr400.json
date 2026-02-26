@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-12wr400",
+    "manufacturer": "Beyma",
+    "model_name": "12WR400",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 42.0,
+        "re_ohm": 5.6,
+        "bl_tm": 18.0,
+        "sd_m2": 0.053000000000000005,
+        "mms_kg": 0.063,
+        "le_h": 0.001,
+        "qts": 0.267,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0063,
+        "qms": 5.6,
+        "qes": 0.28
+    },
+    "nominal_diameter": "12in"
+}

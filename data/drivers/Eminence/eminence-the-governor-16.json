@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-the-governor-16",
+    "manufacturer": "Eminence",
+    "model_name": "THE_GOVERNOR_16",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 103.0,
+        "re_ohm": 14.0,
+        "bl_tm": 19.5,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.028,
+        "le_h": 0.0007,
+        "qts": 0.63,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.00124,
+        "qms": 12.51,
+        "qes": 0.66
+    },
+    "nominal_diameter": "12in"
+}

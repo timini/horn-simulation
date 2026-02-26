@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-15w930",
+    "manufacturer": "18Sound",
+    "model_name": "15W930",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 33.0,
+        "re_ohm": 5.5,
+        "bl_tm": 22.1,
+        "sd_m2": 0.085,
+        "mms_kg": 0.097,
+        "le_h": 0.00147,
+        "qts": 0.22,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0075,
+        "qms": 8.78,
+        "qes": 0.23
+    },
+    "nominal_diameter": "15in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wsf041-00",
+    "manufacturer": "LaVoce",
+    "model_name": "WSF041.00",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 123.0,
+        "re_ohm": 5.4,
+        "bl_tm": 5.75,
+        "sd_m2": 0.005411,
+        "mms_kg": 0.004900000000000001,
+        "le_h": 0.00024,
+        "qts": 0.57,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0028,
+        "qms": 6.87,
+        "qes": 0.62
+    },
+    "nominal_diameter": "6in"
+}

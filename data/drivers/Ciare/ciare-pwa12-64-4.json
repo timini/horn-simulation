@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pwa12-64-4",
+    "manufacturer": "Ciare",
+    "model_name": "PWA12.64-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 56.0,
+        "re_ohm": 2.9,
+        "bl_tm": 13.7,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.057,
+        "le_h": 0.0005200000000000001,
+        "qts": 0.3,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0043,
+        "qms": 7.6,
+        "qes": 0.31
+    },
+    "nominal_diameter": "12in"
+}

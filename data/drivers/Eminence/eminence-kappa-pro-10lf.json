@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-kappa-pro-10lf",
+    "manufacturer": "Eminence",
+    "model_name": "KAPPA_PRO-10LF",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 5.47,
+        "bl_tm": 14.46,
+        "sd_m2": 0.03769,
+        "mms_kg": 0.046,
+        "le_h": 0.0009699999999999999,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007200000000000001,
+        "qms": 8.97,
+        "qes": 0.29
+    },
+    "nominal_diameter": "10in"
+}

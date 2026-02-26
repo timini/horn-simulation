@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-dw3-1053sc",
+    "manufacturer": "Dayton",
+    "model_name": "DW3-1053SC",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 100.0,
+        "re_ohm": 5.98,
+        "bl_tm": 3.2,
+        "sd_m2": 0.00247,
+        "mms_kg": 0.00199,
+        "le_h": 0.00044,
+        "qts": 0.62,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0015,
+        "qms": 4.77,
+        "qes": 0.72
+    }
+}

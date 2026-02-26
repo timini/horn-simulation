@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hx101",
+    "manufacturer": "Ciare",
+    "model_name": "HX101",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 84.0,
+        "re_ohm": 5.43,
+        "bl_tm": 4.54,
+        "sd_m2": 0.00513,
+        "mms_kg": 0.0043300000000000005,
+        "le_h": 0.0001,
+        "qts": 0.47,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00125,
+        "qms": 2.25,
+        "qes": 0.6
+    },
+    "nominal_diameter": "6in"
+}

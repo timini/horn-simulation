@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-tcp115-4",
+    "manufacturer": "Dayton",
+    "model_name": "TCP115-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.8,
+        "re_ohm": 3.2,
+        "bl_tm": 5.2,
+        "sd_m2": 0.00503,
+        "mms_kg": 0.0099,
+        "le_h": 0.0009699999999999999,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.004,
+        "qms": 3.14,
+        "qes": 0.4
+    },
+    "nominal_diameter": "6in"
+}

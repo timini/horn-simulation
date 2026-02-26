@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-10cx300-fe",
+    "manufacturer": "Beyma",
+    "model_name": "10CX300_Fe",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 48.0,
+        "re_ohm": 5.2,
+        "bl_tm": 11.6,
+        "sd_m2": 0.038,
+        "mms_kg": 0.035,
+        "le_h": 0.0004,
+        "qts": 0.381,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0067,
+        "qms": 5.3,
+        "qes": 0.41
+    },
+    "nominal_diameter": "10in"
+}

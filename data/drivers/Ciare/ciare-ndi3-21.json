@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-ndi3-21",
+    "manufacturer": "Ciare",
+    "model_name": "NDI3.21",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 90.0,
+        "re_ohm": 6.1,
+        "bl_tm": 4.0,
+        "sd_m2": 0.0029000000000000002,
+        "mms_kg": 0.002,
+        "le_h": 1e-05,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 2.78,
+        "qes": 0.44
+    }
+}

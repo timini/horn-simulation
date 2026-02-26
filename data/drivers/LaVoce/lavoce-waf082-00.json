@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-waf082-00",
+    "manufacturer": "LaVoce",
+    "model_name": "WAF082.00",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 78.0,
+        "re_ohm": 5.5,
+        "bl_tm": 12.51,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.023600000000000003,
+        "le_h": 0.000185,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0063,
+        "qms": 3.66,
+        "qes": 0.41
+    },
+    "nominal_diameter": "8in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-12sw115",
+    "manufacturer": "BC",
+    "model_name": "12SW115",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 3.1,
+        "bl_tm": 23.8,
+        "sd_m2": 0.0522,
+        "mms_kg": 0.192,
+        "le_h": 0.00135,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.013800000000000002,
+        "qms": 9.8,
+        "qes": 0.26
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-5mp60-n",
+    "manufacturer": "Beyma",
+    "model_name": "5MP60_N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 63.0,
+        "re_ohm": 5.3,
+        "bl_tm": 6.4,
+        "sd_m2": 0.0085,
+        "mms_kg": 0.011,
+        "le_h": 0.0002,
+        "qts": 0.463,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 2.3,
+        "qes": 0.58
+    },
+    "nominal_diameter": "6in"
+}

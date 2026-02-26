@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ftr12-3070c",
+    "manufacturer": "Celestion",
+    "model_name": "FTR12-3070C",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 65.1,
+        "re_ohm": 5.59,
+        "bl_tm": 18.58,
+        "sd_m2": 0.053092999999999994,
+        "mms_kg": 0.0546,
+        "le_h": 0.00109,
+        "qts": 0.321,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 2.8,
+        "qes": 0.36
+    },
+    "nominal_diameter": "12in"
+}

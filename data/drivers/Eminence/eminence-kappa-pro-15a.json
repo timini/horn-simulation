@@ -1,19 +1,20 @@
 {
     "driver_id": "eminence-kappa-pro-15a",
     "manufacturer": "Eminence",
-    "model_name": "Kappa Pro-15A",
+    "model_name": "KAPPA_PRO-15A",
     "driver_type": "cone",
-    "nominal_diameter": "15in",
     "parameters": {
-        "fs_hz": 40.0,
-        "re_ohm": 5.36,
-        "bl_tm": 20.7,
-        "sd_m2": 0.0855,
-        "mms_kg": 0.1,
-        "le_h": 0.0021,
-        "qms": 5.0,
-        "qes": 0.3144,
-        "xmax_m": 0.0052,
-        "nominal_impedance_ohm": 8.0
-    }
+        "fs_hz": 47.0,
+        "re_ohm": 5.23,
+        "bl_tm": 16.6,
+        "sd_m2": 0.08563,
+        "mms_kg": 0.07200000000000001,
+        "le_h": 0.00101,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0032,
+        "qms": 8.01,
+        "qes": 0.4
+    },
+    "nominal_diameter": "15in"
 }

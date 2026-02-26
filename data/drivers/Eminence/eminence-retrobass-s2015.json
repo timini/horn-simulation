@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-retrobass-s2015",
+    "manufacturer": "Eminence",
+    "model_name": "RETROBASS_S2015",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 6.0,
+        "bl_tm": 11.6,
+        "sd_m2": 0.08646000000000001,
+        "mms_kg": 0.064,
+        "le_h": 0.0008900000000000001,
+        "qts": 0.57,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 6.38,
+        "qes": 0.63
+    },
+    "nominal_diameter": "15in"
+}

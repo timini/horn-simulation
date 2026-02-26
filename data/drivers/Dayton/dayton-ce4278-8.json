@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce4278-8",
+    "manufacturer": "Dayton",
+    "model_name": "CE4278-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 211.0,
+        "re_ohm": 7.3,
+        "bl_tm": 2.88,
+        "sd_m2": 0.0015800000000000002,
+        "mms_kg": 0.0014,
+        "le_h": 0.00012,
+        "qts": 1.26,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0021000000000000003,
+        "qms": 6.2,
+        "qes": 1.58
+    }
+}

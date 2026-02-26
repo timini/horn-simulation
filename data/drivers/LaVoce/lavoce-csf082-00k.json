@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-csf082-00k",
+    "manufacturer": "LaVoce",
+    "model_name": "CSF082.00K",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 81.0,
+        "re_ohm": 5.9,
+        "bl_tm": 10.99,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.0179,
+        "le_h": 0.00046,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 3.48,
+        "qes": 0.45
+    },
+    "nominal_diameter": "8in"
+}

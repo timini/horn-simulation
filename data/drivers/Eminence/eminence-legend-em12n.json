@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-legend-em12n",
+    "manufacturer": "Eminence",
+    "model_name": "LEGEND_EM12N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 51.0,
+        "re_ohm": 7.38,
+        "bl_tm": 16.0,
+        "sd_m2": 0.05324,
+        "mms_kg": 0.038,
+        "le_h": 0.00049,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00222,
+        "qms": 7.74,
+        "qes": 0.35
+    },
+    "nominal_diameter": "12in"
+}

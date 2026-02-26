@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-8mc500nd",
+    "manufacturer": "Beyma",
+    "model_name": "8MC500Nd",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 69.0,
+        "re_ohm": 5.3,
+        "bl_tm": 16.7,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.023,
+        "le_h": 0.0005,
+        "qts": 0.177,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 2.6,
+        "qes": 0.19
+    },
+    "nominal_diameter": "8in"
+}

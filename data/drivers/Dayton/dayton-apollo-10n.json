@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-apollo-10n",
+    "manufacturer": "Dayton",
+    "model_name": "Apollo_10N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 54.0,
+        "re_ohm": 7.4,
+        "bl_tm": 19.2,
+        "sd_m2": 0.033312,
+        "mms_kg": 0.0342,
+        "le_h": 0.0011200000000000001,
+        "qts": 0.22,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00579,
+        "qms": 6.73,
+        "qes": 0.23
+    },
+    "nominal_diameter": "10in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cz170",
+    "manufacturer": "Ciare",
+    "model_name": "CZ170",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 104.0,
+        "re_ohm": 3.5,
+        "bl_tm": 2.73,
+        "sd_m2": 0.0132,
+        "mms_kg": 0.00705,
+        "le_h": 0.00028000000000000003,
+        "qts": 1.47,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0011,
+        "qms": 4.59,
+        "qes": 2.16
+    },
+    "nominal_diameter": "6in"
+}

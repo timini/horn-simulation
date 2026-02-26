@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-6m2cp",
+    "manufacturer": "SICA",
+    "model_name": "6M2CP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 135.0,
+        "re_ohm": 3.1,
+        "bl_tm": 8.62,
+        "sd_m2": 0.013890000000000001,
+        "mms_kg": 0.0108,
+        "le_h": 0.00038,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.002,
+        "qms": 4.05,
+        "qes": 0.38
+    },
+    "nominal_diameter": "6in"
+}

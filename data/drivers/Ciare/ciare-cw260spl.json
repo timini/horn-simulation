@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cw260spl",
+    "manufacturer": "Ciare",
+    "model_name": "CW260SPL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 2.54,
+        "bl_tm": 11.97,
+        "sd_m2": 0.0356,
+        "mms_kg": 0.0426,
+        "le_h": 0.000479,
+        "qts": 0.19,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.006,
+        "qms": 14.24,
+        "qes": 0.19
+    },
+    "nominal_diameter": "10in"
+}

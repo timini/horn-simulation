@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-definimax-4015lf",
+    "manufacturer": "Eminence",
+    "model_name": "DEFINIMAX_4015LF",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 5.18,
+        "bl_tm": 18.14,
+        "sd_m2": 0.08563,
+        "mms_kg": 0.137,
+        "le_h": 0.00148,
+        "qts": 0.52,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.009000000000000001,
+        "qms": 11.94,
+        "qes": 0.54
+    },
+    "nominal_diameter": "15in"
+}

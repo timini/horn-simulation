@@ -1,0 +1,19 @@
+{
+    "driver_id": "lavoce-fsn020-72",
+    "manufacturer": "LaVoce",
+    "model_name": "FSN020.72",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 210.0,
+        "re_ohm": 6.2,
+        "bl_tm": 3.19,
+        "sd_m2": 0.0018000000000000002,
+        "mms_kg": 0.0014399999999999999,
+        "le_h": 6.3e-05,
+        "qts": 0.92,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0023,
+        "qms": 4.42,
+        "qes": 1.16
+    }
+}

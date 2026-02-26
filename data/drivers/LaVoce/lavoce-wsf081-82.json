@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wsf081-82",
+    "manufacturer": "LaVoce",
+    "model_name": "WSF081.82",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 79.0,
+        "re_ohm": 5.7,
+        "bl_tm": 11.25,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.0194,
+        "le_h": 0.00049,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0046,
+        "qms": 2.95,
+        "qes": 0.43
+    },
+    "nominal_diameter": "8in"
+}

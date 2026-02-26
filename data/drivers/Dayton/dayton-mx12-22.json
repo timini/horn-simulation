@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-mx12-22",
+    "manufacturer": "Dayton",
+    "model_name": "MX12-22",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 28.8,
+        "re_ohm": 3.95,
+        "bl_tm": 21.5,
+        "sd_m2": 0.05147000000000001,
+        "mms_kg": 0.252,
+        "le_h": 0.00509,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0155,
+        "qms": 3.25,
+        "qes": 0.39
+    },
+    "nominal_diameter": "12in"
+}

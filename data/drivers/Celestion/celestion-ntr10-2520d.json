@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ntr10-2520d",
+    "manufacturer": "Celestion",
+    "model_name": "NTR10-2520D",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.2,
+        "re_ohm": 5.92,
+        "bl_tm": 15.83,
+        "sd_m2": 0.034636,
+        "mms_kg": 0.037899999999999996,
+        "le_h": 0.00049,
+        "qts": 0.289,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 2.82,
+        "qes": 0.32
+    },
+    "nominal_diameter": "10in"
+}

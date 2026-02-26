@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-apollo-8n",
+    "manufacturer": "Dayton",
+    "model_name": "Apollo_8N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 94.0,
+        "re_ohm": 6.0,
+        "bl_tm": 14.41,
+        "sd_m2": 0.020096000000000003,
+        "mms_kg": 0.0209,
+        "le_h": 0.00017,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00391,
+        "qms": 4.43,
+        "qes": 0.35
+    },
+    "nominal_diameter": "8in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wxf15-800",
+    "manufacturer": "LaVoce",
+    "model_name": "WXF15.800",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 47.0,
+        "re_ohm": 5.1,
+        "bl_tm": 22.62,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.131,
+        "le_h": 0.00092,
+        "qts": 0.36,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0077,
+        "qms": 6.14,
+        "qes": 0.39
+    },
+    "nominal_diameter": "15in"
+}

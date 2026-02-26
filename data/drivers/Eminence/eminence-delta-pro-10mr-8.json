@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-delta-pro-10mr-8",
+    "manufacturer": "Eminence",
+    "model_name": "DELTA_PRO_10MR-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.0,
+        "re_ohm": 6.55,
+        "bl_tm": 15.41,
+        "sd_m2": 0.03554,
+        "mms_kg": 0.026000000000000002,
+        "le_h": 0.00042,
+        "qts": 0.23,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0013000000000000002,
+        "qms": 6.77,
+        "qes": 0.24
+    },
+    "nominal_diameter": "10in"
+}

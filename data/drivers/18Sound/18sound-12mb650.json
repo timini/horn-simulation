@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-12mb650",
+    "manufacturer": "18Sound",
+    "model_name": "12MB650",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 48.0,
+        "re_ohm": 6.0,
+        "bl_tm": 19.0,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.048,
+        "le_h": 0.00083,
+        "qts": 0.23,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 3.2,
+        "qes": 0.24
+    },
+    "nominal_diameter": "12in"
+}

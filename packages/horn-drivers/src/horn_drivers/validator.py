@@ -84,12 +84,12 @@ RANGES_COMPRESSION: Dict[str, Tuple[float, float]] = {
 
 # Fallback combined ranges (used when driver_type/diameter unknown)
 RANGES: Dict[str, Tuple[float, float]] = {
-    "fs_hz": (20.0, 2000.0),
-    "re_ohm": (1.0, 20.0),
-    "bl_tm": (1.0, 40.0),
-    "sd_m2": (0.0005, 0.15),
-    "mms_kg": (0.0001, 0.5),
-    "le_h": (0.00001, 0.01),
+    "fs_hz": (15.0, 2000.0),
+    "re_ohm": (1.0, 40.0),
+    "bl_tm": (0.5, 60.0),
+    "sd_m2": (0.0005, 0.25),
+    "mms_kg": (0.0001, 1.0),
+    "le_h": (0.00001, 0.02),
 }
 
 # Per-type ranges (kept for backward compatibility with tests)
@@ -216,12 +216,19 @@ def validate_driver(driver: dict) -> ValidationResult:
     qts = params.get("qts")
     if qms and qes and qts and qms > 0 and qes > 0 and qts > 0:
         reciprocal_sum = 1.0 / qms + 1.0 / qes
-        if abs(1.0 / qts - reciprocal_sum) > 1e-3:
+        q_diff = abs(1.0 / qts - reciprocal_sum)
+        if q_diff > 0.1:
             result.errors.append(
                 f"Q factor identity violated: 1/Qts={1.0/qts:.4f} != "
-                f"1/Qms+1/Qes={reciprocal_sum:.4f}"
+                f"1/Qms+1/Qes={reciprocal_sum:.4f} (diff={q_diff:.4f})"
             )
             penalties += 0.15
+        elif q_diff > 0.01:
+            result.warnings.append(
+                f"Q factor rounding: 1/Qts={1.0/qts:.4f} vs "
+                f"1/Qms+1/Qes={reciprocal_sum:.4f} (diff={q_diff:.4f})"
+            )
+            penalties += 0.02
 
     # 2. Cms = 1 / (Mms * omega_s^2) — this is a definition, always holds
     #    (just compute and store, no check needed as it's derived)

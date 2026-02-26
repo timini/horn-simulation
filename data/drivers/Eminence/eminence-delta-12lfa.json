@@ -1,19 +1,20 @@
 {
     "driver_id": "eminence-delta-12lfa",
     "manufacturer": "Eminence",
-    "model_name": "Delta 12LFA",
+    "model_name": "DELTA-12LFA",
     "driver_type": "cone",
-    "nominal_diameter": "12in",
     "parameters": {
-        "fs_hz": 41.0,
-        "re_ohm": 5.73,
-        "bl_tm": 16.0,
-        "sd_m2": 0.0531,
-        "mms_kg": 0.065,
-        "le_h": 0.0018,
-        "qms": 6.0,
-        "qes": 0.3748,
-        "xmax_m": 0.0044,
-        "nominal_impedance_ohm": 8.0
-    }
+        "fs_hz": 51.0,
+        "re_ohm": 6.06,
+        "bl_tm": 14.1,
+        "sd_m2": 0.05067,
+        "mms_kg": 0.051000000000000004,
+        "le_h": 0.00145,
+        "qts": 0.47,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0048,
+        "qms": 7.28,
+        "qes": 0.51
+    },
+    "nominal_diameter": "12in"
 }

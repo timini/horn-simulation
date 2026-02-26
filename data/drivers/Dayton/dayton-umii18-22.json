@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-umii18-22",
+    "manufacturer": "Dayton",
+    "model_name": "UMII18-22",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 22.0,
+        "re_ohm": 4.2,
+        "bl_tm": 19.2,
+        "sd_m2": 0.1184,
+        "mms_kg": 0.42,
+        "le_h": 0.00115,
+        "qts": 0.53,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.028,
+        "qms": 2.53,
+        "qes": 0.67
+    },
+    "nominal_diameter": "18in"
+}

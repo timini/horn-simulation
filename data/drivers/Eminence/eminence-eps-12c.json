@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-eps-12c",
+    "manufacturer": "Eminence",
+    "model_name": "EPS-12C",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 49.0,
+        "re_ohm": 3.55,
+        "bl_tm": 14.69,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.047,
+        "le_h": 0.00042,
+        "qts": 0.24,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.003,
+        "qms": 10.2,
+        "qes": 0.24
+    },
+    "nominal_diameter": "12in"
+}

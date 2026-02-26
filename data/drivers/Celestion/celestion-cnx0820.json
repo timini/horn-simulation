@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-cnx0820",
+    "manufacturer": "Celestion",
+    "model_name": "CNX0820",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 94.6,
+        "re_ohm": 5.1,
+        "bl_tm": 12.02,
+        "sd_m2": 0.022698,
+        "mms_kg": 0.0209,
+        "le_h": 0.00046,
+        "qts": 0.395,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 3.29,
+        "qes": 0.45
+    },
+    "nominal_diameter": "8in"
+}

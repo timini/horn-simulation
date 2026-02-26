@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wsf102-00",
+    "manufacturer": "LaVoce",
+    "model_name": "WSF102.00",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 65.0,
+        "re_ohm": 5.2,
+        "bl_tm": 11.62,
+        "sd_m2": 0.035,
+        "mms_kg": 0.0304,
+        "le_h": 0.0005,
+        "qts": 0.45,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005200000000000001,
+        "qms": 5.73,
+        "qes": 0.48
+    },
+    "nominal_diameter": "10in"
+}

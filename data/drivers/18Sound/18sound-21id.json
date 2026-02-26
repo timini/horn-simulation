@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-21id",
+    "manufacturer": "18Sound",
+    "model_name": "21iD",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 38.0,
+        "re_ohm": 1.3,
+        "bl_tm": 25.2,
+        "sd_m2": 0.166,
+        "mms_kg": 0.489,
+        "le_h": 0.00108,
+        "qts": 0.23,
+        "nominal_impedance_ohm": 2.0,
+        "xmax_m": 0.014,
+        "qms": 5.6,
+        "qes": 0.24
+    },
+    "nominal_diameter": "18in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pw396",
+    "manufacturer": "Ciare",
+    "model_name": "PW396",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 43.0,
+        "re_ohm": 6.0,
+        "bl_tm": 20.5,
+        "sd_m2": 0.085,
+        "mms_kg": 0.107,
+        "le_h": 0.0013000000000000002,
+        "qts": 0.41,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 24.73,
+        "qes": 0.41
+    },
+    "nominal_diameter": "15in"
+}

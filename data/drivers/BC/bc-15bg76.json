@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-15bg76",
+    "manufacturer": "BC",
+    "model_name": "15BG76",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 44.0,
+        "re_ohm": 5.4,
+        "bl_tm": 21.7,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.194,
+        "le_h": 0.0012900000000000001,
+        "qts": 0.56,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0096,
+        "qms": 6.2,
+        "qes": 0.61
+    },
+    "nominal_diameter": "15in"
+}

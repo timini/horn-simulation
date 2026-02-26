@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-6nd410",
+    "manufacturer": "18Sound",
+    "model_name": "6ND410",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 120.0,
+        "re_ohm": 5.9,
+        "bl_tm": 11.6,
+        "sd_m2": 0.0143,
+        "mms_kg": 0.008199999999999999,
+        "le_h": 0.00067,
+        "qts": 0.24,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 2.2,
+        "qes": 0.27
+    },
+    "nominal_diameter": "6in"
+}

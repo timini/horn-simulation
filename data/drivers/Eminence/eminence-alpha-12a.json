@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-alpha-12a",
+    "manufacturer": "Eminence",
+    "model_name": "ALPHA-12A",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 49.0,
+        "re_ohm": 6.3,
+        "bl_tm": 8.5,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.033,
+        "le_h": 0.00079,
+        "qts": 0.77,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0024,
+        "qms": 6.53,
+        "qes": 0.88
+    },
+    "nominal_diameter": "12in"
+}

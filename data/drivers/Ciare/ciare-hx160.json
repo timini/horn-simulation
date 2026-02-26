@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hx160",
+    "manufacturer": "Ciare",
+    "model_name": "HX160",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 70.2,
+        "re_ohm": 5.36,
+        "bl_tm": 6.56,
+        "sd_m2": 0.013490000000000002,
+        "mms_kg": 0.00825,
+        "le_h": 0.00017,
+        "qts": 0.42,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00175,
+        "qms": 5.14,
+        "qes": 0.45
+    },
+    "nominal_diameter": "6in"
+}

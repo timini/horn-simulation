@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tf1520",
+    "manufacturer": "Celestion",
+    "model_name": "TF1520",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 54.9,
+        "re_ohm": 5.79,
+        "bl_tm": 12.48,
+        "sd_m2": 0.08553,
+        "mms_kg": 0.0655,
+        "le_h": 0.0008,
+        "qts": 0.723,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 5.17,
+        "qes": 0.84
+    },
+    "nominal_diameter": "15in"
+}

@@ -1,0 +1,19 @@
+{
+    "driver_id": "sica-4e1cs",
+    "manufacturer": "SICA",
+    "model_name": "4E1CS",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 118.0,
+        "re_ohm": 5.6,
+        "bl_tm": 5.76,
+        "sd_m2": 0.00442,
+        "mms_kg": 0.0039,
+        "le_h": 0.00014000000000000001,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0022,
+        "qms": 1.85,
+        "qes": 0.49
+    }
+}

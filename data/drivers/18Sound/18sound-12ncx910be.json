@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-12ncx910be",
+    "manufacturer": "18Sound",
+    "model_name": "12NCX910BE",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.0,
+        "re_ohm": 5.3,
+        "bl_tm": 18.1,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.053,
+        "le_h": 0.0007800000000000001,
+        "qts": 0.3,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006900000000000001,
+        "qms": 10.0,
+        "qes": 0.31
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-dcs165-4",
+    "manufacturer": "Dayton",
+    "model_name": "DCS165-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.7,
+        "re_ohm": 3.4,
+        "bl_tm": 9.15,
+        "sd_m2": 0.01247,
+        "mms_kg": 0.0395,
+        "le_h": 0.00143,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.006,
+        "qms": 6.62,
+        "qes": 0.36
+    },
+    "nominal_diameter": "6in"
+}

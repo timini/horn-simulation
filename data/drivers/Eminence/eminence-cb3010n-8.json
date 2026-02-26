@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-cb3010n-8",
+    "manufacturer": "Eminence",
+    "model_name": "CB3010N-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 41.62,
+        "re_ohm": 5.62,
+        "bl_tm": 17.22,
+        "sd_m2": 0.03769,
+        "mms_kg": 0.0514,
+        "le_h": 0.00062,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0064800000000000005,
+        "qms": 7.95,
+        "qes": 0.25
+    },
+    "nominal_diameter": "10in"
+}

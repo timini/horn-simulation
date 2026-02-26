@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-6n2-5pl",
+    "manufacturer": "SICA",
+    "model_name": "6N2,5PL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 80.0,
+        "re_ohm": 6.2,
+        "bl_tm": 13.5,
+        "sd_m2": 0.012270000000000001,
+        "mms_kg": 0.0171,
+        "le_h": 0.00062,
+        "qts": 0.27,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 3.05,
+        "qes": 0.29
+    },
+    "nominal_diameter": "6in"
+}

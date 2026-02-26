@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pw257",
+    "manufacturer": "Ciare",
+    "model_name": "PW257",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.0,
+        "re_ohm": 5.21,
+        "bl_tm": 15.86,
+        "sd_m2": 0.035300000000000005,
+        "mms_kg": 0.0449,
+        "le_h": 0.00094,
+        "qts": 0.3,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 3.2,
+        "qes": 0.33
+    },
+    "nominal_diameter": "10in"
+}

@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce4895-8",
+    "manufacturer": "Dayton",
+    "model_name": "CE4895-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 123.0,
+        "re_ohm": 7.3,
+        "bl_tm": 5.17,
+        "sd_m2": 0.00254,
+        "mms_kg": 0.00272,
+        "le_h": 0.0005300000000000001,
+        "qts": 0.53,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0018000000000000002,
+        "qms": 5.75,
+        "qes": 0.58
+    }
+}

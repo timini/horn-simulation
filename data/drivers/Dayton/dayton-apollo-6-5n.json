@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-apollo-6-5n",
+    "manufacturer": "Dayton",
+    "model_name": "Apollo_6.5N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 102.8,
+        "re_ohm": 6.1,
+        "bl_tm": 14.94,
+        "sd_m2": 0.013267,
+        "mms_kg": 0.0169,
+        "le_h": 0.0012900000000000001,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00377,
+        "qms": 8.02,
+        "qes": 0.29
+    },
+    "nominal_diameter": "6in"
+}

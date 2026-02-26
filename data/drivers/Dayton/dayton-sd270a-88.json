@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-sd270a-88",
+    "manufacturer": "Dayton",
+    "model_name": "SD270A-88",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 26.2,
+        "re_ohm": 12.64,
+        "bl_tm": 15.6,
+        "sd_m2": 0.03464,
+        "mms_kg": 0.0577,
+        "le_h": 0.0044800000000000005,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.006,
+        "qms": 3.23,
+        "qes": 0.5
+    },
+    "nominal_diameter": "10in"
+}

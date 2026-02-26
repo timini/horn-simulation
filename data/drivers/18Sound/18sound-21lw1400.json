@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-21lw1400",
+    "manufacturer": "18Sound",
+    "model_name": "21LW1400",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 28.0,
+        "re_ohm": 5.0,
+        "bl_tm": 33.5,
+        "sd_m2": 0.166,
+        "mms_kg": 0.296,
+        "le_h": 0.00285,
+        "qts": 0.24,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0095,
+        "qms": 9.32,
+        "qes": 0.24
+    },
+    "nominal_diameter": "18in"
+}

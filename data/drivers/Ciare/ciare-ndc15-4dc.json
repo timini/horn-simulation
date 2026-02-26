@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ndc15-4dc",
+    "manufacturer": "Ciare",
+    "model_name": "NDC15-4DC",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 55.6,
+        "re_ohm": 5.6,
+        "bl_tm": 26.28,
+        "sd_m2": 0.08672,
+        "mms_kg": 0.15,
+        "le_h": 0.00098,
+        "qts": 0.36,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.01,
+        "qms": 13.23,
+        "qes": 0.37
+    },
+    "nominal_diameter": "15in"
+}

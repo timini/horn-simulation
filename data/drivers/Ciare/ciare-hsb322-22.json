@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hsb322-22",
+    "manufacturer": "Ciare",
+    "model_name": "HSB322-22",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 3.0,
+        "bl_tm": 12.0,
+        "sd_m2": 0.0511,
+        "mms_kg": 0.095,
+        "le_h": 0.0007,
+        "qts": 0.42,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0075,
+        "qms": 3.95,
+        "qes": 0.47
+    },
+    "nominal_diameter": "12in"
+}

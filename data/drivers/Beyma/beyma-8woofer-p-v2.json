@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-8woofer-p-v2",
+    "manufacturer": "Beyma",
+    "model_name": "8WOOFER_P_V2",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 5.8,
+        "bl_tm": 7.0,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.02,
+        "le_h": 0.0009000000000000001,
+        "qts": 0.5,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 2.72,
+        "qes": 0.62
+    },
+    "nominal_diameter": "8in"
+}

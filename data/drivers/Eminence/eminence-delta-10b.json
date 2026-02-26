@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-delta-10b",
+    "manufacturer": "Eminence",
+    "model_name": "DELTA-10B",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 65.0,
+        "re_ohm": 11.6,
+        "bl_tm": 19.5,
+        "sd_m2": 0.03449,
+        "mms_kg": 0.028,
+        "le_h": 0.00079,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0035,
+        "qms": 8.34,
+        "qes": 0.35
+    },
+    "nominal_diameter": "10in"
+}

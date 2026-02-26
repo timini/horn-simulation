@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce32a-8",
+    "manufacturer": "Dayton",
+    "model_name": "CE32A-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 273.9,
+        "re_ohm": 7.01,
+        "bl_tm": 2.2,
+        "sd_m2": 0.0003917,
+        "mms_kg": 0.00049,
+        "le_h": 0.00029,
+        "qts": 0.87,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0007,
+        "qms": 2.84,
+        "qes": 1.25
+    }
+}

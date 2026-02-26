@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-bn10-300x-4",
+    "manufacturer": "Celestion",
+    "model_name": "BN10-300X_(4)",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 64.2,
+        "re_ohm": 3.03,
+        "bl_tm": 9.39,
+        "sd_m2": 0.03464,
+        "mms_kg": 0.0358,
+        "le_h": 0.00032,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.004,
+        "qms": 3.33,
+        "qes": 0.5
+    },
+    "nominal_diameter": "10in"
+}

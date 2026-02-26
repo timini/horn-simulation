@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tf1230sl",
+    "manufacturer": "Celestion",
+    "model_name": "TF1230SL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 56.8,
+        "re_ohm": 5.17,
+        "bl_tm": 15.68,
+        "sd_m2": 0.053092999999999994,
+        "mms_kg": 0.0583,
+        "le_h": 0.0008900000000000001,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 3.64,
+        "qes": 0.44
+    },
+    "nominal_diameter": "12in"
+}

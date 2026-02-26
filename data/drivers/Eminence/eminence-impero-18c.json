@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-impero-18c",
+    "manufacturer": "Eminence",
+    "model_name": "IMPERO_18C",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 31.0,
+        "re_ohm": 3.13,
+        "bl_tm": 16.1,
+        "sd_m2": 0.1159,
+        "mms_kg": 0.148,
+        "le_h": 0.00109,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.008130000000000002,
+        "qms": 10.13,
+        "qes": 0.35
+    },
+    "nominal_diameter": "18in"
+}

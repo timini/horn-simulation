@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-cz100",
+    "manufacturer": "Ciare",
+    "model_name": "CZ100",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 160.0,
+        "re_ohm": 3.5,
+        "bl_tm": 2.73,
+        "sd_m2": 0.00498,
+        "mms_kg": 0.00283,
+        "le_h": 0.00015,
+        "qts": 1.05,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0011,
+        "qms": 4.89,
+        "qes": 1.34
+    }
+}

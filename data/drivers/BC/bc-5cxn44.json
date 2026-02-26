@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-5cxn44",
+    "manufacturer": "BC",
+    "model_name": "5CXN44",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 70.0,
+        "re_ohm": 4.7,
+        "bl_tm": 8.1,
+        "sd_m2": 0.0095,
+        "mms_kg": 0.015,
+        "le_h": 0.00037,
+        "qts": 0.45,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 9.6,
+        "qes": 0.47
+    },
+    "nominal_diameter": "6in"
+}

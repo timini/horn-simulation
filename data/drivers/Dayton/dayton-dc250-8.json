@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-dc250-8",
+    "manufacturer": "Dayton",
+    "model_name": "DC250-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 24.9,
+        "re_ohm": 6.6,
+        "bl_tm": 12.64,
+        "sd_m2": 0.03431000000000001,
+        "mms_kg": 0.0675,
+        "le_h": 0.00263,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 3.16,
+        "qes": 0.44
+    },
+    "nominal_diameter": "10in"
+}

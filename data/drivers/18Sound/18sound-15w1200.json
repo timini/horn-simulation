@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-15w1200",
+    "manufacturer": "18Sound",
+    "model_name": "15W1200",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 45.0,
+        "re_ohm": 5.5,
+        "bl_tm": 25.0,
+        "sd_m2": 0.09000000000000001,
+        "mms_kg": 0.108,
+        "le_h": 0.0017,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 4.1,
+        "qes": 0.27
+    },
+    "nominal_diameter": "15in"
+}

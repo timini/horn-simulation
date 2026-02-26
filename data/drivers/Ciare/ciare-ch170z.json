@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ch170z",
+    "manufacturer": "Ciare",
+    "model_name": "CH170Z",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 93.0,
+        "re_ohm": 3.5,
+        "bl_tm": 2.73,
+        "sd_m2": 0.013300000000000001,
+        "mms_kg": 0.00951,
+        "le_h": 0.00035,
+        "qts": 1.62,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.00125,
+        "qms": 4.25,
+        "qes": 2.63
+    },
+    "nominal_diameter": "6in"
+}

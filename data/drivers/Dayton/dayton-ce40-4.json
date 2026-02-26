@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce40-4",
+    "manufacturer": "Dayton",
+    "model_name": "CE40-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 194.0,
+        "re_ohm": 3.6,
+        "bl_tm": 1.5,
+        "sd_m2": 0.0007070000000000001,
+        "mms_kg": 0.00073,
+        "le_h": 6e-05,
+        "qts": 1.12,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0007,
+        "qms": 5.0,
+        "qes": 1.45
+    }
+}

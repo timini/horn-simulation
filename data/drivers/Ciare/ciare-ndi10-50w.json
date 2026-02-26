@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ndi10-50w",
+    "manufacturer": "Ciare",
+    "model_name": "NDI10.50W",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.0,
+        "re_ohm": 5.8,
+        "bl_tm": 12.55,
+        "sd_m2": 0.0356,
+        "mms_kg": 0.0357,
+        "le_h": 0.00073,
+        "qts": 0.45,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 4.9,
+        "qes": 0.49
+    },
+    "nominal_diameter": "10in"
+}

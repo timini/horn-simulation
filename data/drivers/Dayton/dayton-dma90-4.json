@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-dma90-4",
+    "manufacturer": "Dayton",
+    "model_name": "DMA90-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 88.2,
+        "re_ohm": 3.8,
+        "bl_tm": 3.5,
+        "sd_m2": 0.00385,
+        "mms_kg": 0.0032,
+        "le_h": 0.0003,
+        "qts": 0.45,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0025,
+        "qms": 2.5,
+        "qes": 0.56
+    }
+}

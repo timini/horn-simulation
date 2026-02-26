@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-kappalite-3010lf-4",
+    "manufacturer": "Eminence",
+    "model_name": "KAPPALITE_3010LF-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 3.78,
+        "bl_tm": 13.89,
+        "sd_m2": 0.03584,
+        "mms_kg": 0.053,
+        "le_h": 0.00062,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.00852,
+        "qms": 7.09,
+        "qes": 0.26
+    },
+    "nominal_diameter": "10in"
+}

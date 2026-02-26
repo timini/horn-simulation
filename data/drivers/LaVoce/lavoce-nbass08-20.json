@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-nbass08-20",
+    "manufacturer": "LaVoce",
+    "model_name": "NBASS08-20",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 55.0,
+        "re_ohm": 5.2,
+        "bl_tm": 11.33,
+        "sd_m2": 0.02351,
+        "mms_kg": 0.0356,
+        "le_h": 0.00011,
+        "qts": 0.48,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 9.92,
+        "qes": 0.5
+    },
+    "nominal_diameter": "8in"
+}

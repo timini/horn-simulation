@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-15-75wa",
+    "manufacturer": "Ciare",
+    "model_name": "15.75WA",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 44.8,
+        "re_ohm": 5.35,
+        "bl_tm": 20.47,
+        "sd_m2": 0.08733,
+        "mms_kg": 0.09920000000000001,
+        "le_h": 6e-05,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 4.13,
+        "qes": 0.36
+    },
+    "nominal_diameter": "15in"
+}

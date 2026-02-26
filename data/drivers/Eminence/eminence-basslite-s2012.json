@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-basslite-s2012",
+    "manufacturer": "Eminence",
+    "model_name": "BASSLITE_S2012",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 48.0,
+        "re_ohm": 5.1,
+        "bl_tm": 11.7,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.046,
+        "le_h": 0.00043,
+        "qts": 0.48,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005200000000000001,
+        "qms": 5.5,
+        "qes": 0.53
+    },
+    "nominal_diameter": "12in"
+}

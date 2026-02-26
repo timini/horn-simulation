@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ndk8-75w",
+    "manufacturer": "Ciare",
+    "model_name": "NDK8.75W",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.0,
+        "re_ohm": 6.0,
+        "bl_tm": 14.41,
+        "sd_m2": 0.0227,
+        "mms_kg": 0.0422,
+        "le_h": 0.0007,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0085,
+        "qms": 4.02,
+        "qes": 0.44
+    },
+    "nominal_diameter": "8in"
+}

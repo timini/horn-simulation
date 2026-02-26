@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-fxi3-21",
+    "manufacturer": "Ciare",
+    "model_name": "FXI3.21",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 90.0,
+        "re_ohm": 6.1,
+        "bl_tm": 3.7,
+        "sd_m2": 0.0029000000000000002,
+        "mms_kg": 0.0022,
+        "le_h": 0.0001,
+        "qts": 0.44,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 4.09,
+        "qes": 0.49
+    }
+}

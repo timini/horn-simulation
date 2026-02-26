@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-la12850",
+    "manufacturer": "Eminence",
+    "model_name": "LA12850",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 46.0,
+        "re_ohm": 5.87,
+        "bl_tm": 19.51,
+        "sd_m2": 0.05454,
+        "mms_kg": 0.073,
+        "le_h": 0.00096,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 12.73,
+        "qes": 0.32
+    },
+    "nominal_diameter": "12in"
+}

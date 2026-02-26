@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-mx6-22",
+    "manufacturer": "Dayton",
+    "model_name": "MX6-22",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 4.7,
+        "bl_tm": 12.3,
+        "sd_m2": 0.01263,
+        "mms_kg": 0.0638,
+        "le_h": 0.0015,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.012,
+        "qms": 2.99,
+        "qes": 0.37
+    },
+    "nominal_diameter": "6in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-14mc700nd",
+    "manufacturer": "Beyma",
+    "model_name": "14MC700Nd",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 51.0,
+        "re_ohm": 5.3,
+        "bl_tm": 22.0,
+        "sd_m2": 0.07000000000000002,
+        "mms_kg": 0.08600000000000001,
+        "le_h": 0.001,
+        "qts": 0.275,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 3.3,
+        "qes": 0.3
+    },
+    "nominal_diameter": "15in"
+}

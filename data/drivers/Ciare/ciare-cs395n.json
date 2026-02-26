@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cs395n",
+    "manufacturer": "Ciare",
+    "model_name": "CS395N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 3.32,
+        "bl_tm": 22.77,
+        "sd_m2": 0.07643,
+        "mms_kg": 0.251,
+        "le_h": 0.001027,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.011,
+        "qms": 14.81,
+        "qes": 0.4
+    },
+    "nominal_diameter": "15in"
+}

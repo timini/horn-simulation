@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-8cx300nd-n",
+    "manufacturer": "Beyma",
+    "model_name": "8CX300Nd_N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 61.0,
+        "re_ohm": 5.4,
+        "bl_tm": 12.0,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.02,
+        "le_h": 0.0003,
+        "qts": 0.293,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 13.0,
+        "qes": 0.3
+    },
+    "nominal_diameter": "8in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-15nlw9401",
+    "manufacturer": "18Sound",
+    "model_name": "15NLW9401",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 2.8,
+        "bl_tm": 20.0,
+        "sd_m2": 0.085,
+        "mms_kg": 0.15,
+        "le_h": 0.00123,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.01,
+        "qms": 6.14,
+        "qes": 0.26
+    },
+    "nominal_diameter": "15in"
+}

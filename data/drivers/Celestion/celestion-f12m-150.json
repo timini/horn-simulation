@@ -1,0 +1,19 @@
+{
+    "driver_id": "celestion-f12m-150",
+    "manufacturer": "Celestion",
+    "model_name": "F12M-150",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 69.4,
+        "re_ohm": 6.07,
+        "bl_tm": 10.923,
+        "sd_m2": 0.05293,
+        "mms_kg": 0.0448,
+        "le_h": 0.000128,
+        "qts": 0.906,
+        "nominal_impedance_ohm": 8.0,
+        "qms": 10.45,
+        "qes": 0.99
+    },
+    "nominal_diameter": "12in"
+}

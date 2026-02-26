@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-6nmb420",
+    "manufacturer": "18Sound",
+    "model_name": "6NMB420",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 110.0,
+        "re_ohm": 5.3,
+        "bl_tm": 9.0,
+        "sd_m2": 0.013000000000000001,
+        "mms_kg": 0.0085,
+        "le_h": 0.0001,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 2.7,
+        "qes": 0.38
+    },
+    "nominal_diameter": "6in"
+}

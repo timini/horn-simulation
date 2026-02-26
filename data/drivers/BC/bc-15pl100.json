@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-15pl100",
+    "manufacturer": "BC",
+    "model_name": "15PL100",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 5.0,
+        "bl_tm": 26.8,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.121,
+        "le_h": 0.0017,
+        "qts": 0.2,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 6.6,
+        "qes": 0.21
+    },
+    "nominal_diameter": "15in"
+}

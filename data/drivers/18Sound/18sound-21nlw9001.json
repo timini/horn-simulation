@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-21nlw9001",
+    "manufacturer": "18Sound",
+    "model_name": "21NLW9001",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 31.0,
+        "re_ohm": 2.9,
+        "bl_tm": 23.8,
+        "sd_m2": 0.16620000000000001,
+        "mms_kg": 0.375,
+        "le_h": 0.0022,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.014,
+        "qms": 4.54,
+        "qes": 0.37
+    },
+    "nominal_diameter": "18in"
+}

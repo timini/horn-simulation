@@ -1,0 +1,18 @@
+{
+    "driver_id": "bc-15sw100-4",
+    "manufacturer": "BC",
+    "model_name": "15SW100_4\u00ce\u00a9",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 29.0,
+        "re_ohm": 4.6,
+        "bl_tm": 42.0,
+        "sd_m2": 0.14500000000000002,
+        "mms_kg": 0.4093,
+        "le_h": 0.0040999999999999995,
+        "qts": 0.2,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0235
+    },
+    "nominal_diameter": "18in"
+}

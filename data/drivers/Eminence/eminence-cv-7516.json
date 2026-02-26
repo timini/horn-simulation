@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-cv-7516",
+    "manufacturer": "Eminence",
+    "model_name": "CV-7516",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 80.0,
+        "re_ohm": 14.23,
+        "bl_tm": 20.05,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.028,
+        "le_h": 0.00085,
+        "qts": 0.48,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.00123,
+        "qms": 21.33,
+        "qes": 0.49
+    },
+    "nominal_diameter": "12in"
+}

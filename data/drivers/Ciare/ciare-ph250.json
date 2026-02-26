@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ph250",
+    "manufacturer": "Ciare",
+    "model_name": "PH250",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 55.0,
+        "re_ohm": 6.0,
+        "bl_tm": 12.4,
+        "sd_m2": 0.03556,
+        "mms_kg": 0.029,
+        "le_h": 0.0006,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.001,
+        "qms": 2.86,
+        "qes": 0.38
+    },
+    "nominal_diameter": "10in"
+}

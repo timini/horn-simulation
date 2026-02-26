@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-truvox-1525",
+    "manufacturer": "Celestion",
+    "model_name": "Truvox_1525",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 49.0,
+        "re_ohm": 6.58,
+        "bl_tm": 14.273,
+        "sd_m2": 0.08553,
+        "mms_kg": 0.0808,
+        "le_h": 0.000703,
+        "qts": 0.756,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00475,
+        "qms": 12.92,
+        "qes": 0.8
+    },
+    "nominal_diameter": "15in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-ga10-sc69",
+    "manufacturer": "Eminence",
+    "model_name": "GA10-SC69",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 98.1,
+        "re_ohm": 6.42,
+        "bl_tm": 12.48,
+        "sd_m2": 0.036610000000000004,
+        "mms_kg": 0.0185,
+        "le_h": 0.0005,
+        "qts": 0.45,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00079,
+        "qms": 12.92,
+        "qes": 0.47
+    },
+    "nominal_diameter": "10in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-12mb710",
+    "manufacturer": "18Sound",
+    "model_name": "12MB710",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 46.0,
+        "re_ohm": 5.0,
+        "bl_tm": 20.5,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.059000000000000004,
+        "le_h": 0.00079,
+        "qts": 0.2,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 10.3,
+        "qes": 0.2
+    },
+    "nominal_diameter": "12in"
+}

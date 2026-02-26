@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-legend-1518",
+    "manufacturer": "Eminence",
+    "model_name": "LEGEND_1518",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 82.0,
+        "re_ohm": 7.16,
+        "bl_tm": 14.1,
+        "sd_m2": 0.08237000000000001,
+        "mms_kg": 0.055,
+        "le_h": 0.00086,
+        "qts": 0.93,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0008,
+        "qms": 10.12,
+        "qes": 1.02
+    },
+    "nominal_diameter": "15in"
+}

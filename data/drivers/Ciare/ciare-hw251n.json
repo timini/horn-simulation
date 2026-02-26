@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hw251n",
+    "manufacturer": "Ciare",
+    "model_name": "HW251N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 6.5,
+        "bl_tm": 13.02,
+        "sd_m2": 0.0346,
+        "mms_kg": 0.0508,
+        "le_h": 0.00175,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0057,
+        "qms": 5.55,
+        "qes": 0.38
+    },
+    "nominal_diameter": "10in"
+}

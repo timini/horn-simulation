@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-dc160-8",
+    "manufacturer": "Dayton",
+    "model_name": "DC160-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.7,
+        "re_ohm": 6.6,
+        "bl_tm": 10.7,
+        "sd_m2": 0.013480000000000002,
+        "mms_kg": 0.0293,
+        "le_h": 0.00226,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00315,
+        "qms": 3.46,
+        "qes": 0.38
+    },
+    "nominal_diameter": "6in"
+}

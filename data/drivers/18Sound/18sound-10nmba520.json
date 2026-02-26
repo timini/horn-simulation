@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-10nmba520",
+    "manufacturer": "18Sound",
+    "model_name": "10NMBA520",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 60.0,
+        "re_ohm": 5.0,
+        "bl_tm": 14.6,
+        "sd_m2": 0.035,
+        "mms_kg": 0.028,
+        "le_h": 1e-05,
+        "qts": 0.23,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 4.2,
+        "qes": 0.24
+    },
+    "nominal_diameter": "10in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-15sw1300nd",
+    "manufacturer": "Beyma",
+    "model_name": "15SW1300Nd",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 44.0,
+        "re_ohm": 5.2,
+        "bl_tm": 25.1,
+        "sd_m2": 0.08800000000000001,
+        "mms_kg": 0.16,
+        "le_h": 0.0034500000000000004,
+        "qts": 0.36,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.01,
+        "qms": 14.7,
+        "qes": 0.37
+    },
+    "nominal_diameter": "15in"
+}

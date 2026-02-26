@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hw131",
+    "manufacturer": "Ciare",
+    "model_name": "HW131",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 68.0,
+        "re_ohm": 6.4,
+        "bl_tm": 7.03,
+        "sd_m2": 0.0082,
+        "mms_kg": 0.008400000000000001,
+        "le_h": 0.0005600000000000001,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0044,
+        "qms": 2.75,
+        "qes": 0.46
+    },
+    "nominal_diameter": "6in"
+}

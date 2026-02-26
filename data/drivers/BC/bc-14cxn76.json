@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-14cxn76",
+    "manufacturer": "BC",
+    "model_name": "14CXN76",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 45.0,
+        "re_ohm": 5.2,
+        "bl_tm": 18.4,
+        "sd_m2": 0.0707,
+        "mms_kg": 0.067,
+        "le_h": 0.001,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 8.5,
+        "qes": 0.29
+    },
+    "nominal_diameter": "15in"
+}

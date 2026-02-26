@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-15nd840",
+    "manufacturer": "18Sound",
+    "model_name": "15ND840",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 43.0,
+        "re_ohm": 5.0,
+        "bl_tm": 17.9,
+        "sd_m2": 0.08814,
+        "mms_kg": 0.094,
+        "le_h": 0.00043,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0095,
+        "qms": 6.6,
+        "qes": 0.39
+    },
+    "nominal_diameter": "15in"
+}

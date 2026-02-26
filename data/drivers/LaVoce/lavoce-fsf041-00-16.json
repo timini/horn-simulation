@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-fsf041-00-16",
+    "manufacturer": "LaVoce",
+    "model_name": "FSF041.00-16",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 132.0,
+        "re_ohm": 12.3,
+        "bl_tm": 5.96,
+        "sd_m2": 0.0056,
+        "mms_kg": 0.0043,
+        "le_h": 0.0001,
+        "qts": 1.01,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0022,
+        "qms": 5.46,
+        "qes": 1.24
+    },
+    "nominal_diameter": "6in"
+}

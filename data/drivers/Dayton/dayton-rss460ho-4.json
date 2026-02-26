@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rss460ho-4",
+    "manufacturer": "Dayton",
+    "model_name": "RSS460HO-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 18.8,
+        "re_ohm": 3.2,
+        "bl_tm": 23.4,
+        "sd_m2": 0.1164,
+        "mms_kg": 0.499,
+        "le_h": 0.0022400000000000002,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.012750000000000001,
+        "qms": 4.05,
+        "qes": 0.35
+    },
+    "nominal_diameter": "18in"
+}

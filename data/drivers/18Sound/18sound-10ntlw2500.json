@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-10ntlw2500",
+    "manufacturer": "18Sound",
+    "model_name": "10NTLW2500",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 61.0,
+        "re_ohm": 2.8,
+        "bl_tm": 14.2,
+        "sd_m2": 0.03464,
+        "mms_kg": 0.054,
+        "le_h": 0.0003,
+        "qts": 0.27,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0076,
+        "qms": 16.0,
+        "qes": 0.27
+    },
+    "nominal_diameter": "10in"
+}

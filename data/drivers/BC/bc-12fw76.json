@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-12fw76",
+    "manufacturer": "BC",
+    "model_name": "12FW76",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 54.0,
+        "re_ohm": 3.1,
+        "bl_tm": 20.4,
+        "sd_m2": 0.0522,
+        "mms_kg": 0.0695,
+        "le_h": 0.001,
+        "qts": 0.18,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.007,
+        "qms": 4.2,
+        "qes": 0.17
+    },
+    "nominal_diameter": "12in"
+}

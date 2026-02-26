@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-15w750",
+    "manufacturer": "18Sound",
+    "model_name": "15W750",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 2.7,
+        "bl_tm": 14.0,
+        "sd_m2": 0.085,
+        "mms_kg": 0.0895,
+        "le_h": 0.00073,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.008,
+        "qms": 6.2,
+        "qes": 0.3
+    },
+    "nominal_diameter": "15in"
+}

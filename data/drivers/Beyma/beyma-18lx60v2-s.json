@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-18lx60v2-s",
+    "manufacturer": "Beyma",
+    "model_name": "18LX60V2_S",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 5.1,
+        "bl_tm": 21.8,
+        "sd_m2": 0.132,
+        "mms_kg": 0.215,
+        "le_h": 0.0021000000000000003,
+        "qts": 0.485,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 15.7,
+        "qes": 0.5
+    },
+    "nominal_diameter": "18in"
+}

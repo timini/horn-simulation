@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-truvox-0820",
+    "manufacturer": "Celestion",
+    "model_name": "Truvox_0820",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 74.1,
+        "re_ohm": 6.06,
+        "bl_tm": 11.51,
+        "sd_m2": 0.022698,
+        "mms_kg": 0.0195,
+        "le_h": 0.0005430000000000001,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 6.3,
+        "qes": 0.42
+    },
+    "nominal_diameter": "8in"
+}

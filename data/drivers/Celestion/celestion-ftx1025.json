@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ftx1025",
+    "manufacturer": "Celestion",
+    "model_name": "FTX1025",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 71.5,
+        "re_ohm": 5.42,
+        "bl_tm": 12.3,
+        "sd_m2": 0.034636,
+        "mms_kg": 0.032600000000000004,
+        "le_h": 0.00048,
+        "qts": 0.44,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 2.79,
+        "qes": 0.52
+    },
+    "nominal_diameter": "10in"
+}

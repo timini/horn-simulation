@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-fxh15-64w",
+    "manufacturer": "Ciare",
+    "model_name": "FXH15.64W",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 38.0,
+        "re_ohm": 5.7,
+        "bl_tm": 16.5,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.081,
+        "le_h": 0.0014,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 8.9,
+        "qes": 0.42
+    },
+    "nominal_diameter": "15in"
+}

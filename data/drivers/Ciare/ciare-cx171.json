@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cx171",
+    "manufacturer": "Ciare",
+    "model_name": "CX171",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 67.0,
+        "re_ohm": 3.2,
+        "bl_tm": 4.6,
+        "sd_m2": 0.0132,
+        "mms_kg": 0.01,
+        "le_h": 0.00033,
+        "qts": 0.55,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.003,
+        "qms": 3.41,
+        "qes": 0.65
+    },
+    "nominal_diameter": "6in"
+}
