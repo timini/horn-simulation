@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 BASE_URL = "https://loudspeakerdatabase.com"
+MAX_RETRIES = 3
 
 # Sd thresholds for nominal diameter inference (m^2).
 DIAMETER_TABLE: List[Tuple[str, float]] = [
@@ -305,11 +306,20 @@ def scrape_all(
             time.sleep(delay)
             print(f"  Scraping: {entry['name']}")
 
-            try:
-                params = scrape_driver_page(entry["url"], session)
-            except Exception as e:
-                print(f"    ERROR: {e}")
-                continue
+            params = None
+            for attempt in range(MAX_RETRIES):
+                try:
+                    params = scrape_driver_page(entry["url"], session)
+                    break
+                except Exception as e:
+                    if attempt < MAX_RETRIES - 1:
+                        wait = delay * (attempt + 2)
+                        print(f"    RETRY ({attempt + 1}/{MAX_RETRIES}): {e}, "
+                              f"waiting {wait:.0f}s")
+                        time.sleep(wait)
+                    else:
+                        print(f"    ERROR after {MAX_RETRIES} attempts: {e}")
+                        break
 
             if params is None:
                 print("    SKIP: no T-S parameters found")
