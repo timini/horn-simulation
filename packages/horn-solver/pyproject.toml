@@ -24,6 +24,11 @@ test = [
 horn-core = { workspace = true }
 horn-drivers = { workspace = true }
 
+[tool.pytest.ini_options]
+markers = [
+    "validation: slow FEM validation tests (run on main only, skipped on PRs)",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

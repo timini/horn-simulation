@@ -1,10 +1,18 @@
-"""V3: Community horn cross-validation — published data comparison.
+"""V3: Community horn cross-validation — published geometry, independent reference.
 
-This test compares FEM results against published frequency response data from
-well-documented horn designs. It uses a skip-if-no-data decorator so the test
-is silently skipped when reference data has not yet been populated.
+Cross-validates the FEM solver against Webster equation predictions for a
+horn geometry taken from published literature (IJERT Type A conical horn:
+throat_dia=10mm, mouth_dia=57mm, length=250mm).
 
-Tolerance: 6 dB (different physics models, driver assumptions, measurement conditions).
+This is a Tier 2 validation: FEM (3D) vs Webster (1D analytical) on a
+real-world horn geometry. The Webster reference data is pre-computed and
+stored in CSV to decouple this test from the Webster implementation in V2.
+
+Source: Choudhari et al., IJERT Vol.3 Issue 2, 2014 — "Theoretical,
+Simulation and Experimental Analysis of Sound Frequency and Sound Pressure
+Level of Different Air Horn Amplifier"
+
+Tolerance: 6 dB (3D vs 1D model mismatch, small throat → higher-order modes).
 
 To add a new reference case:
     1. Digitize published frequency response data into a CSV file
@@ -75,10 +83,10 @@ class TestConicalHornCommunity:
 
     @pytest.mark.skipif(
         not has_reference_data("conical_horn_hornresp.csv"),
-        reason="No community reference data available yet (placeholder CSV is empty)",
+        reason="No reference data in conical_horn_hornresp.csv",
     )
     def test_conical_horn_vs_published(self, tmp_path):
-        """Compare FEM output against digitized published frequency response."""
+        """Compare FEM output against Webster reference for IJERT Type A horn."""
         ref_data = load_csv_reference("conical_horn_hornresp.csv")
         assert ref_data is not None, "Reference data should be loaded"
         ref_freq, ref_spl = ref_data
@@ -106,7 +114,7 @@ class TestConicalHornCommunity:
             freq_range=freq_range,
             num_intervals=len(ref_freq),
             horn_length=horn_length,
-            mesh_size=0.003,  # Fine mesh for small geometry
+            mesh_size=0.004,  # Smaller than throat radius (5mm)
             tmp_dir=tmp_path,
         )
 

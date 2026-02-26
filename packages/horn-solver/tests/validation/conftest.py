@@ -81,7 +81,7 @@ def run_solver_and_get_spl(
     freq_range: tuple[float, float],
     num_intervals: int,
     horn_length: float,
-    mesh_size: float = 0.005,
+    mesh_size: float = 0.01,
     tmp_dir: Path | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Run the solver on a STEP file and return (frequencies, spl) arrays.
@@ -179,3 +179,48 @@ def conical_horn_step(tmp_path):
         output_file=output,
     )
     return output, ref
+
+
+# --- Cached solver results (run once per session, share across tests) ---
+
+@pytest.fixture(scope="module")
+def straight_tube_results(tmp_path_factory):
+    """Solve V1 straight tube once and cache (frequencies, spl, ref)."""
+    ref = load_reference("straight_tube_analytical.json")
+    geom = ref["geometry"]
+    freq_cfg = ref["frequency_range"]
+    tmp = tmp_path_factory.mktemp("v1")
+    step_file = tmp / "straight_tube.step"
+    _generate_cylinder_step(step_file, geom["throat_radius_m"], geom["length_m"])
+    frequencies, spl = run_solver_and_get_spl(
+        step_file=step_file,
+        freq_range=(freq_cfg["min_hz"], freq_cfg["max_hz"]),
+        num_intervals=freq_cfg["num_points"],
+        horn_length=geom["length_m"],
+        tmp_dir=tmp,
+    )
+    return frequencies, spl, ref
+
+
+@pytest.fixture(scope="module")
+def conical_horn_results(tmp_path_factory):
+    """Solve V2 conical horn once and cache (frequencies, spl, ref)."""
+    ref = load_reference("conical_horn_webster.json")
+    geom = ref["geometry"]
+    freq_cfg = ref["frequency_range"]
+    tmp = tmp_path_factory.mktemp("v2")
+    step_file = tmp / "conical_horn.step"
+    create_conical_horn(
+        throat_radius=geom["throat_radius_m"],
+        mouth_radius=geom["mouth_radius_m"],
+        length=geom["length_m"],
+        output_file=step_file,
+    )
+    frequencies, spl = run_solver_and_get_spl(
+        step_file=step_file,
+        freq_range=(freq_cfg["min_hz"], freq_cfg["max_hz"]),
+        num_intervals=freq_cfg["num_points"],
+        horn_length=geom["length_m"],
+        tmp_dir=tmp,
+    )
+    return frequencies, spl, ref
