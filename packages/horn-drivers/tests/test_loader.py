@@ -124,9 +124,9 @@ class TestRealDatabase:
     def test_load_project_drivers(self):
         from pathlib import Path
 
-        db_path = Path(__file__).resolve().parents[3] / "data" / "drivers.json"
+        db_path = Path(__file__).resolve().parents[3] / "data" / "drivers"
         if not db_path.exists():
-            pytest.skip("Project drivers.json not found")
+            pytest.skip("Project drivers database not found")
         drivers = load_drivers(str(db_path))
         assert len(drivers) >= 2
         for d in drivers:

@@ -422,37 +422,32 @@ def scrape_all(
     return drivers
 
 
-def merge_into_db(db_path: Path, new_drivers: List[dict]) -> dict:
-    """Merge scraped drivers into existing database (idempotent, keyed by driver_id)."""
-    if db_path.exists():
-        db = json.loads(db_path.read_text())
-    else:
-        db = {"schema_version": 2, "drivers": []}
+def save_drivers_to_dir(db_dir: Path, new_drivers: List[dict]) -> Tuple[int, int]:
+    """Save scraped drivers as individual JSON files.
 
-    if "drivers" not in db:
-        drivers_list = []
-        for did, data in db.items():
-            data.setdefault("driver_id", did)
-            drivers_list.append(data)
-        db = {"schema_version": 2, "drivers": drivers_list}
+    Layout: ``db_dir/{Manufacturer}/{driver-id}.json``
 
-    existing_ids = {d["driver_id"] for d in db["drivers"]}
+    Returns (added, updated) counts.
+    """
     added, updated = 0, 0
 
     for drv in new_drivers:
-        if drv["driver_id"] in existing_ids:
-            for i, existing in enumerate(db["drivers"]):
-                if existing["driver_id"] == drv["driver_id"]:
-                    db["drivers"][i] = drv
-                    updated += 1
-                    break
+        manufacturer = drv.get("manufacturer", "unknown")
+        driver_id = drv["driver_id"]
+
+        mfr_dir = db_dir / manufacturer
+        mfr_dir.mkdir(parents=True, exist_ok=True)
+        driver_file = mfr_dir / f"{driver_id}.json"
+
+        if driver_file.exists():
+            updated += 1
         else:
-            db["drivers"].append(drv)
             added += 1
 
-    print(f"\nMerge result: {added} added, {updated} updated, "
-          f"{len(db['drivers'])} total drivers")
-    return db
+        driver_file.write_text(json.dumps(drv, indent=4) + "\n")
+
+    print(f"\nSave result: {added} added, {updated} updated")
+    return added, updated
 
 
 def main():
@@ -460,8 +455,8 @@ def main():
         description="Scrape loudspeaker T-S parameters from loudspeakerdatabase.com"
     )
     parser.add_argument(
-        "--db", type=str, default="data/drivers.json",
-        help="Path to driver database JSON (default: data/drivers.json)",
+        "--db", type=str, default="data/drivers",
+        help="Path to driver database directory (default: data/drivers)",
     )
     parser.add_argument(
         "--delay", type=float, default=1.0,
@@ -496,11 +491,10 @@ def main():
         print(json.dumps(drivers, indent=2))
         return
 
-    db_path = Path(args.db)
-    db = merge_into_db(db_path, drivers)
-    db_path.parent.mkdir(parents=True, exist_ok=True)
-    db_path.write_text(json.dumps(db, indent=4) + "\n")
-    print(f"Database written to {db_path}")
+    db_dir = Path(args.db)
+    save_drivers_to_dir(db_dir, drivers)
+    total = sum(1 for _ in db_dir.rglob("*.json"))
+    print(f"Database directory: {db_dir} ({total} drivers)")
 
 
 if __name__ == "__main__":

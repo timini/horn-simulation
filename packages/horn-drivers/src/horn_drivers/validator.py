@@ -321,14 +321,13 @@ def validate_driver(driver: dict) -> ValidationResult:
 
 
 def validate_database(db_path: str) -> List[ValidationResult]:
-    """Validate entire driver database. Returns list of ValidationResults."""
-    db = json.loads(Path(db_path).read_text())
+    """Validate entire driver database. Returns list of ValidationResults.
 
-    if isinstance(db, dict) and "drivers" in db:
-        drivers = db["drivers"]
-    else:
-        drivers = [{"driver_id": k, **v} for k, v in db.items()]
+    Accepts either a directory (v3 per-driver files) or a single JSON file.
+    """
+    from horn_drivers.loader import load_drivers_raw
 
+    drivers = load_drivers_raw(db_path)
     print(f"Validating {len(drivers)} drivers from {db_path}\n")
 
     results = []
@@ -366,8 +365,8 @@ def main():
         description="Validate driver database with physics-based checks."
     )
     parser.add_argument(
-        "--db", type=str, default="data/drivers.json",
-        help="Path to driver database JSON (default: data/drivers.json)",
+        "--db", type=str, default="data/drivers",
+        help="Path to driver database directory or JSON file (default: data/drivers)",
     )
     args = parser.parse_args()
 

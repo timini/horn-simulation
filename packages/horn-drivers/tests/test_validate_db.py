@@ -21,25 +21,30 @@ from horn_drivers.validator import (
 )
 from horn_drivers.loader import load_drivers
 
-DB_PATH = Path(__file__).resolve().parents[3] / "data" / "drivers.json"
+DB_PATH = Path(__file__).resolve().parents[3] / "data" / "drivers"
 
 
 @pytest.fixture
 def db_raw():
-    """Load the raw JSON database (as dicts, not DriverParameters)."""
-    import json
+    """Load the raw driver database (as dicts, not DriverParameters)."""
     if not DB_PATH.exists():
-        pytest.skip("Project drivers.json not found")
-    raw = json.loads(DB_PATH.read_text())
-    return raw["drivers"] if "drivers" in raw else list(raw.values())
+        pytest.skip("Project drivers database not found")
+    from horn_drivers.loader import load_drivers_raw
+    drivers = load_drivers_raw(str(DB_PATH))
+    if not drivers:
+        pytest.skip("Driver database is empty")
+    return drivers
 
 
 @pytest.fixture
 def db_drivers():
     """Load drivers as DriverParameters objects."""
     if not DB_PATH.exists():
-        pytest.skip("Project drivers.json not found")
-    return load_drivers(str(DB_PATH))
+        pytest.skip("Project drivers database not found")
+    drivers = load_drivers(str(DB_PATH))
+    if not drivers:
+        pytest.skip("Driver database is empty")
+    return drivers
 
 
 # -----------------------------------------------------------------------
