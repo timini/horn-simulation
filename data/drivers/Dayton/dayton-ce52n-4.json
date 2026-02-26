@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce52n-4",
+    "manufacturer": "Dayton",
+    "model_name": "CE52N-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 164.0,
+        "re_ohm": 3.3,
+        "bl_tm": 2.51,
+        "sd_m2": 0.00126,
+        "mms_kg": 0.0013000000000000002,
+        "le_h": 0.00012,
+        "qts": 0.59,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.00085,
+        "qms": 4.08,
+        "qes": 0.69
+    }
+}

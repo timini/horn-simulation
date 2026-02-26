@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-apollo-12n",
+    "manufacturer": "Dayton",
+    "model_name": "Apollo_12N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 38.0,
+        "re_ohm": 7.5,
+        "bl_tm": 19.19,
+        "sd_m2": 0.049456,
+        "mms_kg": 0.0545,
+        "le_h": 0.00121,
+        "qts": 0.26,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00675,
+        "qms": 7.75,
+        "qes": 0.27
+    },
+    "nominal_diameter": "12in"
+}

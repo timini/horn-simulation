@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-pc68-4",
+    "manufacturer": "Dayton",
+    "model_name": "PC68-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 117.1,
+        "re_ohm": 3.8,
+        "bl_tm": 2.4,
+        "sd_m2": 0.00212,
+        "mms_kg": 0.0017,
+        "le_h": 0.00029,
+        "qts": 0.65,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.002,
+        "qms": 2.49,
+        "qes": 0.87
+    }
+}

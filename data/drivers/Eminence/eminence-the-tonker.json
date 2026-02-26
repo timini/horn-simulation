@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-the-tonker",
+    "manufacturer": "Eminence",
+    "model_name": "THE_TONKER",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 89.0,
+        "re_ohm": 7.36,
+        "bl_tm": 17.4,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.036000000000000004,
+        "le_h": 0.00047,
+        "qts": 0.47,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0008,
+        "qms": 10.02,
+        "qes": 0.49
+    },
+    "nominal_diameter": "12in"
+}

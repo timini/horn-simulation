@@ -7,6 +7,9 @@ dependencies = [
     "pandas",
     "numpy",
     "mpi4py",
+    "scipy",
+    "horn-core",
+    "horn-drivers",
 ]
 
 [project.scripts]
@@ -17,6 +20,10 @@ test = [
     "pytest>=8.2.2"
 ]
 
+[tool.uv.sources]
+horn-core = { workspace = true }
+horn-drivers = { workspace = true }
+
 [tool.pytest.ini_options]
 markers = [
     "validation: slow FEM validation tests (run on main only, skipped on PRs)",
@@ -24,4 +31,4 @@ markers = [
 
 [build-system]
 requires = ["hatchling"]
-build-backend = "hatchling.build" 
+build-backend = "hatchling.build"

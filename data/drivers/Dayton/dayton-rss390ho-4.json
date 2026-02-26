@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rss390ho-4",
+    "manufacturer": "Dayton",
+    "model_name": "RSS390HO-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 21.5,
+        "re_ohm": 3.2,
+        "bl_tm": 19.8,
+        "sd_m2": 0.08296,
+        "mms_kg": 0.319,
+        "le_h": 0.0017900000000000001,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.012,
+        "qms": 3.69,
+        "qes": 0.35
+    },
+    "nominal_diameter": "15in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-6ps38",
+    "manufacturer": "BC",
+    "model_name": "6PS38",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 75.0,
+        "re_ohm": 5.4,
+        "bl_tm": 10.8,
+        "sd_m2": 0.0132,
+        "mms_kg": 0.014,
+        "le_h": 0.0006,
+        "qts": 0.3,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 11.7,
+        "qes": 0.31
+    },
+    "nominal_diameter": "6in"
+}

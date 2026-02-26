@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-k12h-200tc",
+    "manufacturer": "Celestion",
+    "model_name": "K12H-200TC",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 62.3,
+        "re_ohm": 5.81,
+        "bl_tm": 14.63,
+        "sd_m2": 0.053092999999999994,
+        "mms_kg": 0.040600000000000004,
+        "le_h": 0.00063,
+        "qts": 0.374,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 2.8,
+        "qes": 0.43
+    },
+    "nominal_diameter": "12in"
+}

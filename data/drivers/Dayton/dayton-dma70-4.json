@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-dma70-4",
+    "manufacturer": "Dayton",
+    "model_name": "DMA70-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 113.0,
+        "re_ohm": 4.0,
+        "bl_tm": 3.7,
+        "sd_m2": 0.00229,
+        "mms_kg": 0.0028,
+        "le_h": 0.0003,
+        "qts": 0.44,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.002,
+        "qms": 2.04,
+        "qes": 0.56
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-delta-15lf-4",
+    "manufacturer": "Eminence",
+    "model_name": "DELTA-15LF-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 3.37,
+        "bl_tm": 10.32,
+        "sd_m2": 0.0873,
+        "mms_kg": 0.066,
+        "le_h": 0.00076,
+        "qts": 0.49,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.00597,
+        "qms": 6.22,
+        "qes": 0.53
+    },
+    "nominal_diameter": "15in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-kappalite-3012ho",
+    "manufacturer": "Eminence",
+    "model_name": "KAPPALITE_3012HO",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 52.0,
+        "re_ohm": 5.5,
+        "bl_tm": 15.9,
+        "sd_m2": 0.05324,
+        "mms_kg": 0.047,
+        "le_h": 0.00057,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006200000000000001,
+        "qms": 8.39,
+        "qes": 0.33
+    },
+    "nominal_diameter": "12in"
+}

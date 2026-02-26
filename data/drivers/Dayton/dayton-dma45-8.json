@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-dma45-8",
+    "manufacturer": "Dayton",
+    "model_name": "DMA45-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 150.7,
+        "re_ohm": 7.0,
+        "bl_tm": 4.26,
+        "sd_m2": 0.00086,
+        "mms_kg": 0.0018000000000000002,
+        "le_h": 0.0004,
+        "qts": 0.59,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 4.59,
+        "qes": 0.68
+    }
+}

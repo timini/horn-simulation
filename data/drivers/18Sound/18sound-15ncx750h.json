@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-15ncx750h",
+    "manufacturer": "18Sound",
+    "model_name": "15NCX750H",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 49.0,
+        "re_ohm": 5.4,
+        "bl_tm": 18.5,
+        "sd_m2": 0.0881,
+        "mms_kg": 0.08059999999999999,
+        "le_h": 0.00066,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 6.32,
+        "qes": 0.4
+    },
+    "nominal_diameter": "15in"
+}

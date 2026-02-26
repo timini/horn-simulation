@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-dma80-4",
+    "manufacturer": "Dayton",
+    "model_name": "DMA80-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 93.5,
+        "re_ohm": 4.0,
+        "bl_tm": 3.7,
+        "sd_m2": 0.00312,
+        "mms_kg": 0.00302,
+        "le_h": 0.0002,
+        "qts": 0.41,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0025,
+        "qms": 1.97,
+        "qes": 0.51
+    }
+}

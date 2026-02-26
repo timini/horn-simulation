@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-rs100t-8",
+    "manufacturer": "Dayton",
+    "model_name": "RS100T-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 94.9,
+        "re_ohm": 6.5,
+        "bl_tm": 3.27,
+        "sd_m2": 0.00363,
+        "mms_kg": 0.0022,
+        "le_h": 0.0005,
+        "qts": 0.6,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0037,
+        "qms": 2.4,
+        "qes": 0.79
+    }
+}

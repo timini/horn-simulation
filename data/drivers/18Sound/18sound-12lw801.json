@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-12lw801",
+    "manufacturer": "18Sound",
+    "model_name": "12LW801",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 54.0,
+        "re_ohm": 5.0,
+        "bl_tm": 20.3,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.084,
+        "le_h": 0.0017,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 9.0,
+        "qes": 0.34
+    },
+    "nominal_diameter": "12in"
+}

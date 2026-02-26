@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-10plb76",
+    "manufacturer": "BC",
+    "model_name": "10PLB76",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 52.0,
+        "re_ohm": 4.8,
+        "bl_tm": 18.4,
+        "sd_m2": 0.032,
+        "mms_kg": 0.043000000000000003,
+        "le_h": 0.00032,
+        "qts": 0.19,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 3.4,
+        "qes": 0.2
+    },
+    "nominal_diameter": "10in"
+}

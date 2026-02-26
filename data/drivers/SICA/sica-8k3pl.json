@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-8k3pl",
+    "manufacturer": "SICA",
+    "model_name": "8K3PL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 68.1,
+        "re_ohm": 5.6,
+        "bl_tm": 16.1,
+        "sd_m2": 0.021380000000000003,
+        "mms_kg": 0.029,
+        "le_h": 0.00037,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 3.85,
+        "qes": 0.27
+    },
+    "nominal_diameter": "8in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-15k4pl",
+    "manufacturer": "SICA",
+    "model_name": "15K4PL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 45.2,
+        "re_ohm": 5.2,
+        "bl_tm": 24.2,
+        "sd_m2": 0.08553,
+        "mms_kg": 0.11800000000000001,
+        "le_h": 0.00084,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 13.8,
+        "qes": 0.3
+    },
+    "nominal_diameter": "15in"
+}

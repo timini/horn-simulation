@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-12ps100",
+    "manufacturer": "BC",
+    "model_name": "12PS100",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 44.0,
+        "re_ohm": 5.3,
+        "bl_tm": 22.5,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.106,
+        "le_h": 0.002,
+        "qts": 0.27,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 3.9,
+        "qes": 0.29
+    },
+    "nominal_diameter": "12in"
+}

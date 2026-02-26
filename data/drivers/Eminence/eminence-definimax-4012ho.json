@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-definimax-4012ho",
+    "manufacturer": "Eminence",
+    "model_name": "DEFINIMAX_4012HO",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 51.0,
+        "re_ohm": 5.52,
+        "bl_tm": 19.56,
+        "sd_m2": 0.05454,
+        "mms_kg": 0.078,
+        "le_h": 0.00095,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006200000000000001,
+        "qms": 11.03,
+        "qes": 0.36
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-18nd9310b",
+    "manufacturer": "18Sound",
+    "model_name": "18ND9310B",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 31.0,
+        "re_ohm": 5.0,
+        "bl_tm": 21.8,
+        "sd_m2": 0.12200000000000001,
+        "mms_kg": 0.182,
+        "le_h": 0.0012,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0095,
+        "qms": 7.0,
+        "qes": 0.37
+    },
+    "nominal_diameter": "18in"
+}

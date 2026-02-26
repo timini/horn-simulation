@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-18f3cp",
+    "manufacturer": "SICA",
+    "model_name": "18F3CP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.8,
+        "re_ohm": 5.1,
+        "bl_tm": 16.9,
+        "sd_m2": 0.11642000000000001,
+        "mms_kg": 0.155,
+        "le_h": 0.00141,
+        "qts": 0.45,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 3.05,
+        "qes": 0.52
+    },
+    "nominal_diameter": "18in"
+}

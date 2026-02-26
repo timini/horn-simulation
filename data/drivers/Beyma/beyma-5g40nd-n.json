@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-5g40nd-n",
+    "manufacturer": "Beyma",
+    "model_name": "5G40Nd_N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 140.0,
+        "re_ohm": 6.6,
+        "bl_tm": 10.0,
+        "sd_m2": 0.0085,
+        "mms_kg": 0.009000000000000001,
+        "le_h": 0.0002,
+        "qts": 0.446,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 2.8,
+        "qes": 0.53
+    },
+    "nominal_diameter": "6in"
+}

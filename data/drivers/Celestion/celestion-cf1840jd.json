@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-cf1840jd",
+    "manufacturer": "Celestion",
+    "model_name": "CF1840JD",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 5.29,
+        "bl_tm": 24.76,
+        "sd_m2": 0.113412,
+        "mms_kg": 0.217,
+        "le_h": 0.00116,
+        "qts": 0.397,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0125,
+        "qms": 4.37,
+        "qes": 0.44
+    },
+    "nominal_diameter": "18in"
+}

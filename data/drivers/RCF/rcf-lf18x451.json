@@ -1,0 +1,19 @@
+{
+    "driver_id": "rcf-lf18x451",
+    "manufacturer": "RCF",
+    "model_name": "LF18X451",
+    "driver_type": "cone",
+    "nominal_diameter": "18in",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 5.3,
+        "bl_tm": 25.5,
+        "sd_m2": 0.121,
+        "mms_kg": 0.19,
+        "le_h": 0.0026,
+        "qms": 6.2,
+        "qes": 0.3406,
+        "xmax_m": 0.008,
+        "nominal_impedance_ohm": 8.0
+    }
+}

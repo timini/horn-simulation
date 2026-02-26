@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-4nds34",
+    "manufacturer": "BC",
+    "model_name": "4NDS34",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 79.0,
+        "re_ohm": 5.5,
+        "bl_tm": 8.8,
+        "sd_m2": 0.0057,
+        "mms_kg": 0.007200000000000001,
+        "le_h": 0.00021,
+        "qts": 0.24,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0038,
+        "qms": 8.5,
+        "qes": 0.25
+    },
+    "nominal_diameter": "6in"
+}

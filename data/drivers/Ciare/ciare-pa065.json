@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-pa065",
+    "manufacturer": "Ciare",
+    "model_name": "PA065",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 154.0,
+        "re_ohm": 6.8,
+        "bl_tm": 1.87,
+        "sd_m2": 0.0022,
+        "mms_kg": 0.00101,
+        "le_h": 0.00015,
+        "qts": 1.3,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.001,
+        "qms": 4.12,
+        "qes": 1.9
+    }
+}

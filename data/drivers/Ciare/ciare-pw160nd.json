@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pw160nd",
+    "manufacturer": "Ciare",
+    "model_name": "PW160ND",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 80.0,
+        "re_ohm": 5.4,
+        "bl_tm": 10.37,
+        "sd_m2": 0.01344,
+        "mms_kg": 0.0115,
+        "le_h": 0.00017,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0075,
+        "qms": 4.32,
+        "qes": 0.3
+    },
+    "nominal_diameter": "6in"
+}

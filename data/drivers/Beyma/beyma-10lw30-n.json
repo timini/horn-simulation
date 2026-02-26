@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-10lw30-n",
+    "manufacturer": "Beyma",
+    "model_name": "10LW30_N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 55.0,
+        "re_ohm": 6.2,
+        "bl_tm": 19.3,
+        "sd_m2": 0.035,
+        "mms_kg": 0.052000000000000005,
+        "le_h": 0.001,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 8.5,
+        "qes": 0.3
+    },
+    "nominal_diameter": "10in"
+}

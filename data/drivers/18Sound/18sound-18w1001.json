@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-18w1001",
+    "manufacturer": "18Sound",
+    "model_name": "18W1001",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 5.8,
+        "bl_tm": 27.6,
+        "sd_m2": 0.1134,
+        "mms_kg": 0.139,
+        "le_h": 0.0024500000000000004,
+        "qts": 0.23,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 7.1,
+        "qes": 0.24
+    },
+    "nominal_diameter": "18in"
+}

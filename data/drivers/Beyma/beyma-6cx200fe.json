@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-6cx200fe",
+    "manufacturer": "Beyma",
+    "model_name": "6CX200Fe",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 65.0,
+        "re_ohm": 4.9,
+        "bl_tm": 9.2,
+        "sd_m2": 0.0135,
+        "mms_kg": 0.014,
+        "le_h": 0.0003,
+        "qts": 0.319,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 5.1,
+        "qes": 0.34
+    },
+    "nominal_diameter": "6in"
+}

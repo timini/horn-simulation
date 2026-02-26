@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-18lw2420",
+    "manufacturer": "18Sound",
+    "model_name": "18LW2420",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 34.0,
+        "re_ohm": 2.8,
+        "bl_tm": 20.2,
+        "sd_m2": 0.12250000000000001,
+        "mms_kg": 0.221,
+        "le_h": 0.00087,
+        "qts": 0.31,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.01,
+        "qms": 6.9,
+        "qes": 0.32
+    },
+    "nominal_diameter": "18in"
+}

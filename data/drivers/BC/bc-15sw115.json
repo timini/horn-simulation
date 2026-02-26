@@ -1,0 +1,19 @@
+{
+    "driver_id": "bc-15sw115",
+    "manufacturer": "B&C",
+    "model_name": "15SW115",
+    "driver_type": "cone",
+    "nominal_diameter": "15in",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 5.3,
+        "bl_tm": 22.0,
+        "sd_m2": 0.088,
+        "mms_kg": 0.12,
+        "le_h": 0.0025,
+        "qms": 5.5,
+        "qes": 0.289,
+        "xmax_m": 0.008,
+        "nominal_impedance_ohm": 8.0
+    }
+}

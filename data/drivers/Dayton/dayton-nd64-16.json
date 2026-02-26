@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-nd64-16",
+    "manufacturer": "Dayton",
+    "model_name": "ND64-16",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 100.9,
+        "re_ohm": 14.5,
+        "bl_tm": 6.54,
+        "sd_m2": 0.00156,
+        "mms_kg": 0.00211,
+        "le_h": 0.00121,
+        "qts": 0.41,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0019,
+        "qms": 4.1,
+        "qes": 0.45
+    }
+}

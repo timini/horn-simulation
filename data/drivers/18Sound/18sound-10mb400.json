@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-10mb400",
+    "manufacturer": "18Sound",
+    "model_name": "10MB400",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 70.0,
+        "re_ohm": 5.1,
+        "bl_tm": 12.0,
+        "sd_m2": 0.035,
+        "mms_kg": 0.021,
+        "le_h": 0.0010500000000000002,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0025,
+        "qms": 3.5,
+        "qes": 0.37
+    },
+    "nominal_diameter": "10in"
+}

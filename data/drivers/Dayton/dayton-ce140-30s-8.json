@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce140-30s-8",
+    "manufacturer": "Dayton",
+    "model_name": "CE140-30S-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 105.0,
+        "re_ohm": 7.75,
+        "bl_tm": 4.34,
+        "sd_m2": 0.00251,
+        "mms_kg": 0.00508,
+        "le_h": 0.0007800000000000001,
+        "qts": 1.04,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 4.64,
+        "qes": 1.35
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rss210ho-8",
+    "manufacturer": "Dayton",
+    "model_name": "RSS210HO-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 29.6,
+        "re_ohm": 5.9,
+        "bl_tm": 15.6,
+        "sd_m2": 0.02132,
+        "mms_kg": 0.0993,
+        "le_h": 0.00146,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.012,
+        "qms": 2.78,
+        "qes": 0.45
+    },
+    "nominal_diameter": "8in"
+}

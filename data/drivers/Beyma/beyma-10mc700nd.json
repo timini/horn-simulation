@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-10mc700nd",
+    "manufacturer": "Beyma",
+    "model_name": "10MC700Nd",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 63.0,
+        "re_ohm": 5.2,
+        "bl_tm": 21.8,
+        "sd_m2": 0.03500000000000001,
+        "mms_kg": 0.054,
+        "le_h": 0.001,
+        "qts": 0.226,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 3.8,
+        "qes": 0.24
+    },
+    "nominal_diameter": "10in"
+}

@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce45n-4",
+    "manufacturer": "Dayton",
+    "model_name": "CE45N-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 178.0,
+        "re_ohm": 3.68,
+        "bl_tm": 1.78,
+        "sd_m2": 0.0008039999999999999,
+        "mms_kg": 0.00086,
+        "le_h": 7.000000000000001e-05,
+        "qts": 0.89,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0011,
+        "qms": 4.23,
+        "qes": 1.12
+    }
+}

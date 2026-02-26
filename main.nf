@@ -31,7 +31,7 @@ params.drivers_db = "data/drivers.json"
 params.top_n = 10
 
 // ========================================================================
-// Single-horn processes (existing)
+// Shared processes
 // ========================================================================
 
 process generate_geometry {
@@ -264,7 +264,6 @@ process score_and_rank {
     path "ranked_results.json"
 
     script:
-    // Build CLI args for each solver CSV: the files are named {profile}_results.csv
     """
     python3 -c "
 import json, glob
@@ -406,7 +405,6 @@ workflow sweep {
     )
 
     // 2. Generate geometry for each profile using throat radius from prescreen
-    // Parse throat radius from prescreen JSON and create geometry channels
     ch_profiles = Channel.from("conical", "exponential", "hyperbolic")
 
     // Extract throat radius from prescreen result
@@ -425,7 +423,7 @@ workflow sweep {
     ch_band_indices = Channel.from(0..<params.num_bands)
     ch_sim_inputs = ch_geometries.combine(ch_band_indices)
 
-    // 5. Run simulations (3 profiles x num_bands = 24 parallel jobs)
+    // 5. Run simulations (3 profiles x num_bands parallel jobs)
     ch_band_results = run_sweep_simulation(ch_sim_inputs)
 
     // 6. Group by profile and merge

@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-12s4pl",
+    "manufacturer": "SICA",
+    "model_name": "12S4PL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.4,
+        "re_ohm": 5.2,
+        "bl_tm": 23.5,
+        "sd_m2": 0.05309,
+        "mms_kg": 0.109,
+        "le_h": 0.00115,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0075,
+        "qms": 4.5,
+        "qes": 0.26
+    },
+    "nominal_diameter": "12in"
+}

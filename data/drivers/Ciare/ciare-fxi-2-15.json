@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-fxi-2-15",
+    "manufacturer": "Ciare",
+    "model_name": "FXI_2.15",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 250.0,
+        "re_ohm": 3.4,
+        "bl_tm": 2.3,
+        "sd_m2": 0.0013000000000000002,
+        "mms_kg": 0.0011,
+        "le_h": 0.0001,
+        "qts": 0.8,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0018000000000000002,
+        "qms": 2.8,
+        "qes": 1.12
+    }
+}

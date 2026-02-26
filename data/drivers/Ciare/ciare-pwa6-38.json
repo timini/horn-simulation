@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pwa6-38",
+    "manufacturer": "Ciare",
+    "model_name": "PWA6.38",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 77.0,
+        "re_ohm": 4.9,
+        "bl_tm": 8.7,
+        "sd_m2": 0.013269999999999999,
+        "mms_kg": 0.018000000000000002,
+        "le_h": 0.00038,
+        "qts": 0.56,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 7.3,
+        "qes": 0.62
+    },
+    "nominal_diameter": "6in"
+}

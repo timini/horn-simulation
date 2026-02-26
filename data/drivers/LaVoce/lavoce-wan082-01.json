@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wan082-01",
+    "manufacturer": "LaVoce",
+    "model_name": "WAN082.01",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 85.0,
+        "re_ohm": 5.1,
+        "bl_tm": 14.45,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.0265,
+        "le_h": 0.00035999999999999997,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0058,
+        "qms": 4.8,
+        "qes": 0.35
+    },
+    "nominal_diameter": "8in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tf1218",
+    "manufacturer": "Celestion",
+    "model_name": "TF1218",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 59.0,
+        "re_ohm": 5.93,
+        "bl_tm": 11.23,
+        "sd_m2": 0.053098000000000006,
+        "mms_kg": 0.035,
+        "le_h": 0.00062,
+        "qts": 0.516,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 3.34,
+        "qes": 0.61
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-12lx60v2",
+    "manufacturer": "Beyma",
+    "model_name": "12LX60V2",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 49.0,
+        "re_ohm": 5.1,
+        "bl_tm": 20.0,
+        "sd_m2": 0.055,
+        "mms_kg": 0.10200000000000001,
+        "le_h": 0.0021000000000000003,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.009000000000000001,
+        "qms": 15.3,
+        "qes": 0.4
+    },
+    "nominal_diameter": "12in"
+}

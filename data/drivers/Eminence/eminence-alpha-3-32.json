@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-alpha-3-32",
+    "manufacturer": "Eminence",
+    "model_name": "ALPHA_3-32",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 117.0,
+        "re_ohm": 22.43,
+        "bl_tm": 6.46,
+        "sd_m2": 0.00286,
+        "mms_kg": 0.002,
+        "le_h": 0.00023,
+        "qts": 0.74,
+        "nominal_impedance_ohm": 32.0,
+        "xmax_m": 0.0026000000000000003,
+        "qms": 5.87,
+        "qes": 0.85
+    }
+}

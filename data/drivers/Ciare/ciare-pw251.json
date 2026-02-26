@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pw251",
+    "manufacturer": "Ciare",
+    "model_name": "PW251",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 56.0,
+        "re_ohm": 6.2,
+        "bl_tm": 13.52,
+        "sd_m2": 0.03615,
+        "mms_kg": 0.0318,
+        "le_h": 0.0006,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00135,
+        "qms": 2.14,
+        "qes": 0.38
+    },
+    "nominal_diameter": "10in"
+}

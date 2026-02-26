@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-12-75lw-22",
+    "manufacturer": "Ciare",
+    "model_name": "12.75LW-22",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 36.0,
+        "re_ohm": 3.0,
+        "bl_tm": 12.0,
+        "sd_m2": 0.05474,
+        "mms_kg": 0.077,
+        "le_h": 0.0007,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0075,
+        "qms": 10.0,
+        "qes": 0.38
+    },
+    "nominal_diameter": "12in"
+}

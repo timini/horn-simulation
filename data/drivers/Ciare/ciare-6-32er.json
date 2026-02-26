@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-6-32er",
+    "manufacturer": "Ciare",
+    "model_name": "6.32ER",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 83.5,
+        "re_ohm": 6.4,
+        "bl_tm": 8.5,
+        "sd_m2": 0.01315,
+        "mms_kg": 0.00916,
+        "le_h": 0.00055,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 1.85,
+        "qes": 0.43
+    },
+    "nominal_diameter": "6in"
+}

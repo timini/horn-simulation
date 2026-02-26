@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-legend-gb128",
+    "manufacturer": "Eminence",
+    "model_name": "LEGEND_GB128",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 86.0,
+        "re_ohm": 6.37,
+        "bl_tm": 12.0,
+        "sd_m2": 0.05067,
+        "mms_kg": 0.028,
+        "le_h": 0.00064,
+        "qts": 0.65,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0008,
+        "qms": 19.54,
+        "qes": 0.67
+    },
+    "nominal_diameter": "12in"
+}

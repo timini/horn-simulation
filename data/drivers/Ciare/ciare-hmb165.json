@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hmb165",
+    "manufacturer": "Ciare",
+    "model_name": "HMB165",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 86.0,
+        "re_ohm": 5.7,
+        "bl_tm": 7.0,
+        "sd_m2": 0.0135,
+        "mms_kg": 0.01,
+        "le_h": 0.00049,
+        "qts": 0.53,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 3.19,
+        "qes": 0.63
+    },
+    "nominal_diameter": "6in"
+}

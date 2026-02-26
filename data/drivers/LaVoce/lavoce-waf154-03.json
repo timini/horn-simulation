@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-waf154-03",
+    "manufacturer": "LaVoce",
+    "model_name": "WAF154.03",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 6.0,
+        "bl_tm": 21.83,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.113,
+        "le_h": 0.00035999999999999997,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005200000000000001,
+        "qms": 10.86,
+        "qes": 0.36
+    },
+    "nominal_diameter": "15in"
+}

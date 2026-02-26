@@ -1,0 +1,19 @@
+{
+    "driver_id": "beyma-3fr30v2",
+    "manufacturer": "Beyma",
+    "model_name": "3FR30V2",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 133.0,
+        "re_ohm": 5.8,
+        "bl_tm": 4.5,
+        "sd_m2": 0.003,
+        "mms_kg": 0.0023,
+        "le_h": 0.00016,
+        "qts": 0.511,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 5.9,
+        "qes": 0.56
+    }
+}

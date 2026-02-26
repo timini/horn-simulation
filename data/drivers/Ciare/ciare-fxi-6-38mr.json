@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-fxi-6-38mr",
+    "manufacturer": "Ciare",
+    "model_name": "FXI_6.38MR",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 155.0,
+        "re_ohm": 4.8,
+        "bl_tm": 9.9,
+        "sd_m2": 0.014700000000000001,
+        "mms_kg": 0.013000000000000001,
+        "le_h": 0.0011,
+        "qts": 0.51,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 2.9,
+        "qes": 0.62
+    },
+    "nominal_diameter": "6in"
+}

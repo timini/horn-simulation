@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rs270-8",
+    "manufacturer": "Dayton",
+    "model_name": "RS270-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 29.6,
+        "re_ohm": 6.8,
+        "bl_tm": 10.3,
+        "sd_m2": 0.03464,
+        "mms_kg": 0.0505,
+        "le_h": 0.00093,
+        "qts": 0.47,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0066,
+        "qms": 2.08,
+        "qes": 0.61
+    },
+    "nominal_diameter": "10in"
+}

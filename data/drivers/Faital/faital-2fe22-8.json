@@ -1,0 +1,18 @@
+{
+    "driver_id": "faital-2fe22-8",
+    "manufacturer": "Faital",
+    "model_name": "2FE22_8\u00ce\u00a9",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 75.0,
+        "re_ohm": 5.8,
+        "bl_tm": 10.4,
+        "sd_m2": 0.02339,
+        "mms_kg": 0.0187,
+        "le_h": 0.0002,
+        "qts": 0.48,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005
+    },
+    "nominal_diameter": "8in"
+}

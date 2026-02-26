@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-apollo-15lf",
+    "manufacturer": "Dayton",
+    "model_name": "Apollo_15LF",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 25.5,
+        "re_ohm": 6.4,
+        "bl_tm": 21.1,
+        "sd_m2": 0.08374,
+        "mms_kg": 0.117,
+        "le_h": 0.00174,
+        "qts": 0.26,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00925,
+        "qms": 6.7,
+        "qes": 0.27
+    },
+    "nominal_diameter": "15in"
+}

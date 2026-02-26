@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-san215-30",
+    "manufacturer": "LaVoce",
+    "model_name": "SAN215.30",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 33.0,
+        "re_ohm": 5.4,
+        "bl_tm": 38.34,
+        "sd_m2": 0.169,
+        "mms_kg": 0.464,
+        "le_h": 0.00276,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0149,
+        "qms": 5.48,
+        "qes": 0.35
+    },
+    "nominal_diameter": "18in"
+}

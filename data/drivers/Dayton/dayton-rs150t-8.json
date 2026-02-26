@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rs150t-8",
+    "manufacturer": "Dayton",
+    "model_name": "RS150T-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 46.4,
+        "re_ohm": 6.2,
+        "bl_tm": 5.7,
+        "sd_m2": 0.0085,
+        "mms_kg": 0.0083,
+        "le_h": 0.00061,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 1.67,
+        "qes": 0.47
+    },
+    "nominal_diameter": "6in"
+}

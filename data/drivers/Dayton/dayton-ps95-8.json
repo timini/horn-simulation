@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ps95-8",
+    "manufacturer": "Dayton",
+    "model_name": "PS95-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 119.8,
+        "re_ohm": 7.1,
+        "bl_tm": 3.83,
+        "sd_m2": 0.00283,
+        "mms_kg": 0.0022,
+        "le_h": 0.00063,
+        "qts": 0.72,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0025,
+        "qms": 7.33,
+        "qes": 0.8
+    }
+}

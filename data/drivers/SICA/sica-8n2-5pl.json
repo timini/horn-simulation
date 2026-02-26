@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-8n2-5pl",
+    "manufacturer": "SICA",
+    "model_name": "8N2,5PL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 77.0,
+        "re_ohm": 5.6,
+        "bl_tm": 12.95,
+        "sd_m2": 0.021380000000000003,
+        "mms_kg": 0.020300000000000002,
+        "le_h": 0.00037,
+        "qts": 0.3,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 4.21,
+        "qes": 0.33
+    },
+    "nominal_diameter": "8in"
+}

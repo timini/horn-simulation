@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-ds315-8",
+    "manufacturer": "Dayton",
+    "model_name": "DS315-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 24.2,
+        "re_ohm": 6.1,
+        "bl_tm": 15.6,
+        "sd_m2": 0.05067,
+        "mms_kg": 0.09740000000000001,
+        "le_h": 0.00143,
+        "qts": 0.31,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 1.79,
+        "qes": 0.37
+    },
+    "nominal_diameter": "12in"
+}

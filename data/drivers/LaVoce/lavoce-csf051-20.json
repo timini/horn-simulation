@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-csf051-20",
+    "manufacturer": "LaVoce",
+    "model_name": "CSF051.20",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 100.0,
+        "re_ohm": 3.1,
+        "bl_tm": 4.4,
+        "sd_m2": 0.008700000000000001,
+        "mms_kg": 0.006,
+        "le_h": 0.00023,
+        "qts": 0.62,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.003,
+        "qms": 9.6,
+        "qes": 0.66
+    },
+    "nominal_diameter": "6in"
+}

@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-nd64-4",
+    "manufacturer": "Dayton",
+    "model_name": "ND64-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 103.0,
+        "re_ohm": 3.7,
+        "bl_tm": 4.13,
+        "sd_m2": 0.00156,
+        "mms_kg": 0.00256,
+        "le_h": 0.00037,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0019,
+        "qms": 4.36,
+        "qes": 0.36
+    }
+}

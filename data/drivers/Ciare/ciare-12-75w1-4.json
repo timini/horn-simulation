@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-12-75w1-4",
+    "manufacturer": "Ciare",
+    "model_name": "12.75W1-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 45.0,
+        "re_ohm": 3.4,
+        "bl_tm": 15.6,
+        "sd_m2": 0.05474,
+        "mms_kg": 0.061,
+        "le_h": 0.0014,
+        "qts": 0.24,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0055,
+        "qms": 12.2,
+        "qes": 0.25
+    },
+    "nominal_diameter": "12in"
+}

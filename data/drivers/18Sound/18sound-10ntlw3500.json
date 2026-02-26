@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-10ntlw3500",
+    "manufacturer": "18Sound",
+    "model_name": "10NTLW3500",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 65.0,
+        "re_ohm": 5.1,
+        "bl_tm": 19.2,
+        "sd_m2": 0.0346,
+        "mms_kg": 0.058,
+        "le_h": 0.00042,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0079,
+        "qms": 11.6,
+        "qes": 0.36
+    },
+    "nominal_diameter": "10in"
+}

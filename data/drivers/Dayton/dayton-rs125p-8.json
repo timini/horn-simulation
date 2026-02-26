@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rs125p-8",
+    "manufacturer": "Dayton",
+    "model_name": "RS125P-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 70.0,
+        "re_ohm": 6.2,
+        "bl_tm": 5.08,
+        "sd_m2": 0.00528,
+        "mms_kg": 0.0050999999999999995,
+        "le_h": 0.00062,
+        "qts": 0.44,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 2.56,
+        "qes": 0.53
+    },
+    "nominal_diameter": "6in"
+}

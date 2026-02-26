@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-8l2sl",
+    "manufacturer": "SICA",
+    "model_name": "8L2SL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 64.0,
+        "re_ohm": 6.1,
+        "bl_tm": 12.3,
+        "sd_m2": 0.021380000000000003,
+        "mms_kg": 0.0221,
+        "le_h": 0.00085,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 2.69,
+        "qes": 0.36
+    },
+    "nominal_diameter": "8in"
+}

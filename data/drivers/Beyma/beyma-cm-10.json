@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-cm-10",
+    "manufacturer": "Beyma",
+    "model_name": "CM-10",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 61.0,
+        "re_ohm": 6.15,
+        "bl_tm": 12.2,
+        "sd_m2": 0.039,
+        "mms_kg": 0.035,
+        "le_h": 0.0012,
+        "qts": 0.51,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 6.38,
+        "qes": 0.55
+    },
+    "nominal_diameter": "10in"
+}

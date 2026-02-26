@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hm100",
+    "manufacturer": "Ciare",
+    "model_name": "HM100",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 160.0,
+        "re_ohm": 6.6,
+        "bl_tm": 5.09,
+        "sd_m2": 0.005200000000000001,
+        "mms_kg": 0.00445,
+        "le_h": 0.0003,
+        "qts": 0.7,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0022,
+        "qms": 2.42,
+        "qes": 0.98
+    },
+    "nominal_diameter": "6in"
+}

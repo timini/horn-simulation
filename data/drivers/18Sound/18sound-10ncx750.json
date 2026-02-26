@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-10ncx750",
+    "manufacturer": "18Sound",
+    "model_name": "10NCX750",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 64.0,
+        "re_ohm": 5.3,
+        "bl_tm": 20.0,
+        "sd_m2": 0.0346,
+        "mms_kg": 0.046,
+        "le_h": 0.00054,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 7.9,
+        "qes": 0.26
+    },
+    "nominal_diameter": "10in"
+}

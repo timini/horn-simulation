@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-legend-1058",
+    "manufacturer": "Eminence",
+    "model_name": "LEGEND_1058",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 97.0,
+        "re_ohm": 7.49,
+        "bl_tm": 8.0,
+        "sd_m2": 0.03449,
+        "mms_kg": 0.017,
+        "le_h": 0.0005600000000000001,
+        "qts": 1.13,
+        "nominal_impedance_ohm": 8.0,
+        "qms": 17.78,
+        "qes": 1.21
+    },
+    "nominal_diameter": "10in"
+}

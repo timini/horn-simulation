@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-rs75t-8",
+    "manufacturer": "Dayton",
+    "model_name": "RS75T-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 189.0,
+        "re_ohm": 6.1,
+        "bl_tm": 2.58,
+        "sd_m2": 0.0012000000000000001,
+        "mms_kg": 0.001,
+        "le_h": 0.00032,
+        "qts": 0.95,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0013000000000000002,
+        "qms": 5.84,
+        "qes": 1.13
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-14mlex1000nd",
+    "manufacturer": "Beyma",
+    "model_name": "14MLEX1000Nd",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 47.0,
+        "re_ohm": 5.1,
+        "bl_tm": 26.5,
+        "sd_m2": 0.0707,
+        "mms_kg": 0.107,
+        "le_h": 0.00122,
+        "qts": 0.217,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.011,
+        "qms": 4.0,
+        "qes": 0.23
+    },
+    "nominal_diameter": "15in"
+}

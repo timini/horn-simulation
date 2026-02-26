@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pwa15-75",
+    "manufacturer": "Ciare",
+    "model_name": "PWA15.75",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 44.0,
+        "re_ohm": 5.3,
+        "bl_tm": 19.3,
+        "sd_m2": 0.0881,
+        "mms_kg": 0.10300000000000001,
+        "le_h": 0.00116,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 8.61,
+        "qes": 0.41
+    },
+    "nominal_diameter": "15in"
+}

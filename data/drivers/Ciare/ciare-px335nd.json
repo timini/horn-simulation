@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-px335nd",
+    "manufacturer": "Ciare",
+    "model_name": "PX335ND",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 60.0,
+        "re_ohm": 5.6,
+        "bl_tm": 16.69,
+        "sd_m2": 0.055110000000000006,
+        "mms_kg": 0.049,
+        "le_h": 0.00066,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 11.68,
+        "qes": 0.38
+    },
+    "nominal_diameter": "12in"
+}

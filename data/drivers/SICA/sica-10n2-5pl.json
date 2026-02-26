@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-10n2-5pl",
+    "manufacturer": "SICA",
+    "model_name": "10N2,5PL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.0,
+        "re_ohm": 5.5,
+        "bl_tm": 12.8,
+        "sd_m2": 0.03464,
+        "mms_kg": 0.0325,
+        "le_h": 0.0005,
+        "qts": 0.36,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 4.25,
+        "qes": 0.39
+    },
+    "nominal_diameter": "10in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-ga10-sc64",
+    "manufacturer": "Eminence",
+    "model_name": "GA10-SC64",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 100.0,
+        "re_ohm": 7.58,
+        "bl_tm": 7.05,
+        "sd_m2": 0.036610000000000004,
+        "mms_kg": 0.014,
+        "le_h": 0.00048,
+        "qts": 1.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00159,
+        "qms": 16.89,
+        "qes": 1.38
+    },
+    "nominal_diameter": "10in"
+}

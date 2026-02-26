@@ -1,0 +1,19 @@
+{
+    "driver_id": "oberton-12xb700",
+    "manufacturer": "Oberton",
+    "model_name": "12XB700",
+    "driver_type": "cone",
+    "nominal_diameter": "12in",
+    "parameters": {
+        "fs_hz": 45.0,
+        "re_ohm": 5.4,
+        "bl_tm": 17.5,
+        "sd_m2": 0.0535,
+        "mms_kg": 0.062,
+        "le_h": 0.0016,
+        "qms": 6.2,
+        "qes": 0.3091,
+        "xmax_m": 0.0055,
+        "nominal_impedance_ohm": 8.0
+    }
+}

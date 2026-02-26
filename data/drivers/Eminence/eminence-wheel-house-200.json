@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-wheel-house-200",
+    "manufacturer": "Eminence",
+    "model_name": "WHEEL_HOUSE_200",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 51.0,
+        "re_ohm": 7.49,
+        "bl_tm": 15.58,
+        "sd_m2": 0.07917,
+        "mms_kg": 0.047,
+        "le_h": 0.00046,
+        "qts": 0.45,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00222,
+        "qms": 16.85,
+        "qes": 0.46
+    },
+    "nominal_diameter": "15in"
+}

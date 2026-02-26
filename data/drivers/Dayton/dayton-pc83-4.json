@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-pc83-4",
+    "manufacturer": "Dayton",
+    "model_name": "PC83-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 80.1,
+        "re_ohm": 3.9,
+        "bl_tm": 2.9,
+        "sd_m2": 0.00302,
+        "mms_kg": 0.0027,
+        "le_h": 0.00038,
+        "qts": 0.54,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.002,
+        "qms": 3.41,
+        "qes": 0.64
+    }
+}

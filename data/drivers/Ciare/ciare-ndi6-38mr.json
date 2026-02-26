@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ndi6-38mr",
+    "manufacturer": "Ciare",
+    "model_name": "NDI6.38MR",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 150.0,
+        "re_ohm": 4.8,
+        "bl_tm": 10.5,
+        "sd_m2": 0.014700000000000001,
+        "mms_kg": 0.0132,
+        "le_h": 0.001,
+        "qts": 0.46,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 3.0,
+        "qes": 0.54
+    },
+    "nominal_diameter": "6in"
+}

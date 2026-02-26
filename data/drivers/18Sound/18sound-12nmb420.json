@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-12nmb420",
+    "manufacturer": "18Sound",
+    "model_name": "12NMB420",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.0,
+        "re_ohm": 5.2,
+        "bl_tm": 13.9,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.0335,
+        "le_h": 0.0002,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 3.6,
+        "qes": 0.3
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pw258nd",
+    "manufacturer": "Ciare",
+    "model_name": "PW258ND",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 63.0,
+        "re_ohm": 6.6,
+        "bl_tm": 17.11,
+        "sd_m2": 0.03472,
+        "mms_kg": 0.039799999999999995,
+        "le_h": 2e-05,
+        "qts": 0.36,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 9.12,
+        "qes": 0.37
+    },
+    "nominal_diameter": "10in"
+}

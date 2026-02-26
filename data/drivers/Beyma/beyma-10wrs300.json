@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-10wrs300",
+    "manufacturer": "Beyma",
+    "model_name": "10WRS300",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 52.0,
+        "re_ohm": 6.1,
+        "bl_tm": 13.9,
+        "sd_m2": 0.03500000000000001,
+        "mms_kg": 0.039,
+        "le_h": 0.001,
+        "qts": 0.373,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 5.5,
+        "qes": 0.4
+    },
+    "nominal_diameter": "10in"
+}

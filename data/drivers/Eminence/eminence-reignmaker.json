@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-reignmaker",
+    "manufacturer": "Eminence",
+    "model_name": "REIGNMAKER",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 91.0,
+        "re_ohm": 5.98,
+        "bl_tm": 8.74,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.031,
+        "le_h": 0.0005,
+        "qts": 1.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00047,
+        "qms": 20.19,
+        "qes": 1.37
+    },
+    "nominal_diameter": "12in"
+}

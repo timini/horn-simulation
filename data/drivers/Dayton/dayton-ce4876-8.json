@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce4876-8",
+    "manufacturer": "Dayton",
+    "model_name": "CE4876-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 203.0,
+        "re_ohm": 7.2,
+        "bl_tm": 2.94,
+        "sd_m2": 0.0026300000000000004,
+        "mms_kg": 0.0016,
+        "le_h": 0.00017,
+        "qts": 1.42,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0022,
+        "qms": 8.13,
+        "qes": 1.72
+    }
+}

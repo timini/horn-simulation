@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-sm-112-n",
+    "manufacturer": "Beyma",
+    "model_name": "SM-112_N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 6.2,
+        "bl_tm": 17.0,
+        "sd_m2": 0.055,
+        "mms_kg": 0.058,
+        "le_h": 0.0012,
+        "qts": 0.3,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00725,
+        "qms": 8.0,
+        "qes": 0.31
+    },
+    "nominal_diameter": "12in"
+}

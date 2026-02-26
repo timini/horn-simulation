@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-12-75lw-44",
+    "manufacturer": "Ciare",
+    "model_name": "12.75LW-44",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 6.2,
+        "bl_tm": 18.8,
+        "sd_m2": 0.05474,
+        "mms_kg": 0.085,
+        "le_h": 0.0014,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0075,
+        "qms": 11.1,
+        "qes": 0.34
+    },
+    "nominal_diameter": "12in"
+}

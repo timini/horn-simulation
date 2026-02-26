@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-10cl51",
+    "manufacturer": "BC",
+    "model_name": "10CL51",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 58.0,
+        "re_ohm": 5.2,
+        "bl_tm": 11.6,
+        "sd_m2": 0.032,
+        "mms_kg": 0.0305,
+        "le_h": 0.0008,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 3.5,
+        "qes": 0.42
+    },
+    "nominal_diameter": "10in"
+}

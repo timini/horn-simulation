@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-12nmb1000",
+    "manufacturer": "18Sound",
+    "model_name": "12NMB1000",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 54.0,
+        "re_ohm": 5.5,
+        "bl_tm": 24.4,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.061,
+        "le_h": 0.00069,
+        "qts": 0.19,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 8.4,
+        "qes": 0.19
+    },
+    "nominal_diameter": "12in"
+}

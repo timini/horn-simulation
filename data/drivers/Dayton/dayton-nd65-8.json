@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-nd65-8",
+    "manufacturer": "Dayton",
+    "model_name": "ND65-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 102.0,
+        "re_ohm": 7.4,
+        "bl_tm": 4.2,
+        "sd_m2": 0.00165,
+        "mms_kg": 0.00263,
+        "le_h": 0.00061,
+        "qts": 0.65,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 8.23,
+        "qes": 0.71
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ndh18-4s-4",
+    "manufacturer": "Ciare",
+    "model_name": "NDH18-4S-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 31.0,
+        "re_ohm": 3.0,
+        "bl_tm": 22.2,
+        "sd_m2": 0.1164,
+        "mms_kg": 0.216,
+        "le_h": 0.0017,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0115,
+        "qms": 9.8,
+        "qes": 0.25
+    },
+    "nominal_diameter": "18in"
+}

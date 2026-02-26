@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-8mb710",
+    "manufacturer": "18Sound",
+    "model_name": "8MB710",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 108.0,
+        "re_ohm": 5.2,
+        "bl_tm": 13.4,
+        "sd_m2": 0.0227,
+        "mms_kg": 0.018000000000000002,
+        "le_h": 0.00011,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0022500000000000003,
+        "qms": 4.6,
+        "qes": 0.35
+    },
+    "nominal_diameter": "8in"
+}

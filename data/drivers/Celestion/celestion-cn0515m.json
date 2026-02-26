@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-cn0515m",
+    "manufacturer": "Celestion",
+    "model_name": "CN0515M",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 189.2,
+        "re_ohm": 11.47,
+        "bl_tm": 19.19,
+        "sd_m2": 0.007854000000000002,
+        "mms_kg": 0.00911,
+        "le_h": 0.00111,
+        "qts": 0.276,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0032500000000000003,
+        "qms": 1.53,
+        "qes": 0.34
+    },
+    "nominal_diameter": "6in"
+}

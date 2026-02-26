@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-kappa-pro-18a",
+    "manufacturer": "Eminence",
+    "model_name": "Kappa Pro-18A",
+    "driver_type": "cone",
+    "nominal_diameter": "18in",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 5.23,
+        "bl_tm": 23.8,
+        "sd_m2": 0.1195,
+        "mms_kg": 0.2,
+        "le_h": 0.003,
+        "qms": 5.5,
+        "qes": 0.3481,
+        "xmax_m": 0.0056,
+        "nominal_impedance_ohm": 8.0
+    }
+}

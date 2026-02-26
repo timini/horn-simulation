@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-af4010",
+    "manufacturer": "Celestion",
+    "model_name": "AF4010",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 104.7,
+        "re_ohm": 10.37,
+        "bl_tm": 5.96,
+        "sd_m2": 0.005675,
+        "mms_kg": 0.00495,
+        "le_h": 0.00037,
+        "qts": 0.807,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.00275,
+        "qms": 5.31,
+        "qes": 0.95
+    },
+    "nominal_diameter": "6in"
+}

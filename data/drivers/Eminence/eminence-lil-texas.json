@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-lil-texas",
+    "manufacturer": "Eminence",
+    "model_name": "LIL_TEXAS",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 90.0,
+        "re_ohm": 7.2,
+        "bl_tm": 12.8,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.028,
+        "le_h": 0.00042,
+        "qts": 0.65,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00127,
+        "qms": 11.29,
+        "qes": 0.69
+    },
+    "nominal_diameter": "12in"
+}

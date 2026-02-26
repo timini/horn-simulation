@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-18nlw4500",
+    "manufacturer": "18Sound",
+    "model_name": "18NLW4500",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 3.3,
+        "bl_tm": 26.7,
+        "sd_m2": 0.12250000000000001,
+        "mms_kg": 0.296,
+        "le_h": 0.00159,
+        "qts": 0.31,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.014750000000000001,
+        "qms": 10.8,
+        "qes": 0.32
+    },
+    "nominal_diameter": "18in"
+}

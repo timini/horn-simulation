@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hwg160-4",
+    "manufacturer": "Ciare",
+    "model_name": "HWG160-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 2.7,
+        "bl_tm": 5.6,
+        "sd_m2": 0.014100000000000001,
+        "mms_kg": 0.016100000000000003,
+        "le_h": 0.0013000000000000002,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 4.9,
+        "qes": 0.35
+    },
+    "nominal_diameter": "6in"
+}

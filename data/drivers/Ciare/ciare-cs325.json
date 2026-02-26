@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cs325",
+    "manufacturer": "Ciare",
+    "model_name": "CS325",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 3.2,
+        "bl_tm": 9.65,
+        "sd_m2": 0.053579999999999996,
+        "mms_kg": 0.0765,
+        "le_h": 0.00055,
+        "qts": 0.59,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0085,
+        "qms": 8.36,
+        "qes": 0.63
+    },
+    "nominal_diameter": "12in"
+}

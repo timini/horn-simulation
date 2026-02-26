@@ -6,6 +6,7 @@ dependencies = [
     "pandas",
     "scipy",
     "matplotlib",
+    "numpy",
     "horn-core",
     "horn-drivers",
 ]
@@ -16,6 +17,8 @@ horn-kpi = "horn_analysis.kpi:main"
 horn-compare = "horn_analysis.compare:main"
 horn-impedance-plot = "horn_analysis.impedance_plot:main"
 horn-phase-plot = "horn_analysis.phase_plot:main"
+horn-screen-drivers = "horn_analysis.transfer_function:main"
+horn-score = "horn_analysis.scoring:main"
 horn-prescreen = "horn_analysis.prescreen:main"
 horn-rank = "horn_analysis.rank_pipeline:main"
 horn-sweep-report = "horn_analysis.sweep_report:main"

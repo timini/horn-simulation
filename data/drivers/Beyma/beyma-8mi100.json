@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-8mi100",
+    "manufacturer": "Beyma",
+    "model_name": "8MI100",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 90.0,
+        "re_ohm": 6.0,
+        "bl_tm": 11.5,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.019,
+        "le_h": 0.0002,
+        "qts": 0.451,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 7.5,
+        "qes": 0.48
+    },
+    "nominal_diameter": "8in"
+}

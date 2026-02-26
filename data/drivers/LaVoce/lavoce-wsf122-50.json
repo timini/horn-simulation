@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wsf122-50",
+    "manufacturer": "LaVoce",
+    "model_name": "WSF122.50",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 49.0,
+        "re_ohm": 5.6,
+        "bl_tm": 17.2,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.059500000000000004,
+        "le_h": 0.00082,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0047,
+        "qms": 6.64,
+        "qes": 0.35
+    },
+    "nominal_diameter": "12in"
+}

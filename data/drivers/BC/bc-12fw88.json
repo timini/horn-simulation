@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-12fw88",
+    "manufacturer": "BC",
+    "model_name": "12FW88",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.0,
+        "re_ohm": 5.1,
+        "bl_tm": 19.5,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.07640000000000001,
+        "le_h": 0.0009000000000000001,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 7.7,
+        "qes": 0.35
+    },
+    "nominal_diameter": "12in"
+}

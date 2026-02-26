@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-legend-v1216",
+    "manufacturer": "Eminence",
+    "model_name": "LEGEND_V1216",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 77.0,
+        "re_ohm": 13.18,
+        "bl_tm": 15.4,
+        "sd_m2": 0.05067,
+        "mms_kg": 0.03,
+        "le_h": 0.0010500000000000002,
+        "qts": 0.74,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0008,
+        "qms": 9.86,
+        "qes": 0.8
+    },
+    "nominal_diameter": "12in"
+}

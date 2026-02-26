@@ -3,48 +3,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  detect-changes:
-    runs-on: ubuntu-latest
-    outputs:
-      horn-core: ${{ steps.filter.outputs.horn-core }}
-      horn-drivers: ${{ steps.filter.outputs.horn-drivers }}
-      horn-geometry: ${{ steps.filter.outputs.horn-geometry }}
-      horn-solver: ${{ steps.filter.outputs.horn-solver }}
-      horn-analysis: ${{ steps.filter.outputs.horn-analysis }}
-      nextflow: ${{ steps.filter.outputs.nextflow }}
-      ci: ${{ steps.filter.outputs.ci }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            horn-core:
-              - 'packages/horn-core/**'
-            horn-drivers:
-              - 'packages/horn-drivers/**'
-              - 'data/drivers/**'
-            horn-geometry:
-              - 'packages/horn-geometry/**'
-            horn-solver:
-              - 'packages/horn-solver/**'
-            horn-analysis:
-              - 'packages/horn-analysis/**'
-            nextflow:
-              - 'main.nf'
-              - 'nextflow.config'
-              - 'tests/*.nf.test'
-              - 'tests/*.nf.test.snap'
-              - 'packages/*/Dockerfile'
-            ci:
-              - '.github/workflows/**'
-              - 'justfile'
-
   test_nextflow:
-    needs: detect-changes
-    if: >-
-      needs.detect-changes.outputs.nextflow == 'true' ||
-      needs.detect-changes.outputs.ci == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -67,11 +26,6 @@ jobs:
         run: just test-nextflow
 
   test_pure_python:
-    needs: detect-changes
-    if: >-
-      needs.detect-changes.outputs.horn-core == 'true' ||
-      needs.detect-changes.outputs.horn-drivers == 'true' ||
-      needs.detect-changes.outputs.ci == 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -89,22 +43,21 @@ jobs:
       - name: Run tests
         run: pytest packages/${{ matrix.package }}/tests -v
 
-  test_horn_geometry:
-    needs: detect-changes
-    if: >-
-      needs.detect-changes.outputs.horn-geometry == 'true' ||
-      needs.detect-changes.outputs.ci == 'true'
+  test_packages:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [horn-geometry, horn-solver, horn-analysis]
     steps:
       - uses: actions/checkout@v3
       - name: Build test image
-        run: docker build -t horn-geometry:test --target test -f ./packages/horn-geometry/Dockerfile .
+        run: docker build -t ${{ matrix.package }}:test --target test -f ./packages/${{ matrix.package }}/Dockerfile .
       - name: Run tests (skip validation on PRs)
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            docker run --rm horn-geometry:test pytest packages/horn-geometry/tests -v -m "not validation"
+            docker run --rm ${{ matrix.package }}:test pytest packages/${{ matrix.package }}/tests -v -m "not validation"
           else
-            docker run --rm horn-geometry:test pytest packages/horn-geometry/tests -v
+            docker run --rm ${{ matrix.package }}:test pytest packages/${{ matrix.package }}/tests -v
           fi
       - name: Login to Docker Hub
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -117,70 +70,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./packages/horn-geometry/Dockerfile
+          file: ./packages/${{ matrix.package }}/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/horn-geometry:latest
-
-  test_horn_solver:
-    needs: detect-changes
-    if: >-
-      needs.detect-changes.outputs.horn-solver == 'true' ||
-      needs.detect-changes.outputs.ci == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build test image
-        run: docker build -t horn-solver:test --target test -f ./packages/horn-solver/Dockerfile .
-      - name: Run tests (skip validation on PRs)
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            docker run --rm horn-solver:test pytest packages/horn-solver/tests -v -m "not validation"
-          else
-            docker run --rm horn-solver:test pytest packages/horn-solver/tests -v
-          fi
-      - name: Login to Docker Hub
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push production image
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./packages/horn-solver/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/horn-solver:latest
-
-  test_horn_analysis:
-    needs: detect-changes
-    if: >-
-      needs.detect-changes.outputs.horn-analysis == 'true' ||
-      needs.detect-changes.outputs.ci == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build test image
-        run: docker build -t horn-analysis:test --target test -f ./packages/horn-analysis/Dockerfile .
-      - name: Run tests (skip validation on PRs)
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            docker run --rm horn-analysis:test pytest packages/horn-analysis/tests -v -m "not validation"
-          else
-            docker run --rm horn-analysis:test pytest packages/horn-analysis/tests -v
-          fi
-      - name: Login to Docker Hub
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push production image
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./packages/horn-analysis/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/horn-analysis:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.package }}:latest

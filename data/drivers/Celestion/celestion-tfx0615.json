@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tfx0615",
+    "manufacturer": "Celestion",
+    "model_name": "TFX0615",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 96.8,
+        "re_ohm": 5.39,
+        "bl_tm": 9.82,
+        "sd_m2": 0.015394,
+        "mms_kg": 0.0126,
+        "le_h": 0.00046,
+        "qts": 0.376,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00525,
+        "qms": 3.04,
+        "qes": 0.43
+    },
+    "nominal_diameter": "6in"
+}

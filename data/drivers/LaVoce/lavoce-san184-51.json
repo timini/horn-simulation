@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-san184-51",
+    "manufacturer": "LaVoce",
+    "model_name": "SAN184.51",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 36.0,
+        "re_ohm": 1.2,
+        "bl_tm": 18.79,
+        "sd_m2": 0.12200000000000001,
+        "mms_kg": 0.307,
+        "le_h": 0.00038,
+        "qts": 0.23,
+        "nominal_impedance_ohm": 2.0,
+        "xmax_m": 0.0195,
+        "qms": 5.04,
+        "qes": 0.24
+    },
+    "nominal_diameter": "18in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-kappa-15a",
+    "manufacturer": "Eminence",
+    "model_name": "KAPPA-15A",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 33.0,
+        "re_ohm": 5.22,
+        "bl_tm": 15.7,
+        "sd_m2": 0.08563,
+        "mms_kg": 0.076,
+        "le_h": 0.0010500000000000002,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 8.9,
+        "qes": 0.33
+    },
+    "nominal_diameter": "15in"
+}

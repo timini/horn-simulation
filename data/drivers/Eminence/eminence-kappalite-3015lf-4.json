@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-kappalite-3015lf-4",
+    "manufacturer": "Eminence",
+    "model_name": "KAPPALITE_3015LF-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 47.0,
+        "re_ohm": 3.85,
+        "bl_tm": 15.75,
+        "sd_m2": 0.08812,
+        "mms_kg": 0.106,
+        "le_h": 0.0006500000000000001,
+        "qts": 0.47,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.01065,
+        "qms": 10.19,
+        "qes": 0.49
+    },
+    "nominal_diameter": "15in"
+}

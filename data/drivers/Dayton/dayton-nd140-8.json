@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-nd140-8",
+    "manufacturer": "Dayton",
+    "model_name": "ND140-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 56.5,
+        "re_ohm": 7.8,
+        "bl_tm": 6.05,
+        "sd_m2": 0.00866,
+        "mms_kg": 0.010400000000000001,
+        "le_h": 0.0014399999999999999,
+        "qts": 0.68,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 5.01,
+        "qes": 0.79
+    },
+    "nominal_diameter": "6in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-18g550",
+    "manufacturer": "Beyma",
+    "model_name": "18G550",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 33.0,
+        "re_ohm": 5.6,
+        "bl_tm": 23.4,
+        "sd_m2": 0.132,
+        "mms_kg": 0.20400000000000001,
+        "le_h": 0.0018000000000000002,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.01,
+        "qms": 7.0,
+        "qes": 0.42
+    },
+    "nominal_diameter": "18in"
+}

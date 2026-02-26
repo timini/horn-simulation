@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-8m400f",
+    "manufacturer": "18Sound",
+    "model_name": "8M400F",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 89.0,
+        "re_ohm": 5.1,
+        "bl_tm": 13.1,
+        "sd_m2": 0.0227,
+        "mms_kg": 0.0169,
+        "le_h": 0.0007,
+        "qts": 0.26,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 4.03,
+        "qes": 0.28
+    },
+    "nominal_diameter": "8in"
+}

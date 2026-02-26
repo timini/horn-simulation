@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-dc130b-4",
+    "manufacturer": "Dayton",
+    "model_name": "DC130B-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 51.8,
+        "re_ohm": 3.2,
+        "bl_tm": 4.89,
+        "sd_m2": 0.00916,
+        "mms_kg": 0.0094,
+        "le_h": 0.0005,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0025,
+        "qms": 2.52,
+        "qes": 0.41
+    },
+    "nominal_diameter": "6in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-6cmv2",
+    "manufacturer": "Beyma",
+    "model_name": "6CMV2",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 90.0,
+        "re_ohm": 5.3,
+        "bl_tm": 9.4,
+        "sd_m2": 0.014,
+        "mms_kg": 0.013000000000000001,
+        "le_h": 0.0005,
+        "qts": 0.341,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0057,
+        "qms": 1.4,
+        "qes": 0.45
+    },
+    "nominal_diameter": "6in"
+}

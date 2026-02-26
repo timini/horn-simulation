@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-4mcx36",
+    "manufacturer": "BC",
+    "model_name": "4MCX36",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 150.0,
+        "re_ohm": 5.6,
+        "bl_tm": 5.27,
+        "sd_m2": 0.0056,
+        "mms_kg": 0.006200000000000001,
+        "le_h": 0.00087,
+        "qts": 0.91,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 3.9,
+        "qes": 1.2
+    },
+    "nominal_diameter": "6in"
+}

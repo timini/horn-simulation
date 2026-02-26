@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-dcs380-4",
+    "manufacturer": "Dayton",
+    "model_name": "DCS380-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 21.5,
+        "re_ohm": 2.9,
+        "bl_tm": 12.4,
+        "sd_m2": 0.08194,
+        "mms_kg": 0.19,
+        "le_h": 0.00231,
+        "qts": 0.44,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.008400000000000001,
+        "qms": 3.79,
+        "qes": 0.49
+    },
+    "nominal_diameter": "15in"
+}

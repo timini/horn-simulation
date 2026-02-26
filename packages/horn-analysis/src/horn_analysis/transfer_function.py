@@ -1,4 +1,4 @@
-"""Driver-horn transfer function coupling.
+"""Driver–horn transfer function for Phase A screening.
 
 Couples a compression driver model (from T-S parameters) with the horn's
 throat impedance (from the FEM solver CSV) to compute the actual SPL at
@@ -6,27 +6,28 @@ the horn mouth without re-running the FEM solver.
 
 Physics chain (impedance domains documented at every step)::
 
-    V_g  (input voltage, default 2.83 V = 1 W into 8 Ohm)
-      -> Z_e = Re + j*omega*Le                              (electrical, Ohm)
-      -> Z_mech_driver = Rms + j*omega*Mms + 1/(j*omega*Cms) (mechanical, kg/s)
-      -> Z_horn = z_real + j*z_imag                          (specific acoustic, Pa*s/m)
-      -> Z_mech_load = Z_horn * Sd^2 / S_throat              (mechanical, kg/s)
-      -> Z_mech_total = Z_mech_driver + Z_mech_load
-      -> Z_mot = BL^2 / Z_mech_total                         (motional impedance, Ohm)
-      -> I = V_g / (Z_e + Z_mot)                             (current, A)
-      -> v = BL*I / Z_mech_total                              (diaphragm velocity, m/s)
-      -> p_throat = Z_horn * v * (Sd / S_throat)              (throat pressure, Pa)
+    V_g  (input voltage, default 2.83 V = 1 W into 8 Ω)
+      → Z_e = Re + jωLe                                    (electrical, Ω)
+      → Z_mech_driver = Rms + jωMms + 1/(jωCms)            (mechanical, kg/s)
+      → Z_horn = z_real + j·z_imag                          (specific acoustic, Pa·s/m)
+      → Z_mech_load = Z_horn · Sd² / S_throat               (mechanical, kg/s)
+      → Z_mech_total = Z_mech_driver + Z_mech_load
+      → Z_mot = BL² / Z_mech_total                          (motional impedance, Ω)
+      → I = V_g / (Z_e + Z_mot)                             (current, A)
+      → v = BL·I / Z_mech_total                             (diaphragm velocity, m/s)
+      → p_throat = Z_horn · v · (Sd / S_throat)             (throat pressure, Pa)
 """
 
 import argparse
 import json
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
 
 from horn_core.parameters import DriverParameters
+from horn_drivers.loader import load_drivers
 
 
 def compute_driver_response(
@@ -42,10 +43,10 @@ def compute_driver_response(
     Args:
         driver: Driver T-S parameters (SI units).
         frequencies: Array of frequencies in Hz.
-        z_horn_real: Real part of specific acoustic throat impedance (Pa*s/m).
-        z_horn_imag: Imaginary part of specific acoustic throat impedance (Pa*s/m).
-        throat_area: Physical throat cross-section area (m^2).
-        v_g: Input voltage (V). Default 2.83 V (1 W into 8 Ohm).
+        z_horn_real: Real part of specific acoustic throat impedance (Pa·s/m).
+        z_horn_imag: Imaginary part of specific acoustic throat impedance (Pa·s/m).
+        throat_area: Physical throat cross-section area (m²).
+        v_g: Input voltage (V). Default 2.83 V (1 W into 8 Ω).
 
     Returns:
         Complex array of throat pressures (Pa) at each frequency.
@@ -59,7 +60,7 @@ def compute_driver_response(
     rms = driver.rms_kg_per_s if driver.rms_kg_per_s is not None else 0.0
     z_mech_driver = rms + 1j * omega * driver.mms_kg + 1.0 / (1j * omega * driver.cms_m_per_n)
 
-    # Horn throat impedance (specific acoustic -> mechanical via area ratio)
+    # Horn throat impedance (specific acoustic → mechanical via area ratio)
     z_horn = z_horn_real + 1j * z_horn_imag
     z_mech_load = z_horn * (driver.sd_m2 ** 2) / throat_area
 
@@ -90,48 +91,55 @@ def scale_solver_spl(
     The FEM solver runs with p=1 at the inlet (Dirichlet).  The actual
     SPL is obtained by adding the dB-level of the real throat pressure::
 
-        SPL_actual = SPL_solver + 20*log10(|p_throat|)
+        SPL_actual = SPL_solver + 20·log10(|p_throat|)
 
     Args:
-        solver_spl: SPL array from the Dirichlet-BC solver (dB re 20 uPa).
+        solver_spl: SPL array from the Dirichlet-BC solver (dB re 20 µPa).
         p_throat: Complex throat pressure array from ``compute_driver_response``.
 
     Returns:
-        Scaled SPL array (dB re 20 uPa).
+        Scaled SPL array (dB re 20 µPa).
     """
     p_magnitude = np.abs(p_throat)
+    # Avoid log(0)
     p_magnitude = np.maximum(p_magnitude, 1e-30)
     return solver_spl + 20.0 * np.log10(p_magnitude)
 
 
-def main():
-    """CLI for driver screening against a solver result."""
-    parser = argparse.ArgumentParser(
-        description="Screen drivers against horn solver results.",
-    )
-    parser.add_argument("--solver-csv", required=True, help="Solver output CSV.")
-    parser.add_argument("--drivers-db", required=True, help="Driver database JSON.")
-    parser.add_argument("--throat-radius", type=float, required=True, help="Throat radius (m).")
-    parser.add_argument("--voltage", type=float, default=2.83, help="Input voltage (V).")
-    parser.add_argument("--output-dir", type=str, default="screening_results", help="Output directory.")
-    args = parser.parse_args()
+def screen_all_drivers(
+    solver_csv: str,
+    drivers: List[DriverParameters],
+    throat_radius: float,
+    v_g: float = 2.83,
+) -> pd.DataFrame:
+    """Batch-screen all drivers against a single horn geometry.
 
-    from horn_drivers.loader import load_drivers
+    Reads the solver CSV (frequency, spl, z_real, z_imag), computes the
+    coupled SPL for every driver, and returns a DataFrame with per-driver
+    results and basic KPIs.
 
-    drivers = load_drivers(args.drivers_db)
-    print(f"Loaded {len(drivers)} drivers from {args.drivers_db}")
+    Args:
+        solver_csv: Path to CSV with columns: frequency, spl, z_real, z_imag.
+        drivers: List of DriverParameters to screen.
+        throat_radius: Horn throat radius in metres.
+        v_g: Input voltage (V).
 
-    df = pd.read_csv(args.solver_csv)
+    Returns:
+        DataFrame with columns: driver_id, manufacturer, model_name,
+        avg_spl_db, peak_spl_db, min_spl_db, ripple_db.
+    """
+    df = pd.read_csv(solver_csv)
     freq = df["frequency"].values
     solver_spl = df["spl"].values
     z_real = df["z_real"].values
     z_imag = df["z_imag"].values
-    throat_area = np.pi * args.throat_radius ** 2
+    throat_area = np.pi * throat_radius ** 2
 
     rows = []
     for drv in drivers:
-        p_throat = compute_driver_response(drv, freq, z_real, z_imag, throat_area, args.voltage)
+        p_throat = compute_driver_response(drv, freq, z_real, z_imag, throat_area, v_g)
         scaled_spl = scale_solver_spl(solver_spl, p_throat)
+
         rows.append({
             "driver_id": drv.driver_id,
             "manufacturer": drv.manufacturer,
@@ -142,7 +150,28 @@ def main():
             "ripple_db": float(np.max(scaled_spl) - np.min(scaled_spl)),
         })
 
-    results = pd.DataFrame(rows)
+    return pd.DataFrame(rows)
+
+
+def main():
+    """CLI for driver screening against a solver result."""
+    parser = argparse.ArgumentParser(
+        description="Screen drivers against horn solver results (Phase A).",
+    )
+    parser.add_argument("--solver-csv", required=True, help="Solver output CSV.")
+    parser.add_argument("--drivers-db", required=True, help="Driver database JSON.")
+    parser.add_argument("--throat-radius", type=float, required=True, help="Throat radius (m).")
+    parser.add_argument("--voltage", type=float, default=2.83, help="Input voltage (V).")
+    parser.add_argument("--output-dir", type=str, default="screening_results", help="Output directory.")
+    args = parser.parse_args()
+
+    drivers = load_drivers(args.drivers_db)
+    print(f"Loaded {len(drivers)} drivers from {args.drivers_db}")
+
+    results = screen_all_drivers(
+        args.solver_csv, drivers, args.throat_radius, args.voltage,
+    )
+
     out = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
     results.to_csv(out / "screening_summary.csv", index=False)

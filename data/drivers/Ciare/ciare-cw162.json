@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cw162",
+    "manufacturer": "Ciare",
+    "model_name": "CW162",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 3.0,
+        "bl_tm": 7.37,
+        "sd_m2": 0.013300000000000001,
+        "mms_kg": 0.018000000000000002,
+        "le_h": 0.00057,
+        "qts": 0.21,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.007,
+        "qms": 2.22,
+        "qes": 0.23
+    },
+    "nominal_diameter": "6in"
+}

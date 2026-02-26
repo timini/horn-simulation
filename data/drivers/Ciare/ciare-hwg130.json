@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hwg130",
+    "manufacturer": "Ciare",
+    "model_name": "HWG130",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 5.4,
+        "bl_tm": 7.8,
+        "sd_m2": 0.008700000000000001,
+        "mms_kg": 0.0131,
+        "le_h": 0.0007,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 4.8,
+        "qes": 0.3
+    },
+    "nominal_diameter": "6in"
+}

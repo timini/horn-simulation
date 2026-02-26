@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-5nr1-5pl",
+    "manufacturer": "SICA",
+    "model_name": "5NR1,5PL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 61.0,
+        "re_ohm": 5.6,
+        "bl_tm": 6.65,
+        "sd_m2": 0.007850000000000001,
+        "mms_kg": 0.008,
+        "le_h": 0.00034,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 4.1,
+        "qes": 0.39
+    },
+    "nominal_diameter": "6in"
+}

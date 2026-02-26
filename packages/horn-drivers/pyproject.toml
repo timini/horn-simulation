@@ -7,8 +7,13 @@ dependencies = [
     "horn-core",
 ]
 
+[project.scripts]
+horn-scrape-drivers = "horn_drivers.scraper:main"
+horn-validate-drivers = "horn_drivers.validator:main"
+
 [project.optional-dependencies]
 test = ["pytest"]
+scrape = ["requests", "beautifulsoup4"]
 
 [build-system]
 requires = ["hatchling"]

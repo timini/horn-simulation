@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-bn15-300x",
+    "manufacturer": "Celestion",
+    "model_name": "BN15-300X",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.8,
+        "re_ohm": 3.19,
+        "bl_tm": 9.13,
+        "sd_m2": 0.08553,
+        "mms_kg": 0.08420000000000001,
+        "le_h": 0.00039000000000000005,
+        "qts": 0.9,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.004,
+        "qms": 4.49,
+        "qes": 1.1
+    },
+    "nominal_diameter": "15in"
+}

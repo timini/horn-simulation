@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-cw100",
+    "manufacturer": "Ciare",
+    "model_name": "CW100",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 78.0,
+        "re_ohm": 3.5,
+        "bl_tm": 5.1,
+        "sd_m2": 0.00488,
+        "mms_kg": 0.0054,
+        "le_h": 0.00025,
+        "qts": 0.3,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.003,
+        "qms": 2.43,
+        "qes": 0.35
+    }
+}

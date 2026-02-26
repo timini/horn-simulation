@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-4c1-5cp",
+    "manufacturer": "SICA",
+    "model_name": "4C1,5CP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 102.0,
+        "re_ohm": 5.1,
+        "bl_tm": 7.27,
+        "sd_m2": 0.00515,
+        "mms_kg": 0.0054,
+        "le_h": 0.00035,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 4.05,
+        "qes": 0.27
+    },
+    "nominal_diameter": "6in"
+}

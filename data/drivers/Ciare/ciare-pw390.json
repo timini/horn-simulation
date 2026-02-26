@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pw390",
+    "manufacturer": "Ciare",
+    "model_name": "PW390",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 5.37,
+        "bl_tm": 18.75,
+        "sd_m2": 0.08492000000000001,
+        "mms_kg": 0.0852,
+        "le_h": 0.00071,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00375,
+        "qms": 12.37,
+        "qes": 0.3
+    },
+    "nominal_diameter": "15in"
+}

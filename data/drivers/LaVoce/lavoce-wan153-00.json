@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wan153-00",
+    "manufacturer": "LaVoce",
+    "model_name": "WAN153.00",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 43.0,
+        "re_ohm": 4.7,
+        "bl_tm": 17.33,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.101,
+        "le_h": 0.00076,
+        "qts": 0.41,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 9.49,
+        "qes": 0.43
+    },
+    "nominal_diameter": "15in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-pa460-8",
+    "manufacturer": "Dayton",
+    "model_name": "PA460-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 28.3,
+        "re_ohm": 5.6,
+        "bl_tm": 22.3,
+        "sd_m2": 0.12411,
+        "mms_kg": 0.171,
+        "le_h": 0.0039,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 11.2,
+        "qes": 0.34
+    },
+    "nominal_diameter": "18in"
+}

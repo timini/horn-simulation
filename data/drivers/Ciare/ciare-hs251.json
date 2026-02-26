@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hs251",
+    "manufacturer": "Ciare",
+    "model_name": "HS251",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 11.6,
+        "bl_tm": 39.82,
+        "sd_m2": 0.0346,
+        "mms_kg": 0.07909999999999999,
+        "le_h": 0.008060000000000001,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.01,
+        "qms": 7.21,
+        "qes": 0.43
+    },
+    "nominal_diameter": "10in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-sd315a-88",
+    "manufacturer": "Dayton",
+    "model_name": "SD315A-88",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 24.2,
+        "re_ohm": 12.4,
+        "bl_tm": 23.72,
+        "sd_m2": 0.05228,
+        "mms_kg": 0.109,
+        "le_h": 0.006,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.007,
+        "qms": 3.54,
+        "qes": 0.37
+    },
+    "nominal_diameter": "12in"
+}

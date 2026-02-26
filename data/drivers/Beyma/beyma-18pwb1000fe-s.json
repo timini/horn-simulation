@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-18pwb1000fe-s",
+    "manufacturer": "Beyma",
+    "model_name": "18PWB1000Fe_S",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 27.0,
+        "re_ohm": 6.0,
+        "bl_tm": 25.0,
+        "sd_m2": 0.1255,
+        "mms_kg": 0.245,
+        "le_h": 0.002,
+        "qts": 0.381,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0125,
+        "qms": 8.2,
+        "qes": 0.4
+    },
+    "nominal_diameter": "18in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-8nmfw",
+    "manufacturer": "Beyma",
+    "model_name": "8NMFW",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 5.7,
+        "bl_tm": 13.4,
+        "sd_m2": 0.022700000000000005,
+        "mms_kg": 0.048,
+        "le_h": 0.0011,
+        "qts": 0.344,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.009000000000000001,
+        "qms": 7.6,
+        "qes": 0.36
+    },
+    "nominal_diameter": "8in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-the-wizard",
+    "manufacturer": "Eminence",
+    "model_name": "THE_WIZARD",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 89.0,
+        "re_ohm": 6.13,
+        "bl_tm": 14.4,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.03,
+        "le_h": 0.00038,
+        "qts": 0.47,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0008,
+        "qms": 11.48,
+        "qes": 0.49
+    },
+    "nominal_diameter": "12in"
+}

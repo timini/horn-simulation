@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ch252",
+    "manufacturer": "Ciare",
+    "model_name": "CH252",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 55.0,
+        "re_ohm": 3.0,
+        "bl_tm": 10.2,
+        "sd_m2": 0.03556,
+        "mms_kg": 0.029,
+        "le_h": 0.00035999999999999997,
+        "qts": 0.24,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.00135,
+        "qms": 1.64,
+        "qes": 0.29
+    },
+    "nominal_diameter": "10in"
+}

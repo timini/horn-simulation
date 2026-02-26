@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tf0818",
+    "manufacturer": "Celestion",
+    "model_name": "TF0818",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 100.0,
+        "re_ohm": 6.72,
+        "bl_tm": 12.95,
+        "sd_m2": 0.022698,
+        "mms_kg": 0.019600000000000003,
+        "le_h": 0.00075,
+        "qts": 0.429,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 3.31,
+        "qes": 0.49
+    },
+    "nominal_diameter": "8in"
+}

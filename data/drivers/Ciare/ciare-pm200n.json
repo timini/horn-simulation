@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pm200n",
+    "manufacturer": "Ciare",
+    "model_name": "PM200N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 99.0,
+        "re_ohm": 6.01,
+        "bl_tm": 11.17,
+        "sd_m2": 0.0216,
+        "mms_kg": 0.0198,
+        "le_h": 0.00042,
+        "qts": 0.5,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 3.43,
+        "qes": 0.59
+    },
+    "nominal_diameter": "8in"
+}

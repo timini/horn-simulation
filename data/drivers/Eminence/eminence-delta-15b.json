@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-delta-15b",
+    "manufacturer": "Eminence",
+    "model_name": "DELTA-15B",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 45.0,
+        "re_ohm": 11.3,
+        "bl_tm": 17.6,
+        "sd_m2": 0.08563,
+        "mms_kg": 0.064,
+        "le_h": 0.00135,
+        "qts": 0.61,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0016,
+        "qms": 6.54,
+        "qes": 0.67
+    },
+    "nominal_diameter": "15in"
+}

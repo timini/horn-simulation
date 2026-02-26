@@ -29,7 +29,7 @@ class HornParameters:
 
 @dataclass
 class DriverParameters:
-    """Thiele-Small parameters for a compression driver. All values in SI units."""
+    """Thiele-Small parameters for a loudspeaker driver. All values in SI units."""
 
     driver_id: str
     manufacturer: str
@@ -54,6 +54,7 @@ class DriverParameters:
 
     # Optional metadata
     driver_type: Optional[str] = None
+    nominal_diameter: Optional[str] = None  # e.g. "18in", "15in", "1in"
     xmax_m: Optional[float] = None
     nominal_impedance_ohm: Optional[float] = None
 
@@ -74,9 +75,11 @@ class DriverParameters:
             elif self.qms is None:
                 self.qms = (self.qes * self.qts) / (self.qes - self.qts)
         elif q_count == 0:
-            # Derive Qes from electrical/mechanical parameters
+            # Derive Qes and Qms from electrical/mechanical parameters
+            # Qes = (2*pi*fs*Mms*Re) / BL^2
             if self.bl_tm > 0:
                 self.qes = (omega_s * self.mms_kg * self.re_ohm) / (self.bl_tm ** 2)
+            # Qms requires Rms — if not available, leave None
         elif q_count == 1:
             # With one Q and electrical params, derive others
             if self.qes is None and self.bl_tm > 0:

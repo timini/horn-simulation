@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ph320",
+    "manufacturer": "Ciare",
+    "model_name": "PH320",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 65.0,
+        "re_ohm": 6.0,
+        "bl_tm": 14.0,
+        "sd_m2": 0.050710000000000005,
+        "mms_kg": 0.034,
+        "le_h": 0.0005,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0013000000000000002,
+        "qms": 3.29,
+        "qes": 0.43
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-5d1cs",
+    "manufacturer": "SICA",
+    "model_name": "5D1CS",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 79.0,
+        "re_ohm": 6.0,
+        "bl_tm": 5.73,
+        "sd_m2": 0.007850000000000001,
+        "mms_kg": 0.0064,
+        "le_h": 0.00033,
+        "qts": 0.52,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 4.95,
+        "qes": 0.58
+    },
+    "nominal_diameter": "6in"
+}

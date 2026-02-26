@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-csw7015",
+    "manufacturer": "Ciare",
+    "model_name": "CSW7015",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 42.0,
+        "re_ohm": 3.9,
+        "bl_tm": 30.5,
+        "sd_m2": 0.083,
+        "mms_kg": 0.41000000000000003,
+        "le_h": 0.00332,
+        "qts": 0.42,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.023,
+        "qms": 8.2,
+        "qes": 0.44
+    },
+    "nominal_diameter": "15in"
+}

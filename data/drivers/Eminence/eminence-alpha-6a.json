@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-alpha-6a",
+    "manufacturer": "Eminence",
+    "model_name": "ALPHA-6A",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 103.0,
+        "re_ohm": 7.2,
+        "bl_tm": 8.0,
+        "sd_m2": 0.01267,
+        "mms_kg": 0.007,
+        "le_h": 0.00019,
+        "qts": 0.54,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 5.68,
+        "qes": 0.6
+    },
+    "nominal_diameter": "6in"
+}

@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-mx065",
+    "manufacturer": "Ciare",
+    "model_name": "MX065",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 194.0,
+        "re_ohm": 6.8,
+        "bl_tm": 2.46,
+        "sd_m2": 0.00218,
+        "mms_kg": 0.00094,
+        "le_h": 0.0002,
+        "qts": 0.95,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.001,
+        "qms": 3.5,
+        "qes": 1.29
+    }
+}

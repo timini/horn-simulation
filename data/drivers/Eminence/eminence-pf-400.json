@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-pf-400",
+    "manufacturer": "Eminence",
+    "model_name": "PF-400",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 58.0,
+        "re_ohm": 7.45,
+        "bl_tm": 18.33,
+        "sd_m2": 0.08896000000000001,
+        "mms_kg": 0.067,
+        "le_h": 0.00046,
+        "qts": 0.5,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00079,
+        "qms": 6.37,
+        "qes": 0.55
+    },
+    "nominal_diameter": "15in"
+}

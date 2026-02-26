@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-dcs305-4",
+    "manufacturer": "Dayton",
+    "model_name": "DCS305-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 24.2,
+        "re_ohm": 3.3,
+        "bl_tm": 13.7,
+        "sd_m2": 0.04988,
+        "mms_kg": 0.16,
+        "le_h": 0.00206,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.009300000000000001,
+        "qms": 5.07,
+        "qes": 0.43
+    },
+    "nominal_diameter": "12in"
+}

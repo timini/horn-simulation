@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cs201",
+    "manufacturer": "Ciare",
+    "model_name": "CS201",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 43.0,
+        "re_ohm": 6.0,
+        "bl_tm": 7.7,
+        "sd_m2": 0.02202,
+        "mms_kg": 0.021,
+        "le_h": 0.0008,
+        "qts": 0.49,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 3.25,
+        "qes": 0.58
+    },
+    "nominal_diameter": "8in"
+}

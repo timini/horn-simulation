@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-cf18vjd",
+    "manufacturer": "Celestion",
+    "model_name": "CF18VJD",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 34.5,
+        "re_ohm": 6.13,
+        "bl_tm": 32.59,
+        "sd_m2": 0.113412,
+        "mms_kg": 0.265,
+        "le_h": 0.0018700000000000001,
+        "qts": 0.309,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.012,
+        "qms": 4.57,
+        "qes": 0.33
+    },
+    "nominal_diameter": "18in"
+}

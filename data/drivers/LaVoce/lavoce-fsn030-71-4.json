@@ -1,0 +1,19 @@
+{
+    "driver_id": "lavoce-fsn030-71-4",
+    "manufacturer": "LaVoce",
+    "model_name": "FSN030.71-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 134.0,
+        "re_ohm": 3.8,
+        "bl_tm": 3.19,
+        "sd_m2": 0.0033,
+        "mms_kg": 0.0025499999999999997,
+        "le_h": 4e-05,
+        "qts": 0.73,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0019,
+        "qms": 7.67,
+        "qes": 0.8
+    }
+}

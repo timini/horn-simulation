@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-12cx800",
+    "manufacturer": "18Sound",
+    "model_name": "12CX800",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.0,
+        "re_ohm": 5.8,
+        "bl_tm": 18.5,
+        "sd_m2": 0.053000000000000005,
+        "mms_kg": 0.048,
+        "le_h": 0.0013000000000000002,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00625,
+        "qms": 4.0,
+        "qes": 0.27
+    },
+    "nominal_diameter": "12in"
+}

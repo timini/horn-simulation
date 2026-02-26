@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-18wrs600",
+    "manufacturer": "Beyma",
+    "model_name": "18WRS600",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 5.2,
+        "bl_tm": 19.0,
+        "sd_m2": 0.1255,
+        "mms_kg": 0.178,
+        "le_h": 0.0013000000000000002,
+        "qts": 0.464,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0085,
+        "qms": 13.8,
+        "qes": 0.48
+    },
+    "nominal_diameter": "18in"
+}

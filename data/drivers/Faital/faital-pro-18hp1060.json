@@ -1,0 +1,19 @@
+{
+    "driver_id": "faital-pro-18hp1060",
+    "manufacturer": "Faital Pro",
+    "model_name": "18HP1060",
+    "driver_type": "cone",
+    "nominal_diameter": "18in",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 5.0,
+        "bl_tm": 27.0,
+        "sd_m2": 0.119,
+        "mms_kg": 0.185,
+        "le_h": 0.0024,
+        "qms": 6.0,
+        "qes": 0.295,
+        "xmax_m": 0.0085,
+        "nominal_impedance_ohm": 8.0
+    }
+}

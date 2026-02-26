@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-ssf122-50l",
+    "manufacturer": "LaVoce",
+    "model_name": "SSF122.50L",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 42.0,
+        "re_ohm": 5.5,
+        "bl_tm": 17.64,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.0994,
+        "le_h": 0.00121,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0115,
+        "qms": 5.36,
+        "qes": 0.46
+    },
+    "nominal_diameter": "12in"
+}

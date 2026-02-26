@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pwa10-64",
+    "manufacturer": "Ciare",
+    "model_name": "PWA10.64",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 73.0,
+        "re_ohm": 5.2,
+        "bl_tm": 14.4,
+        "sd_m2": 0.03464,
+        "mms_kg": 0.034,
+        "le_h": 0.00085,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 8.45,
+        "qes": 0.4
+    },
+    "nominal_diameter": "10in"
+}

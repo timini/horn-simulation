@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-12cmv3",
+    "manufacturer": "Beyma",
+    "model_name": "12CMV3",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 52.0,
+        "re_ohm": 6.1,
+        "bl_tm": 12.3,
+        "sd_m2": 0.053000000000000005,
+        "mms_kg": 0.044,
+        "le_h": 0.0008900000000000001,
+        "qts": 0.55,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 10.6,
+        "qes": 0.58
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-cb3015n-8",
+    "manufacturer": "Eminence",
+    "model_name": "CB3015N-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.67,
+        "re_ohm": 5.5,
+        "bl_tm": 17.76,
+        "sd_m2": 0.08563,
+        "mms_kg": 0.0968,
+        "le_h": 0.00059,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00722,
+        "qms": 3.6,
+        "qes": 0.43
+    },
+    "nominal_diameter": "15in"
+}

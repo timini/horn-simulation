@@ -1,0 +1,19 @@
+{
+    "driver_id": "beyma-8p300fe",
+    "manufacturer": "Beyma",
+    "model_name": "8P300Fe",
+    "driver_type": "cone",
+    "nominal_diameter": "8in",
+    "parameters": {
+        "fs_hz": 78.0,
+        "re_ohm": 5.6,
+        "bl_tm": 10.0,
+        "sd_m2": 0.022,
+        "mms_kg": 0.02,
+        "le_h": 0.0007,
+        "qms": 5.2,
+        "qes": 0.5489,
+        "xmax_m": 0.0032,
+        "nominal_impedance_ohm": 8.0
+    }
+}

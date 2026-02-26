@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ftr12-2565d",
+    "manufacturer": "Celestion",
+    "model_name": "FTR12-2565D",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 60.3,
+        "re_ohm": 5.63,
+        "bl_tm": 15.45,
+        "sd_m2": 0.053098000000000006,
+        "mms_kg": 0.056600000000000004,
+        "le_h": 0.00102,
+        "qts": 0.418,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 2.4,
+        "qes": 0.51
+    },
+    "nominal_diameter": "12in"
+}

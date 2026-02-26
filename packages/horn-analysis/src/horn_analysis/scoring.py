@@ -1,7 +1,8 @@
-"""Scoring and ranking for driver-horn selection.
+"""Scoring and ranking for driver–horn selection.
 
-Scores each driver-horn combination on bandwidth coverage, passband
-ripple, and average sensitivity, then ranks candidates.
+Scores each driver–horn combination on bandwidth coverage, passband
+ripple, and average sensitivity, then ranks candidates for Phase B
+refinement.
 """
 
 import argparse

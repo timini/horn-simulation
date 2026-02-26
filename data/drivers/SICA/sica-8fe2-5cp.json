@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-8fe2-5cp",
+    "manufacturer": "SICA",
+    "model_name": "8Fe2,5CP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 73.0,
+        "re_ohm": 5.5,
+        "bl_tm": 13.01,
+        "sd_m2": 0.021380000000000003,
+        "mms_kg": 0.0198,
+        "le_h": 0.0005,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 3.73,
+        "qes": 0.3
+    },
+    "nominal_diameter": "8in"
+}

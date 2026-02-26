@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pm160",
+    "manufacturer": "Ciare",
+    "model_name": "PM160",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 66.0,
+        "re_ohm": 5.9,
+        "bl_tm": 8.0,
+        "sd_m2": 0.0135,
+        "mms_kg": 0.0085,
+        "le_h": 0.00017999999999999998,
+        "qts": 0.31,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0018000000000000002,
+        "qms": 6.0,
+        "qes": 0.32
+    },
+    "nominal_diameter": "6in"
+}

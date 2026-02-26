@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-15lx60v2",
+    "manufacturer": "Beyma",
+    "model_name": "15LX60V2",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 42.0,
+        "re_ohm": 5.1,
+        "bl_tm": 21.1,
+        "sd_m2": 0.091,
+        "mms_kg": 0.147,
+        "le_h": 0.0021000000000000003,
+        "qts": 0.441,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 21.2,
+        "qes": 0.45
+    },
+    "nominal_diameter": "15in"
+}

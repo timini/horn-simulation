@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ch250",
+    "manufacturer": "Ciare",
+    "model_name": "CH250",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 65.0,
+        "re_ohm": 3.4,
+        "bl_tm": 4.1,
+        "sd_m2": 0.034,
+        "mms_kg": 0.018600000000000002,
+        "le_h": 0.00024,
+        "qts": 1.36,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.002,
+        "qms": 12.8,
+        "qes": 1.53
+    },
+    "nominal_diameter": "10in"
+}

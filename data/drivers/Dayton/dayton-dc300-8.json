@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-dc300-8",
+    "manufacturer": "Dayton",
+    "model_name": "DC300-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 22.9,
+        "re_ohm": 6.8,
+        "bl_tm": 16.3,
+        "sd_m2": 0.04988,
+        "mms_kg": 0.101,
+        "le_h": 0.0029300000000000003,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0043,
+        "qms": 3.21,
+        "qes": 0.37
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-fxc-8-50w",
+    "manufacturer": "Ciare",
+    "model_name": "FXC_8.50W",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.0,
+        "re_ohm": 5.8,
+        "bl_tm": 10.3,
+        "sd_m2": 0.02112,
+        "mms_kg": 0.0195,
+        "le_h": 0.0008,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 2.6,
+        "qes": 0.38
+    },
+    "nominal_diameter": "8in"
+}

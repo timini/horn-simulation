@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-csw7012",
+    "manufacturer": "Ciare",
+    "model_name": "CSW7012",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 47.0,
+        "re_ohm": 3.9,
+        "bl_tm": 30.5,
+        "sd_m2": 0.0511,
+        "mms_kg": 0.28,
+        "le_h": 0.0032,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.023,
+        "qms": 9.4,
+        "qes": 0.34
+    },
+    "nominal_diameter": "12in"
+}

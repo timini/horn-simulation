@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-pc83-8",
+    "manufacturer": "Dayton",
+    "model_name": "PC83-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 82.1,
+        "re_ohm": 6.8,
+        "bl_tm": 3.5,
+        "sd_m2": 0.00302,
+        "mms_kg": 0.0027,
+        "le_h": 0.00038,
+        "qts": 0.63,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 3.68,
+        "qes": 0.76
+    }
+}

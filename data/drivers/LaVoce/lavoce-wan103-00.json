@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wan103-00",
+    "manufacturer": "LaVoce",
+    "model_name": "WAN103.00",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 48.0,
+        "re_ohm": 7.1,
+        "bl_tm": 19.7,
+        "sd_m2": 0.034300000000000004,
+        "mms_kg": 0.0686,
+        "le_h": 0.0014,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0096,
+        "qms": 4.5,
+        "qes": 0.37
+    },
+    "nominal_diameter": "10in"
+}

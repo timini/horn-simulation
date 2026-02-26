@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wsf152-02",
+    "manufacturer": "LaVoce",
+    "model_name": "WSF152.02",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 43.0,
+        "re_ohm": 5.3,
+        "bl_tm": 12.8,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.0692,
+        "le_h": 0.00063,
+        "qts": 0.53,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0043,
+        "qms": 4.9,
+        "qes": 0.59
+    },
+    "nominal_diameter": "15in"
+}

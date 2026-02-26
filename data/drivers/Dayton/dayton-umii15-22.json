@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-umii15-22",
+    "manufacturer": "Dayton",
+    "model_name": "UMII15-22",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 29.0,
+        "re_ohm": 4.2,
+        "bl_tm": 14.6,
+        "sd_m2": 0.0791,
+        "mms_kg": 0.279,
+        "le_h": 0.0007,
+        "qts": 0.7,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.024,
+        "qms": 2.34,
+        "qes": 1.0
+    },
+    "nominal_diameter": "15in"
+}

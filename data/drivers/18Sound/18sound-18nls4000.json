@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-18nls4000",
+    "manufacturer": "18Sound",
+    "model_name": "18NLS4000",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 27.0,
+        "re_ohm": 2.9,
+        "bl_tm": 24.2,
+        "sd_m2": 0.12250000000000001,
+        "mms_kg": 0.433,
+        "le_h": 0.0026000000000000003,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0223,
+        "qms": 13.7,
+        "qes": 0.36
+    },
+    "nominal_diameter": "18in"
+}

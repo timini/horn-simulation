@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-cx120-8",
+    "manufacturer": "Dayton",
+    "model_name": "CX120-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 87.5,
+        "re_ohm": 6.22,
+        "bl_tm": 5.08,
+        "sd_m2": 0.0052510000000000005,
+        "mms_kg": 0.0048200000000000005,
+        "le_h": 0.00063,
+        "qts": 0.48,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 2.89,
+        "qes": 0.57
+    },
+    "nominal_diameter": "6in"
+}

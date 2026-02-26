@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-dma58-4",
+    "manufacturer": "Dayton",
+    "model_name": "DMA58-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 165.5,
+        "re_ohm": 3.6,
+        "bl_tm": 3.7,
+        "sd_m2": 0.0014500000000000001,
+        "mms_kg": 0.0021000000000000003,
+        "le_h": 0.0002,
+        "qts": 0.46,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.002,
+        "qms": 2.4,
+        "qes": 0.56
+    }
+}

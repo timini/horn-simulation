@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-kl3010lf-8",
+    "manufacturer": "Eminence",
+    "model_name": "KL3010LF-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 45.0,
+        "re_ohm": 7.03,
+        "bl_tm": 17.98,
+        "sd_m2": 0.03769,
+        "mms_kg": 0.053,
+        "le_h": 0.00087,
+        "qts": 0.31,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00852,
+        "qms": 6.95,
+        "qes": 0.33
+    },
+    "nominal_diameter": "10in"
+}

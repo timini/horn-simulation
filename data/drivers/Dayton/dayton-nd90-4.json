@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-nd90-4",
+    "manufacturer": "Dayton",
+    "model_name": "ND90-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 90.2,
+        "re_ohm": 3.6,
+        "bl_tm": 3.47,
+        "sd_m2": 0.00312,
+        "mms_kg": 0.0043,
+        "le_h": 0.00062,
+        "qts": 0.63,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.004,
+        "qms": 5.1,
+        "qes": 0.72
+    }
+}

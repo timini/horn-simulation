@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-5p200nd",
+    "manufacturer": "Beyma",
+    "model_name": "5P200Nd",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 78.0,
+        "re_ohm": 5.3,
+        "bl_tm": 9.9,
+        "sd_m2": 0.0095,
+        "mms_kg": 0.011,
+        "le_h": 0.0003,
+        "qts": 0.301,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0057,
+        "qms": 10.7,
+        "qes": 0.31
+    },
+    "nominal_diameter": "6in"
+}

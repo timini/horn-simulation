@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-sig120-4",
+    "manufacturer": "Dayton",
+    "model_name": "SIG120-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 74.6,
+        "re_ohm": 3.7,
+        "bl_tm": 5.0,
+        "sd_m2": 0.00564,
+        "mms_kg": 0.0067,
+        "le_h": 0.00022,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.004,
+        "qms": 4.84,
+        "qes": 0.47
+    },
+    "nominal_diameter": "6in"
+}

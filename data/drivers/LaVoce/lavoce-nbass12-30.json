@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-nbass12-30",
+    "manufacturer": "LaVoce",
+    "model_name": "NBASS12-30",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 46.0,
+        "re_ohm": 5.4,
+        "bl_tm": 19.15,
+        "sd_m2": 0.05309,
+        "mms_kg": 0.06870000000000001,
+        "le_h": 0.001,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 9.49,
+        "qes": 0.29
+    },
+    "nominal_diameter": "12in"
+}

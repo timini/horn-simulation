@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-pn395-8",
+    "manufacturer": "Dayton",
+    "model_name": "PN395-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 44.1,
+        "re_ohm": 5.5,
+        "bl_tm": 25.3,
+        "sd_m2": 0.08903,
+        "mms_kg": 0.15,
+        "le_h": 0.0022,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 8.82,
+        "qes": 0.36
+    },
+    "nominal_diameter": "15in"
+}

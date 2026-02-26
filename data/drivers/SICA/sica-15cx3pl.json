@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-15cx3pl",
+    "manufacturer": "SICA",
+    "model_name": "15Cx3PL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 44.5,
+        "re_ohm": 5.1,
+        "bl_tm": 17.26,
+        "sd_m2": 0.08553,
+        "mms_kg": 0.0872,
+        "le_h": 0.0011200000000000001,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 12.88,
+        "qes": 0.42
+    },
+    "nominal_diameter": "15in"
+}

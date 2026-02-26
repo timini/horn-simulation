@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-waf102-50a",
+    "manufacturer": "LaVoce",
+    "model_name": "WAF102.50A",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 73.0,
+        "re_ohm": 5.5,
+        "bl_tm": 15.8,
+        "sd_m2": 0.035,
+        "mms_kg": 0.0384,
+        "le_h": 0.0008,
+        "qts": 0.36,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0048,
+        "qms": 5.34,
+        "qes": 0.38
+    },
+    "nominal_diameter": "10in"
+}

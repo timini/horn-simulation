@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-15cla76",
+    "manufacturer": "BC",
+    "model_name": "15CLA76",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 5.2,
+        "bl_tm": 19.8,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.093,
+        "le_h": 0.0005,
+        "qts": 0.3,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 6.9,
+        "qes": 0.31
+    },
+    "nominal_diameter": "15in"
+}

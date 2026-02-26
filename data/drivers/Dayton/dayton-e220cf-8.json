@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-e220cf-8",
+    "manufacturer": "Dayton",
+    "model_name": "E220CF-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 26.9,
+        "re_ohm": 6.1,
+        "bl_tm": 10.0,
+        "sd_m2": 0.021640000000000003,
+        "mms_kg": 0.0252,
+        "le_h": 0.0007,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 7.14,
+        "qes": 0.26
+    },
+    "nominal_diameter": "8in"
+}

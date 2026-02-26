@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-15cxa400nd",
+    "manufacturer": "Beyma",
+    "model_name": "15CXA400Nd",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 6.6,
+        "bl_tm": 19.0,
+        "sd_m2": 0.08800000000000001,
+        "mms_kg": 0.084,
+        "le_h": 0.001,
+        "qts": 0.358,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 4.4,
+        "qes": 0.39
+    },
+    "nominal_diameter": "15in"
+}

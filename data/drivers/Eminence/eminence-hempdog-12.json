@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-hempdog-12",
+    "manufacturer": "Eminence",
+    "model_name": "HempDog_12",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 69.0,
+        "re_ohm": 6.55,
+        "bl_tm": 15.23,
+        "sd_m2": 0.05454,
+        "mms_kg": 0.03,
+        "le_h": 0.00041,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00127,
+        "qms": 10.02,
+        "qes": 0.36
+    },
+    "nominal_diameter": "12in"
+}

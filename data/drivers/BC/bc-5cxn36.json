@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-5cxn36",
+    "manufacturer": "BC",
+    "model_name": "5CXN36",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 95.0,
+        "re_ohm": 5.8,
+        "bl_tm": 5.42,
+        "sd_m2": 0.0095,
+        "mms_kg": 0.0083,
+        "le_h": 0.0008900000000000001,
+        "qts": 0.9,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 13.5,
+        "qes": 0.97
+    },
+    "nominal_diameter": "6in"
+}

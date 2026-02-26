@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-kappa-pro-15lfc",
+    "manufacturer": "Eminence",
+    "model_name": "KAPPA_PRO-15LFC",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 3.34,
+        "bl_tm": 15.4,
+        "sd_m2": 0.08563,
+        "mms_kg": 0.099,
+        "le_h": 0.00094,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0079,
+        "qms": 10.0,
+        "qes": 0.33
+    },
+    "nominal_diameter": "15in"
+}

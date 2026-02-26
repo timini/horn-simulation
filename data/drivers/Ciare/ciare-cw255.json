@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cw255",
+    "manufacturer": "Ciare",
+    "model_name": "CW255",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 50.0,
+        "re_ohm": 3.3,
+        "bl_tm": 12.9,
+        "sd_m2": 0.03466,
+        "mms_kg": 0.036000000000000004,
+        "le_h": 0.00059,
+        "qts": 0.21,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 2.05,
+        "qes": 0.23
+    },
+    "nominal_diameter": "10in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-6mi90",
+    "manufacturer": "Beyma",
+    "model_name": "6MI90",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 134.0,
+        "re_ohm": 5.7,
+        "bl_tm": 11.3,
+        "sd_m2": 0.014,
+        "mms_kg": 0.011,
+        "le_h": 0.0004,
+        "qts": 0.42,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0025,
+        "qms": 8.4,
+        "qes": 0.44
+    },
+    "nominal_diameter": "6in"
+}

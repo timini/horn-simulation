@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-guit-fiddle",
+    "manufacturer": "Eminence",
+    "model_name": "GUIT-FIDDLE",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 82.0,
+        "re_ohm": 7.34,
+        "bl_tm": 13.11,
+        "sd_m2": 0.05454,
+        "mms_kg": 0.026000000000000002,
+        "le_h": 0.00063,
+        "qts": 0.56,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00079,
+        "qms": 15.49,
+        "qes": 0.58
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-12nd730",
+    "manufacturer": "18Sound",
+    "model_name": "12ND730",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 45.0,
+        "re_ohm": 5.6,
+        "bl_tm": 19.2,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.055,
+        "le_h": 0.00173,
+        "qts": 0.23,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 5.13,
+        "qes": 0.24
+    },
+    "nominal_diameter": "12in"
+}

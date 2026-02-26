@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-18tlw3000",
+    "manufacturer": "18Sound",
+    "model_name": "18TLW3000",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 32.0,
+        "re_ohm": 2.4,
+        "bl_tm": 20.0,
+        "sd_m2": 0.12250000000000001,
+        "mms_kg": 0.28,
+        "le_h": 0.0012,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.012,
+        "qms": 13.8,
+        "qes": 0.36
+    },
+    "nominal_diameter": "18in"
+}

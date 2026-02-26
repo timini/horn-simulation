@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce67pr-4",
+    "manufacturer": "Dayton",
+    "model_name": "CE67PR-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 218.0,
+        "re_ohm": 4.54,
+        "bl_tm": 3.22,
+        "sd_m2": 0.0016620000000000003,
+        "mms_kg": 0.0018000000000000002,
+        "le_h": 0.00014000000000000001,
+        "qts": 0.92,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0022,
+        "qms": 5.52,
+        "qes": 1.11
+    }
+}

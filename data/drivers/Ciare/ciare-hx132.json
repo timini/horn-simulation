@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hx132",
+    "manufacturer": "Ciare",
+    "model_name": "HX132",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 86.7,
+        "re_ohm": 6.8,
+        "bl_tm": 4.95,
+        "sd_m2": 0.00826,
+        "mms_kg": 0.00484,
+        "le_h": 0.0002,
+        "qts": 0.53,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.001,
+        "qms": 1.96,
+        "qes": 0.73
+    },
+    "nominal_diameter": "6in"
+}

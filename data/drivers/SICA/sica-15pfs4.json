@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-15pfs4",
+    "manufacturer": "SICA",
+    "model_name": "15PFS4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 5.3,
+        "bl_tm": 24.24,
+        "sd_m2": 0.08553,
+        "mms_kg": 0.167,
+        "le_h": 0.0018000000000000002,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.009000000000000001,
+        "qms": 4.87,
+        "qes": 0.37
+    },
+    "nominal_diameter": "15in"
+}
