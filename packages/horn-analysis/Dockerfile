@@ -6,10 +6,10 @@ FROM python:3.10-slim as base
 FROM base as builder
 RUN pip install uv
 WORKDIR /app
-COPY ./packages/horn-analysis/pyproject.toml .
 COPY ./packages/horn-core /app/packages/horn-core
+COPY ./packages/horn-drivers /app/packages/horn-drivers
 COPY ./packages/horn-analysis /app/packages/horn-analysis
-RUN uv pip install --system /app/packages/horn-analysis
+RUN uv pip install --system /app/packages/horn-core /app/packages/horn-drivers /app/packages/horn-analysis
 
 # --- Production Stage ---
 # This is the final, clean image for the service.
@@ -19,6 +19,7 @@ WORKDIR /app
 
 # Copy the installed packages from the builder stage.
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # --- Test Stage ---
 # This stage adds test files and dependencies to the production image.

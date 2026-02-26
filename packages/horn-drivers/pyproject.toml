@@ -1,0 +1,21 @@
+[project]
+name = "horn-drivers"
+version = "0.1.0"
+description = "Driver database, loader, scraper and validation for the Horn project."
+dependencies = [
+    "numpy",
+    "horn-core",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+horn-core = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/horn_drivers"]

@@ -10,4 +10,5 @@ members = [
     "packages/horn-geometry",
     "packages/horn-solver",
     "packages/horn-analysis",
+    "packages/horn-drivers",
 ]

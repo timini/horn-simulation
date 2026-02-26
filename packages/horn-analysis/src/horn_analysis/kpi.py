@@ -36,19 +36,16 @@ class HornKPI:
         return asdict(self)
 
 
-def extract_kpis(csv_path: str) -> HornKPI:
-    """Extract KPIs from a frequency response CSV file.
+def extract_kpis_from_arrays(freq: np.ndarray, spl: np.ndarray) -> HornKPI:
+    """Extract KPIs from frequency/SPL arrays directly.
 
     Args:
-        csv_path: Path to CSV with 'frequency' and 'spl' columns.
+        freq: Array of frequency values in Hz.
+        spl: Array of SPL values in dB.
 
     Returns:
         HornKPI dataclass with computed metrics.
     """
-    df = pd.read_csv(csv_path)
-    freq = df["frequency"].values
-    spl = df["spl"].values
-
     # Peak
     peak_idx = np.argmax(spl)
     peak_spl = float(spl[peak_idx])
@@ -96,6 +93,19 @@ def extract_kpis(csv_path: str) -> HornKPI:
         passband_ripple_db=passband_ripple,
         average_sensitivity_db=avg_sensitivity,
     )
+
+
+def extract_kpis(csv_path: str) -> HornKPI:
+    """Extract KPIs from a frequency response CSV file.
+
+    Args:
+        csv_path: Path to CSV with 'frequency' and 'spl' columns.
+
+    Returns:
+        HornKPI dataclass with computed metrics.
+    """
+    df = pd.read_csv(csv_path)
+    return extract_kpis_from_arrays(df["frequency"].values, df["spl"].values)
 
 
 def _find_crossing(func, f_start, f_end, direction="rising"):
