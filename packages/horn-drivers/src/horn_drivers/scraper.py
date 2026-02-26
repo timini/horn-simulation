@@ -1,7 +1,10 @@
 """Bulk scraper for loudspeaker T-S parameters from loudspeakerdatabase.com.
 
-Enumerates manufacturers and drivers by browsing the site's index pages,
+Enumerates manufacturers and drivers by browsing manufacturer pages,
 then scrapes individual driver detail pages for Thiele-Small parameters.
+
+The site embeds driver data in JSON ``data-woofer`` attributes, which we
+extract directly — more reliable than HTML table parsing.
 
 All values are converted to SI on extraction (mH -> H, cm^2 -> m^2,
 mm -> m, g -> kg).  Drivers are classified as "compression" or "cone"
@@ -9,7 +12,7 @@ based on Sd, and nominal diameter is inferred geometrically.
 
 Usage:
     horn-scrape-drivers --db data/drivers.json
-    horn-scrape-drivers --db data/drivers.json --manufacturers Eminence,B&C
+    horn-scrape-drivers --db data/drivers.json --manufacturers Eminence,BC
     horn-scrape-drivers --db data/drivers.json --dry-run
 """
 
@@ -25,8 +28,6 @@ from typing import Dict, List, Optional, Tuple
 BASE_URL = "https://loudspeakerdatabase.com"
 
 # Sd thresholds for nominal diameter inference (m^2).
-# Each entry: (label, min_sd, max_sd) — ranges overlap slightly; we pick
-# the closest geometric match.
 DIAMETER_TABLE: List[Tuple[str, float]] = [
     # (label, nominal Sd in m^2 computed from pi*(d_eff/2)^2)
     ("6in", 0.0133),    # ~130 mm effective
@@ -71,7 +72,6 @@ def infer_nominal_diameter(sd_m2: float) -> Optional[str]:
     """
     if sd_m2 < 0.005:
         return None
-    # Find closest match in diameter table
     best_label = None
     best_dist = float("inf")
     for label, nominal_sd in DIAMETER_TABLE:
@@ -82,8 +82,60 @@ def infer_nominal_diameter(sd_m2: float) -> Optional[str]:
     return best_label
 
 
+def _parse_data_woofer(json_str: str) -> Optional[dict]:
+    """Parse the data-woofer JSON attribute into SI parameters.
+
+    The site embeds T-S data in data-woofer attributes as JSON like:
+    {"re":5.39,"bl":19.39,"mmd":91.2,"rms":2.24,"cms":210.0,
+     "sd":1159.0,"le":1.21,"fs":32.0,"qts":0.33,"xmax":8.0,
+     "pmax":1600,"frmin":38,"frmax":700,"spl1w":96.8,"z":8}
+
+    Units: sd=cm², le=mH, mmd=grams (dry mass), xmax=mm, z=ohms.
+    Note: mmd is dry moving mass; the site separately shows Mms (with
+    air load) in the detail page but the JSON only has mmd.
+    """
+    try:
+        raw = json.loads(json_str)
+    except (json.JSONDecodeError, TypeError):
+        return None
+
+    fs = raw.get("fs")
+    re_ohm = raw.get("re")
+    bl = raw.get("bl")
+    sd_cm2 = raw.get("sd")
+    mmd_g = raw.get("mmd")
+    le_mh = raw.get("le")
+
+    if not all(v is not None and v > 0 for v in [fs, re_ohm, bl, sd_cm2, mmd_g]):
+        return None
+
+    si: Dict[str, float] = {
+        "fs_hz": float(fs),
+        "re_ohm": float(re_ohm),
+        "bl_tm": float(bl),
+        "sd_m2": float(sd_cm2) * 1e-4,        # cm² -> m²
+        "mms_kg": float(mmd_g) * 1e-3,        # g -> kg (mmd ≈ mms for scraping)
+    }
+
+    if le_mh is not None and le_mh > 0:
+        si["le_h"] = float(le_mh) * 1e-3      # mH -> H
+
+    if raw.get("qts") is not None:
+        si["qts"] = float(raw["qts"])
+    if raw.get("z") is not None:
+        si["nominal_impedance_ohm"] = float(raw["z"])
+    if raw.get("xmax") is not None and raw["xmax"] > 0:
+        si["xmax_m"] = float(raw["xmax"]) * 1e-3  # mm -> m
+
+    return si
+
+
 def scrape_driver_page(url: str, session) -> Optional[dict]:
     """Scrape a single driver detail page for T-S parameters.
+
+    Extracts data from the embedded data-woofer JSON attribute (primary),
+    falling back to HTML parameter list parsing.  Also extracts Qms and
+    Qes from the parameter list (not in the JSON).
 
     Returns a dict with SI-unit parameters, or None if essential params
     are missing.
@@ -97,141 +149,106 @@ def scrape_driver_page(url: str, session) -> Optional[dict]:
 
     soup = BeautifulSoup(resp.text, "html.parser")
 
-    params: Dict[str, Optional[float]] = {}
-    # Map page labels to intermediate field names.
-    # Values will be converted to SI after collection.
-    param_map = {
-        "fs": "fs_hz",
-        "re": "re_ohm",
-        "bl": "bl_tm",
-        "sd": "sd_cm2",
-        "mms": "mms_kg",
-        "mmd": "mmd_g",  # sometimes listed instead of Mms
-        "le": "le_mh",
-        "qms": "qms",
-        "qes": "qes",
-        "qts": "qts",
-        "xmax": "xmax_mm",
-        "vas": "vas_l",
-        "nominal impedance": "z_nom",
-        "impedance": "z_nom",
-    }
+    # --- Primary: extract from data-woofer JSON ---
+    si = None
+    for el in soup.find_all(attrs={"data-woofer": True}):
+        candidate = _parse_data_woofer(el["data-woofer"])
+        if candidate:
+            si = candidate
+            break
 
-    for row in soup.find_all("tr"):
-        cells = row.find_all(["td", "th"])
-        if len(cells) < 2:
-            continue
-        label_text = cells[0].get_text(strip=True).lower()
-        value_text = cells[1].get_text(strip=True)
-
-        for key, field_name in param_map.items():
-            if key in label_text:
-                val = _parse_float(value_text)
-                if val is not None:
-                    params[field_name] = val
-                break
-
-    if not params.get("fs_hz"):
+    if si is None:
         return None
 
-    # Convert to SI
-    si: Dict[str, Optional[float]] = {
-        "fs_hz": params.get("fs_hz"),
-        "re_ohm": params.get("re_ohm"),
-        "bl_tm": params.get("bl_tm"),
-        "mms_kg": params.get("mms_kg"),
-        "qms": params.get("qms"),
-        "qes": params.get("qes"),
-        "qts": params.get("qts"),
+    # --- Supplement: extract Qms, Qes, Mms from the HTML param list ---
+    # These aren't in the data-woofer JSON but are in the <li> elements
+    highlight_map = {
+        "qms": "qms",
+        "qes": "qes",
+        "mms": "mms_g",  # Mms with air load, in grams
     }
 
-    # Sd: cm^2 -> m^2
-    if params.get("sd_cm2"):
-        si["sd_m2"] = params["sd_cm2"] * 1e-4
+    for key, field in highlight_map.items():
+        el = soup.find(attrs={"data-highlight": key})
+        if el:
+            # Find the <b> tag inside the value span
+            val_el = el.find_next(attrs={"data-highlight": key})
+            if val_el:
+                b_tag = val_el.find("b")
+                if b_tag:
+                    val = _parse_float(b_tag.get_text(strip=True))
+                    if val is not None and val > 0:
+                        if field == "mms_g":
+                            si["mms_kg"] = val * 1e-3  # Override mmd with Mms
+                        else:
+                            si[field] = val
 
-    # Le: mH -> H
-    if params.get("le_mh"):
-        si["le_h"] = params["le_mh"] * 1e-3
-
-    # Xmax: mm -> m
-    if params.get("xmax_mm"):
-        si["xmax_m"] = params["xmax_mm"] * 1e-3
-
-    # Mmd (dry mass in grams) -> Mms approximation if Mms not given
-    if not si.get("mms_kg") and params.get("mmd_g"):
-        # Mms ≈ Mmd + air load; for scraping purposes use Mmd directly
-        # (air load is small and typically included in published Mms)
-        si["mms_kg"] = params["mmd_g"] * 1e-3
-
-    # Nominal impedance
-    if params.get("z_nom"):
-        si["nominal_impedance_ohm"] = params["z_nom"]
-
-    return {k: v for k, v in si.items() if v is not None}
+    return si
 
 
 def discover_manufacturers(session) -> List[str]:
-    """Fetch the site index and return a list of manufacturer page URLs.
+    """Discover manufacturer slugs from the homepage.
 
-    The main page at loudspeakerdatabase.com lists manufacturers as links.
+    The homepage shows driver cards with links like /Eminence/MODEL.
+    We extract unique manufacturer slugs from these two-segment paths.
     """
     from bs4 import BeautifulSoup
 
     resp = session.get(BASE_URL, timeout=15)
     if resp.status_code != 200:
-        print(f"ERROR: HTTP {resp.status_code} fetching manufacturer index")
+        print(f"ERROR: HTTP {resp.status_code} fetching homepage")
         return []
 
     soup = BeautifulSoup(resp.text, "html.parser")
-    manufacturers = []
+    manufacturers = set()
 
     for link in soup.find_all("a", href=True):
         href = link["href"]
-        # Manufacturer pages are top-level paths like /Eminence, /B&C
-        # Skip known non-manufacturer paths
-        if href.startswith("/") and "/" not in href[1:]:
-            name = href[1:]
-            if name and name.lower() not in (
-                "search", "about", "contact", "login", "register",
-                "privacy", "terms", "faq", "api", "sitemap",
-                "favicon.ico", "robots.txt",
-            ):
-                full_url = BASE_URL + href
-                if full_url not in manufacturers:
-                    manufacturers.append(full_url)
+        # Driver pages are like /Manufacturer/Model
+        if href.startswith("/") and href.count("/") == 2:
+            parts = href.strip("/").split("/")
+            if len(parts) == 2:
+                mfr = parts[0]
+                # Skip non-manufacturer paths
+                if mfr.lower() not in (
+                    "assets", "images", "simulators", "css", "js",
+                ):
+                    manufacturers.add(mfr)
 
-    return manufacturers
+    return sorted(manufacturers)
 
 
-def discover_drivers(session, manufacturer_url: str) -> List[dict]:
+def discover_drivers(session, manufacturer_slug: str) -> List[dict]:
     """Fetch a manufacturer page and return driver entries.
 
     Returns list of dicts with keys: name, url, manufacturer.
     """
     from bs4 import BeautifulSoup
 
-    resp = session.get(manufacturer_url, timeout=15)
+    url = f"{BASE_URL}/{manufacturer_slug}"
+    resp = session.get(url, timeout=15)
     if resp.status_code != 200:
-        print(f"  WARN: HTTP {resp.status_code} for {manufacturer_url}")
+        print(f"  WARN: HTTP {resp.status_code} for {url}")
         return []
 
     soup = BeautifulSoup(resp.text, "html.parser")
-    manufacturer = manufacturer_url.rstrip("/").rsplit("/", 1)[-1]
     drivers = []
+    seen_urls = set()
 
     for link in soup.find_all("a", href=True):
         href = link["href"]
-        # Driver pages are like /Eminence/KAPPA_PRO-15A
+        # Driver pages are like /Manufacturer/Model
         if href.startswith("/") and href.count("/") == 2:
             parts = href.strip("/").split("/")
-            if len(parts) == 2 and parts[0].lower() == manufacturer.lower():
-                name = link.get_text(strip=True) or parts[1]
+            if len(parts) == 2 and parts[0] == manufacturer_slug:
                 full_url = BASE_URL + href
-                if not any(d["url"] == full_url for d in drivers):
+                if full_url not in seen_urls:
+                    seen_urls.add(full_url)
+                    name = link.get_text(strip=True) or parts[1]
                     drivers.append({
                         "name": name,
                         "url": full_url,
-                        "manufacturer": manufacturer,
+                        "manufacturer": manufacturer_slug,
                     })
 
     return drivers
@@ -260,32 +277,28 @@ def scrape_all(
         "(+https://github.com/timini/horn; academic loudspeaker research)"
     )
 
-    print("Discovering manufacturers...")
-    time.sleep(delay)
-    manufacturer_urls = discover_manufacturers(session)
-    print(f"Found {len(manufacturer_urls)} manufacturers")
-
-    # Apply filters
+    # Discover manufacturers or use provided list
     if manufacturer_filter:
-        filter_lower = [m.lower() for m in manufacturer_filter]
-        manufacturer_urls = [
-            url for url in manufacturer_urls
-            if url.rstrip("/").rsplit("/", 1)[-1].lower() in filter_lower
-        ]
-        print(f"Filtered to {len(manufacturer_urls)} manufacturers: "
-              f"{', '.join(url.rsplit('/', 1)[-1] for url in manufacturer_urls)}")
+        manufacturer_slugs = manufacturer_filter
+        print(f"Using {len(manufacturer_slugs)} specified manufacturers: "
+              f"{', '.join(manufacturer_slugs)}")
+    else:
+        print("Discovering manufacturers from homepage...")
+        time.sleep(delay)
+        manufacturer_slugs = discover_manufacturers(session)
+        print(f"Found {len(manufacturer_slugs)} manufacturers: "
+              f"{', '.join(manufacturer_slugs)}")
 
     if max_manufacturers:
-        manufacturer_urls = manufacturer_urls[:max_manufacturers]
+        manufacturer_slugs = manufacturer_slugs[:max_manufacturers]
 
     drivers: List[dict] = []
 
-    for i, mfr_url in enumerate(manufacturer_urls):
-        mfr_name = mfr_url.rstrip("/").rsplit("/", 1)[-1]
-        print(f"\n[{i + 1}/{len(manufacturer_urls)}] {mfr_name}")
+    for i, mfr_slug in enumerate(manufacturer_slugs):
+        print(f"\n[{i + 1}/{len(manufacturer_slugs)}] {mfr_slug}")
 
         time.sleep(delay)
-        driver_entries = discover_drivers(session, mfr_url)
+        driver_entries = discover_drivers(session, mfr_slug)
         print(f"  Found {len(driver_entries)} drivers")
 
         for entry in driver_entries:
@@ -388,7 +401,7 @@ def main():
     )
     parser.add_argument(
         "--manufacturers", type=str, default=None,
-        help="Comma-separated list of manufacturers to scrape (e.g. Eminence,B&C)",
+        help="Comma-separated manufacturer slugs as on the site (e.g. Eminence,BC,Oberton)",
     )
     args = parser.parse_args()
 
