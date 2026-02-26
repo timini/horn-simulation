@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-dml25-4",
+    "manufacturer": "Dayton",
+    "model_name": "DML25-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 212.0,
+        "re_ohm": 4.3,
+        "bl_tm": 3.86,
+        "sd_m2": 0.0016100000000000003,
+        "mms_kg": 0.0037,
+        "le_h": 8.999999999999999e-05,
+        "qts": 1.1,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0015,
+        "qms": 3.83,
+        "qes": 1.5
+    }
+}

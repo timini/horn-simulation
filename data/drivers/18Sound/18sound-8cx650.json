@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-8cx650",
+    "manufacturer": "18Sound",
+    "model_name": "8CX650",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 65.0,
+        "re_ohm": 4.9,
+        "bl_tm": 12.0,
+        "sd_m2": 0.0227,
+        "mms_kg": 0.0256,
+        "le_h": 0.0007,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 6.4,
+        "qes": 0.37
+    },
+    "nominal_diameter": "8in"
+}

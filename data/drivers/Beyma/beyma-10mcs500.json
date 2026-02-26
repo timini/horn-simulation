@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-10mcs500",
+    "manufacturer": "Beyma",
+    "model_name": "10MCS500",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 65.0,
+        "re_ohm": 5.6,
+        "bl_tm": 17.6,
+        "sd_m2": 0.03500000000000001,
+        "mms_kg": 0.044,
+        "le_h": 0.0011,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 10.1,
+        "qes": 0.33
+    },
+    "nominal_diameter": "10in"
+}

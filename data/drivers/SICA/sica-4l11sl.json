@@ -1,0 +1,19 @@
+{
+    "driver_id": "sica-4l11sl",
+    "manufacturer": "SICA",
+    "model_name": "4L11SL",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 120.0,
+        "re_ohm": 5.5,
+        "bl_tm": 6.16,
+        "sd_m2": 0.00442,
+        "mms_kg": 0.004,
+        "le_h": 0.00015,
+        "qts": 0.36,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0025,
+        "qms": 2.15,
+        "qes": 0.44
+    }
+}

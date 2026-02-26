@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-12lex1000fe",
+    "manufacturer": "Beyma",
+    "model_name": "12LEX1000Fe",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 49.0,
+        "re_ohm": 5.4,
+        "bl_tm": 24.6,
+        "sd_m2": 0.055,
+        "mms_kg": 0.11800000000000001,
+        "le_h": 0.0017,
+        "qts": 0.294,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.011,
+        "qms": 3.6,
+        "qes": 0.32
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-tf-1250",
+    "manufacturer": "Eminence",
+    "model_name": "TF-1250",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 95.0,
+        "re_ohm": 7.23,
+        "bl_tm": 11.39,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.029,
+        "le_h": 0.00051,
+        "qts": 0.88,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00047,
+        "qms": 8.5,
+        "qes": 0.98
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-um8-22",
+    "manufacturer": "Dayton",
+    "model_name": "UM8-22",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 34.3,
+        "re_ohm": 4.2,
+        "bl_tm": 9.2,
+        "sd_m2": 0.0211,
+        "mms_kg": 0.08120000000000001,
+        "le_h": 0.00073,
+        "qts": 0.64,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.016,
+        "qms": 2.47,
+        "qes": 0.87
+    },
+    "nominal_diameter": "8in"
+}

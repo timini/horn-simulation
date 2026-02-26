@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-18nlw9601c",
+    "manufacturer": "18Sound",
+    "model_name": "18NLW9601C",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 38.5,
+        "re_ohm": 4.7,
+        "bl_tm": 31.7,
+        "sd_m2": 0.113,
+        "mms_kg": 0.314,
+        "le_h": 0.0018000000000000002,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.014,
+        "qms": 6.29,
+        "qes": 0.36
+    },
+    "nominal_diameter": "18in"
+}

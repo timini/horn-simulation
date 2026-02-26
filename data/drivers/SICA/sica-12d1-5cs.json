@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-12d1-5cs",
+    "manufacturer": "SICA",
+    "model_name": "12D1,5CS",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 62.0,
+        "re_ohm": 5.1,
+        "bl_tm": 9.51,
+        "sd_m2": 0.04909,
+        "mms_kg": 0.035500000000000004,
+        "le_h": 0.00035,
+        "qts": 0.75,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0027,
+        "qms": 18.3,
+        "qes": 0.78
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-15sr4cp",
+    "manufacturer": "SICA",
+    "model_name": "15SR4CP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 34.0,
+        "re_ohm": 5.1,
+        "bl_tm": 25.03,
+        "sd_m2": 0.07548,
+        "mms_kg": 0.17500000000000002,
+        "le_h": 0.00183,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 5.53,
+        "qes": 0.3
+    },
+    "nominal_diameter": "15in"
+}

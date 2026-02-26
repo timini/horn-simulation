@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-nsw6021-124",
+    "manufacturer": "Eminence",
+    "model_name": "NSW6021-124",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.67,
+        "re_ohm": 2.9,
+        "bl_tm": 30.5,
+        "sd_m2": 0.1642,
+        "mms_kg": 0.551,
+        "le_h": 0.0012,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.021,
+        "qms": 10.38,
+        "qes": 0.33
+    },
+    "nominal_diameter": "18in"
+}

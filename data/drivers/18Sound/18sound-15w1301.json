@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-15w1301",
+    "manufacturer": "18Sound",
+    "model_name": "15W1301",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 48.0,
+        "re_ohm": 5.5,
+        "bl_tm": 22.3,
+        "sd_m2": 0.09000000000000001,
+        "mms_kg": 0.099,
+        "le_h": 0.0015500000000000002,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 8.5,
+        "qes": 0.37
+    },
+    "nominal_diameter": "15in"
+}

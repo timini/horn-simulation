@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-21lw2500",
+    "manufacturer": "18Sound",
+    "model_name": "21LW2500",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 29.0,
+        "re_ohm": 4.9,
+        "bl_tm": 30.0,
+        "sd_m2": 0.166,
+        "mms_kg": 0.38,
+        "le_h": 0.0025800000000000003,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.014,
+        "qms": 22.0,
+        "qes": 0.38
+    },
+    "nominal_diameter": "18in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-18ntls5000",
+    "manufacturer": "18Sound",
+    "model_name": "18NTLS5000",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 2.7,
+        "bl_tm": 30.7,
+        "sd_m2": 0.12250000000000001,
+        "mms_kg": 0.51,
+        "le_h": 0.002,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.017750000000000002,
+        "qms": 8.4,
+        "qes": 0.35
+    },
+    "nominal_diameter": "18in"
+}

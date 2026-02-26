@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rs225p-4",
+    "manufacturer": "Dayton",
+    "model_name": "RS225P-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 3.1,
+        "bl_tm": 6.1,
+        "sd_m2": 0.021380000000000003,
+        "mms_kg": 0.0228,
+        "le_h": 0.00045000000000000004,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.006,
+        "qms": 1.73,
+        "qes": 0.44
+    },
+    "nominal_diameter": "8in"
+}

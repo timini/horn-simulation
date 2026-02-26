@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-mb620-8",
+    "manufacturer": "Dayton",
+    "model_name": "MB620-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 104.0,
+        "re_ohm": 5.47,
+        "bl_tm": 6.68,
+        "sd_m2": 0.013273,
+        "mms_kg": 0.00859,
+        "le_h": 0.00093,
+        "qts": 0.59,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 4.29,
+        "qes": 0.69
+    },
+    "nominal_diameter": "6in"
+}

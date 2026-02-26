@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wan123-00-4",
+    "manufacturer": "LaVoce",
+    "model_name": "WAN123.00-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 54.0,
+        "re_ohm": 3.3,
+        "bl_tm": 15.29,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.0604,
+        "le_h": 0.0005600000000000001,
+        "qts": 0.27,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.006900000000000001,
+        "qms": 5.11,
+        "qes": 0.29
+    },
+    "nominal_diameter": "12in"
+}

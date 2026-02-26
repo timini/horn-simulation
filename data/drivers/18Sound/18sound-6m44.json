@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-6m44",
+    "manufacturer": "18Sound",
+    "model_name": "6M44",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 102.0,
+        "re_ohm": 5.3,
+        "bl_tm": 13.4,
+        "sd_m2": 0.0132,
+        "mms_kg": 0.016,
+        "le_h": 0.00032,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0022500000000000003,
+        "qms": 4.4,
+        "qes": 0.31
+    },
+    "nominal_diameter": "6in"
+}

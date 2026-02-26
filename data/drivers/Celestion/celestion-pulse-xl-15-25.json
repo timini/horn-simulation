@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-pulse-xl-15-25",
+    "manufacturer": "Celestion",
+    "model_name": "PULSE_XL_15.25",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 39.9,
+        "re_ohm": 6.66,
+        "bl_tm": 14.1,
+        "sd_m2": 0.08553,
+        "mms_kg": 0.0853,
+        "le_h": 0.00114,
+        "qts": 0.68,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 12.22,
+        "qes": 0.72
+    },
+    "nominal_diameter": "15in"
+}

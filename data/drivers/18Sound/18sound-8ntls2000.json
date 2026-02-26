@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-8ntls2000",
+    "manufacturer": "18Sound",
+    "model_name": "8NTLS2000",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 5.4,
+        "bl_tm": 17.2,
+        "sd_m2": 0.0227,
+        "mms_kg": 0.042,
+        "le_h": 0.00069,
+        "qts": 0.19,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0074,
+        "qms": 11.8,
+        "qes": 0.19
+    },
+    "nominal_diameter": "8in"
+}

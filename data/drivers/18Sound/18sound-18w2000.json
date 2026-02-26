@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-18w2000",
+    "manufacturer": "18Sound",
+    "model_name": "18W2000",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 5.8,
+        "bl_tm": 27.1,
+        "sd_m2": 0.1134,
+        "mms_kg": 0.14300000000000002,
+        "le_h": 0.0019,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 7.29,
+        "qes": 0.26
+    },
+    "nominal_diameter": "18in"
+}

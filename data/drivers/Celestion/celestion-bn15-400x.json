@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-bn15-400x",
+    "manufacturer": "Celestion",
+    "model_name": "BN15-400X",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.1,
+        "re_ohm": 5.2,
+        "bl_tm": 12.9,
+        "sd_m2": 0.08553,
+        "mms_kg": 0.084,
+        "le_h": 0.00108,
+        "qts": 0.527,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 5.07,
+        "qes": 0.59
+    },
+    "nominal_diameter": "15in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-deltalite-ii-2510",
+    "manufacturer": "Eminence",
+    "model_name": "DELTALITE_II_2510",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.0,
+        "re_ohm": 5.06,
+        "bl_tm": 10.6,
+        "sd_m2": 0.035010000000000006,
+        "mms_kg": 0.031,
+        "le_h": 0.0004,
+        "qts": 0.42,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004200000000000001,
+        "qms": 5.76,
+        "qes": 0.45
+    },
+    "nominal_diameter": "10in"
+}

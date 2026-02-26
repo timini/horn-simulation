@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-ps65lp-4",
+    "manufacturer": "Dayton",
+    "model_name": "PS65LP-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 67.3,
+        "re_ohm": 3.2,
+        "bl_tm": 6.0,
+        "sd_m2": 0.012270000000000001,
+        "mms_kg": 0.0068,
+        "le_h": 0.00039000000000000005,
+        "qts": 0.24,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.004,
+        "qms": 3.85,
+        "qes": 0.26
+    },
+    "nominal_diameter": "6in"
+}

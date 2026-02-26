@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pw388",
+    "manufacturer": "Ciare",
+    "model_name": "PW388",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 6.2,
+        "bl_tm": 16.24,
+        "sd_m2": 0.08505,
+        "mms_kg": 0.0747,
+        "le_h": 0.00091,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 17.15,
+        "qes": 0.39
+    },
+    "nominal_diameter": "15in"
+}

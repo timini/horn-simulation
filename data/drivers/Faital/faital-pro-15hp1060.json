@@ -1,0 +1,19 @@
+{
+    "driver_id": "faital-pro-15hp1060",
+    "manufacturer": "Faital Pro",
+    "model_name": "15HP1060",
+    "driver_type": "cone",
+    "nominal_diameter": "15in",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 5.3,
+        "bl_tm": 21.0,
+        "sd_m2": 0.086,
+        "mms_kg": 0.105,
+        "le_h": 0.002,
+        "qms": 6.0,
+        "qes": 0.3172,
+        "xmax_m": 0.007,
+        "nominal_impedance_ohm": 8.0
+    }
+}

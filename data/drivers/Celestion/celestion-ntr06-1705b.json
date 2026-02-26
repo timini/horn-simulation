@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ntr06-1705b",
+    "manufacturer": "Celestion",
+    "model_name": "NTR06-1705B",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 132.9,
+        "re_ohm": 5.94,
+        "bl_tm": 10.69,
+        "sd_m2": 0.015394,
+        "mms_kg": 0.013300000000000001,
+        "le_h": 0.00021,
+        "qts": 0.442,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 1.91,
+        "qes": 0.58
+    },
+    "nominal_diameter": "6in"
+}

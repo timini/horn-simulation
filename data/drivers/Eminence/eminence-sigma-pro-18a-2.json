@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-sigma-pro-18a-2",
+    "manufacturer": "Eminence",
+    "model_name": "SIGMA_PRO_18A-2",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 28.0,
+        "re_ohm": 6.29,
+        "bl_tm": 22.1,
+        "sd_m2": 0.114,
+        "mms_kg": 0.13,
+        "le_h": 0.0019,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0060999999999999995,
+        "qms": 8.28,
+        "qes": 0.3
+    },
+    "nominal_diameter": "18in"
+}

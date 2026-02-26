@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-powerprox18",
+    "manufacturer": "Celestion",
+    "model_name": "PowerProX18",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 34.8,
+        "re_ohm": 5.1,
+        "bl_tm": 24.38,
+        "sd_m2": 0.12100000000000001,
+        "mms_kg": 0.23,
+        "le_h": 0.00161,
+        "qts": 0.379,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0095,
+        "qms": 3.15,
+        "qes": 0.43
+    },
+    "nominal_diameter": "18in"
+}

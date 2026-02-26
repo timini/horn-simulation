@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-da270-8",
+    "manufacturer": "Dayton",
+    "model_name": "DA270-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 27.8,
+        "re_ohm": 6.3,
+        "bl_tm": 10.1,
+        "sd_m2": 0.03464,
+        "mms_kg": 0.0513,
+        "le_h": 0.0012,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0060999999999999995,
+        "qms": 1.95,
+        "qes": 0.55
+    },
+    "nominal_diameter": "10in"
+}

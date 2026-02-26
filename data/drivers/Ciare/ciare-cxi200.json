@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cxi200",
+    "manufacturer": "Ciare",
+    "model_name": "CXI200",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 88.0,
+        "re_ohm": 2.8,
+        "bl_tm": 9.3,
+        "sd_m2": 0.021400000000000002,
+        "mms_kg": 0.02,
+        "le_h": 0.00035,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 10.89,
+        "qes": 0.36
+    },
+    "nominal_diameter": "8in"
+}

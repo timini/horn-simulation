@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rs125-4",
+    "manufacturer": "Dayton",
+    "model_name": "RS125-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.2,
+        "re_ohm": 2.9,
+        "bl_tm": 3.63,
+        "sd_m2": 0.00528,
+        "mms_kg": 0.0057,
+        "le_h": 0.00028000000000000003,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.004,
+        "qms": 2.04,
+        "qes": 0.45
+    },
+    "nominal_diameter": "6in"
+}

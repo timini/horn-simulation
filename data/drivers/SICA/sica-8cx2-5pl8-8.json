@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-8cx2-5pl8-8",
+    "manufacturer": "SICA",
+    "model_name": "8Cx2,5PL8+8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 74.0,
+        "re_ohm": 5.6,
+        "bl_tm": 12.34,
+        "sd_m2": 0.021380000000000003,
+        "mms_kg": 0.0185,
+        "le_h": 0.0006,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 2.63,
+        "qes": 0.32
+    },
+    "nominal_diameter": "8in"
+}

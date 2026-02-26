@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-ss12-22",
+    "manufacturer": "Dayton",
+    "model_name": "SS12-22",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 27.0,
+        "re_ohm": 4.9,
+        "bl_tm": 24.3,
+        "sd_m2": 0.0528,
+        "mms_kg": 0.275,
+        "le_h": 0.0018000000000000002,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.023,
+        "qms": 3.47,
+        "qes": 0.39
+    },
+    "nominal_diameter": "12in"
+}

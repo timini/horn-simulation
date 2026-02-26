@@ -1,0 +1,18 @@
+{
+    "driver_id": "psd2150",
+    "manufacturer": "Precision Devices",
+    "model_name": "PSD2150",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 450.0,
+        "re_ohm": 5.8,
+        "bl_tm": 10.5,
+        "sd_m2": 0.00126,
+        "mms_kg": 0.004,
+        "le_h": 0.00045,
+        "qms": 7.0,
+        "qes": 0.32,
+        "xmax_m": 0.0007,
+        "nominal_impedance_ohm": 8.0
+    }
+}

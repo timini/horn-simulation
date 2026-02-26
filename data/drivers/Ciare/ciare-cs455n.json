@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cs455n",
+    "manufacturer": "Ciare",
+    "model_name": "CS455N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.3,
+        "re_ohm": 3.27,
+        "bl_tm": 22.71,
+        "sd_m2": 0.11835000000000001,
+        "mms_kg": 0.384,
+        "le_h": 0.000942,
+        "qts": 0.77,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.011,
+        "qms": 13.36,
+        "qes": 0.82
+    },
+    "nominal_diameter": "18in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-12fl64",
+    "manufacturer": "BC",
+    "model_name": "12FL64",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 51.0,
+        "re_ohm": 5.7,
+        "bl_tm": 20.2,
+        "sd_m2": 0.0522,
+        "mms_kg": 0.075,
+        "le_h": 0.0016,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 6.6,
+        "qes": 0.34
+    },
+    "nominal_diameter": "12in"
+}

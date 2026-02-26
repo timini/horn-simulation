@@ -1,0 +1,19 @@
+{
+    "driver_id": "bc-18sw115",
+    "manufacturer": "B&C",
+    "model_name": "18SW115",
+    "driver_type": "cone",
+    "nominal_diameter": "18in",
+    "parameters": {
+        "fs_hz": 32.0,
+        "re_ohm": 5.2,
+        "bl_tm": 26.0,
+        "sd_m2": 0.121,
+        "mms_kg": 0.205,
+        "le_h": 0.0028,
+        "qms": 5.0,
+        "qes": 0.3171,
+        "xmax_m": 0.009,
+        "nominal_impedance_ohm": 8.0
+    }
+}

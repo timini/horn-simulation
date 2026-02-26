@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cw337",
+    "manufacturer": "Ciare",
+    "model_name": "CW337",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 43.0,
+        "re_ohm": 3.0,
+        "bl_tm": 16.1,
+        "sd_m2": 0.05349,
+        "mms_kg": 0.079,
+        "le_h": 0.00088,
+        "qts": 0.24,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.004,
+        "qms": 10.12,
+        "qes": 0.25
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-um12-22",
+    "manufacturer": "Dayton",
+    "model_name": "UM12-22",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 31.8,
+        "re_ohm": 3.7,
+        "bl_tm": 12.0,
+        "sd_m2": 0.04909,
+        "mms_kg": 0.20600000000000002,
+        "le_h": 0.0007800000000000001,
+        "qts": 0.77,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.019,
+        "qms": 2.9,
+        "qes": 1.05
+    },
+    "nominal_diameter": "12in"
+}

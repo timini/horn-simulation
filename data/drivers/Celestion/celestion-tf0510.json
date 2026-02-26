@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tf0510",
+    "manufacturer": "Celestion",
+    "model_name": "TF0510",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 128.1,
+        "re_ohm": 6.32,
+        "bl_tm": 6.82,
+        "sd_m2": 0.007854000000000002,
+        "mms_kg": 0.007019999999999999,
+        "le_h": 0.00033,
+        "qts": 0.58,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0024,
+        "qms": 2.38,
+        "qes": 0.77
+    },
+    "nominal_diameter": "6in"
+}

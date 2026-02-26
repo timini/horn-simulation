@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-da135-8",
+    "manufacturer": "Dayton",
+    "model_name": "DA135-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 56.5,
+        "re_ohm": 6.4,
+        "bl_tm": 5.32,
+        "sd_m2": 0.007540000000000001,
+        "mms_kg": 0.008539999999999999,
+        "le_h": 0.0009699999999999999,
+        "qts": 0.54,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 2.61,
+        "qes": 0.68
+    },
+    "nominal_diameter": "6in"
+}

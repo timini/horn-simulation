@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ftr10-2055d",
+    "manufacturer": "Celestion",
+    "model_name": "FTR10-2055D",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.5,
+        "re_ohm": 5.88,
+        "bl_tm": 13.81,
+        "sd_m2": 0.034636,
+        "mms_kg": 0.0352,
+        "le_h": 0.00046,
+        "qts": 0.343,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 2.73,
+        "qes": 0.39
+    },
+    "nominal_diameter": "10in"
+}

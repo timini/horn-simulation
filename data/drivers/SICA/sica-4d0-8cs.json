@@ -1,0 +1,19 @@
+{
+    "driver_id": "sica-4d0-8cs",
+    "manufacturer": "SICA",
+    "model_name": "4D0,8CS",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 140.0,
+        "re_ohm": 3.0,
+        "bl_tm": 2.65,
+        "sd_m2": 0.00442,
+        "mms_kg": 0.0031000000000000003,
+        "le_h": 0.00014000000000000001,
+        "qts": 0.92,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0013000000000000002,
+        "qms": 4.2,
+        "qes": 1.18
+    }
+}

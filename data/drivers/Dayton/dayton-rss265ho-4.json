@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rss265ho-4",
+    "manufacturer": "Dayton",
+    "model_name": "RSS265HO-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 26.9,
+        "re_ohm": 3.5,
+        "bl_tm": 17.6,
+        "sd_m2": 0.03497,
+        "mms_kg": 0.201,
+        "le_h": 0.00174,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0123,
+        "qms": 4.02,
+        "qes": 0.39
+    },
+    "nominal_diameter": "10in"
+}

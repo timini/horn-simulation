@@ -1,0 +1,19 @@
+{
+    "driver_id": "sica-3-5f1cs",
+    "manufacturer": "SICA",
+    "model_name": "3,5F1CS",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 107.0,
+        "re_ohm": 5.0,
+        "bl_tm": 4.2,
+        "sd_m2": 0.00385,
+        "mms_kg": 0.0033,
+        "le_h": 0.00021,
+        "qts": 0.57,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0015,
+        "qms": 6.52,
+        "qes": 0.63
+    }
+}

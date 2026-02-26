@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-definimax-4012ulf-8",
+    "manufacturer": "Eminence",
+    "model_name": "DEFINIMAX_4012ULF-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 6.2,
+        "bl_tm": 27.38,
+        "sd_m2": 0.05454,
+        "mms_kg": 0.153,
+        "le_h": 0.00432,
+        "qts": 0.31,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0067,
+        "qms": 12.13,
+        "qes": 0.32
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-e180he-44",
+    "manufacturer": "Dayton",
+    "model_name": "E180HE-44",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 6.8,
+        "bl_tm": 9.6,
+        "sd_m2": 0.01361,
+        "mms_kg": 0.0325,
+        "le_h": 0.0015,
+        "qts": 0.46,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0147,
+        "qms": 2.93,
+        "qes": 0.54
+    },
+    "nominal_diameter": "6in"
+}

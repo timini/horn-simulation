@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-cf0820m",
+    "manufacturer": "Celestion",
+    "model_name": "CF0820M",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 202.0,
+        "re_ohm": 5.39,
+        "bl_tm": 13.27,
+        "sd_m2": 0.022698,
+        "mms_kg": 0.0214,
+        "le_h": 0.00012,
+        "qts": 0.567,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 1.78,
+        "qes": 0.83
+    },
+    "nominal_diameter": "8in"
+}

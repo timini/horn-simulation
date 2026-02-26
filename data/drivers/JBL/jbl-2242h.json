@@ -1,0 +1,19 @@
+{
+    "driver_id": "jbl-2242h",
+    "manufacturer": "JBL",
+    "model_name": "2242H",
+    "driver_type": "cone",
+    "nominal_diameter": "18in",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 5.4,
+        "bl_tm": 22.0,
+        "sd_m2": 0.1195,
+        "mms_kg": 0.21,
+        "le_h": 0.0032,
+        "qms": 5.0,
+        "qes": 0.4416,
+        "xmax_m": 0.008,
+        "nominal_impedance_ohm": 8.0
+    }
+}

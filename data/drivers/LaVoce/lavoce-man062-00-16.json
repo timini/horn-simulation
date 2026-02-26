@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-man062-00-16",
+    "manufacturer": "LaVoce",
+    "model_name": "MAN062.00-16",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 103.0,
+        "re_ohm": 9.5,
+        "bl_tm": 15.9,
+        "sd_m2": 0.0132,
+        "mms_kg": 0.0156,
+        "le_h": 0.00039000000000000005,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0039,
+        "qms": 3.28,
+        "qes": 0.38
+    },
+    "nominal_diameter": "6in"
+}

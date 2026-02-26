@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-ssf153-00",
+    "manufacturer": "LaVoce",
+    "model_name": "SSF153.00",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 47.0,
+        "re_ohm": 5.1,
+        "bl_tm": 18.65,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.10400000000000001,
+        "le_h": 0.0010600000000000002,
+        "qts": 0.41,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0067,
+        "qms": 5.19,
+        "qes": 0.44
+    },
+    "nominal_diameter": "15in"
+}

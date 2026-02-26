@@ -1,0 +1,19 @@
+{
+    "driver_id": "celestion-an2075",
+    "manufacturer": "Celestion",
+    "model_name": "AN2075",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 153.4,
+        "re_ohm": 5.33,
+        "bl_tm": 2.71,
+        "sd_m2": 0.0012560000000000002,
+        "mms_kg": 0.00149,
+        "le_h": 4e-05,
+        "qts": 0.839,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0022500000000000003,
+        "qms": 5.28,
+        "qes": 1.0
+    }
+}

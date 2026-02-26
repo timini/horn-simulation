@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-fxi-3-20",
+    "manufacturer": "Ciare",
+    "model_name": "FXI_3.20",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 110.0,
+        "re_ohm": 5.1,
+        "bl_tm": 4.3,
+        "sd_m2": 0.00302,
+        "mms_kg": 0.0028,
+        "le_h": 0.0001,
+        "qts": 0.47,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 4.4,
+        "qes": 0.53
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-alpha-4-4",
+    "manufacturer": "Eminence",
+    "model_name": "Alpha_4-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 120.0,
+        "re_ohm": 3.42,
+        "bl_tm": 4.12,
+        "sd_m2": 0.005770000000000001,
+        "mms_kg": 0.005,
+        "le_h": 0.00017999999999999998,
+        "qts": 0.63,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0026000000000000003,
+        "qms": 6.41,
+        "qes": 0.7
+    },
+    "nominal_diameter": "6in"
+}

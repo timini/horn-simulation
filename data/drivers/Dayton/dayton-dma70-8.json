@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-dma70-8",
+    "manufacturer": "Dayton",
+    "model_name": "DMA70-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 113.7,
+        "re_ohm": 7.5,
+        "bl_tm": 4.7,
+        "sd_m2": 0.00229,
+        "mms_kg": 0.0026000000000000003,
+        "le_h": 0.0005,
+        "qts": 0.5,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 2.06,
+        "qes": 0.73
+    }
+}

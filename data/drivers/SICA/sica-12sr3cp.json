@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-12sr3cp",
+    "manufacturer": "SICA",
+    "model_name": "12SR3CP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 5.2,
+        "bl_tm": 16.57,
+        "sd_m2": 0.04909,
+        "mms_kg": 0.10400000000000001,
+        "le_h": 0.0012900000000000001,
+        "qts": 0.4,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 2.96,
+        "qes": 0.46
+    },
+    "nominal_diameter": "12in"
+}

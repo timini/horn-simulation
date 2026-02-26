@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-deltalite-ii-2518",
+    "manufacturer": "Eminence",
+    "model_name": "Deltalite II 2518",
+    "driver_type": "cone",
+    "nominal_diameter": "18in",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 5.73,
+        "bl_tm": 22.5,
+        "sd_m2": 0.1195,
+        "mms_kg": 0.147,
+        "le_h": 0.0018,
+        "qms": 5.2,
+        "qes": 0.3659,
+        "xmax_m": 0.0064,
+        "nominal_impedance_ohm": 8.0
+    }
+}

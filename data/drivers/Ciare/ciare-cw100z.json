@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cw100z",
+    "manufacturer": "Ciare",
+    "model_name": "CW100Z",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 107.0,
+        "re_ohm": 3.5,
+        "bl_tm": 2.99,
+        "sd_m2": 0.005,
+        "mms_kg": 0.004200000000000001,
+        "le_h": 0.0002,
+        "qts": 0.78,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0021000000000000003,
+        "qms": 2.63,
+        "qes": 1.1
+    },
+    "nominal_diameter": "6in"
+}

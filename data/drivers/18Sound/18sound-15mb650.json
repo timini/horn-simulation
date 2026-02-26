@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-15mb650",
+    "manufacturer": "18Sound",
+    "model_name": "15MB650",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 5.5,
+        "bl_tm": 20.0,
+        "sd_m2": 0.09000000000000001,
+        "mms_kg": 0.077,
+        "le_h": 0.00136,
+        "qts": 0.26,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 3.95,
+        "qes": 0.27
+    },
+    "nominal_diameter": "15in"
+}

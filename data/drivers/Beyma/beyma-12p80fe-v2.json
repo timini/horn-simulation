@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-12p80fe-v2",
+    "manufacturer": "Beyma",
+    "model_name": "12P80Fe_V2",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 48.0,
+        "re_ohm": 5.0,
+        "bl_tm": 23.0,
+        "sd_m2": 0.055,
+        "mms_kg": 0.076,
+        "le_h": 0.0011,
+        "qts": 0.213,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0075,
+        "qms": 6.5,
+        "qes": 0.22
+    },
+    "nominal_diameter": "12in"
+}

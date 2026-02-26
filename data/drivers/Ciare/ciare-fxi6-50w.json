@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-fxi6-50w",
+    "manufacturer": "Ciare",
+    "model_name": "FXI6.50W",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 70.0,
+        "re_ohm": 5.5,
+        "bl_tm": 10.6,
+        "sd_m2": 0.0137,
+        "mms_kg": 0.0171,
+        "le_h": 0.0007,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0053,
+        "qms": 3.2,
+        "qes": 0.37
+    },
+    "nominal_diameter": "6in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tf0512he",
+    "manufacturer": "Celestion",
+    "model_name": "TF0512HE",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 84.7,
+        "re_ohm": 5.42,
+        "bl_tm": 6.71,
+        "sd_m2": 0.007854000000000002,
+        "mms_kg": 0.00889,
+        "le_h": 0.00028000000000000003,
+        "qts": 0.536,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00475,
+        "qms": 9.23,
+        "qes": 0.57
+    },
+    "nominal_diameter": "6in"
+}

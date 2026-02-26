@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-dcs205-4",
+    "manufacturer": "Dayton",
+    "model_name": "DCS205-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 32.3,
+        "re_ohm": 3.9,
+        "bl_tm": 10.7,
+        "sd_m2": 0.021380000000000003,
+        "mms_kg": 0.0577,
+        "le_h": 0.0017800000000000001,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0088,
+        "qms": 6.28,
+        "qes": 0.4
+    },
+    "nominal_diameter": "8in"
+}

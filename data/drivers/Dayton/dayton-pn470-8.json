@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-pn470-8",
+    "manufacturer": "Dayton",
+    "model_name": "PN470-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 31.6,
+        "re_ohm": 5.6,
+        "bl_tm": 25.8,
+        "sd_m2": 0.1217,
+        "mms_kg": 0.212,
+        "le_h": 0.0022,
+        "qts": 0.34,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 9.29,
+        "qes": 0.35
+    },
+    "nominal_diameter": "18in"
+}

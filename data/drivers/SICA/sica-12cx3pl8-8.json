@@ -1,0 +1,18 @@
+{
+    "driver_id": "sica-12cx3pl8-8",
+    "manufacturer": "SICA",
+    "model_name": "12Cx3PL8+8\u00ce\u00a9",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.3,
+        "re_ohm": 6.1,
+        "bl_tm": 12.38,
+        "sd_m2": 0.03398,
+        "mms_kg": 0.049,
+        "le_h": 0.00158,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006
+    },
+    "nominal_diameter": "10in"
+}

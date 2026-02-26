@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-10nmfs",
+    "manufacturer": "Beyma",
+    "model_name": "10NMFS",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 5.9,
+        "bl_tm": 16.0,
+        "sd_m2": 0.037000000000000005,
+        "mms_kg": 0.089,
+        "le_h": 0.00149,
+        "qts": 0.418,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0145,
+        "qms": 5.9,
+        "qes": 0.45
+    },
+    "nominal_diameter": "10in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-15mi100",
+    "manufacturer": "Beyma",
+    "model_name": "15MI100",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 6.2,
+        "bl_tm": 19.2,
+        "sd_m2": 0.08800000000000001,
+        "mms_kg": 0.077,
+        "le_h": 0.001,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 6.38,
+        "qes": 0.3
+    },
+    "nominal_diameter": "15in"
+}

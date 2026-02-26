@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pw256",
+    "manufacturer": "Ciare",
+    "model_name": "PW256",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 69.0,
+        "re_ohm": 5.43,
+        "bl_tm": 17.05,
+        "sd_m2": 0.03527,
+        "mms_kg": 0.0319,
+        "le_h": 0.00062,
+        "qts": 0.25,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0025,
+        "qms": 12.45,
+        "qes": 0.26
+    },
+    "nominal_diameter": "10in"
+}

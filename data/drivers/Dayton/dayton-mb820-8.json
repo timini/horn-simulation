@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-mb820-8",
+    "manufacturer": "Dayton",
+    "model_name": "MB820-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 69.0,
+        "re_ohm": 5.26,
+        "bl_tm": 9.6,
+        "sd_m2": 0.024424,
+        "mms_kg": 0.0209,
+        "le_h": 0.0010400000000000001,
+        "qts": 0.46,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 3.83,
+        "qes": 0.52
+    },
+    "nominal_diameter": "8in"
+}

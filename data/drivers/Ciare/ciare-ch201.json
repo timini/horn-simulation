@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ch201",
+    "manufacturer": "Ciare",
+    "model_name": "CH201",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 77.0,
+        "re_ohm": 3.0,
+        "bl_tm": 6.58,
+        "sd_m2": 0.020640000000000002,
+        "mms_kg": 0.0145,
+        "le_h": 8e-05,
+        "qts": 0.44,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0035,
+        "qms": 4.97,
+        "qes": 0.48
+    },
+    "nominal_diameter": "8in"
+}

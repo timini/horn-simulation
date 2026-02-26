@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ntr12-3018d",
+    "manufacturer": "Celestion",
+    "model_name": "NTR12-3018D",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 58.8,
+        "re_ohm": 5.99,
+        "bl_tm": 19.9,
+        "sd_m2": 0.053092999999999994,
+        "mms_kg": 0.058100000000000006,
+        "le_h": 0.0008,
+        "qts": 0.296,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 3.39,
+        "qes": 0.33
+    },
+    "nominal_diameter": "12in"
+}

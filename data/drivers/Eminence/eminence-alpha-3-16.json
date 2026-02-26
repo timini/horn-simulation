@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-alpha-3-16",
+    "manufacturer": "Eminence",
+    "model_name": "ALPHA_3-16",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 112.0,
+        "re_ohm": 10.53,
+        "bl_tm": 4.95,
+        "sd_m2": 0.00286,
+        "mms_kg": 0.002,
+        "le_h": 0.00014000000000000001,
+        "qts": 0.59,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0027,
+        "qms": 5.89,
+        "qes": 0.66
+    }
+}

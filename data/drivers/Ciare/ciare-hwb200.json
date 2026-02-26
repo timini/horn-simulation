@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hwb200",
+    "manufacturer": "Ciare",
+    "model_name": "HWB200",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 32.0,
+        "re_ohm": 5.5,
+        "bl_tm": 8.9,
+        "sd_m2": 0.0223,
+        "mms_kg": 0.029500000000000002,
+        "le_h": 0.00042,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 7.5,
+        "qes": 0.41
+    },
+    "nominal_diameter": "8in"
+}

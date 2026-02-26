@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-dma45-4",
+    "manufacturer": "Dayton",
+    "model_name": "DMA45-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 151.4,
+        "re_ohm": 3.7,
+        "bl_tm": 2.2,
+        "sd_m2": 0.00086,
+        "mms_kg": 0.0013000000000000002,
+        "le_h": 0.0003,
+        "qts": 0.56,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.002,
+        "qms": 5.23,
+        "qes": 0.62
+    }
+}

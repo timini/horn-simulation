@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-private-jack-16",
+    "manufacturer": "Eminence",
+    "model_name": "PRIVATE_JACK_16",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 101.0,
+        "re_ohm": 14.0,
+        "bl_tm": 14.6,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.027,
+        "le_h": 0.0007700000000000001,
+        "qts": 1.02,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.00124,
+        "qms": 12.69,
+        "qes": 1.11
+    },
+    "nominal_diameter": "12in"
+}

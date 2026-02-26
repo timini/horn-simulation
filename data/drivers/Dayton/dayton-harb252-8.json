@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-harb252-8",
+    "manufacturer": "Dayton",
+    "model_name": "HARB252-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 172.11,
+        "re_ohm": 7.2,
+        "bl_tm": 3.04,
+        "sd_m2": 0.00212,
+        "mms_kg": 0.0032,
+        "le_h": 8.999999999999999e-05,
+        "qts": 1.74,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0013000000000000002,
+        "qms": 4.23,
+        "qes": 2.98
+    }
+}

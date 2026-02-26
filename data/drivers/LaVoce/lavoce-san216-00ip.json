@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-san216-00ip",
+    "manufacturer": "LaVoce",
+    "model_name": "SAN216.00iP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 36.0,
+        "re_ohm": 0.7,
+        "bl_tm": 19.92,
+        "sd_m2": 0.169,
+        "mms_kg": 0.482,
+        "le_h": 0.00046,
+        "qts": 0.18,
+        "nominal_impedance_ohm": 1.0,
+        "xmax_m": 0.020800000000000003,
+        "qms": 3.45,
+        "qes": 0.19
+    },
+    "nominal_diameter": "18in"
+}

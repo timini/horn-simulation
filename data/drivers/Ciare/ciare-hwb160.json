@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hwb160",
+    "manufacturer": "Ciare",
+    "model_name": "HWB160",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 43.0,
+        "re_ohm": 5.8,
+        "bl_tm": 7.3,
+        "sd_m2": 0.014100000000000001,
+        "mms_kg": 0.013900000000000001,
+        "le_h": 0.0013000000000000002,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 4.7,
+        "qes": 0.41
+    },
+    "nominal_diameter": "6in"
+}

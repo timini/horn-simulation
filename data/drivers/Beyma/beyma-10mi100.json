@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-10mi100",
+    "manufacturer": "Beyma",
+    "model_name": "10MI100",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 50.0,
+        "re_ohm": 6.3,
+        "bl_tm": 18.7,
+        "sd_m2": 0.038,
+        "mms_kg": 0.038,
+        "le_h": 0.0009000000000000001,
+        "qts": 0.213,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 6.6,
+        "qes": 0.22
+    },
+    "nominal_diameter": "10in"
+}

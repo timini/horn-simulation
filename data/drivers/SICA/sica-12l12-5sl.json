@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-12l12-5sl",
+    "manufacturer": "SICA",
+    "model_name": "12L12,5SL",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 47.5,
+        "re_ohm": 5.5,
+        "bl_tm": 14.2,
+        "sd_m2": 0.04909,
+        "mms_kg": 0.047,
+        "le_h": 0.00075,
+        "qts": 0.36,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0037,
+        "qms": 7.5,
+        "qes": 0.38
+    },
+    "nominal_diameter": "12in"
+}

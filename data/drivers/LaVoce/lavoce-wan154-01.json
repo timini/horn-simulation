@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-wan154-01",
+    "manufacturer": "LaVoce",
+    "model_name": "WAN154.01",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 5.3,
+        "bl_tm": 26.47,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.157,
+        "le_h": 0.00165,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0086,
+        "qms": 6.8,
+        "qes": 0.29
+    },
+    "nominal_diameter": "15in"
+}

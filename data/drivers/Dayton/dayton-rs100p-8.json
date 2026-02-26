@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-rs100p-8",
+    "manufacturer": "Dayton",
+    "model_name": "RS100P-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 95.6,
+        "re_ohm": 6.6,
+        "bl_tm": 3.95,
+        "sd_m2": 0.00374,
+        "mms_kg": 0.0028,
+        "le_h": 0.00051,
+        "qts": 0.54,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0037,
+        "qms": 2.18,
+        "qes": 0.71
+    }
+}

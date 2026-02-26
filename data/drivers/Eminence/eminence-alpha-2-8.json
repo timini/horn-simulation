@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-alpha-2-8",
+    "manufacturer": "Eminence",
+    "model_name": "ALPHA_2-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 186.0,
+        "re_ohm": 6.4,
+        "bl_tm": 2.64,
+        "sd_m2": 0.00124,
+        "mms_kg": 0.001,
+        "le_h": 0.00013000000000000002,
+        "qts": 0.72,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0017,
+        "qms": 3.06,
+        "qes": 0.94
+    }
+}

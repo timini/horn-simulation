@@ -1,0 +1,19 @@
+{
+    "driver_id": "sica-3l0-8sl",
+    "manufacturer": "SICA",
+    "model_name": "3L0,8SL",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 145.0,
+        "re_ohm": 5.5,
+        "bl_tm": 2.8,
+        "sd_m2": 0.00302,
+        "mms_kg": 0.002,
+        "le_h": 0.00011,
+        "qts": 1.01,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0015,
+        "qms": 4.92,
+        "qes": 1.28
+    }
+}

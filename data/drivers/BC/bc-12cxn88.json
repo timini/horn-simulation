@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-12cxn88",
+    "manufacturer": "BC",
+    "model_name": "12CXN88",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 50.0,
+        "re_ohm": 5.0,
+        "bl_tm": 20.9,
+        "sd_m2": 0.0522,
+        "mms_kg": 0.06,
+        "le_h": 0.0010500000000000002,
+        "qts": 0.22,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0105,
+        "qms": 8.3,
+        "qes": 0.23
+    },
+    "nominal_diameter": "12in"
+}

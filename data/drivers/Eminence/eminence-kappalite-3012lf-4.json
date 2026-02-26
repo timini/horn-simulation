@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-kappalite-3012lf-4",
+    "manufacturer": "Eminence",
+    "model_name": "KAPPALITE_3012LF-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 36.0,
+        "re_ohm": 3.89,
+        "bl_tm": 14.27,
+        "sd_m2": 0.05454,
+        "mms_kg": 0.07200000000000001,
+        "le_h": 0.00066,
+        "qts": 0.31,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0091,
+        "qms": 8.38,
+        "qes": 0.32
+    },
+    "nominal_diameter": "12in"
+}

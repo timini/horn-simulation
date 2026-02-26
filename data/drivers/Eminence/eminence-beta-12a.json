@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-beta-12a",
+    "manufacturer": "Eminence",
+    "model_name": "BETA-12A",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 47.0,
+        "re_ohm": 5.0,
+        "bl_tm": 10.8,
+        "sd_m2": 0.05389,
+        "mms_kg": 0.04,
+        "le_h": 0.00064,
+        "qts": 0.46,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0044,
+        "qms": 6.0,
+        "qes": 0.5
+    },
+    "nominal_diameter": "12in"
+}

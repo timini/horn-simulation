@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-15nlw9400",
+    "manufacturer": "18Sound",
+    "model_name": "15NLW9400",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 42.0,
+        "re_ohm": 5.2,
+        "bl_tm": 25.0,
+        "sd_m2": 0.09000000000000001,
+        "mms_kg": 0.131,
+        "le_h": 0.0011,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0095,
+        "qms": 10.4,
+        "qes": 0.29
+    },
+    "nominal_diameter": "15in"
+}

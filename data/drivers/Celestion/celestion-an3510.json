@@ -1,0 +1,19 @@
+{
+    "driver_id": "celestion-an3510",
+    "manufacturer": "Celestion",
+    "model_name": "AN3510",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 113.4,
+        "re_ohm": 5.73,
+        "bl_tm": 4.56,
+        "sd_m2": 0.0038450000000000003,
+        "mms_kg": 0.00376,
+        "le_h": 0.00014000000000000001,
+        "qts": 0.646,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0022500000000000003,
+        "qms": 5.09,
+        "qes": 0.74
+    }
+}

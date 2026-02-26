@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-10mb600",
+    "manufacturer": "18Sound",
+    "model_name": "10MB600",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 58.0,
+        "re_ohm": 5.7,
+        "bl_tm": 18.6,
+        "sd_m2": 0.035,
+        "mms_kg": 0.038,
+        "le_h": 0.0016,
+        "qts": 0.22,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006500000000000001,
+        "qms": 5.5,
+        "qes": 0.23
+    },
+    "nominal_diameter": "10in"
+}

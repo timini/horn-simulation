@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-delta-15lfa",
+    "manufacturer": "Eminence",
+    "model_name": "DELTA-15LFA",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 6.11,
+        "bl_tm": 14.6,
+        "sd_m2": 0.0873,
+        "mms_kg": 0.075,
+        "le_h": 0.0013700000000000001,
+        "qts": 0.48,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0048,
+        "qms": 6.3,
+        "qes": 0.52
+    },
+    "nominal_diameter": "15in"
+}

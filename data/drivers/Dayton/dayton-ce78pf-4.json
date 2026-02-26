@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce78pf-4",
+    "manufacturer": "Dayton",
+    "model_name": "CE78PF-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 100.0,
+        "re_ohm": 3.7,
+        "bl_tm": 2.22,
+        "sd_m2": 0.00302,
+        "mms_kg": 0.0028,
+        "le_h": 0.00017,
+        "qts": 0.99,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0014,
+        "qms": 3.9,
+        "qes": 1.34
+    }
+}

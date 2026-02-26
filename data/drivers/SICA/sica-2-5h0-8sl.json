@@ -1,0 +1,19 @@
+{
+    "driver_id": "sica-2-5h0-8sl",
+    "manufacturer": "SICA",
+    "model_name": "2,5H0,8SL",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 185.0,
+        "re_ohm": 5.0,
+        "bl_tm": 2.8,
+        "sd_m2": 0.00189,
+        "mms_kg": 0.0015,
+        "le_h": 0.00012,
+        "qts": 0.92,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0013000000000000002,
+        "qms": 5.23,
+        "qes": 1.11
+    }
+}

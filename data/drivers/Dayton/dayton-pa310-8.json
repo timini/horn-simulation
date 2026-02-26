@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-pa310-8",
+    "manufacturer": "Dayton",
+    "model_name": "PA310-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 5.5,
+        "bl_tm": 18.0,
+        "sd_m2": 0.05309,
+        "mms_kg": 0.0728,
+        "le_h": 0.00168,
+        "qts": 0.29,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 8.85,
+        "qes": 0.3
+    },
+    "nominal_diameter": "12in"
+}

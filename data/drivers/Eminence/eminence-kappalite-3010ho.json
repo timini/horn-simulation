@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-kappalite-3010ho",
+    "manufacturer": "Eminence",
+    "model_name": "KAPPALITE_3010HO",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 61.0,
+        "re_ohm": 5.46,
+        "bl_tm": 16.27,
+        "sd_m2": 0.036610000000000004,
+        "mms_kg": 0.034,
+        "le_h": 0.00057,
+        "qts": 0.26,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00443,
+        "qms": 9.93,
+        "qes": 0.27
+    },
+    "nominal_diameter": "10in"
+}

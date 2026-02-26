@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hw161n",
+    "manufacturer": "Ciare",
+    "model_name": "HW161N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 47.0,
+        "re_ohm": 6.1,
+        "bl_tm": 7.42,
+        "sd_m2": 0.013300000000000001,
+        "mms_kg": 0.014,
+        "le_h": 0.00069,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 2.01,
+        "qes": 0.46
+    },
+    "nominal_diameter": "6in"
+}

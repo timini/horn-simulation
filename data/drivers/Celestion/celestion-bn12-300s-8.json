@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-bn12-300s-8",
+    "manufacturer": "Celestion",
+    "model_name": "BN12-300S_(8)",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 62.1,
+        "re_ohm": 5.12,
+        "bl_tm": 17.02,
+        "sd_m2": 0.05309,
+        "mms_kg": 0.0524,
+        "le_h": 0.00051,
+        "qts": 0.319,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0025,
+        "qms": 2.74,
+        "qes": 0.36
+    },
+    "nominal_diameter": "12in"
+}

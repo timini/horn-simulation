@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-6b30-p",
+    "manufacturer": "Beyma",
+    "model_name": "6B30_P",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 56.0,
+        "re_ohm": 5.5,
+        "bl_tm": 6.8,
+        "sd_m2": 0.014,
+        "mms_kg": 0.014,
+        "le_h": 0.0003,
+        "qts": 0.5,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 3.0,
+        "qes": 0.6
+    },
+    "nominal_diameter": "6in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-wheelhouse-150",
+    "manufacturer": "Eminence",
+    "model_name": "WheelHouse_150",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 82.0,
+        "re_ohm": 7.46,
+        "bl_tm": 16.31,
+        "sd_m2": 0.05324,
+        "mms_kg": 0.03,
+        "le_h": 0.00043,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00222,
+        "qms": 14.28,
+        "qes": 0.44
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-sm-110-n",
+    "manufacturer": "Beyma",
+    "model_name": "SM-110_N",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 43.0,
+        "re_ohm": 6.2,
+        "bl_tm": 13.2,
+        "sd_m2": 0.035500000000000004,
+        "mms_kg": 0.038,
+        "le_h": 0.0017,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 7.88,
+        "qes": 0.37
+    },
+    "nominal_diameter": "10in"
+}

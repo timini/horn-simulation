@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-nd105-8",
+    "manufacturer": "Dayton",
+    "model_name": "ND105-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 66.6,
+        "re_ohm": 7.7,
+        "bl_tm": 5.44,
+        "sd_m2": 0.00515,
+        "mms_kg": 0.0068,
+        "le_h": 0.00125,
+        "qts": 0.66,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 5.57,
+        "qes": 0.74
+    },
+    "nominal_diameter": "6in"
+}

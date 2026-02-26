@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tf1225cx",
+    "manufacturer": "Celestion",
+    "model_name": "TF1225CX",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 63.5,
+        "re_ohm": 5.57,
+        "bl_tm": 17.46,
+        "sd_m2": 0.053092999999999994,
+        "mms_kg": 0.055600000000000004,
+        "le_h": 0.0012,
+        "qts": 0.358,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 3.12,
+        "qes": 0.41
+    },
+    "nominal_diameter": "12in"
+}

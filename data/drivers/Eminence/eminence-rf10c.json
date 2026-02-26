@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-rf10c",
+    "manufacturer": "Eminence",
+    "model_name": "RF10C",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 105.0,
+        "re_ohm": 5.98,
+        "bl_tm": 11.74,
+        "sd_m2": 0.036610000000000004,
+        "mms_kg": 0.019,
+        "le_h": 0.00049,
+        "qts": 0.53,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00047,
+        "qms": 15.57,
+        "qes": 0.55
+    },
+    "nominal_diameter": "10in"
+}

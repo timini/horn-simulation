@@ -1,0 +1,18 @@
+{
+    "driver_id": "de750",
+    "manufacturer": "B&C",
+    "model_name": "DE750",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 350.0,
+        "re_ohm": 5.5,
+        "bl_tm": 12.0,
+        "sd_m2": 0.00196,
+        "mms_kg": 0.0065,
+        "le_h": 0.0004,
+        "qms": 6.0,
+        "qes": 0.3,
+        "xmax_m": 0.001,
+        "nominal_impedance_ohm": 8.0
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "driver_id": "18sound-18lw1400-8",
+    "manufacturer": "18Sound",
+    "model_name": "18LW1400_8\u00ce\u00a9",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 42.0,
+        "re_ohm": 11.2,
+        "bl_tm": 21.8,
+        "sd_m2": 0.0227,
+        "mms_kg": 0.035500000000000004,
+        "le_h": 0.0011,
+        "qts": 0.24,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0074
+    },
+    "nominal_diameter": "8in"
+}

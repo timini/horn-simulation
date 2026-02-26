@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-pulse-xl-12-20",
+    "manufacturer": "Celestion",
+    "model_name": "PULSE_XL_12.20",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.1,
+        "re_ohm": 5.8,
+        "bl_tm": 11.21,
+        "sd_m2": 0.05309,
+        "mms_kg": 0.0536,
+        "le_h": 0.0013100000000000002,
+        "qts": 0.503,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00825,
+        "qms": 6.09,
+        "qes": 0.55
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-10fe2-5cp",
+    "manufacturer": "SICA",
+    "model_name": "10Fe2,5CP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.0,
+        "re_ohm": 5.5,
+        "bl_tm": 12.8,
+        "sd_m2": 0.03464,
+        "mms_kg": 0.0335,
+        "le_h": 0.00046,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 4.23,
+        "qes": 0.4
+    },
+    "nominal_diameter": "10in"
+}

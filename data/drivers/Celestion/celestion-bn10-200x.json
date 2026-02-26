@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-bn10-200x",
+    "manufacturer": "Celestion",
+    "model_name": "BN10-200X",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 50.7,
+        "re_ohm": 5.9,
+        "bl_tm": 14.29,
+        "sd_m2": 0.03464,
+        "mms_kg": 0.032200000000000006,
+        "le_h": 0.00063,
+        "qts": 0.274,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 3.67,
+        "qes": 0.3
+    },
+    "nominal_diameter": "10in"
+}

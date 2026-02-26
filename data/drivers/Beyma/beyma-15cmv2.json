@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-15cmv2",
+    "manufacturer": "Beyma",
+    "model_name": "15CMV2",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 49.0,
+        "re_ohm": 6.0,
+        "bl_tm": 18.8,
+        "sd_m2": 0.08800000000000001,
+        "mms_kg": 0.106,
+        "le_h": 0.0012,
+        "qts": 0.485,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 4.1,
+        "qes": 0.55
+    },
+    "nominal_diameter": "15in"
+}

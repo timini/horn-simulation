@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce30p-4",
+    "manufacturer": "Dayton",
+    "model_name": "CE30P-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 335.8,
+        "re_ohm": 3.4,
+        "bl_tm": 2.16,
+        "sd_m2": 0.00041,
+        "mms_kg": 0.0006500000000000001,
+        "le_h": 0.00017999999999999998,
+        "qts": 0.8,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0011,
+        "qms": 8.62,
+        "qes": 1.03
+    }
+}

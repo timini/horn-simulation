@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-kl3015cx-8",
+    "manufacturer": "Eminence",
+    "model_name": "KL3015CX-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 38.0,
+        "re_ohm": 5.71,
+        "bl_tm": 16.08,
+        "sd_m2": 0.08896000000000001,
+        "mms_kg": 0.089,
+        "le_h": 0.00063,
+        "qts": 0.44,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00867,
+        "qms": 6.48,
+        "qes": 0.47
+    },
+    "nominal_diameter": "15in"
+}

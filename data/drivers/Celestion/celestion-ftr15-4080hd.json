@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ftr15-4080hd",
+    "manufacturer": "Celestion",
+    "model_name": "FTR15-4080HD",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.1,
+        "re_ohm": 5.89,
+        "bl_tm": 23.15,
+        "sd_m2": 0.08583,
+        "mms_kg": 0.13,
+        "le_h": 0.00159,
+        "qts": 0.31,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 4.67,
+        "qes": 0.33
+    },
+    "nominal_diameter": "15in"
+}

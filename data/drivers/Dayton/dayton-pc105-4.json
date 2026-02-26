@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-pc105-4",
+    "manufacturer": "Dayton",
+    "model_name": "PC105-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 81.4,
+        "re_ohm": 3.3,
+        "bl_tm": 3.3,
+        "sd_m2": 0.00528,
+        "mms_kg": 0.004200000000000001,
+        "le_h": 0.00032,
+        "qts": 0.51,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.002,
+        "qms": 2.17,
+        "qes": 0.67
+    },
+    "nominal_diameter": "6in"
+}

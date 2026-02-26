@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-12cl76",
+    "manufacturer": "BC",
+    "model_name": "12CL76",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 48.0,
+        "re_ohm": 5.2,
+        "bl_tm": 22.4,
+        "sd_m2": 0.0522,
+        "mms_kg": 0.07,
+        "le_h": 0.0015,
+        "qts": 0.21,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 4.8,
+        "qes": 0.22
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-dc130as-8",
+    "manufacturer": "Dayton",
+    "model_name": "DC130AS-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.2,
+        "re_ohm": 5.6,
+        "bl_tm": 5.83,
+        "sd_m2": 0.00916,
+        "mms_kg": 0.0097,
+        "le_h": 0.00084,
+        "qts": 0.45,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0025,
+        "qms": 2.01,
+        "qes": 0.58
+    },
+    "nominal_diameter": "6in"
+}

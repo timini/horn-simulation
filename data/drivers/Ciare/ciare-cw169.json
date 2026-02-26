@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cw169",
+    "manufacturer": "Ciare",
+    "model_name": "CW169",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 46.0,
+        "re_ohm": 3.33,
+        "bl_tm": 5.94,
+        "sd_m2": 0.013300000000000001,
+        "mms_kg": 0.014199999999999999,
+        "le_h": 0.00032,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.005,
+        "qms": 1.81,
+        "qes": 0.39
+    },
+    "nominal_diameter": "6in"
+}

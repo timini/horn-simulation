@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-pro-5mrn-8",
+    "manufacturer": "Eminence",
+    "model_name": "PRO_5MRN-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 223.0,
+        "re_ohm": 5.45,
+        "bl_tm": 5.84,
+        "sd_m2": 0.00713,
+        "mms_kg": 0.004,
+        "le_h": 0.00017999999999999998,
+        "qts": 0.7,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00051,
+        "qms": 2.8,
+        "qes": 0.93
+    },
+    "nominal_diameter": "6in"
+}

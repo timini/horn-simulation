@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-18lw1251",
+    "manufacturer": "18Sound",
+    "model_name": "18LW1251",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 5.0,
+        "bl_tm": 23.6,
+        "sd_m2": 0.1134,
+        "mms_kg": 0.14200000000000002,
+        "le_h": 0.0027300000000000002,
+        "qts": 0.27,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.009000000000000001,
+        "qms": 8.0,
+        "qes": 0.28
+    },
+    "nominal_diameter": "18in"
+}

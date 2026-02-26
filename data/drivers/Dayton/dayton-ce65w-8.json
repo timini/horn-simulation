@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce65w-8",
+    "manufacturer": "Dayton",
+    "model_name": "CE65W-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 105.0,
+        "re_ohm": 6.9,
+        "bl_tm": 2.73,
+        "sd_m2": 0.00212,
+        "mms_kg": 0.0019,
+        "le_h": 0.00051,
+        "qts": 0.994,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 3.85,
+        "qes": 1.34
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cmi160",
+    "manufacturer": "Ciare",
+    "model_name": "CMI160",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 70.0,
+        "re_ohm": 2.9,
+        "bl_tm": 7.2,
+        "sd_m2": 0.0137,
+        "mms_kg": 0.0185,
+        "le_h": 0.0007,
+        "qts": 0.41,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 4.6,
+        "qes": 0.45
+    },
+    "nominal_diameter": "6in"
+}

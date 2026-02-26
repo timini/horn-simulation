@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-lbass15-15",
+    "manufacturer": "LaVoce",
+    "model_name": "LBASS15-15",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 5.6,
+        "bl_tm": 9.89,
+        "sd_m2": 0.08548,
+        "mms_kg": 0.0668,
+        "le_h": 0.00088,
+        "qts": 0.74,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0047,
+        "qms": 4.72,
+        "qes": 0.88
+    },
+    "nominal_diameter": "15in"
+}

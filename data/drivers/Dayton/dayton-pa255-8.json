@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-pa255-8",
+    "manufacturer": "Dayton",
+    "model_name": "PA255-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 50.5,
+        "re_ohm": 5.5,
+        "bl_tm": 10.6,
+        "sd_m2": 0.03464,
+        "mms_kg": 0.0423,
+        "le_h": 0.00149,
+        "qts": 0.61,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 8.49,
+        "qes": 0.66
+    },
+    "nominal_diameter": "10in"
+}

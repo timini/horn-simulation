@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-texas-heat",
+    "manufacturer": "Eminence",
+    "model_name": "TEXAS_HEAT",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 79.0,
+        "re_ohm": 7.3,
+        "bl_tm": 12.8,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.031,
+        "le_h": 0.00054,
+        "qts": 0.65,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0008,
+        "qms": 13.88,
+        "qes": 0.68
+    },
+    "nominal_diameter": "12in"
+}

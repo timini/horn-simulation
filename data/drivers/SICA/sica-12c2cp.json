@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-12c2cp",
+    "manufacturer": "SICA",
+    "model_name": "12C2CP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 58.4,
+        "re_ohm": 6.2,
+        "bl_tm": 13.7,
+        "sd_m2": 0.05309,
+        "mms_kg": 0.04,
+        "le_h": 0.00083,
+        "qts": 0.45,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 5.6,
+        "qes": 0.49
+    },
+    "nominal_diameter": "12in"
+}

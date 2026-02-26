@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-saf184-03",
+    "manufacturer": "LaVoce",
+    "model_name": "SAF184.03",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 5.7,
+        "bl_tm": 28.6,
+        "sd_m2": 0.12200000000000001,
+        "mms_kg": 0.266,
+        "le_h": 0.00197,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0121,
+        "qms": 6.73,
+        "qes": 0.35
+    },
+    "nominal_diameter": "18in"
+}

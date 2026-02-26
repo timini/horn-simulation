@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-8ntlw2000",
+    "manufacturer": "18Sound",
+    "model_name": "8NTLW2000",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 71.0,
+        "re_ohm": 5.2,
+        "bl_tm": 17.5,
+        "sd_m2": 0.0227,
+        "mms_kg": 0.028,
+        "le_h": 0.00063,
+        "qts": 0.21,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0044,
+        "qms": 8.1,
+        "qes": 0.21
+    },
+    "nominal_diameter": "8in"
+}

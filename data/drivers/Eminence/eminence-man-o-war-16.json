@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-man-o-war-16",
+    "manufacturer": "Eminence",
+    "model_name": "MAN_O_WAR_16",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 102.0,
+        "re_ohm": 13.1,
+        "bl_tm": 16.5,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.03,
+        "le_h": 0.00074,
+        "qts": 0.85,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.0008,
+        "qms": 12.39,
+        "qes": 0.97
+    },
+    "nominal_diameter": "12in"
+}

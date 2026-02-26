@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tf1830",
+    "manufacturer": "Celestion",
+    "model_name": "TF1830",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.7,
+        "re_ohm": 2.58,
+        "bl_tm": 15.46,
+        "sd_m2": 0.113412,
+        "mms_kg": 0.179,
+        "le_h": 0.00128,
+        "qts": 0.393,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 4.21,
+        "qes": 0.43
+    },
+    "nominal_diameter": "18in"
+}

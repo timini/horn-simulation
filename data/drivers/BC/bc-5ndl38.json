@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-5ndl38",
+    "manufacturer": "BC",
+    "model_name": "5NDL38",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 80.0,
+        "re_ohm": 5.5,
+        "bl_tm": 9.2,
+        "sd_m2": 0.0095,
+        "mms_kg": 0.011,
+        "le_h": 0.00064,
+        "qts": 0.36,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 9.2,
+        "qes": 0.37
+    },
+    "nominal_diameter": "6in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-6nmb900",
+    "manufacturer": "18Sound",
+    "model_name": "6NMB900",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 95.0,
+        "re_ohm": 5.2,
+        "bl_tm": 8.5,
+        "sd_m2": 0.013000000000000001,
+        "mms_kg": 0.0074,
+        "le_h": 0.0001,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 2.87,
+        "qes": 0.36
+    },
+    "nominal_diameter": "6in"
+}

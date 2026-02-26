@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-8cx21",
+    "manufacturer": "BC",
+    "model_name": "8CX21",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 74.0,
+        "re_ohm": 5.2,
+        "bl_tm": 11.5,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.021,
+        "le_h": 0.0012,
+        "qts": 0.36,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0055,
+        "qms": 4.1,
+        "qes": 0.39
+    },
+    "nominal_diameter": "8in"
+}

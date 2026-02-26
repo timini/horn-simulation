@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-cm-8-b",
+    "manufacturer": "Beyma",
+    "model_name": "CM-8_B",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 73.0,
+        "re_ohm": 6.2,
+        "bl_tm": 9.8,
+        "sd_m2": 0.022000000000000002,
+        "mms_kg": 0.022,
+        "le_h": 0.0012,
+        "qts": 0.62,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0067,
+        "qms": 13.46,
+        "qes": 0.65
+    },
+    "nominal_diameter": "8in"
+}

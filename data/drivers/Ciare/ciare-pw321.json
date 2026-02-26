@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pw321",
+    "manufacturer": "Ciare",
+    "model_name": "PW321",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 52.0,
+        "re_ohm": 6.0,
+        "bl_tm": 11.29,
+        "sd_m2": 0.0509,
+        "mms_kg": 0.0277,
+        "le_h": 0.00037,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0035,
+        "qms": 2.38,
+        "qes": 0.46
+    },
+    "nominal_diameter": "12in"
+}

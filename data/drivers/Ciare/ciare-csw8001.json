@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-csw8001",
+    "manufacturer": "Ciare",
+    "model_name": "CSW8001",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 47.0,
+        "re_ohm": 2.0,
+        "bl_tm": 20.38,
+        "sd_m2": 0.07191,
+        "mms_kg": 0.41500000000000004,
+        "le_h": 0.0024700000000000004,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 2.0,
+        "xmax_m": 0.016,
+        "qms": 4.99,
+        "qes": 0.47
+    },
+    "nominal_diameter": "15in"
+}

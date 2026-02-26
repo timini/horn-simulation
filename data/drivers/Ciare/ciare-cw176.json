@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cw176",
+    "manufacturer": "Ciare",
+    "model_name": "CW176",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 48.7,
+        "re_ohm": 4.09,
+        "bl_tm": 6.71,
+        "sd_m2": 0.01317,
+        "mms_kg": 0.0107,
+        "le_h": 4.7000000000000004e-05,
+        "qts": 0.28,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0055,
+        "qms": 6.12,
+        "qes": 0.3
+    },
+    "nominal_diameter": "6in"
+}

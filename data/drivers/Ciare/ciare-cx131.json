@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cx131",
+    "manufacturer": "Ciare",
+    "model_name": "CX131",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 83.0,
+        "re_ohm": 3.4,
+        "bl_tm": 4.59,
+        "sd_m2": 0.008790000000000001,
+        "mms_kg": 0.005900000000000001,
+        "le_h": 0.00025,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.002,
+        "qms": 3.45,
+        "qes": 0.49
+    },
+    "nominal_diameter": "6in"
+}

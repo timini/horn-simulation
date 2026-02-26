@@ -1,0 +1,20 @@
+{
+    "driver_id": "18sound-10ntlw2000",
+    "manufacturer": "18Sound",
+    "model_name": "10NTLW2000",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.0,
+        "re_ohm": 5.2,
+        "bl_tm": 17.9,
+        "sd_m2": 0.0346,
+        "mms_kg": 0.038,
+        "le_h": 0.00063,
+        "qts": 0.22,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0044,
+        "qms": 7.6,
+        "qes": 0.22
+    },
+    "nominal_diameter": "10in"
+}

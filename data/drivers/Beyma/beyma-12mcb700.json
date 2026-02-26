@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-12mcb700",
+    "manufacturer": "Beyma",
+    "model_name": "12MCB700",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 51.0,
+        "re_ohm": 5.4,
+        "bl_tm": 20.4,
+        "sd_m2": 0.055,
+        "mms_kg": 0.069,
+        "le_h": 0.0009000000000000001,
+        "qts": 0.27,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 3.9,
+        "qes": 0.29
+    },
+    "nominal_diameter": "12in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-18lex1000fe",
+    "manufacturer": "Beyma",
+    "model_name": "18LEX1000Fe",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 34.0,
+        "re_ohm": 5.4,
+        "bl_tm": 23.8,
+        "sd_m2": 0.1255,
+        "mms_kg": 0.196,
+        "le_h": 0.0019,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.011,
+        "qms": 7.3,
+        "qes": 0.39
+    },
+    "nominal_diameter": "18in"
+}

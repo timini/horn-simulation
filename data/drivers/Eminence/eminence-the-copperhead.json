@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-the-copperhead",
+    "manufacturer": "Eminence",
+    "model_name": "THE_COPPERHEAD",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 105.0,
+        "re_ohm": 7.59,
+        "bl_tm": 8.8,
+        "sd_m2": 0.036610000000000004,
+        "mms_kg": 0.016,
+        "le_h": 0.00037,
+        "qts": 0.98,
+        "nominal_impedance_ohm": 8.0,
+        "qms": 13.27,
+        "qes": 1.05
+    },
+    "nominal_diameter": "10in"
+}

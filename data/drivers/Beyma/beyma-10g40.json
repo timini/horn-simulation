@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-10g40",
+    "manufacturer": "Beyma",
+    "model_name": "10G40",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 45.0,
+        "re_ohm": 6.2,
+        "bl_tm": 17.0,
+        "sd_m2": 0.038,
+        "mms_kg": 0.052000000000000005,
+        "le_h": 0.0006,
+        "qts": 0.306,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.007,
+        "qms": 7.1,
+        "qes": 0.32
+    },
+    "nominal_diameter": "10in"
+}

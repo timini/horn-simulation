@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ftr12-4080hdx",
+    "manufacturer": "Celestion",
+    "model_name": "FTR12-4080HDX",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 61.0,
+        "re_ohm": 6.0,
+        "bl_tm": 24.63,
+        "sd_m2": 0.053092999999999994,
+        "mms_kg": 0.126,
+        "le_h": 0.00199,
+        "qts": 0.395,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 2.26,
+        "qes": 0.48
+    },
+    "nominal_diameter": "12in"
+}

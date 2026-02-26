@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-15ps100",
+    "manufacturer": "BC",
+    "model_name": "15PS100",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 5.2,
+        "bl_tm": 21.2,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.16,
+        "le_h": 0.002,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.008,
+        "qms": 6.0,
+        "qes": 0.47
+    },
+    "nominal_diameter": "15in"
+}

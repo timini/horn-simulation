@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-18lex1200nd",
+    "manufacturer": "Beyma",
+    "model_name": "18LEX1200Nd",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 36.0,
+        "re_ohm": 5.3,
+        "bl_tm": 26.4,
+        "sd_m2": 0.1255,
+        "mms_kg": 0.2,
+        "le_h": 0.0017,
+        "qts": 0.339,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.011,
+        "qms": 10.9,
+        "qes": 0.35
+    },
+    "nominal_diameter": "18in"
+}

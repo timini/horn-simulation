@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-10mbx64",
+    "manufacturer": "BC",
+    "model_name": "10MBX64",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 65.0,
+        "re_ohm": 5.5,
+        "bl_tm": 16.9,
+        "sd_m2": 0.0346,
+        "mms_kg": 0.032,
+        "le_h": 0.00039000000000000005,
+        "qts": 0.26,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 5.6,
+        "qes": 0.27
+    },
+    "nominal_diameter": "10in"
+}

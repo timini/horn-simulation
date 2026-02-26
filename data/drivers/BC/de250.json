@@ -1,0 +1,18 @@
+{
+    "driver_id": "de250",
+    "manufacturer": "B&C",
+    "model_name": "DE250",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 550.0,
+        "re_ohm": 6.3,
+        "bl_tm": 7.2,
+        "sd_m2": 0.0008,
+        "mms_kg": 0.0022,
+        "le_h": 0.0005,
+        "qms": 4.5,
+        "qes": 0.55,
+        "xmax_m": 0.0008,
+        "nominal_impedance_ohm": 8.0
+    }
+}

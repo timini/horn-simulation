@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-dv-77-16",
+    "manufacturer": "Eminence",
+    "model_name": "DV-77-16",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 74.0,
+        "re_ohm": 13.27,
+        "bl_tm": 13.18,
+        "sd_m2": 0.05195,
+        "mms_kg": 0.027,
+        "le_h": 0.00074,
+        "qts": 0.52,
+        "nominal_impedance_ohm": 16.0,
+        "xmax_m": 0.00079,
+        "qms": 13.48,
+        "qes": 0.54
+    },
+    "nominal_diameter": "12in"
+}

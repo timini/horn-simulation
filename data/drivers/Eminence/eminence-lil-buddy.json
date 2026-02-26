@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-lil-buddy",
+    "manufacturer": "Eminence",
+    "model_name": "LIL_BUDDY",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 149.0,
+        "re_ohm": 6.31,
+        "bl_tm": 11.7,
+        "sd_m2": 0.036610000000000004,
+        "mms_kg": 0.022,
+        "le_h": 0.00046,
+        "qts": 0.84,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0008,
+        "qms": 9.06,
+        "qes": 0.93
+    },
+    "nominal_diameter": "10in"
+}

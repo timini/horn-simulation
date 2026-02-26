@@ -1,0 +1,20 @@
+{
+    "driver_id": "beyma-4fr40",
+    "manufacturer": "Beyma",
+    "model_name": "4FR40",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 92.0,
+        "re_ohm": 6.4,
+        "bl_tm": 4.2,
+        "sd_m2": 0.0055000000000000005,
+        "mms_kg": 0.0044,
+        "le_h": 0.0002,
+        "qts": 0.885,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.003,
+        "qms": 11.3,
+        "qes": 0.96
+    },
+    "nominal_diameter": "6in"
+}

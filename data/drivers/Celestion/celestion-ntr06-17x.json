@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ntr06-17x",
+    "manufacturer": "Celestion",
+    "model_name": "NTR06-17X",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 60.4,
+        "re_ohm": 5.36,
+        "bl_tm": 10.36,
+        "sd_m2": 0.015394,
+        "mms_kg": 0.0177,
+        "le_h": 0.00028000000000000003,
+        "qts": 0.321,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0045000000000000005,
+        "qms": 7.25,
+        "qes": 0.34
+    },
+    "nominal_diameter": "6in"
+}

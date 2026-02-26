@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-dsa115-8",
+    "manufacturer": "Dayton",
+    "model_name": "DSA115-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 63.25,
+        "re_ohm": 5.9,
+        "bl_tm": 5.44,
+        "sd_m2": 0.005410000000000001,
+        "mms_kg": 0.0067,
+        "le_h": 0.00063,
+        "qts": 0.42,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0040999999999999995,
+        "qms": 2.0,
+        "qes": 0.53
+    },
+    "nominal_diameter": "6in"
+}

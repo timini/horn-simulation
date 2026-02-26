@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-pw395nd",
+    "manufacturer": "Ciare",
+    "model_name": "PW395ND",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 45.0,
+        "re_ohm": 5.43,
+        "bl_tm": 21.75,
+        "sd_m2": 0.08345000000000001,
+        "mms_kg": 0.156,
+        "le_h": 0.00054,
+        "qts": 0.47,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0095,
+        "qms": 5.25,
+        "qes": 0.52
+    },
+    "nominal_diameter": "15in"
+}

@@ -1,0 +1,18 @@
+{
+    "driver_id": "d2544",
+    "manufacturer": "JBL",
+    "model_name": "2544",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 700.0,
+        "re_ohm": 5.2,
+        "bl_tm": 7.8,
+        "sd_m2": 0.0005,
+        "mms_kg": 0.0012,
+        "le_h": 0.00025,
+        "qms": 4.0,
+        "qes": 0.5,
+        "xmax_m": 0.0004,
+        "nominal_impedance_ohm": 8.0
+    }
+}

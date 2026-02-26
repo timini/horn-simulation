@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce36-8",
+    "manufacturer": "Dayton",
+    "model_name": "CE36-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 220.0,
+        "re_ohm": 7.3,
+        "bl_tm": 2.41,
+        "sd_m2": 0.00062,
+        "mms_kg": 0.00051,
+        "le_h": 0.00015,
+        "qts": 0.73,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0009000000000000001,
+        "qms": 4.21,
+        "qes": 0.88
+    }
+}

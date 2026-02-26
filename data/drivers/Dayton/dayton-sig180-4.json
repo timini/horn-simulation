@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-sig180-4",
+    "manufacturer": "Dayton",
+    "model_name": "SIG180-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.5,
+        "re_ohm": 3.7,
+        "bl_tm": 6.6,
+        "sd_m2": 0.0143,
+        "mms_kg": 0.0192,
+        "le_h": 0.00047,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.005,
+        "qms": 5.19,
+        "qes": 0.41
+    },
+    "nominal_diameter": "6in"
+}

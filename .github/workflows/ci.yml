@@ -25,6 +25,24 @@ jobs:
       - name: Run nf-test
         run: just test-nextflow
 
+  test_pure_python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [horn-core, horn-drivers]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -e packages/horn-core
+          pip install -e packages/horn-drivers
+          pip install pytest
+      - name: Run tests
+        run: pytest packages/${{ matrix.package }}/tests -v
+
   test_packages:
     runs-on: ubuntu-latest
     strategy:

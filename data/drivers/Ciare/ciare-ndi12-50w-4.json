@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-ndi12-50w-4",
+    "manufacturer": "Ciare",
+    "model_name": "NDI12.50W-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.0,
+        "re_ohm": 2.8,
+        "bl_tm": 10.6,
+        "sd_m2": 0.054700000000000006,
+        "mms_kg": 0.054,
+        "le_h": 0.0006,
+        "qts": 0.43,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.005,
+        "qms": 13.5,
+        "qes": 0.44
+    },
+    "nominal_diameter": "12in"
+}

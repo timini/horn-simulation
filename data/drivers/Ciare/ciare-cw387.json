@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-cw387",
+    "manufacturer": "Ciare",
+    "model_name": "CW387",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 3.39,
+        "bl_tm": 15.87,
+        "sd_m2": 0.08466000000000001,
+        "mms_kg": 0.10300000000000001,
+        "le_h": 0.0006,
+        "qts": 0.31,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.00375,
+        "qms": 10.35,
+        "qes": 0.32
+    },
+    "nominal_diameter": "15in"
+}

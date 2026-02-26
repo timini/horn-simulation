@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-lab12c",
+    "manufacturer": "Eminence",
+    "model_name": "LAB12C",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 23.0,
+        "re_ohm": 3.11,
+        "bl_tm": 13.36,
+        "sd_m2": 0.05067,
+        "mms_kg": 0.136,
+        "le_h": 0.00109,
+        "qts": 0.33,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.013000000000000001,
+        "qms": 11.7,
+        "qes": 0.34
+    },
+    "nominal_diameter": "12in"
+}

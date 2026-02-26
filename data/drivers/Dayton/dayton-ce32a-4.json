@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-ce32a-4",
+    "manufacturer": "Dayton",
+    "model_name": "CE32A-4",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 262.1,
+        "re_ohm": 3.57,
+        "bl_tm": 1.59,
+        "sd_m2": 0.0003917,
+        "mms_kg": 0.0005200000000000001,
+        "le_h": 1.5e-05,
+        "qts": 0.86,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0005,
+        "qms": 2.86,
+        "qes": 1.24
+    }
+}

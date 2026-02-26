@@ -1,0 +1,20 @@
+{
+    "driver_id": "bc-12hpl64",
+    "manufacturer": "BC",
+    "model_name": "12HPL64",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 52.0,
+        "re_ohm": 6.0,
+        "bl_tm": 14.9,
+        "sd_m2": 0.0522,
+        "mms_kg": 0.042,
+        "le_h": 0.0011,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.004,
+        "qms": 3.3,
+        "qes": 0.35
+    },
+    "nominal_diameter": "12in"
+}

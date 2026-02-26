@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-delta-pro-12-450-4",
+    "manufacturer": "Eminence",
+    "model_name": "DELTA_PRO_12-450-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 45.0,
+        "re_ohm": 3.65,
+        "bl_tm": 9.51,
+        "sd_m2": 0.05324,
+        "mms_kg": 0.036000000000000004,
+        "le_h": 0.00045000000000000004,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.005200000000000001,
+        "qms": 7.97,
+        "qes": 0.41
+    },
+    "nominal_diameter": "12in"
+}

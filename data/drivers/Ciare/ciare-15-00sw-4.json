@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-15-00sw-4",
+    "manufacturer": "Ciare",
+    "model_name": "15.00SW-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 29.0,
+        "re_ohm": 3.6,
+        "bl_tm": 18.4,
+        "sd_m2": 0.078,
+        "mms_kg": 0.224,
+        "le_h": 0.002,
+        "qts": 0.41,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0135,
+        "qms": 5.4,
+        "qes": 0.44
+    },
+    "nominal_diameter": "15in"
+}

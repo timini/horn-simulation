@@ -1,0 +1,20 @@
+{
+    "driver_id": "sica-18s4cp",
+    "manufacturer": "SICA",
+    "model_name": "18S4CP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 33.0,
+        "re_ohm": 5.2,
+        "bl_tm": 23.5,
+        "sd_m2": 0.11642000000000001,
+        "mms_kg": 0.199,
+        "le_h": 0.0018100000000000002,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.011,
+        "qms": 3.94,
+        "qes": 0.39
+    },
+    "nominal_diameter": "18in"
+}

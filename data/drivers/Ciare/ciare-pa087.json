@@ -1,0 +1,19 @@
+{
+    "driver_id": "ciare-pa087",
+    "manufacturer": "Ciare",
+    "model_name": "PA087",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 74.0,
+        "re_ohm": 5.6,
+        "bl_tm": 3.45,
+        "sd_m2": 0.0033,
+        "mms_kg": 0.00322,
+        "le_h": 0.00027,
+        "qts": 0.62,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 5.13,
+        "qes": 0.71
+    }
+}

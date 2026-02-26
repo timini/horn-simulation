@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-rs180p-4",
+    "manufacturer": "Dayton",
+    "model_name": "RS180P-4",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.7,
+        "re_ohm": 3.1,
+        "bl_tm": 4.67,
+        "sd_m2": 0.01267,
+        "mms_kg": 0.0148,
+        "le_h": 0.00047,
+        "qts": 0.39,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.006,
+        "qms": 1.98,
+        "qes": 0.48
+    },
+    "nominal_diameter": "6in"
+}

@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-red-white-and-blues",
+    "manufacturer": "Eminence",
+    "model_name": "RED_WHITE_AND_BLUES",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 110.0,
+        "re_ohm": 6.42,
+        "bl_tm": 12.3,
+        "sd_m2": 0.05324,
+        "mms_kg": 0.03,
+        "le_h": 0.00043,
+        "qts": 0.79,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0008,
+        "qms": 7.19,
+        "qes": 0.89
+    },
+    "nominal_diameter": "12in"
+}

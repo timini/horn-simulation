@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-tf1225e",
+    "manufacturer": "Celestion",
+    "model_name": "TF1225e",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 52.6,
+        "re_ohm": 6.42,
+        "bl_tm": 17.66,
+        "sd_m2": 0.053092999999999994,
+        "mms_kg": 0.054,
+        "le_h": 0.00132,
+        "qts": 0.333,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.00525,
+        "qms": 3.51,
+        "qes": 0.37
+    },
+    "nominal_diameter": "12in"
+}

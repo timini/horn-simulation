@@ -1,0 +1,20 @@
+{
+    "driver_id": "ciare-hsb320-44",
+    "manufacturer": "Ciare",
+    "model_name": "HSB320-44",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 36.0,
+        "re_ohm": 6.15,
+        "bl_tm": 19.0,
+        "sd_m2": 0.051070000000000004,
+        "mms_kg": 0.099,
+        "le_h": 0.0014,
+        "qts": 0.35,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0075,
+        "qms": 5.1,
+        "qes": 0.38
+    },
+    "nominal_diameter": "12in"
+}

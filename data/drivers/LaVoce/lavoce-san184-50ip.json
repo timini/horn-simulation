@@ -1,0 +1,20 @@
+{
+    "driver_id": "lavoce-san184-50ip",
+    "manufacturer": "LaVoce",
+    "model_name": "SAN184.50iP",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 34.0,
+        "re_ohm": 1.2,
+        "bl_tm": 25.2,
+        "sd_m2": 0.12200000000000001,
+        "mms_kg": 0.34,
+        "le_h": 0.00035,
+        "qts": 0.13,
+        "nominal_impedance_ohm": 2.0,
+        "xmax_m": 0.01925,
+        "qms": 3.61,
+        "qes": 0.14
+    },
+    "nominal_diameter": "18in"
+}

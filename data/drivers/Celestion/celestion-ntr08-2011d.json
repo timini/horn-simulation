@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-ntr08-2011d",
+    "manufacturer": "Celestion",
+    "model_name": "NTR08-2011D",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 84.8,
+        "re_ohm": 5.79,
+        "bl_tm": 11.98,
+        "sd_m2": 0.022698,
+        "mms_kg": 0.0249,
+        "le_h": 0.00059,
+        "qts": 0.436,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 2.34,
+        "qes": 0.54
+    },
+    "nominal_diameter": "8in"
+}

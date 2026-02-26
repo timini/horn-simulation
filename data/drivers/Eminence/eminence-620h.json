@@ -1,0 +1,20 @@
+{
+    "driver_id": "eminence-620h",
+    "manufacturer": "Eminence",
+    "model_name": "620H",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 114.0,
+        "re_ohm": 3.94,
+        "bl_tm": 5.62,
+        "sd_m2": 0.01397,
+        "mms_kg": 0.006,
+        "le_h": 0.00025,
+        "qts": 0.49,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0004,
+        "qms": 5.5,
+        "qes": 0.54
+    },
+    "nominal_diameter": "6in"
+}

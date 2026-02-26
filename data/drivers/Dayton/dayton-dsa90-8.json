@@ -1,0 +1,19 @@
+{
+    "driver_id": "dayton-dsa90-8",
+    "manufacturer": "Dayton",
+    "model_name": "DSA90-8",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 66.62,
+        "re_ohm": 6.6,
+        "bl_tm": 4.61,
+        "sd_m2": 0.00312,
+        "mms_kg": 0.0035,
+        "le_h": 0.0005300000000000001,
+        "qts": 0.37,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0025,
+        "qms": 2.15,
+        "qes": 0.45
+    }
+}

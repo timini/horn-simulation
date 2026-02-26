@@ -1,0 +1,20 @@
+{
+    "driver_id": "dayton-pcx12-8",
+    "manufacturer": "Dayton",
+    "model_name": "PCX12-8",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.5,
+        "re_ohm": 6.96,
+        "bl_tm": 9.69,
+        "sd_m2": 0.051071,
+        "mms_kg": 0.0315,
+        "le_h": 0.0011899999999999999,
+        "qts": 0.56,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 10.5,
+        "qes": 0.59
+    },
+    "nominal_diameter": "12in"
+}

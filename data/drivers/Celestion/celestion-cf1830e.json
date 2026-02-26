@@ -1,0 +1,20 @@
+{
+    "driver_id": "celestion-cf1830e",
+    "manufacturer": "Celestion",
+    "model_name": "CF1830E",
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 40.5,
+        "re_ohm": 5.27,
+        "bl_tm": 24.6,
+        "sd_m2": 0.11344000000000001,
+        "mms_kg": 0.167,
+        "le_h": 0.0032400000000000003,
+        "qts": 0.343,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.005,
+        "qms": 4.37,
+        "qes": 0.37
+    },
+    "nominal_diameter": "18in"
+}
