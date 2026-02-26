@@ -22,7 +22,8 @@ FROM base as production
 WORKDIR /app
 
 # Copy the installed packages from the builder stage.
-COPY --from=builder /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
+ARG PYTHON_SITELIB=/usr/local/lib/python3.10/dist-packages
+COPY --from=builder ${PYTHON_SITELIB} ${PYTHON_SITELIB}
 
 # Copy the generator script, which is the entrypoint.
 COPY --from=builder /app/packages/horn-geometry/src/horn_geometry/generator.py /app/generator.py

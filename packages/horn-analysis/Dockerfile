@@ -23,7 +23,8 @@ RUN apt-get update && apt-get install -y procps && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # Copy the installed packages from the builder stage.
-COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+ARG PYTHON_SITELIB=/usr/local/lib/python3.10/site-packages
+COPY --from=builder ${PYTHON_SITELIB} ${PYTHON_SITELIB}
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # --- Test Stage ---
