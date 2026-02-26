@@ -1,0 +1,19 @@
+{
+    "driver_id": "rcf-lf15x401",
+    "manufacturer": "RCF",
+    "model_name": "LF15X401",
+    "driver_type": "cone",
+    "nominal_diameter": "15in",
+    "parameters": {
+        "fs_hz": 38.0,
+        "re_ohm": 5.4,
+        "bl_tm": 20.5,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.11,
+        "le_h": 0.0024,
+        "qms": 5.8,
+        "qes": 0.3375,
+        "xmax_m": 0.0065,
+        "nominal_impedance_ohm": 8.0
+    }
+}

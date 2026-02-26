@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-omega-pro-18a",
+    "manufacturer": "Eminence",
+    "model_name": "Omega Pro-18A",
+    "driver_type": "cone",
+    "nominal_diameter": "18in",
+    "parameters": {
+        "fs_hz": 28.0,
+        "re_ohm": 5.48,
+        "bl_tm": 20.5,
+        "sd_m2": 0.1195,
+        "mms_kg": 0.165,
+        "le_h": 0.0027,
+        "qms": 6.0,
+        "qes": 0.3785,
+        "xmax_m": 0.006,
+        "nominal_impedance_ohm": 8.0
+    }
+}

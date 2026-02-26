@@ -1,0 +1,19 @@
+{
+    "driver_id": "bc-18ps76",
+    "manufacturer": "B&C",
+    "model_name": "18PS76",
+    "driver_type": "cone",
+    "nominal_diameter": "18in",
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 5.3,
+        "bl_tm": 28.0,
+        "sd_m2": 0.118,
+        "mms_kg": 0.17,
+        "le_h": 0.002,
+        "qms": 6.5,
+        "qes": 0.2888,
+        "xmax_m": 0.007,
+        "nominal_impedance_ohm": 8.0
+    }
+}

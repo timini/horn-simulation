@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-beta-8a",
+    "manufacturer": "Eminence",
+    "model_name": "Beta 8A",
+    "driver_type": "cone",
+    "nominal_diameter": "8in",
+    "parameters": {
+        "fs_hz": 80.0,
+        "re_ohm": 5.53,
+        "bl_tm": 11.0,
+        "sd_m2": 0.0214,
+        "mms_kg": 0.018,
+        "le_h": 0.0006,
+        "qms": 5.5,
+        "qes": 0.4135,
+        "xmax_m": 0.0032,
+        "nominal_impedance_ohm": 8.0
+    }
+}

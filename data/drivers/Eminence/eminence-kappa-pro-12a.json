@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-kappa-pro-12a",
+    "manufacturer": "Eminence",
+    "model_name": "Kappa Pro-12A",
+    "driver_type": "cone",
+    "nominal_diameter": "12in",
+    "parameters": {
+        "fs_hz": 48.0,
+        "re_ohm": 5.57,
+        "bl_tm": 17.5,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.059,
+        "le_h": 0.0016,
+        "qms": 5.5,
+        "qes": 0.3236,
+        "xmax_m": 0.0046,
+        "nominal_impedance_ohm": 8.0
+    }
+}

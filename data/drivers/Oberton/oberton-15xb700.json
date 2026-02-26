@@ -1,0 +1,19 @@
+{
+    "driver_id": "oberton-15xb700",
+    "manufacturer": "Oberton",
+    "model_name": "15XB700",
+    "driver_type": "cone",
+    "nominal_diameter": "15in",
+    "parameters": {
+        "fs_hz": 37.0,
+        "re_ohm": 5.4,
+        "bl_tm": 21.5,
+        "sd_m2": 0.086,
+        "mms_kg": 0.115,
+        "le_h": 0.0024,
+        "qms": 6.2,
+        "qes": 0.3123,
+        "xmax_m": 0.0065,
+        "nominal_impedance_ohm": 8.0
+    }
+}

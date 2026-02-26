@@ -1,0 +1,19 @@
+{
+    "driver_id": "rcf-l10p110k",
+    "manufacturer": "RCF",
+    "model_name": "L10P110K",
+    "driver_type": "cone",
+    "nominal_diameter": "10in",
+    "parameters": {
+        "fs_hz": 58.0,
+        "re_ohm": 5.4,
+        "bl_tm": 14.5,
+        "sd_m2": 0.035,
+        "mms_kg": 0.04,
+        "le_h": 0.0012,
+        "qms": 5.5,
+        "qes": 0.3744,
+        "xmax_m": 0.0045,
+        "nominal_impedance_ohm": 8.0
+    }
+}

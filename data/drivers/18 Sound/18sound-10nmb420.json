@@ -1,0 +1,19 @@
+{
+    "driver_id": "18sound-10nmb420",
+    "manufacturer": "18 Sound",
+    "model_name": "10NMB420",
+    "driver_type": "cone",
+    "nominal_diameter": "10in",
+    "parameters": {
+        "fs_hz": 62.0,
+        "re_ohm": 5.3,
+        "bl_tm": 15.0,
+        "sd_m2": 0.035,
+        "mms_kg": 0.038,
+        "le_h": 0.0011,
+        "qms": 5.8,
+        "qes": 0.3487,
+        "xmax_m": 0.005,
+        "nominal_impedance_ohm": 8.0
+    }
+}

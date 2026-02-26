@@ -1,0 +1,19 @@
+{
+    "driver_id": "oberton-18xb700",
+    "manufacturer": "Oberton",
+    "model_name": "18XB700",
+    "driver_type": "cone",
+    "nominal_diameter": "18in",
+    "parameters": {
+        "fs_hz": 34.0,
+        "re_ohm": 5.2,
+        "bl_tm": 24.5,
+        "sd_m2": 0.1195,
+        "mms_kg": 0.2,
+        "le_h": 0.003,
+        "qms": 6.5,
+        "qes": 0.3701,
+        "xmax_m": 0.007,
+        "nominal_impedance_ohm": 8.0
+    }
+}

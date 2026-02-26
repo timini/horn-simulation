@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-delta-pro-12a",
+    "manufacturer": "Eminence",
+    "model_name": "Delta Pro-12A",
+    "driver_type": "cone",
+    "nominal_diameter": "12in",
+    "parameters": {
+        "fs_hz": 59.0,
+        "re_ohm": 5.75,
+        "bl_tm": 15.5,
+        "sd_m2": 0.0531,
+        "mms_kg": 0.04,
+        "le_h": 0.0011,
+        "qms": 5.0,
+        "qes": 0.3549,
+        "xmax_m": 0.0038,
+        "nominal_impedance_ohm": 8.0
+    }
+}

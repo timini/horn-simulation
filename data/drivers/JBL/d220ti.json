@@ -1,0 +1,18 @@
+{
+    "driver_id": "d220ti",
+    "manufacturer": "JBL/Selenium",
+    "model_name": "D220Ti",
+    "driver_type": "compression",
+    "parameters": {
+        "fs_hz": 500.0,
+        "re_ohm": 6.0,
+        "bl_tm": 8.5,
+        "sd_m2": 0.0008,
+        "mms_kg": 0.0028,
+        "le_h": 0.0006,
+        "qms": 5.0,
+        "qes": 0.45,
+        "xmax_m": 0.0006,
+        "nominal_impedance_ohm": 8.0
+    }
+}

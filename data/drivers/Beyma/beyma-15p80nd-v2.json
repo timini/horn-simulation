@@ -1,0 +1,19 @@
+{
+    "driver_id": "beyma-15p80nd-v2",
+    "manufacturer": "Beyma",
+    "model_name": "15P80Nd/V2",
+    "driver_type": "cone",
+    "nominal_diameter": "15in",
+    "parameters": {
+        "fs_hz": 43.0,
+        "re_ohm": 5.5,
+        "bl_tm": 19.5,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.085,
+        "le_h": 0.0017,
+        "qms": 5.2,
+        "qes": 0.3322,
+        "xmax_m": 0.006,
+        "nominal_impedance_ohm": 8.0
+    }
+}

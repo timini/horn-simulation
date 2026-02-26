@@ -1,0 +1,19 @@
+{
+    "driver_id": "bc-15ps76",
+    "manufacturer": "B&C",
+    "model_name": "15PS76",
+    "driver_type": "cone",
+    "nominal_diameter": "15in",
+    "parameters": {
+        "fs_hz": 45.0,
+        "re_ohm": 5.5,
+        "bl_tm": 23.0,
+        "sd_m2": 0.0855,
+        "mms_kg": 0.092,
+        "le_h": 0.0018,
+        "qms": 6.0,
+        "qes": 0.2705,
+        "xmax_m": 0.006,
+        "nominal_impedance_ohm": 8.0
+    }
+}

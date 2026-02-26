@@ -1,0 +1,19 @@
+{
+    "driver_id": "bc-8pe21",
+    "manufacturer": "B&C",
+    "model_name": "8PE21",
+    "driver_type": "cone",
+    "nominal_diameter": "8in",
+    "parameters": {
+        "fs_hz": 90.0,
+        "re_ohm": 5.4,
+        "bl_tm": 12.0,
+        "sd_m2": 0.021,
+        "mms_kg": 0.016,
+        "le_h": 0.0005,
+        "qms": 5.0,
+        "qes": 0.3393,
+        "xmax_m": 0.0028,
+        "nominal_impedance_ohm": 8.0
+    }
+}

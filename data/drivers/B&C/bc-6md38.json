@@ -1,0 +1,19 @@
+{
+    "driver_id": "bc-6md38",
+    "manufacturer": "B&C",
+    "model_name": "6MD38",
+    "driver_type": "cone",
+    "nominal_diameter": "6in",
+    "parameters": {
+        "fs_hz": 100.0,
+        "re_ohm": 5.5,
+        "bl_tm": 8.0,
+        "sd_m2": 0.013,
+        "mms_kg": 0.01,
+        "le_h": 0.0004,
+        "qms": 5.5,
+        "qes": 0.54,
+        "xmax_m": 0.0028,
+        "nominal_impedance_ohm": 8.0
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "driver_id": "eminence-definimax-4018lf",
+    "manufacturer": "Eminence",
+    "model_name": "Definimax 4018LF",
+    "driver_type": "cone",
+    "nominal_diameter": "18in",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 5.57,
+        "bl_tm": 27.5,
+        "sd_m2": 0.1195,
+        "mms_kg": 0.22,
+        "le_h": 0.0035,
+        "qms": 7.2,
+        "qes": 0.3563,
+        "xmax_m": 0.009,
+        "nominal_impedance_ohm": 8.0
+    }
+}
