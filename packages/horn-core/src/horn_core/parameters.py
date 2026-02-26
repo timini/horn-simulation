@@ -29,7 +29,7 @@ class HornParameters:
 
 @dataclass
 class DriverParameters:
-    """Thiele-Small parameters for a compression driver. All values in SI units."""
+    """Thiele-Small parameters for a loudspeaker driver. All values in SI units."""
 
     driver_id: str
     manufacturer: str
@@ -54,6 +54,7 @@ class DriverParameters:
 
     # Optional metadata
     driver_type: Optional[str] = None
+    nominal_diameter: Optional[str] = None  # e.g. "18in", "15in", "1in"
     xmax_m: Optional[float] = None
     nominal_impedance_ohm: Optional[float] = None
 
