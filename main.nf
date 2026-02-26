@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 // ========================================================================
-// Mode: "single" (default) runs one horn profile; "sweep" runs all 3
+// Mode: "single" (default) runs one horn profile; "auto" runs all 3
 // profiles and ranks driver-horn combinations.
 // ========================================================================
 params.mode = "single"
@@ -24,7 +24,7 @@ params.num_bands = 8       // Number of parallel jobs for the solver
 params.outdir = "./results"
 params.test_outdir = null  // for testing purposes
 
-// Sweep mode settings
+// Auto mode settings
 params.target_f_low = 500
 params.target_f_high = 4000
 params.drivers_db = "data/drivers.json"
@@ -160,11 +160,11 @@ process generate_phase_plot {
 }
 
 // ========================================================================
-// Sweep mode processes
+// Auto mode processes
 // ========================================================================
 
 process prescreen_drivers {
-    publishDir "${params.outdir}/sweep", mode: 'copy'
+    publishDir "${params.outdir}/auto", mode: 'copy'
 
     input:
     val target_f_low
@@ -188,7 +188,7 @@ process prescreen_drivers {
     """
 }
 
-process generate_sweep_geometry {
+process generate_auto_geometry {
     input:
     tuple val(profile), val(throat_radius)
 
@@ -207,7 +207,7 @@ process generate_sweep_geometry {
     """
 }
 
-process run_sweep_simulation {
+process run_auto_simulation {
     input:
     tuple val(profile), path(horn_step), val(band_index)
 
@@ -232,8 +232,8 @@ process run_sweep_simulation {
     """
 }
 
-process merge_sweep_results {
-    publishDir "${params.outdir}/sweep", mode: 'copy'
+process merge_auto_results {
+    publishDir "${params.outdir}/auto", mode: 'copy'
 
     input:
     tuple val(profile), path(csv_files)
@@ -253,7 +253,7 @@ df.sort_values(by='frequency').to_csv('${profile}_results.csv', index=False)
 }
 
 process score_and_rank {
-    publishDir "${params.outdir}/sweep", mode: 'copy'
+    publishDir "${params.outdir}/auto", mode: 'copy'
 
     input:
     path solver_csvs
@@ -304,8 +304,8 @@ print(f'Ranked {len(all_results)} driver-horn combinations')
     """
 }
 
-process generate_sweep_report {
-    publishDir "${params.outdir}/sweep", mode: 'copy'
+process generate_auto_report {
+    publishDir "${params.outdir}/auto", mode: 'copy'
 
     input:
     path ranked_json
@@ -314,9 +314,9 @@ process generate_sweep_report {
     path prescreen_json
 
     output:
-    path "report/sweep_ranking.json"
-    path "report/sweep_comparison.png"
-    path "report/sweep_summary.txt"
+    path "report/auto_ranking.json"
+    path "report/auto_comparison.png"
+    path "report/auto_summary.txt"
 
     script:
     """
@@ -325,7 +325,7 @@ import json
 from pathlib import Path
 from horn_drivers.loader import load_drivers
 from horn_analysis.scoring import TargetSpec
-from horn_analysis.sweep_report import generate_sweep_report
+from horn_analysis.auto_report import generate_auto_report
 
 prescreen = json.loads(Path('${prescreen_json}').read_text())
 throat_radius = prescreen['throat_radius_m']
@@ -343,7 +343,7 @@ drivers = {d.driver_id: d for d in driver_list}
 
 target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high})
 
-generate_sweep_report(
+generate_auto_report(
     all_ranked=all_ranked,
     solver_csvs=solver_csvs,
     drivers=drivers,
@@ -393,7 +393,7 @@ workflow single {
     generate_phase_plot(ch_merged_results)
 }
 
-workflow sweep {
+workflow auto {
     // 1. Pre-screen drivers
     ch_drivers_db = Channel.fromPath(params.drivers_db)
     ch_prescreen = prescreen_drivers(
@@ -417,18 +417,18 @@ workflow sweep {
     ch_geom_inputs = ch_profiles.combine(ch_throat_radius)
 
     // 3. Generate geometries (3 parallel jobs)
-    ch_geometries = generate_sweep_geometry(ch_geom_inputs)
+    ch_geometries = generate_auto_geometry(ch_geom_inputs)
 
     // 4. Create band indices and combine with geometries
     ch_band_indices = Channel.from(0..<params.num_bands)
     ch_sim_inputs = ch_geometries.combine(ch_band_indices)
 
     // 5. Run simulations (3 profiles x num_bands parallel jobs)
-    ch_band_results = run_sweep_simulation(ch_sim_inputs)
+    ch_band_results = run_auto_simulation(ch_sim_inputs)
 
     // 6. Group by profile and merge
     ch_grouped = ch_band_results.groupTuple()
-    ch_merged = merge_sweep_results(ch_grouped)
+    ch_merged = merge_auto_results(ch_grouped)
 
     // 7. Score and rank all combinations
     ch_all_csvs = ch_merged.map { profile, csv -> csv }.collect()
@@ -439,7 +439,7 @@ workflow sweep {
     )
 
     // 8. Generate report
-    generate_sweep_report(
+    generate_auto_report(
         ch_ranked,
         ch_all_csvs,
         ch_drivers_db,
@@ -448,8 +448,8 @@ workflow sweep {
 }
 
 workflow {
-    if (params.mode == "sweep") {
-        sweep()
+    if (params.mode == "auto") {
+        auto()
     } else {
         single()
     }

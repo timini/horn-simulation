@@ -53,8 +53,9 @@ The pipeline takes horn geometry parameters and driver characteristics as input,
 |---------|---------|-----------------|
 | `horn-geometry` | Procedural horn geometry generation | gmsh (OpenCASCADE) |
 | `horn-solver` | FEM acoustic solving + meshing | FEniCSx/dolfinx, gmsh |
-| `horn-analysis` | Result merging, plotting, scoring | pandas, matplotlib, scipy |
-| `horn-core` | Shared data structures (WIP) | — |
+| `horn-analysis` | Result merging, plotting, scoring, ranking | pandas, matplotlib, scipy |
+| `horn-core` | Shared data structures (HornParameters, DriverParameters) | numpy |
+| `horn-drivers` | Driver database loading and validation | numpy, horn-core |
 
 ### What it does
 
@@ -97,17 +98,29 @@ nextflow run main.nf -profile docker
 
 ## Parameters
 
+### Single mode (default)
+
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `throat_radius` | Horn throat radius (m) | `0.05` |
 | `mouth_radius` | Horn mouth radius (m) | `0.2` |
 | `length` | Horn length along Z-axis (m) | `0.5` |
+| `profile` | Horn flare profile | `conical` |
 | `min_freq` | Minimum simulation frequency (Hz) | `500` |
 | `max_freq` | Maximum simulation frequency (Hz) | `8000` |
 | `num_intervals` | Number of frequency steps | `100` |
 | `mesh_size` | Target mesh element size (m) | `0.01` |
 | `num_bands` | Parallel frequency band jobs | `8` |
 | `outdir` | Output directory | `./results` |
+
+### Auto mode (`--mode auto`)
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `target_f_low` | Target low frequency (Hz) | `500` |
+| `target_f_high` | Target high frequency (Hz) | `4000` |
+| `drivers_db` | Path to driver database JSON | `data/drivers.json` |
+| `top_n` | Number of top results to return | `10` |
 
 ## Example Usage
 
@@ -137,6 +150,30 @@ python3 -m horn_analysis.compare_horns \
     results/horn_A/final_results.csv "Horn A" \
     results/horn_B/final_results.csv "Horn B" \
     results/comparison.png
+```
+
+### Auto-select drivers and horn profiles
+```bash
+# Run the full auto pipeline: pre-screens drivers, simulates all 3 profiles
+# (conical, exponential, hyperbolic), couples each driver post-hoc, and ranks
+nextflow run main.nf -profile docker --mode auto \
+    --target_f_low 500 --target_f_high 4000 \
+    --mouth_radius 0.2 --length 0.5 --top_n 10
+```
+
+This runs only 3 FEM simulations (one per profile) and couples all pre-screened drivers in pure Python via the transfer function. Outputs: `auto_ranking.json`, `auto_comparison.png`, `auto_summary.txt`.
+
+### CLI tools for individual steps
+```bash
+# Pre-screen drivers for a target spec
+horn-prescreen --drivers-db data/drivers.json \
+    --target-f-low 500 --target-f-high 4000 \
+    --mouth-radius 0.2 --length 0.5
+
+# Rank drivers against a solver result
+horn-rank --solver-csv results/final_results.csv \
+    --drivers-db data/drivers.json --throat-radius 0.025 \
+    --target-f-low 500 --target-f-high 4000 --top-n 5
 ```
 
 ## Acoustic Modelling
@@ -212,7 +249,7 @@ Frequencies are logarithmically spaced using `np.geomspace`, providing finer res
 - **First-order radiation BC**: The outlet uses a first-order Sommerfeld (Robin) condition, which is accurate for ka < ~3 but increasingly reflective at higher frequencies/larger apertures.
 - **Sound-hard walls**: No absorption or damping. Walls are perfectly rigid.
 - **Constant air properties**: Temperature and humidity dependence not modelled.
-- **Conical profiles only**: The geometry generator currently produces straight conical frustums. Exponential, hyperbolic, or tractrix profiles are not yet supported.
+- **Three profiles**: Supports conical, exponential, and hyperbolic. Tractrix profile is not yet available.
 
 ## Architecture
 
@@ -231,17 +268,22 @@ Prioritised capabilities for reaching feature parity with tools like AKABAK. See
 ### Priority 1 — Near-term
 
 - Interior field visualisation (VTK/ParaView export from dolfinx) — [#45](https://github.com/timini/horn-simulation/issues/45)
-- Profile diversity: exponential, tractrix, hyperbolic horn profiles — [#46](https://github.com/timini/horn-simulation/issues/46)
 - Arbitrary STEP file import workflow (user-supplied geometry) — [#47](https://github.com/timini/horn-simulation/issues/47)
 
 ### Priority 2 — Medium-term
 
 - Exterior radiation / directivity (Kirchhoff-Helmholtz integral post-processing) — [#48](https://github.com/timini/horn-simulation/issues/48)
 - Flexible boundary tagging (replace z-coordinate heuristic with surface naming) — [#49](https://github.com/timini/horn-simulation/issues/49)
-- Driver coupling (Thiele-Small parameters → velocity BC) — [#50](https://github.com/timini/horn-simulation/issues/50)
 
 ### Priority 3 — Longer-term
 
 - Complex geometry support (folded horns, phase plugs, back-loaded horns) — [#51](https://github.com/timini/horn-simulation/issues/51)
+- Tractrix horn profile
 - Wall absorption / damping materials
 - Second-order radiation BC for large ka
+
+### Completed
+
+- Driver coupling with T-S parameters (transfer function + auto-select pipeline) — [#50](https://github.com/timini/horn-simulation/issues/50)
+- Analysis features: impedance plots, scoring, driver DB — [#35](https://github.com/timini/horn-simulation/issues/35)
+- Profile diversity: conical, exponential, hyperbolic

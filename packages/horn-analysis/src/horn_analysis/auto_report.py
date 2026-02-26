@@ -1,4 +1,4 @@
-"""Sweep report generation for driver-horn ranking results.
+"""Auto-select report generation for driver-horn ranking results.
 
 Produces ranking JSON, comparison plots, individual CSVs, and a
 human-readable summary from ranked driver-horn combinations.
@@ -18,7 +18,7 @@ from horn_analysis.scoring import TargetSpec
 from horn_analysis.transfer_function import compute_driver_response, scale_solver_spl
 
 
-def generate_sweep_report(
+def generate_auto_report(
     all_ranked: List[dict],
     solver_csvs: Dict[str, str],
     drivers: Dict[str, DriverParameters],
@@ -27,7 +27,7 @@ def generate_sweep_report(
     output_dir: str,
     top_n: int = 5,
 ) -> Path:
-    """Generate the sweep report with rankings, plots, and CSVs.
+    """Generate the auto-select report with rankings, plots, and CSVs.
 
     Args:
         all_ranked: Combined ranked results from all profiles.
@@ -49,7 +49,7 @@ def generate_sweep_report(
     top_results = all_ranked[:top_n]
 
     # 1. Full ranking JSON
-    (out / "sweep_ranking.json").write_text(json.dumps(all_ranked, indent=2))
+    (out / "auto_ranking.json").write_text(json.dumps(all_ranked, indent=2))
 
     # 2. Generate individual coupled-SPL CSVs for top candidates
     csv_pairs = []  # (csv_path, label) for comparison plot
@@ -86,13 +86,13 @@ def generate_sweep_report(
     if csv_pairs:
         plot_multi_comparison(
             csv_pairs,
-            str(out / "sweep_comparison.png"),
+            str(out / "auto_comparison.png"),
             kpi_table=True,
         )
 
     # 4. Human-readable summary
     lines = [
-        "Horn Driver Sweep Results",
+        "Horn Driver Auto-Select Results",
         "=" * 40,
         f"Target: {target.f_low_hz:.0f} Hz - {target.f_high_hz:.0f} Hz",
         f"Throat radius: {throat_radius:.4f} m",
@@ -120,21 +120,21 @@ def generate_sweep_report(
                           f"Peak: {kpi['peak_spl_db']:.1f} dB @ {kpi['peak_frequency_hz']:.0f} Hz")
         lines.append("")
 
-    (out / "sweep_summary.txt").write_text("\n".join(lines))
+    (out / "auto_summary.txt").write_text("\n".join(lines))
 
-    print(f"Sweep report generated in {out}/")
-    print(f"  - sweep_ranking.json ({len(all_ranked)} entries)")
-    print(f"  - sweep_comparison.png (top {len(csv_pairs)} overlaid)")
-    print(f"  - sweep_summary.txt")
+    print(f"Auto-select report generated in {out}/")
+    print(f"  - auto_ranking.json ({len(all_ranked)} entries)")
+    print(f"  - auto_comparison.png (top {len(csv_pairs)} overlaid)")
+    print(f"  - auto_summary.txt")
     print(f"  - {len(csv_pairs)} individual coupled-SPL CSVs")
 
     return out
 
 
 def main():
-    """CLI for generating a sweep report from pre-computed rankings."""
+    """CLI for generating an auto-select report from pre-computed rankings."""
     parser = argparse.ArgumentParser(
-        description="Generate sweep report from ranked results.",
+        description="Generate auto-select report from ranked results.",
     )
     parser.add_argument("--ranked-json", required=True, help="Ranked results JSON file.")
     parser.add_argument("--solver-csvs", nargs="+", required=True,
@@ -144,7 +144,7 @@ def main():
     parser.add_argument("--target-f-low", type=float, required=True, help="Target low freq (Hz).")
     parser.add_argument("--target-f-high", type=float, required=True, help="Target high freq (Hz).")
     parser.add_argument("--top-n", type=int, default=5, help="Number of top results for detailed output.")
-    parser.add_argument("--output-dir", type=str, default="sweep_report", help="Output directory.")
+    parser.add_argument("--output-dir", type=str, default="auto_report", help="Output directory.")
     args = parser.parse_args()
 
     from horn_drivers.loader import load_drivers
@@ -161,7 +161,7 @@ def main():
 
     target = TargetSpec(f_low_hz=args.target_f_low, f_high_hz=args.target_f_high)
 
-    generate_sweep_report(
+    generate_auto_report(
         all_ranked=all_ranked,
         solver_csvs=solver_csvs,
         drivers=drivers,
