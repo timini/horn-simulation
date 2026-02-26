@@ -219,26 +219,13 @@ def discover_manufacturers(session) -> List[str]:
     return sorted(manufacturers)
 
 
-def discover_drivers(session, manufacturer_slug: str) -> List[dict]:
-    """Fetch a manufacturer page and return driver entries.
-
-    Returns list of dicts with keys: name, url, manufacturer.
-    """
-    from bs4 import BeautifulSoup
-
-    url = f"{BASE_URL}/{manufacturer_slug}"
-    resp = session.get(url, timeout=15)
-    if resp.status_code != 200:
-        print(f"  WARN: HTTP {resp.status_code} for {url}")
-        return []
-
-    soup = BeautifulSoup(resp.text, "html.parser")
+def _extract_driver_links(
+    soup, manufacturer_slug: str, seen_urls: set,
+) -> List[dict]:
+    """Extract driver links from a parsed HTML page/fragment."""
     drivers = []
-    seen_urls = set()
-
     for link in soup.find_all("a", href=True):
         href = link["href"]
-        # Driver pages are like /Manufacturer/Model
         if href.startswith("/") and href.count("/") == 2:
             parts = href.strip("/").split("/")
             if len(parts) == 2 and parts[0] == manufacturer_slug:
@@ -251,6 +238,85 @@ def discover_drivers(session, manufacturer_slug: str) -> List[dict]:
                         "url": full_url,
                         "manufacturer": manufacturer_slug,
                     })
+    return drivers
+
+
+def discover_drivers(
+    session, manufacturer_slug: str, delay: float = 1.0,
+) -> List[dict]:
+    """Fetch a manufacturer page and return all driver entries.
+
+    Paginates through the site's infinite-scroll API to discover every
+    driver, not just the first 40.
+
+    Returns list of dicts with keys: name, url, manufacturer.
+    """
+    from bs4 import BeautifulSoup
+
+    PAGE_SIZE = 40
+
+    url = f"{BASE_URL}/{manufacturer_slug}"
+    resp = None
+    for attempt in range(MAX_RETRIES):
+        try:
+            resp = session.get(url, timeout=15)
+            break
+        except Exception as e:
+            if attempt < MAX_RETRIES - 1:
+                wait = delay * (attempt + 2)
+                print(f"  RETRY manufacturer page ({attempt + 1}/{MAX_RETRIES}): {e}")
+                time.sleep(wait)
+            else:
+                print(f"  ERROR: failed to fetch {url} after {MAX_RETRIES} attempts")
+                return []
+
+    if resp is None or resp.status_code != 200:
+        print(f"  WARN: HTTP {resp.status_code if resp else '?'} for {url}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+
+    # Extract total result count from the page
+    total_count = PAGE_SIZE  # fallback: assume single page
+    count_el = soup.find("script", class_="count")
+    if count_el:
+        try:
+            total_count = int(count_el.get_text(strip=True))
+        except (ValueError, TypeError):
+            pass
+
+    seen_urls: set = set()
+    drivers = _extract_driver_links(soup, manufacturer_slug, seen_urls)
+
+    # Paginate if there are more drivers than the initial page
+    if total_count > PAGE_SIZE:
+        for offset in range(PAGE_SIZE, total_count, PAGE_SIZE):
+            time.sleep(delay)
+            page_url = (
+                f"{BASE_URL}/next_page_api"
+                f"/brand={manufacturer_slug}/offset={offset}"
+            )
+            for attempt in range(MAX_RETRIES):
+                try:
+                    resp = session.get(page_url, timeout=15)
+                    if resp.status_code != 200:
+                        print(f"  WARN: HTTP {resp.status_code} for page offset={offset}")
+                        break
+                    page_soup = BeautifulSoup(resp.text, "html.parser")
+                    new = _extract_driver_links(
+                        page_soup, manufacturer_slug, seen_urls,
+                    )
+                    drivers.extend(new)
+                    break
+                except Exception as e:
+                    if attempt < MAX_RETRIES - 1:
+                        wait = delay * (attempt + 2)
+                        print(f"  RETRY page offset={offset} "
+                              f"({attempt + 1}/{MAX_RETRIES}): {e}")
+                        time.sleep(wait)
+                    else:
+                        print(f"  WARN: pagination failed at offset={offset} "
+                              f"after {MAX_RETRIES} attempts: {e}")
 
     return drivers
 
@@ -299,7 +365,7 @@ def scrape_all(
         print(f"\n[{i + 1}/{len(manufacturer_slugs)}] {mfr_slug}")
 
         time.sleep(delay)
-        driver_entries = discover_drivers(session, mfr_slug)
+        driver_entries = discover_drivers(session, mfr_slug, delay=delay)
         print(f"  Found {len(driver_entries)} drivers")
 
         for entry in driver_entries:
