@@ -161,7 +161,7 @@ nextflow run main.nf -profile docker --mode auto \
     --mouth_radius 0.2 --length 0.5 --top_n 10
 ```
 
-This runs only 3 FEM simulations (one per profile) and couples all pre-screened drivers in pure Python via the transfer function. Outputs: `auto_ranking.json`, `auto_comparison.png`, `auto_summary.txt`.
+This runs only 3 FEM simulations (one per profile) and couples all pre-screened drivers in pure Python via the transfer function. Outputs: `auto_ranking.json`, `auto_comparison.png`, `auto_summary.txt`, and a self-contained `auto_report.html` (open in any browser — all plots are base64-embedded).
 
 ### CLI tools for individual steps
 ```bash
@@ -284,6 +284,7 @@ Prioritised capabilities for reaching feature parity with tools like AKABAK. See
 
 ### Completed
 
+- HTML report for auto-mode: single self-contained `auto_report.html` with rankings table, 4 embedded plots (coupled SPL, raw profile SPL, impedance, phase/group delay), driver T-S parameter table, and summary cards
 - Driver coupling with T-S parameters (transfer function + auto-select pipeline) — [#50](https://github.com/timini/horn-simulation/issues/50)
 - Analysis features: impedance plots, scoring, driver DB — [#35](https://github.com/timini/horn-simulation/issues/35)
 - Profile diversity: conical, exponential, hyperbolic

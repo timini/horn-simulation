@@ -317,6 +317,7 @@ process generate_auto_report {
     path "report/auto_ranking.json"
     path "report/auto_comparison.png"
     path "report/auto_summary.txt"
+    path "report/auto_report.html"
 
     script:
     """

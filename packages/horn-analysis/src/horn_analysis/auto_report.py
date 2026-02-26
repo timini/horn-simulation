@@ -14,6 +14,7 @@ import pandas as pd
 
 from horn_core.parameters import DriverParameters
 from horn_analysis.compare import plot_multi_comparison
+from horn_analysis.html_report import generate_html_report
 from horn_analysis.scoring import TargetSpec
 from horn_analysis.transfer_function import compute_driver_response, scale_solver_spl
 
@@ -122,10 +123,23 @@ def generate_auto_report(
 
     (out / "auto_summary.txt").write_text("\n".join(lines))
 
+    # 5. Self-contained HTML report
+    html_report = generate_html_report(
+        all_ranked=all_ranked,
+        solver_csvs=solver_csvs,
+        drivers=drivers,
+        throat_radius=throat_radius,
+        target=target,
+        csv_pairs=csv_pairs,
+        top_n=top_n,
+    )
+    (out / "auto_report.html").write_text(html_report)
+
     print(f"Auto-select report generated in {out}/")
     print(f"  - auto_ranking.json ({len(all_ranked)} entries)")
     print(f"  - auto_comparison.png (top {len(csv_pairs)} overlaid)")
     print(f"  - auto_summary.txt")
+    print(f"  - auto_report.html")
     print(f"  - {len(csv_pairs)} individual coupled-SPL CSVs")
 
     return out
