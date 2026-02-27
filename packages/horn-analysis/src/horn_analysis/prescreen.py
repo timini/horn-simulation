@@ -21,8 +21,8 @@ class PrescreenConfig:
     """Configuration for driver pre-screening."""
     target_f_low_hz: float
     target_f_high_hz: float
-    mouth_radius_m: float
-    length_m: float
+    mouth_radius_m: Optional[float] = None
+    length_m: Optional[float] = None
     min_ebp: float = 50.0
     sd_ratio_range: Tuple[float, float] = (0.3, 3.0)
 
@@ -129,8 +129,8 @@ def main():
     parser.add_argument("--drivers-db", required=True, help="Driver database JSON file.")
     parser.add_argument("--target-f-low", type=float, required=True, help="Target low frequency (Hz).")
     parser.add_argument("--target-f-high", type=float, required=True, help="Target high frequency (Hz).")
-    parser.add_argument("--mouth-radius", type=float, required=True, help="Horn mouth radius (m).")
-    parser.add_argument("--length", type=float, required=True, help="Horn length (m).")
+    parser.add_argument("--mouth-radius", type=float, default=None, help="Horn mouth radius (m). Optional for fullauto mode.")
+    parser.add_argument("--length", type=float, default=None, help="Horn length (m). Optional for fullauto mode.")
     parser.add_argument("--min-ebp", type=float, default=50.0, help="Minimum EBP threshold.")
     parser.add_argument("--output", type=str, default="prescreen_result.json", help="Output JSON file.")
     args = parser.parse_args()

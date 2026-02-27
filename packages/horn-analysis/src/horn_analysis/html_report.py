@@ -198,18 +198,38 @@ def _profile_badge(profile: str) -> str:
     )
 
 
-def _render_rankings_rows(ranked_results: List[dict]) -> str:
+def _render_rankings_rows(
+    ranked_results: List[dict],
+    drivers: Dict[str, DriverParameters],
+    show_geometry: bool = False,
+) -> str:
     rows = []
     for rank, r in enumerate(ranked_results, 1):
         kpi = r.get("kpi", {})
         f3l = _fmt(kpi.get("f3_low_hz"), ".0f")
         f3h = _fmt(kpi.get("f3_high_hz"), ".0f")
+        drv = drivers.get(r.get("driver_id", ""))
+        drv_type = html.escape(drv.driver_type or "—") if drv else "—"
+        drv_size = html.escape(drv.nominal_diameter or "—") if drv else "—"
+        drv_power = _fmt(drv.power_w, ".0f") if drv else "—"
+
+        geom_cols = ""
+        if show_geometry:
+            geom_cols = (
+                f"<td>{_fmt(r.get('mouth_radius'), '.4f')}</td>"
+                f"<td>{_fmt(r.get('length'), '.4f')}</td>"
+            )
+
         rows.append(
             f"<tr>"
             f"<td>{rank}</td>"
             f"<td>{html.escape(r.get('manufacturer', ''))}</td>"
             f"<td>{html.escape(r.get('model_name', ''))}</td>"
+            f"<td>{drv_type}</td>"
+            f"<td>{drv_size}</td>"
+            f"<td>{drv_power}</td>"
             f"<td>{_profile_badge(r.get('horn_label', ''))}</td>"
+            f"{geom_cols}"
             f"<td><strong>{_fmt(r.get('composite_score'), '.3f')}</strong></td>"
             f"<td>{_fmt(r.get('bandwidth_coverage'), '.1%')}</td>"
             f"<td>{_fmt(r.get('passband_ripple_db'), '.1f')}</td>"
@@ -284,6 +304,9 @@ _HTML_TEMPLATE = """\
   .plot img {{ max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #e2e8f0; }}
   .plot-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }}
   @media (max-width: 800px) {{ .plot-grid {{ grid-template-columns: 1fr; }} }}
+  .design-summary {{ background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; }}
+  .design-summary dt {{ font-weight: 600; color: #475569; font-size: 0.85em; }}
+  .design-summary dd {{ margin: 0 0 10px 0; font-size: 0.95em; }}
   .footer {{ margin-top: 40px; padding-top: 16px; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 0.8em; text-align: center; }}
 </style>
 </head>
@@ -293,7 +316,9 @@ _HTML_TEMPLATE = """\
 <h1>Horn Auto-Select Report</h1>
 <p class="subtitle">
   Target: {target_low:.0f} Hz — {target_high:.0f} Hz &nbsp;|&nbsp;
-  Throat radius: {throat_radius:.4f} m &nbsp;|&nbsp;
+  Throat: {throat_radius:.4f} m &nbsp;|&nbsp;
+  Mouth: {mouth_radius} &nbsp;|&nbsp;
+  Length: {horn_length} &nbsp;|&nbsp;
   Profiles: {profiles} &nbsp;|&nbsp;
   Generated: {timestamp}
 </p>
@@ -307,11 +332,15 @@ _HTML_TEMPLATE = """\
   <div class="card"><div class="label">Lowest ripple</div><div class="value">{best_ripple}</div></div>
 </div>
 
+{design_summary_section}
+
 <h2>Rankings</h2>
 <table>
 <thead>
 <tr>
-  <th>#</th><th>Manufacturer</th><th>Model</th><th>Profile</th><th>Score</th>
+  <th>#</th><th>Manufacturer</th><th>Model</th><th>Type</th><th>Size</th><th>Power (W)</th><th>Profile</th>
+  {geometry_header_cols}
+  <th>Score</th>
   <th>BW Cov.</th><th>Ripple (dB)</th><th>Sensitivity (dB)</th><th>f3 range (Hz)</th><th>Peak (dB)</th>
 </tr>
 </thead>
@@ -355,6 +384,28 @@ _HTML_TEMPLATE = """\
 
 # -- Public entry point -----------------------------------------------------
 
+def _render_design_summary(derived_geometry: dict) -> str:
+    """Render the Design Summary section for fullauto mode."""
+    mr = derived_geometry.get("mouth_radius_range", [])
+    lr = derived_geometry.get("length_range", [])
+    sr = derived_geometry.get("sim_freq_range", [])
+    return (
+        '<h2>Design Summary</h2>\n'
+        '<div class="design-summary"><dl>'
+        f'<dt>Ideal mouth radius</dt><dd>{_fmt(derived_geometry.get("ideal_mouth_radius"), ".4f")} m '
+        f'(from c&#8320;/2&pi;f<sub>low</sub>)</dd>'
+        f'<dt>Mouth radius range</dt><dd>{_fmt(mr[0] if mr else None, ".4f")} — '
+        f'{_fmt(mr[1] if len(mr) > 1 else None, ".4f")} m (&plusmn;30%)</dd>'
+        f'<dt>Length range</dt><dd>{_fmt(lr[0] if lr else None, ".4f")} — '
+        f'{_fmt(lr[1] if len(lr) > 1 else None, ".4f")} m '
+        f'(&lambda;/4 to &lambda;/2)</dd>'
+        f'<dt>Simulation freq range</dt><dd>{_fmt(sr[0] if sr else None, ".0f")} — '
+        f'{_fmt(sr[1] if len(sr) > 1 else None, ".0f")} Hz (&plusmn;0.5 octave)</dd>'
+        f'<dt>Candidate count</dt><dd>{derived_geometry.get("candidate_count", "—")}</dd>'
+        '</dl></div>'
+    )
+
+
 def generate_html_report(
     all_ranked: List[dict],
     solver_csvs: Dict[str, str],
@@ -363,6 +414,9 @@ def generate_html_report(
     target: TargetSpec,
     csv_pairs: List[Tuple[str, str]],
     top_n: int = 5,
+    mouth_radius: float | None = None,
+    horn_length: float | None = None,
+    derived_geometry: Optional[dict] = None,
 ) -> str:
     """Generate a self-contained HTML report string.
 
@@ -374,11 +428,15 @@ def generate_html_report(
         target: Target frequency specification.
         csv_pairs: List of (csv_path, label) for coupled SPL plots.
         top_n: Number of top candidates to include.
+        mouth_radius: Horn mouth radius in metres (for report display).
+        horn_length: Horn length in metres (for report display).
+        derived_geometry: Optional dict from geometry_designer (fullauto mode).
 
     Returns:
         Complete HTML document as a string.
     """
     top_results = all_ranked[:top_n]
+    show_geometry = derived_geometry is not None
 
     # Summary card values
     best_score = _fmt(top_results[0]["composite_score"], ".3f") if top_results else "—"
@@ -399,8 +457,20 @@ def generate_html_report(
     plot_phase = _plot_profile_phase(solver_csvs)
 
     # Render tables
-    rankings_rows = _render_rankings_rows(top_results)
+    rankings_rows = _render_rankings_rows(top_results, drivers, show_geometry=show_geometry)
     drivers_rows = _render_drivers_rows(drivers)
+
+    # Conditional sections for fullauto
+    design_summary_section = _render_design_summary(derived_geometry) if show_geometry else ""
+    geometry_header_cols = '<th>Mouth R (m)</th><th>Length (m)</th>' if show_geometry else ""
+
+    # Mouth/Length display: for fullauto show "varies", for auto show fixed value
+    if show_geometry:
+        mouth_display = "varies"
+        length_display = "varies"
+    else:
+        mouth_display = f"{mouth_radius:.4f} m" if mouth_radius is not None else "—"
+        length_display = f"{horn_length:.3f} m" if horn_length is not None else "—"
 
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
@@ -408,6 +478,8 @@ def generate_html_report(
         "target_low": target.f_low_hz,
         "target_high": target.f_high_hz,
         "throat_radius": throat_radius,
+        "mouth_radius": mouth_display,
+        "horn_length": length_display,
         "profiles": ", ".join(sorted(solver_csvs.keys())),
         "timestamp": timestamp,
         "n_scored": len(all_ranked),
@@ -416,6 +488,8 @@ def generate_html_report(
         "best_bw": best_bw,
         "best_sens": best_sens,
         "best_ripple": best_ripple,
+        "design_summary_section": design_summary_section,
+        "geometry_header_cols": geometry_header_cols,
         "rankings_rows": rankings_rows,
         "plot_coupled_spl": plot_coupled_spl,
         "plot_raw_spl": plot_raw_spl,

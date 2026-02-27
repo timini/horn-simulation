@@ -71,6 +71,7 @@ The pipeline takes horn geometry parameters and driver characteristics as input,
 - [Docker](https://www.docker.com/get-started)
 - [just](https://github.com/casey/just) (task runner)
 - [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html#installation) (for running the full pipeline)
+- **Java 11–22** (required by Nextflow; Java 25+ is not supported). On macOS: `brew install openjdk@21`
 
 ### Build
 
@@ -122,6 +123,19 @@ nextflow run main.nf -profile docker
 | `drivers_db` | Path to driver database JSON | `data/drivers.json` |
 | `top_n` | Number of top results to return | `10` |
 
+### Fullauto mode (`--mode fullauto`)
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `target_f_low` | Target low frequency (Hz) | `500` |
+| `target_f_high` | Target high frequency (Hz) | `4000` |
+| `drivers_db` | Path to driver database JSON | `data/drivers.json` |
+| `top_n` | Number of top results to return | `10` |
+| `num_mouth_radii` | Mouth radius grid points | `3` |
+| `num_lengths` | Length grid points | `3` |
+| `num_intervals` | Frequency steps per simulation | `100` |
+| `num_bands` | Parallel frequency band jobs | `8` |
+
 ## Example Usage
 
 ### Quick development run
@@ -162,6 +176,16 @@ nextflow run main.nf -profile docker --mode auto \
 ```
 
 This runs only 3 FEM simulations (one per profile) and couples all pre-screened drivers in pure Python via the transfer function. Outputs: `auto_ranking.json`, `auto_comparison.png`, `auto_summary.txt`, and a self-contained `auto_report.html` (open in any browser — all plots are base64-embedded).
+
+### Fullauto: frequency-band-only horn design
+```bash
+# Specify ONLY a target frequency band — geometry is derived analytically
+# from horn acoustics formulas, then a grid of ~27 candidates is FEM-simulated
+nextflow run main.nf -profile docker --mode fullauto \
+    --target_f_low 500 --target_f_high 4000 --num_intervals 10
+```
+
+This derives mouth radius from `c0/(2*pi*f_low)` and length from quarter-wave to half-wave, generates a grid of 3 profiles x 3 mouth radii x 3 lengths, runs FEM on all candidates, couples with pre-screened drivers, and ranks. The HTML report includes a Design Summary section showing the analytical derivation and geometry columns in the rankings table.
 
 ### CLI tools for individual steps
 ```bash
