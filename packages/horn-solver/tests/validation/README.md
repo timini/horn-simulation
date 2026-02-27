@@ -61,13 +61,59 @@ pytest packages/horn-solver/tests/validation/test_straight_tube.py -v
 
 **Tolerance:** 6 dB — accounts for 3D vs 1D model mismatch and higher-order mode effects at the small throat.
 
+---
+
+### V4: Exponential Horn — Webster Equation (Tier 1 — analytical, approximate)
+
+**File:** `test_exponential_horn_webster.py`
+
+**Geometry:** Exponential horn (throat=5mm, mouth=22.95mm, length=120mm). Geometry from Rasetshwane & Neely (JASA 2012, PMC3316681).
+
+**Physics:** The Webster horn equation for an exponential horn has an exact analytical solution. The pressure is p(x) = exp(-m·x) · [A·exp(-jk_e·x) + B·exp(jk_e·x)] where k_e = sqrt(k² - m²) and m is the flare rate. Below the cutoff frequency fc ≈ 693 Hz, waves are evanescent.
+
+**Expected:** FEM SPL within 3 dB of Webster prediction. High-pass behavior with cutoff around 693 Hz.
+
+**Tolerance:** 3 dB — Webster is an inherently approximate 1D model compared to full 3D FEM.
+
+**Implementation:** The `webster_exponential_spl()` function solves the 2x2 system with Dirichlet/Robin BCs, matching the pattern from V2.
+
+---
+
+### V5: Hyperbolic Horn — Webster Equation (Tier 1 — analytical, approximate)
+
+**File:** `test_hyperbolic_horn_webster.py`
+
+**Geometry:** Hyperbolic (cosh) horn (throat=12.5mm, mouth=100mm, length=300mm, 8:1 radius ratio). Matches V2's expansion ratio but with hyperbolic flare to isolate profile shape effects.
+
+**Physics:** The Webster horn equation for a cosh horn has an exact analytical solution. The pressure is p(x) = [A·exp(-jk_h·x) + B·exp(jk_h·x)] / cosh(β·x) where k_h = sqrt(k² - β²). Below the cutoff frequency fc ≈ 525 Hz, waves are evanescent.
+
+**Expected:** FEM SPL within 3 dB of Webster prediction. High-pass behavior with cutoff around 525 Hz.
+
+**Tolerance:** 3 dB — Webster is an inherently approximate 1D model compared to full 3D FEM.
+
+**Implementation:** The `webster_hyperbolic_spl()` function solves the 2x2 system with tanh(β·L) terms in the Robin condition.
+
+---
+
+### V6: Exponential Horn Community Cross-Validation (Tier 2 — published geometry)
+
+**File:** `test_exponential_horn_community.py`
+
+**Geometry:** IJERT Type B air horn (throat=5mm, mouth=28.5mm, length=165mm), modeled as exponential profile. Geometry from Choudhari et al., IJERT Vol.3 Issue 2, 2014 — same paper as V3 but different horn and profile.
+
+**Reference data:** Webster equation SPL computed at 20 log-spaced frequencies (200-4000 Hz) for the published geometry. Stored as CSV to decouple from V4's Webster implementation.
+
+**Why this geometry:** It uses the same published source as V3 but a different horn (Type B vs Type A) and different profile (exponential vs conical), providing independent cross-validation of the exponential horn path.
+
+**Tolerance:** 6 dB — accounts for 3D vs 1D model mismatch and higher-order mode effects at the small throat.
+
 ## Tolerance Rationale
 
 | Tier | Tolerance | Source of error |
 |------|-----------|-----------------|
 | Tier 1 exact (V1) | 0.5 dB | Mesh discretisation only |
-| Tier 1 approximate (V2) | 3 dB | Webster is 1D approximation of 3D |
-| Tier 2 cross-validation (V3) | 6 dB | Different physics, driver models, measurement setup |
+| Tier 1 approximate (V2, V4, V5) | 3 dB | Webster is 1D approximation of 3D |
+| Tier 2 cross-validation (V3, V6) | 6 dB | Different physics, driver models, measurement setup |
 
 ## Adding a New Validation Case
 
@@ -100,3 +146,6 @@ pytest packages/horn-solver/tests/validation/test_straight_tube.py -v
 | `straight_tube_analytical.json` | V1 | Analytical plane wave solution | Complete |
 | `conical_horn_webster.json` | V2 | Webster horn equation | Complete |
 | `conical_horn_hornresp.csv` | V3 | Webster SPL for IJERT Type A geometry | Complete |
+| `exponential_horn_webster.json` | V4 | Webster horn equation (exponential) | Complete |
+| `hyperbolic_horn_webster.json` | V5 | Webster horn equation (hyperbolic) | Complete |
+| `exponential_horn_ijert.csv` | V6 | Webster SPL for IJERT Type B geometry | Complete |

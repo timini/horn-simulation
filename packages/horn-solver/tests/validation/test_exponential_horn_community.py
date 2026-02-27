@@ -1,25 +1,18 @@
-"""V3: Community horn cross-validation — published geometry, independent reference.
+"""V6: Exponential horn community cross-validation — published geometry, independent reference.
 
-Cross-validates the FEM solver against Webster equation predictions for a
-horn geometry taken from published literature (IJERT Type A conical horn:
-throat_dia=10mm, mouth_dia=57mm, length=250mm).
+Cross-validates the FEM solver against Webster equation predictions for an
+exponential horn geometry taken from published literature (IJERT Type B horn:
+throat_dia=10mm, mouth_dia=57mm, length=165mm).
 
 This is a Tier 2 validation: FEM (3D) vs Webster (1D analytical) on a
 real-world horn geometry. The Webster reference data is pre-computed and
-stored in CSV to decouple this test from the Webster implementation in V2.
+stored in CSV to decouple this test from the V4 Webster implementation.
 
 Source: Choudhari et al., IJERT Vol.3 Issue 2, 2014 — "Theoretical,
 Simulation and Experimental Analysis of Sound Frequency and Sound Pressure
-Level of Different Air Horn Amplifier"
+Level of Different Air Horn Amplifier" (Type B horn, modeled as exponential).
 
 Tolerance: 6 dB (3D vs 1D model mismatch, small throat → higher-order modes).
-
-To add a new reference case:
-    1. Digitize published frequency response data into a CSV file
-    2. Add metadata as header comments (source, geometry, conditions)
-    3. Place CSV in reference_data/ directory
-    4. Add a new test method or parametrize the existing one
-    See validation/README.md for full instructions.
 """
 
 import numpy as np
@@ -33,7 +26,7 @@ from .conftest import (
 )
 
 try:
-    from horn_geometry.generator import create_conical_horn
+    from horn_geometry.generator import create_exponential_horn
 
     GEOMETRY_AVAILABLE = True
 except ImportError:
@@ -41,29 +34,27 @@ except ImportError:
 
 
 @pytest.mark.validation
-class TestConicalHornCommunity:
-    """V3 cross-validation: FEM vs published horn measurements."""
+class TestExponentialHornCommunity:
+    """V6 cross-validation: FEM vs published exponential horn geometry."""
 
     @pytest.mark.skipif(
-        not has_reference_data("conical_horn_hornresp.csv"),
-        reason="No reference data in conical_horn_hornresp.csv",
+        not has_reference_data("exponential_horn_ijert.csv"),
+        reason="No reference data in exponential_horn_ijert.csv",
     )
-    def test_conical_horn_vs_published(self, tmp_path):
-        """Compare FEM output against Webster reference for IJERT Type A horn."""
-        ref_data = load_csv_reference("conical_horn_hornresp.csv")
+    def test_exponential_horn_vs_published(self, tmp_path):
+        """Compare FEM output against Webster reference for IJERT Type B horn."""
+        ref_data = load_csv_reference("exponential_horn_ijert.csv")
         assert ref_data is not None, "Reference data should be loaded"
         ref_freq, ref_spl = ref_data
 
-        # Geometry parameters from CSV header comments
-        # These should match the published horn being compared against.
-        # Update these when populating the CSV with real data.
+        # Geometry from IJERT Type B horn
         throat_radius = 0.005
         mouth_radius = 0.0285
-        horn_length = 0.25
+        horn_length = 0.165
 
-        # Generate matching geometry
-        step_file = tmp_path / "community_horn.step"
-        create_conical_horn(
+        # Generate matching exponential geometry
+        step_file = tmp_path / "community_exponential_horn.step"
+        create_exponential_horn(
             throat_radius=throat_radius,
             mouth_radius=mouth_radius,
             length=horn_length,
@@ -77,7 +68,7 @@ class TestConicalHornCommunity:
             freq_range=freq_range,
             num_intervals=len(ref_freq),
             horn_length=horn_length,
-            mesh_size=0.004,  # Smaller than throat radius (5mm)
+            mesh_size=0.002,  # Smaller than throat radius (5mm)
             tmp_dir=tmp_path,
         )
 
@@ -91,5 +82,5 @@ class TestConicalHornCommunity:
             reference=ref_spl,
             tolerance_db=6.0,
             frequencies=frequencies,
-            label="V3 community horn (FEM vs published)",
+            label="V6 exponential community horn (FEM vs published)",
         )

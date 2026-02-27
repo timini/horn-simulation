@@ -1,0 +1,34 @@
+# Cross-validation reference: Webster equation SPL for IJERT Type B exponential horn
+# Source: Geometry from Choudhari et al., IJERT Vol.3 Issue 2, 2014
+#   "Theoretical, Simulation and Experimental Analysis of Sound Frequency
+#    and Sound Pressure Level of Different Air Horn Amplifier"
+# Reference SPL: Webster horn equation (analytical, 1D plane-wave approx)
+# Geometry: exponential, throat_radius=0.005m, mouth_radius=0.0285m, length=0.165m
+# Profile: r(z) = r_throat * exp(m * z / L) where m = ln(r_mouth/r_throat)
+# BCs: Dirichlet p=1 at throat, Robin dp/dn=-jkp at mouth
+# Speed of sound: 343 m/s
+# Date generated: 2026-02-27
+# Notes: Webster equation provides independent analytical reference for
+#   a published horn geometry. FEM vs Webster tolerance = 6 dB (Tier 2).
+#   Same paper as V3 but different horn (Type B) and different profile (exponential).
+frequency_hz,spl_db
+200.0,79.67
+234.2,78.47
+274.1,77.31
+321.0,76.22
+375.8,75.21
+440.0,74.34
+515.1,73.65
+603.1,73.24
+706.0,73.22
+826.6,73.80
+967.8,75.26
+1133.1,77.90
+1326.6,80.37
+1553.1,78.77
+1818.4,77.24
+2128.9,78.65
+2492.5,79.42
+2918.2,77.92
+3416.5,79.53
+4000.0,78.26
