@@ -88,6 +88,7 @@ def run_solver_and_get_spl(
     horn_length: float,
     mesh_size: float = 0.01,
     tmp_dir: Path | None = None,
+    radiation_model: str = "plane_wave",
 ) -> tuple[np.ndarray, np.ndarray]:
     """Run the solver on a STEP file and return (frequencies, spl) arrays.
 
@@ -99,6 +100,7 @@ def run_solver_and_get_spl(
     horn_length : horn length for boundary tagging
     mesh_size : element size (m), default 5mm
     tmp_dir : directory for output CSV
+    radiation_model : radiation impedance model at the outlet
 
     Returns
     -------
@@ -122,6 +124,7 @@ def run_solver_and_get_spl(
         output_file=str(output_file),
         max_freq_mesh=freq_range[1],
         mesh_size=mesh_size,
+        radiation_model=radiation_model,
     )
 
     df = pd.read_csv(output_file)

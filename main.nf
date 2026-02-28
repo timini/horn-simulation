@@ -19,6 +19,9 @@ params.max_freq = 8000     // Maximum frequency for the sweep in Hz
 params.num_intervals = 100 // Number of frequency steps in the sweep
 params.mesh_size = 0.01    // Target mesh element size in meters
 
+// Radiation impedance model at the horn mouth
+params.radiation_model = "plane_wave"  // plane_wave, flanged_piston, unflanged_piston
+
 // Execution Settings
 params.num_bands = 8       // Number of parallel jobs for the solver
 params.outdir = "./results"
@@ -79,7 +82,8 @@ process run_simulation {
         --max-freq ${max_f} \
         --num-intervals ${num_intervals_per_band} \
         --length ${params.length} \
-        --mesh-size ${params.mesh_size}
+        --mesh-size ${params.mesh_size} \
+        --radiation-model ${params.radiation_model}
     """
 }
 
@@ -227,7 +231,8 @@ process run_auto_simulation {
         --max-freq ${max_f} \
         --num-intervals ${num_intervals_per_band} \
         --length ${params.length} \
-        --mesh-size ${params.mesh_size}
+        --mesh-size ${params.mesh_size} \
+        --radiation-model ${params.radiation_model}
     """
 }
 
