@@ -19,6 +19,21 @@ from mpi4py import MPI
 import ufl
 from petsc4py.PETSc import ScalarType
 
+from horn_solver.radiation import (
+    piston_radiation_impedance,
+    unflanged_radiation_impedance,
+)
+
+try:
+    from horn_solver.bem_coupling import (
+        BEMPP_AVAILABLE,
+        extract_outlet_trace,
+        build_bem_operators,
+        coupled_solve,
+    )
+except ImportError:
+    BEMPP_AVAILABLE = False
+
 
 def _compute_neumann_velocity(
     frequency: float,
@@ -160,6 +175,7 @@ def run_simulation(
     driver: Optional[Any] = None,
     throat_area: Optional[float] = None,
     z_horn_initial: Optional[Dict[str, np.ndarray]] = None,
+    radiation_model: str = "plane_wave",
 ) -> Path:
     """Run the FEM simulation for the Helmholtz equation.
 
@@ -176,10 +192,27 @@ def run_simulation(
         throat_area: Physical throat cross-section in m² (required for neumann).
         z_horn_initial: Dict with ``frequencies``, ``z_real``, ``z_imag`` arrays
                         from a prior Dirichlet run (required for neumann).
+        radiation_model: Radiation impedance model at the outlet.
+                         ``"plane_wave"`` (default, Z=rho*c),
+                         ``"flanged_piston"`` (analytical piston in infinite baffle),
+                         ``"unflanged_piston"`` (Levine-Schwinger approximation),
+                         ``"bem"`` (nonlocal BEM coupling via bempp-cl).
 
     Returns:
         Path to the output CSV file.
     """
+    if radiation_model == "bem":
+        if not BEMPP_AVAILABLE:
+            raise ImportError(
+                "bempp-cl is required for BEM radiation coupling. "
+                "Install with: pip install bempp-cl"
+            )
+        if domain.comm.size > 1:
+            raise RuntimeError(
+                "BEM radiation coupling requires a single MPI rank. "
+                "Run with: mpirun -n 1 python ..."
+            )
+
     if bc_mode == "neumann":
         if driver is None or throat_area is None or z_horn_initial is None:
             raise ValueError(
@@ -207,6 +240,10 @@ def run_simulation(
     outlet_area = domain.comm.allreduce(outlet_area, op=MPI.SUM).real
     print(f"Outlet surface area: {outlet_area:.6f} m^2")
 
+    # Equivalent circular mouth radius for radiation impedance models
+    a_mouth = np.sqrt(outlet_area / np.pi)
+    print(f"Equivalent mouth radius: {a_mouth:.4f} m (radiation_model={radiation_model})")
+
     results = []
 
     mode_label = f"({bc_mode} BC)"
@@ -226,8 +263,19 @@ def run_simulation(
         a = (ufl.inner(ufl.grad(p), ufl.grad(q)) * ufl.dx
              - k**2 * ufl.inner(p, q) * ufl.dx)
 
-        # Robin BC at outlet (radiation impedance)
-        a -= 1j * k * ufl.inner(p, q) * ds(OUTLET_TAG)
+        # Robin BC at outlet (radiation impedance) — skipped for BEM mode
+        if radiation_model == "bem":
+            # BEM provides the nonlocal radiation condition; no local Robin term
+            pass
+        elif radiation_model == "flanged_piston":
+            z_specific = piston_radiation_impedance(k, a_mouth)
+            a -= 1j * k * z_specific * ufl.inner(p, q) * ds(OUTLET_TAG)
+        elif radiation_model == "unflanged_piston":
+            z_specific = unflanged_radiation_impedance(k, a_mouth)
+            a -= 1j * k * z_specific * ufl.inner(p, q) * ds(OUTLET_TAG)
+        else:
+            z_specific = 1.0 + 0.0j  # plane_wave: Z = rho*c
+            a -= 1j * k * z_specific * ufl.inner(p, q) * ds(OUTLET_TAG)
 
         bcs = []
 
@@ -259,11 +307,22 @@ def run_simulation(
             bcs.append(fem.dirichletbc(inlet_pressure, inlet_dofs))
 
         # --- Solve ---
-        problem = LinearProblem(
-            a, L, bcs=bcs,
-            petsc_options={"ksp_type": "preonly", "pc_type": "lu"},
-        )
-        p_h = problem.solve()
+        if radiation_model == "bem":
+            p_h = coupled_solve(
+                A_fem=a,
+                b_fem=L,
+                V=V,
+                facet_tags=facet_tags,
+                outlet_tag=OUTLET_TAG,
+                k=k,
+                bcs=bcs or None,
+            )
+        else:
+            problem = LinearProblem(
+                a, L, bcs=bcs,
+                petsc_options={"ksp_type": "preonly", "pc_type": "lu"},
+            )
+            p_h = problem.solve()
 
         # --- Post-processing ---
         p_outlet_sq = fem.assemble_scalar(
@@ -352,10 +411,13 @@ def main():
                         help="Throat cross-section area in m² (required for neumann mode).")
     parser.add_argument("--phase-a-csv", type=str, default=None,
                         help="Phase A solver CSV with Z_horn data (required for neumann mode).")
+    parser.add_argument("--radiation-model", type=str, default="plane_wave",
+                        choices=["plane_wave", "flanged_piston", "unflanged_piston", "bem"],
+                        help="Radiation impedance model at the outlet (default: plane_wave).")
     args = parser.parse_args()
 
     # Build extra kwargs for neumann mode
-    extra_kwargs = {"bc_mode": args.bc_mode}
+    extra_kwargs = {"bc_mode": args.bc_mode, "radiation_model": args.radiation_model}
 
     if args.bc_mode == "neumann":
         if not all([args.driver_json, args.driver_id, args.throat_area, args.phase_a_csv]):
