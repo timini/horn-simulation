@@ -20,7 +20,7 @@ params.num_intervals = 100 // Number of frequency steps in the sweep
 params.mesh_size = 0.01    // Target mesh element size in meters
 
 // Radiation impedance model at the horn mouth
-params.radiation_model = "plane_wave"  // plane_wave, flanged_piston, unflanged_piston
+params.radiation_model = "plane_wave"  // plane_wave, flanged_piston, unflanged_piston, bem
 
 // Execution Settings
 params.num_bands = 8       // Number of parallel jobs for the solver
