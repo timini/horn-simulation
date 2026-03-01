@@ -10,6 +10,10 @@ class FlareProfile(str, Enum):
     EXPONENTIAL = "exponential"
     HYPERBOLIC = "hyperbolic"
     CONICAL = "conical"
+    TRACTRIX = "tractrix"
+    OS = "os"
+    LECLEACH = "lecleach"
+    CD = "cd"
 
 
 @dataclass

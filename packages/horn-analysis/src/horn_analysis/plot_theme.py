@@ -42,6 +42,10 @@ PROFILE_STYLES = {
     "conical":     {"color": "#1f4e79", "linestyle": "-"},
     "exponential": {"color": "#27864e", "linestyle": "--"},
     "hyperbolic":  {"color": "#d4831a", "linestyle": "-."},
+    "tractrix":    {"color": "#7b4ea3", "linestyle": ":"},
+    "os":          {"color": "#0d9488", "linestyle": "-"},
+    "lecleach":    {"color": "#be185d", "linestyle": "--"},
+    "cd":          {"color": "#475569", "linestyle": "-."},
 }
 
 _DEFAULT_PROFILE_STYLE = {"color": "#6b7280", "linestyle": "-"}

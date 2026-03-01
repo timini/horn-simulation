@@ -17,7 +17,7 @@ import numpy as np
 # Standard 1" compression driver throat radii
 DEFAULT_THROAT_RADII = [0.0125, 0.0175, 0.025]  # metres
 
-DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic"]
+DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"]
 
 
 @dataclass

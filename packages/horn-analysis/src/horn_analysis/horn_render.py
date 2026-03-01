@@ -52,10 +52,39 @@ def _radius_profile(
     elif profile == "hyperbolic":
         m = np.arccosh(mouth_radius / throat_radius)
         return throat_radius * np.cosh(m * z / length)
+    elif profile == "tractrix":
+        t = np.linspace(np.pi - 1e-6, np.pi / 2, 500)
+        y, x = np.sin(t), np.log(np.tan(t / 2)) + np.cos(t)
+        x -= x[0]
+        x_n, y_n = x / x[-1], y / y[-1]
+        return throat_radius + (mouth_radius - throat_radius) * np.interp(z, x_n * length, y_n)
+    elif profile == "os":
+        theta = np.arctan2(np.sqrt(mouth_radius**2 - throat_radius**2), length)
+        return np.sqrt(throat_radius**2 + (z * np.tan(theta)) ** 2)
+    elif profile == "lecleach":
+        t = np.linspace(np.pi - 1e-6, np.pi / 2, 500)
+        y, x = np.sin(t), np.log(np.tan(t / 2)) + np.cos(t)
+        x -= x[0]
+        idx = np.searchsorted(y, throat_radius / mouth_radius)
+        x_c, y_c = x[idx:] - x[idx], y[idx:]
+        return np.interp(z, x_c / x_c[-1] * length, y_c / y_c[-1] * mouth_radius)
+    elif profile == "cd":
+        frac = 0.3
+        z_t = frac * length
+        r_trans = throat_radius * (mouth_radius / throat_radius) ** frac
+        result = np.empty_like(z)
+        mask_exp = z <= z_t
+        result[mask_exp] = throat_radius * np.exp(
+            np.log(r_trans / throat_radius) * z[mask_exp] / z_t
+        )
+        result[~mask_exp] = r_trans + (mouth_radius - r_trans) * (
+            z[~mask_exp] - z_t
+        ) / (length - z_t)
+        return result
     else:
         raise ValueError(
             f"Unknown profile '{profile}'. "
-            f"Choose from: conical, exponential, hyperbolic"
+            f"Choose from: conical, exponential, hyperbolic, tractrix, os, lecleach, cd"
         )
 
 
@@ -261,7 +290,8 @@ def main():
     parser.add_argument("--length", type=float, required=True,
                         help="Horn length in metres")
     parser.add_argument("--profile", type=str, default="conical",
-                        choices=["conical", "exponential", "hyperbolic"],
+                        choices=["conical", "exponential", "hyperbolic",
+                                 "tractrix", "os", "lecleach", "cd"],
                         help="Horn flare profile (default: conical)")
     parser.add_argument("--no-profile-panel", action="store_true",
                         help="Omit the 2D cross-section panel")

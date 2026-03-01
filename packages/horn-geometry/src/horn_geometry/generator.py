@@ -1,3 +1,5 @@
+import math
+
 import gmsh
 import numpy as np
 from pathlib import Path
@@ -111,10 +113,105 @@ def create_hyperbolic_horn(
     return _loft_horn_profile(radius_func, length, num_sections, output_file, "hyperbolic_horn")
 
 
+def create_tractrix_horn(
+    throat_radius: float,
+    mouth_radius: float,
+    length: float,
+    output_file: Path,
+    num_sections: int = 20,
+) -> Path:
+    """Generate a tractrix horn STEP file.
+
+    Scaled tractrix parametric curve: rapid initial expansion, decelerating toward mouth.
+    """
+    t = np.linspace(np.pi - 1e-6, np.pi / 2, 500)
+    y, x = np.sin(t), np.log(np.tan(t / 2)) + np.cos(t)
+    x -= x[0]
+    x_n, y_n = x / x[-1], y / y[-1]
+
+    def radius_func(z: float) -> float:
+        return throat_radius + (mouth_radius - throat_radius) * float(
+            np.interp(z, x_n * length, y_n)
+        )
+
+    return _loft_horn_profile(radius_func, length, num_sections, output_file, "tractrix_horn")
+
+
+def create_os_horn(
+    throat_radius: float,
+    mouth_radius: float,
+    length: float,
+    output_file: Path,
+    num_sections: int = 20,
+) -> Path:
+    """Generate an oblate spheroidal (OS / Geddes) horn STEP file.
+
+    Simple closed-form: r(z) = sqrt(r_t^2 + (z * tan(theta))^2).
+    """
+    theta = math.atan2(math.sqrt(mouth_radius**2 - throat_radius**2), length)
+
+    def radius_func(z: float) -> float:
+        return math.sqrt(throat_radius**2 + (z * math.tan(theta)) ** 2)
+
+    return _loft_horn_profile(radius_func, length, num_sections, output_file, "os_horn")
+
+
+def create_lecleach_horn(
+    throat_radius: float,
+    mouth_radius: float,
+    length: float,
+    output_file: Path,
+    num_sections: int = 20,
+) -> Path:
+    """Generate a Le Cléac'h horn STEP file.
+
+    Tractrix curve with constant a = mouth_radius, clipped where radius >= throat_radius.
+    Gentle expansion at throat, aggressive flare at mouth.
+    """
+    t = np.linspace(np.pi - 1e-6, np.pi / 2, 500)
+    y, x = np.sin(t), np.log(np.tan(t / 2)) + np.cos(t)
+    x -= x[0]
+    idx = np.searchsorted(y, throat_radius / mouth_radius)
+    x_c, y_c = x[idx:] - x[idx], y[idx:]
+
+    def radius_func(z: float) -> float:
+        return float(np.interp(z, x_c / x_c[-1] * length, y_c / y_c[-1] * mouth_radius))
+
+    return _loft_horn_profile(radius_func, length, num_sections, output_file, "lecleach_horn")
+
+
+def create_cd_horn(
+    throat_radius: float,
+    mouth_radius: float,
+    length: float,
+    output_file: Path,
+    num_sections: int = 30,
+) -> Path:
+    """Generate a constant directivity (CD) horn STEP file.
+
+    Compound: exponential throat (30% of length) transitioning to conical body.
+    """
+    frac = 0.3
+    z_t = frac * length
+    r_trans = throat_radius * (mouth_radius / throat_radius) ** frac
+
+    def radius_func(z: float) -> float:
+        if z <= z_t:
+            return throat_radius * math.exp(math.log(r_trans / throat_radius) * z / z_t)
+        else:
+            return r_trans + (mouth_radius - r_trans) * (z - z_t) / (length - z_t)
+
+    return _loft_horn_profile(radius_func, length, num_sections, output_file, "cd_horn")
+
+
 _PROFILE_DISPATCH = {
     "conical": create_conical_horn,
     "exponential": create_exponential_horn,
     "hyperbolic": create_hyperbolic_horn,
+    "tractrix": create_tractrix_horn,
+    "os": create_os_horn,
+    "lecleach": create_lecleach_horn,
+    "cd": create_cd_horn,
 }
 
 
@@ -160,7 +257,7 @@ def main():
     parser.add_argument(
         "--profile",
         type=str,
-        choices=["conical", "exponential", "hyperbolic"],
+        choices=list(_PROFILE_DISPATCH.keys()),
         default="conical",
         help="Horn flare profile (default: conical).",
     )

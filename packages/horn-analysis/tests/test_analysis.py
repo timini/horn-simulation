@@ -281,10 +281,15 @@ class TestHornRender:
         from horn_analysis.horn_render import _radius_profile
 
         r_t, r_m, L = 0.05, 0.2, 0.5
-        for profile in ("conical", "exponential", "hyperbolic"):
+        for profile in ("conical", "exponential", "hyperbolic", "os", "cd"):
             r = _radius_profile(np.array([0.0, L]), r_t, r_m, L, profile)
             assert r[0] == pytest.approx(r_t, rel=1e-10)
             assert r[-1] == pytest.approx(r_m, rel=1e-10)
+        # Tractrix and Le Cléac'h use parametric interpolation; endpoints are approximate
+        for profile in ("tractrix", "lecleach"):
+            r = _radius_profile(np.array([0.0, L]), r_t, r_m, L, profile)
+            assert r[0] == pytest.approx(r_t, rel=0.02)
+            assert r[-1] == pytest.approx(r_m, rel=0.02)
 
     def test_radius_profile_unknown_raises(self):
         from horn_analysis.horn_render import _radius_profile
