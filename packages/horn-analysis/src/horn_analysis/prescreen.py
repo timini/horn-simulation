@@ -15,6 +15,8 @@ import numpy as np
 
 from horn_core.parameters import DriverParameters
 
+_SPEED_OF_SOUND = 343.0  # m/s at ~20°C
+
 
 @dataclass
 class PrescreenConfig:
@@ -24,6 +26,7 @@ class PrescreenConfig:
     mouth_radius_m: Optional[float] = None
     length_m: Optional[float] = None
     min_ebp: float = 50.0
+    horn_load_factor: float = 10.0
     sd_ratio_range: Tuple[float, float] = (0.3, 3.0)
 
 
@@ -51,7 +54,7 @@ def prescreen_drivers(
     Filtering criteria:
     1. fs_hz < target_f_low_hz * 1.5 -- driver resonance in or near target band
     2. fs_hz / qes > min_ebp -- horn suitability (Efficiency Bandwidth Product)
-    3. Driver type: compression for f_high > 2kHz, cone for f_low < 200 Hz, both otherwise
+    3. Upper freq capability: f_piston * horn_load_factor >= target_f_high
     4. Representative throat radius = median(sqrt(Sd/pi)) of passing drivers
     5. Filter drivers whose effective radius is outside sd_ratio_range of representative
 
@@ -78,12 +81,13 @@ def prescreen_drivers(
             # Cannot compute EBP, skip
             continue
 
-        # 3. Driver type filter
-        if config.target_f_high_hz > 2000:
-            if drv.driver_type is not None and drv.driver_type == "cone":
-                continue
-        if config.target_f_low_hz < 200:
-            if drv.driver_type is not None and drv.driver_type == "compression":
+        # 3. Upper frequency capability from Sd
+        #    f_piston = c / (2π·a_eff) where a_eff = √(Sd/π)
+        #    Horn loading extends usable range by ~10× above piston breakup
+        if drv.sd_m2 > 0:
+            a_eff = math.sqrt(drv.sd_m2 / math.pi)
+            f_piston = _SPEED_OF_SOUND / (2 * math.pi * a_eff)
+            if f_piston * config.horn_load_factor < config.target_f_high_hz:
                 continue
 
         candidates.append(drv)
@@ -132,6 +136,8 @@ def main():
     parser.add_argument("--mouth-radius", type=float, default=None, help="Horn mouth radius (m). Optional for fullauto mode.")
     parser.add_argument("--length", type=float, default=None, help="Horn length (m). Optional for fullauto mode.")
     parser.add_argument("--min-ebp", type=float, default=50.0, help="Minimum EBP threshold.")
+    parser.add_argument("--horn-load-factor", type=float, default=10.0,
+                        help="Multiplier on piston frequency for horn-loaded upper limit estimate.")
     parser.add_argument("--output", type=str, default="prescreen_result.json", help="Output JSON file.")
     args = parser.parse_args()
 
@@ -146,6 +152,7 @@ def main():
         mouth_radius_m=args.mouth_radius,
         length_m=args.length,
         min_ebp=args.min_ebp,
+        horn_load_factor=args.horn_load_factor,
     )
 
     result = prescreen_drivers(drivers, config)
