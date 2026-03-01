@@ -5,55 +5,38 @@ ranking tables, and driver T-S parameter tables. No external
 dependencies beyond matplotlib/numpy/pandas (already required).
 """
 
-import base64
 import html
-import io
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 
 import matplotlib
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 from horn_core.parameters import DriverParameters
 from horn_analysis.scoring import TargetSpec
+from horn_analysis import plot_theme
 
 
-# -- Profile colour/style mapping ------------------------------------------
+# -- Profile badge styles (HTML-only; matplotlib styles come from plot_theme) --
 
-_PROFILE_STYLES = {
-    "conical":     {"color": "#2563eb", "linestyle": "-",  "badge_bg": "#dbeafe", "badge_fg": "#1e40af"},
-    "exponential": {"color": "#16a34a", "linestyle": "--", "badge_bg": "#dcfce7", "badge_fg": "#166534"},
-    "hyperbolic":  {"color": "#d97706", "linestyle": "-.", "badge_bg": "#fef3c7", "badge_fg": "#92400e"},
+_BADGE_STYLES = {
+    "conical":     {"badge_bg": "#dbeafe", "badge_fg": "#1e40af"},
+    "exponential": {"badge_bg": "#dcfce7", "badge_fg": "#166534"},
+    "hyperbolic":  {"badge_bg": "#fef3c7", "badge_fg": "#92400e"},
 }
 
-_DEFAULT_STYLE = {"color": "#6b7280", "linestyle": "-", "badge_bg": "#f3f4f6", "badge_fg": "#374151"}
+_DEFAULT_BADGE = {"badge_bg": "#f3f4f6", "badge_fg": "#374151"}
 
 
-def _style_for(profile: str) -> dict:
-    return _PROFILE_STYLES.get(profile, _DEFAULT_STYLE)
+def _badge_for(profile: str) -> dict:
+    return _BADGE_STYLES.get(profile, _DEFAULT_BADGE)
 
 
 # -- Helpers ----------------------------------------------------------------
 
-def _fig_to_b64(fig) -> str:
-    """Render a matplotlib figure to a base64 data-URI and close it."""
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", dpi=150, bbox_inches="tight")
-    plt.close(fig)
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode("ascii")
-    return f"data:image/png;base64,{encoded}"
-
-
-def _target_band_span(ax, target: TargetSpec, alpha: float = 0.08):
-    """Add a shaded vertical span for the target frequency band."""
-    ax.axvspan(target.f_low_hz, target.f_high_hz, color="#6366f1", alpha=alpha, label="Target band")
-
-
-def _fmt(value, fmt: str = ".1f", fallback: str = "—") -> str:
+def _fmt(value, fmt: str = ".1f", fallback: str = "\u2014") -> str:
     """Safely format an Optional numeric value."""
     if value is None:
         return fallback
@@ -70,24 +53,28 @@ def _plot_coupled_spl_comparison(
     target: TargetSpec,
 ) -> str:
     """Overlaid coupled SPL for top N candidates with target band."""
-    fig, ax = plt.subplots(figsize=(11, 5.5))
+    fig, ax = plot_theme.create_figure(figsize=(11, 5.5))
 
+    all_freq = []
     for csv_path, label in csv_pairs:
         df = pd.read_csv(csv_path)
         # Extract profile name from label (last word in parens)
         profile = label.rsplit("(", 1)[-1].rstrip(")") if "(" in label else ""
-        style = _style_for(profile)
-        ax.semilogx(df["frequency"], df["spl"], label=label,
-                     color=style["color"], linestyle=style["linestyle"], linewidth=1.4)
+        style = plot_theme.profile_style(profile)
+        ax.plot(df["frequency"], df["spl"], label=label,
+                color=style["color"], linestyle=style["linestyle"], linewidth=1.4)
+        all_freq.extend(df["frequency"].values)
 
-    _target_band_span(ax, target)
-    ax.set_xlabel("Frequency (Hz)")
+    plot_theme.target_band_span(ax, target)
+
+    if all_freq:
+        plot_theme.setup_freq_axis(ax, min(all_freq), max(all_freq))
     ax.set_ylabel("SPL (dB)")
-    ax.set_title("Coupled SPL — Top Candidates")
-    ax.grid(True, which="both", ls="--", alpha=0.4)
+    ax.set_title("Coupled SPL \u2014 Top Candidates")
+    plot_theme.setup_grid(ax)
     ax.legend(fontsize=8, loc="best")
     fig.tight_layout()
-    return _fig_to_b64(fig)
+    return plot_theme.fig_to_b64(fig)
 
 
 def _plot_raw_profile_spl(
@@ -95,30 +82,35 @@ def _plot_raw_profile_spl(
     target: TargetSpec,
 ) -> str:
     """Overlaid uncoupled SPL comparing horn profiles."""
-    fig, ax = plt.subplots(figsize=(11, 5.5))
+    fig, ax = plot_theme.create_figure(figsize=(11, 5.5))
 
+    all_freq = []
     for profile, csv_path in sorted(solver_csvs.items()):
         df = pd.read_csv(csv_path)
-        style = _style_for(profile)
-        ax.semilogx(df["frequency"], df["spl"], label=profile.capitalize(),
-                     color=style["color"], linestyle=style["linestyle"], linewidth=1.4)
+        style = plot_theme.profile_style(profile)
+        ax.plot(df["frequency"], df["spl"], label=profile.capitalize(),
+                color=style["color"], linestyle=style["linestyle"], linewidth=1.4)
+        all_freq.extend(df["frequency"].values)
 
-    _target_band_span(ax, target)
-    ax.set_xlabel("Frequency (Hz)")
+    plot_theme.target_band_span(ax, target)
+
+    if all_freq:
+        plot_theme.setup_freq_axis(ax, min(all_freq), max(all_freq))
     ax.set_ylabel("SPL (dB)")
     ax.set_title("Raw Horn SPL by Profile (uncoupled)")
-    ax.grid(True, which="both", ls="--", alpha=0.4)
+    plot_theme.setup_grid(ax)
     ax.legend(fontsize=9)
     fig.tight_layout()
-    return _fig_to_b64(fig)
+    return plot_theme.fig_to_b64(fig)
 
 
 def _plot_profile_impedance(solver_csvs: Dict[str, str]) -> str:
     """|Z| magnitude + phase angle overlay for each profile (dual y-axis)."""
-    fig, ax1 = plt.subplots(figsize=(11, 5.5))
+    fig, ax1 = plot_theme.create_figure(figsize=(11, 5.5))
     ax2 = ax1.twinx()
 
     lines = []
+    all_freq = []
     for profile, csv_path in sorted(solver_csvs.items()):
         df = pd.read_csv(csv_path)
         freq = df["frequency"].values
@@ -126,29 +118,32 @@ def _plot_profile_impedance(solver_csvs: Dict[str, str]) -> str:
         z_mag = np.abs(z_complex)
         z_angle = np.degrees(np.angle(z_complex))
 
-        style = _style_for(profile)
-        l1, = ax1.semilogx(freq, z_mag, color=style["color"],
-                            linestyle=style["linestyle"], linewidth=1.3,
-                            label=f"|Z| {profile}")
-        l2, = ax2.semilogx(freq, z_angle, color=style["color"],
-                            linestyle=":", linewidth=1.0, alpha=0.7,
-                            label=f"∠Z {profile}")
+        style = plot_theme.profile_style(profile)
+        l1, = ax1.plot(freq, z_mag, color=style["color"],
+                       linestyle=style["linestyle"], linewidth=1.3,
+                       label=f"|Z| {profile}")
+        l2, = ax2.plot(freq, z_angle, color=style["color"],
+                       linestyle=":", linewidth=1.0, alpha=0.7,
+                       label=f"\u2220Z {profile}")
         lines.extend([l1, l2])
+        all_freq.extend(freq)
 
-    ax1.set_xlabel("Frequency (Hz)")
-    ax1.set_ylabel("|Z| (Pa·s/m)")
-    ax2.set_ylabel("∠Z (degrees)")
+    if all_freq:
+        plot_theme.setup_freq_axis(ax1, min(all_freq), max(all_freq))
+    ax1.set_ylabel("|Z| (Pa\u00b7s/m)")
+    ax2.set_ylabel("\u2220Z (degrees)")
     ax1.set_title("Throat Impedance by Profile")
-    ax1.grid(True, which="both", ls="--", alpha=0.3)
+    plot_theme.setup_grid(ax1)
     ax1.legend(handles=lines, fontsize=7, loc="upper right", ncol=2)
     fig.tight_layout()
-    return _fig_to_b64(fig)
+    return plot_theme.fig_to_b64(fig)
 
 
 def _plot_profile_phase(solver_csvs: Dict[str, str]) -> str:
     """Unwrapped phase + group delay subplots for each profile."""
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(11, 8), sharex=True)
+    fig, (ax1, ax2) = plot_theme.create_figure(figsize=(11, 8), nrows=2, ncols=1, sharex=True)
 
+    all_freq = []
     for profile, csv_path in sorted(solver_csvs.items()):
         df = pd.read_csv(csv_path)
         freq = df["frequency"].values
@@ -157,10 +152,10 @@ def _plot_profile_phase(solver_csvs: Dict[str, str]) -> str:
         phase_rad = np.radians(phase_deg)
         phase_unwrapped = np.degrees(np.unwrap(phase_rad))
 
-        style = _style_for(profile)
-        ax1.semilogx(freq, phase_unwrapped, color=style["color"],
-                      linestyle=style["linestyle"], linewidth=1.3,
-                      label=profile.capitalize())
+        style = plot_theme.profile_style(profile)
+        ax1.plot(freq, phase_unwrapped, color=style["color"],
+                 linestyle=style["linestyle"], linewidth=1.3,
+                 label=profile.capitalize())
 
         # Group delay
         if len(freq) > 1:
@@ -168,32 +163,39 @@ def _plot_profile_phase(solver_csvs: Dict[str, str]) -> str:
             df_vals = np.diff(freq)
             tau_g_ms = -dphi / (2 * np.pi * df_vals) * 1000
             freq_mid = (freq[:-1] + freq[1:]) / 2
-            ax2.semilogx(freq_mid, tau_g_ms, color=style["color"],
-                          linestyle=style["linestyle"], linewidth=1.0,
-                          label=profile.capitalize())
+            ax2.plot(freq_mid, tau_g_ms, color=style["color"],
+                     linestyle=style["linestyle"], linewidth=1.0,
+                     label=profile.capitalize())
+
+        all_freq.extend(freq)
+
+    if all_freq:
+        f_min, f_max = min(all_freq), max(all_freq)
+        plot_theme.setup_freq_axis(ax1, f_min, f_max)
+        ax1.set_xlabel("")
+        plot_theme.setup_freq_axis(ax2, f_min, f_max)
 
     ax1.set_ylabel("Phase (degrees)")
     ax1.set_title("Unwrapped Phase Response")
-    ax1.grid(True, which="both", ls="--", alpha=0.4)
+    plot_theme.setup_grid(ax1)
     ax1.legend(fontsize=9)
 
-    ax2.set_xlabel("Frequency (Hz)")
     ax2.set_ylabel("Group Delay (ms)")
-    ax2.grid(True, which="both", ls="--", alpha=0.4)
+    plot_theme.setup_grid(ax2)
     ax2.legend(fontsize=9)
 
     fig.tight_layout()
-    return _fig_to_b64(fig)
+    return plot_theme.fig_to_b64(fig)
 
 
 # -- Table renderers --------------------------------------------------------
 
 def _profile_badge(profile: str) -> str:
-    style = _style_for(profile)
+    badge = _badge_for(profile)
     return (
         f'<span style="display:inline-block;padding:2px 8px;border-radius:4px;'
         f'font-size:0.8em;font-weight:600;'
-        f'background:{style["badge_bg"]};color:{style["badge_fg"]}">'
+        f'background:{badge["badge_bg"]};color:{badge["badge_fg"]}">'
         f'{html.escape(profile.capitalize())}</span>'
     )
 
@@ -214,7 +216,7 @@ def _render_rankings_rows(ranked_results: List[dict]) -> str:
             f"<td>{_fmt(r.get('bandwidth_coverage'), '.1%')}</td>"
             f"<td>{_fmt(r.get('passband_ripple_db'), '.1f')}</td>"
             f"<td>{_fmt(r.get('avg_sensitivity_db'), '.1f')}</td>"
-            f"<td>{f3l} — {f3h}</td>"
+            f"<td>{f3l} \u2014 {f3h}</td>"
             f"<td>{_fmt(kpi.get('peak_spl_db'), '.1f')}</td>"
             f"</tr>"
         )
@@ -381,16 +383,16 @@ def generate_html_report(
     top_results = all_ranked[:top_n]
 
     # Summary card values
-    best_score = _fmt(top_results[0]["composite_score"], ".3f") if top_results else "—"
+    best_score = _fmt(top_results[0]["composite_score"], ".3f") if top_results else "\u2014"
     best_bw = _fmt(
         max((r.get("bandwidth_coverage", 0) for r in top_results), default=None), ".1%"
-    ) if top_results else "—"
+    ) if top_results else "\u2014"
     best_sens = _fmt(
         max((r.get("avg_sensitivity_db", 0) for r in top_results), default=None), ".1f"
-    ) if top_results else "—"
+    ) if top_results else "\u2014"
     best_ripple = _fmt(
         min((r.get("passband_ripple_db", 99) for r in top_results), default=None), ".1f"
-    ) if top_results else "—"
+    ) if top_results else "\u2014"
 
     # Generate plots
     plot_coupled_spl = _plot_coupled_spl_comparison(csv_pairs, target)

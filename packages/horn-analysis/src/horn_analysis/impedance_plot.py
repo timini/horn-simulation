@@ -9,6 +9,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+from horn_analysis import plot_theme
+
 
 def plot_impedance(csv_file: str, output_file: str):
     """Plot throat impedance magnitude and phase from solver CSV output.
@@ -26,31 +28,30 @@ def plot_impedance(csv_file: str, output_file: str):
     z_mag = np.abs(z_complex)
     z_angle = np.degrees(np.angle(z_complex))
 
-    fig, ax1 = plt.subplots(figsize=(10, 6))
+    fig, ax1 = plot_theme.create_figure(figsize=(10, 6))
 
-    color_mag = "tab:blue"
-    ax1.set_xlabel("Frequency (Hz)")
-    ax1.set_ylabel("|Z| (Pa·s/m)", color=color_mag)
-    ax1.semilogx(freq, z_mag, color=color_mag, label="|Z|")
+    color_mag = plot_theme.COLORS["primary"]
+    ax1.set_ylabel("|Z| (Pa\u00b7s/m)", color=color_mag)
+    ax1.plot(freq, z_mag, color=color_mag, linewidth=1.4, label="|Z|")
     ax1.tick_params(axis="y", labelcolor=color_mag)
 
     ax2 = ax1.twinx()
-    color_phase = "tab:red"
-    ax2.set_ylabel("∠Z (degrees)", color=color_phase)
-    ax2.semilogx(freq, z_angle, color=color_phase, linestyle="--", label="∠Z")
+    color_phase = plot_theme.COLORS["secondary"]
+    ax2.set_ylabel("\u2220Z (degrees)", color=color_phase)
+    ax2.plot(freq, z_angle, color=color_phase, linestyle="--", linewidth=1.4, label="\u2220Z")
     ax2.tick_params(axis="y", labelcolor=color_phase)
 
+    plot_theme.setup_freq_axis(ax1, freq.min(), freq.max())
+    plot_theme.setup_grid(ax1)
+
     ax1.set_title("Throat Impedance vs Frequency")
-    ax1.grid(True, which="both", ls="--", alpha=0.5)
 
     # Combined legend
     lines1, labels1 = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
     ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper right")
 
-    plt.tight_layout()
-    plt.savefig(output_file, dpi=150)
-    plt.close()
+    plot_theme.save_figure(fig, output_file)
     print(f"Impedance plot saved to {output_file}")
 
 
