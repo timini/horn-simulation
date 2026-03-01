@@ -162,6 +162,21 @@ process generate_phase_plot {
     """
 }
 
+process generate_dashboard {
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    path final_csv
+
+    output:
+    path "dashboard.png"
+
+    script:
+    """
+    python3 -m horn_analysis.dashboard ${final_csv} dashboard.png
+    """
+}
+
 // ========================================================================
 // Auto mode processes
 // ========================================================================
@@ -396,6 +411,9 @@ workflow single {
     // 8. Impedance and phase plots
     generate_impedance_plot(ch_merged_results)
     generate_phase_plot(ch_merged_results)
+
+    // 9. Combined dashboard
+    generate_dashboard(ch_merged_results)
 }
 
 workflow auto {

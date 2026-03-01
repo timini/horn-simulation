@@ -230,3 +230,13 @@ class TestPhasePlot:
         plot_phase(str(solver_csv_with_impedance_phase), str(output), group_delay=True)
         assert output.exists()
         assert output.stat().st_size > 0
+
+
+class TestDashboard:
+    def test_dashboard_creates_image(self, solver_csv_with_impedance_phase, tmp_path):
+        from horn_analysis.dashboard import generate_dashboard
+
+        output = tmp_path / "dashboard.png"
+        generate_dashboard(str(solver_csv_with_impedance_phase), str(output))
+        assert output.exists()
+        assert output.stat().st_size > 0

@@ -22,6 +22,7 @@ horn-score = "horn_analysis.scoring:main"
 horn-prescreen = "horn_analysis.prescreen:main"
 horn-rank = "horn_analysis.rank_pipeline:main"
 horn-auto-report = "horn_analysis.auto_report:main"
+horn-dashboard = "horn_analysis.dashboard:main"
 
 [project.optional-dependencies]
 test = [

@@ -12,6 +12,9 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
+
+from horn_analysis import plot_theme
 
 
 def plot_multi_comparison(
@@ -30,21 +33,26 @@ def plot_multi_comparison(
         Path to the output image.
     """
     if kpi_table:
-        fig, (ax_plot, ax_table) = plt.subplots(
-            2, 1, figsize=(12, 10), gridspec_kw={"height_ratios": [3, 1]},
+        fig, (ax_plot, ax_table) = plot_theme.create_figure(
+            figsize=(12, 10), nrows=2, ncols=1, gridspec_kw={"height_ratios": [3, 1]},
         )
     else:
-        fig, ax_plot = plt.subplots(figsize=(12, 8))
+        fig, ax_plot = plot_theme.create_figure(figsize=(12, 8))
 
-    for csv_path, label in file_label_pairs:
+    all_freq = []
+    all_spl = []
+    for i, (csv_path, label) in enumerate(file_label_pairs):
         df = pd.read_csv(csv_path)
-        ax_plot.plot(df["frequency"], df["spl"], label=label)
+        color = plot_theme.MULTI_COLORS[i % len(plot_theme.MULTI_COLORS)]
+        ax_plot.plot(df["frequency"], df["spl"], label=label, color=color, linewidth=1.4)
+        all_freq.extend(df["frequency"].values)
+        all_spl.extend(df["spl"].values)
 
-    ax_plot.set_xscale("log")
+    plot_theme.setup_freq_axis(ax_plot, min(all_freq), max(all_freq))
+    plot_theme.setup_spl_axis(ax_plot, np.array(all_spl))
+    plot_theme.setup_grid(ax_plot)
+
     ax_plot.set_title("Horn Frequency Response Comparison")
-    ax_plot.set_xlabel("Frequency (Hz)")
-    ax_plot.set_ylabel("Sound Pressure Level (dB)")
-    ax_plot.grid(True, which="both", ls="--")
     ax_plot.legend()
 
     if kpi_table:
@@ -57,11 +65,11 @@ def plot_multi_comparison(
                 label,
                 f"{kpis.peak_spl_db:.1f}",
                 f"{kpis.peak_frequency_hz:.0f}",
-                f"{kpis.f3_low_hz:.0f}" if kpis.f3_low_hz else "—",
-                f"{kpis.f3_high_hz:.0f}" if kpis.f3_high_hz else "—",
-                f"{kpis.bandwidth_octaves:.1f}" if kpis.bandwidth_octaves else "—",
-                f"{kpis.passband_ripple_db:.1f}" if kpis.passband_ripple_db is not None else "—",
-                f"{kpis.average_sensitivity_db:.1f}" if kpis.average_sensitivity_db is not None else "—",
+                f"{kpis.f3_low_hz:.0f}" if kpis.f3_low_hz else "\u2014",
+                f"{kpis.f3_high_hz:.0f}" if kpis.f3_high_hz else "\u2014",
+                f"{kpis.bandwidth_octaves:.1f}" if kpis.bandwidth_octaves else "\u2014",
+                f"{kpis.passband_ripple_db:.1f}" if kpis.passband_ripple_db is not None else "\u2014",
+                f"{kpis.average_sensitivity_db:.1f}" if kpis.average_sensitivity_db is not None else "\u2014",
             ])
 
         col_labels = [
@@ -81,10 +89,8 @@ def plot_multi_comparison(
         table.set_fontsize(9)
         table.scale(1, 1.4)
 
-    plt.tight_layout()
     output_path = Path(output_file)
-    plt.savefig(output_path, dpi=150)
-    plt.close()
+    plot_theme.save_figure(fig, str(output_path))
     print(f"Comparison plot saved to {output_path}")
     return output_path
 
