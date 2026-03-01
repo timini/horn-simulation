@@ -17,6 +17,7 @@ import pandas as pd
 from horn_core.parameters import DriverParameters
 from horn_analysis.scoring import TargetSpec
 from horn_analysis import plot_theme
+from horn_analysis.horn_render import fig_to_b64_3d
 
 
 # -- Profile badge styles (HTML-only; matplotlib styles come from plot_theme) --
@@ -309,6 +310,8 @@ _HTML_TEMPLATE = """\
   <div class="card"><div class="label">Lowest ripple</div><div class="value">{best_ripple}</div></div>
 </div>
 
+{geometry_section}
+
 <h2>Rankings</h2>
 <table>
 <thead>
@@ -365,6 +368,8 @@ def generate_html_report(
     target: TargetSpec,
     csv_pairs: List[Tuple[str, str]],
     top_n: int = 5,
+    mouth_radius: Optional[float] = None,
+    length: Optional[float] = None,
 ) -> str:
     """Generate a self-contained HTML report string.
 
@@ -376,6 +381,8 @@ def generate_html_report(
         target: Target frequency specification.
         csv_pairs: List of (csv_path, label) for coupled SPL plots.
         top_n: Number of top candidates to include.
+        mouth_radius: Horn mouth radius in metres (enables 3D geometry renders).
+        length: Horn length in metres (enables 3D geometry renders).
 
     Returns:
         Complete HTML document as a string.
@@ -394,6 +401,24 @@ def generate_html_report(
         min((r.get("passband_ripple_db", 99) for r in top_results), default=None), ".1f"
     ) if top_results else "\u2014"
 
+    # Generate 3D horn geometry renders (when dimensions are provided)
+    geometry_html = ""
+    if mouth_radius is not None and length is not None:
+        geom_imgs = []
+        for profile in sorted(solver_csvs.keys()):
+            b64 = fig_to_b64_3d(
+                throat_radius=throat_radius,
+                mouth_radius=mouth_radius,
+                length=length,
+                profile=profile,
+                figsize=(12, 5),
+            )
+            geom_imgs.append(
+                f'<div class="plot"><img src="{b64}" '
+                f'alt="{html.escape(profile.capitalize())} horn geometry"></div>'
+            )
+        geometry_html = "\n".join(geom_imgs)
+
     # Generate plots
     plot_coupled_spl = _plot_coupled_spl_comparison(csv_pairs, target)
     plot_raw_spl = _plot_raw_profile_spl(solver_csvs, target)
@@ -405,6 +430,17 @@ def generate_html_report(
     drivers_rows = _render_drivers_rows(drivers)
 
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+    # Build geometry section HTML
+    if geometry_html:
+        geometry_section = (
+            '<h2>Horn Geometry</h2>\n'
+            '<div class="plot-grid">\n'
+            f'{geometry_html}\n'
+            '</div>'
+        )
+    else:
+        geometry_section = ""
 
     return _HTML_TEMPLATE.format_map({
         "target_low": target.f_low_hz,
@@ -418,6 +454,7 @@ def generate_html_report(
         "best_bw": best_bw,
         "best_sens": best_sens,
         "best_ripple": best_ripple,
+        "geometry_section": geometry_section,
         "rankings_rows": rankings_rows,
         "plot_coupled_spl": plot_coupled_spl,
         "plot_raw_spl": plot_raw_spl,

@@ -138,6 +138,7 @@ def coupled_solve(
     outlet_tag: int,
     k: float,
     bcs=None,
+    return_trace_data: bool = False,
 ):
     """Solve the coupled FEM-BEM system for exterior radiation at the outlet.
 
@@ -173,11 +174,17 @@ def coupled_solve(
         Wavenumber.
     bcs : list
         Dirichlet boundary conditions.
+    return_trace_data : bool
+        If True, return ``(p_h, trace_data)`` where *trace_data* is a dict
+        with keys ``trace_space``, ``p_trace``, ``dpdn_trace`` needed for
+        far-field (directivity) computation.
 
     Returns
     -------
     p_h : dolfinx.fem.Function
         Solution pressure field.
+    trace_data : dict (only when *return_trace_data* is True)
+        ``{"trace_space": ..., "p_trace": ..., "dpdn_trace": ...}``
     """
     check_bempp_available()
 
@@ -270,6 +277,13 @@ def coupled_solve(
     solver.destroy()
     x_vec.destroy()
 
+    if return_trace_data:
+        trace_data = {
+            "trace_space": trace_space,
+            "p_trace": p_trace,
+            "dpdn_trace": neumann_outlet,
+        }
+        return p_h, trace_data
     return p_h
 
 

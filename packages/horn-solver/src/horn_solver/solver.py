@@ -30,6 +30,7 @@ try:
         extract_outlet_trace,
         build_bem_operators,
         coupled_solve,
+        compute_far_field,
     )
 except ImportError:
     BEMPP_AVAILABLE = False
@@ -176,6 +177,9 @@ def run_simulation(
     throat_area: Optional[float] = None,
     z_horn_initial: Optional[Dict[str, np.ndarray]] = None,
     radiation_model: str = "plane_wave",
+    compute_directivity: bool = False,
+    directivity_file: Optional[str] = None,
+    directivity_angles: Optional[np.ndarray] = None,
 ) -> Path:
     """Run the FEM simulation for the Helmholtz equation.
 
@@ -197,6 +201,12 @@ def run_simulation(
                          ``"flanged_piston"`` (analytical piston in infinite baffle),
                          ``"unflanged_piston"`` (Levine-Schwinger approximation),
                          ``"bem"`` (nonlocal BEM coupling via bempp-cl).
+        compute_directivity: If True, compute far-field directivity at each
+                             frequency (requires ``radiation_model="bem"``).
+        directivity_file: Output CSV path for directivity data. Defaults to
+                          ``directivity.csv`` next to the main output file.
+        directivity_angles: Array of polar angles in degrees for directivity
+                            computation. Defaults to ``np.arange(0, 181, 5)``.
 
     Returns:
         Path to the output CSV file.
@@ -212,6 +222,25 @@ def run_simulation(
                 "BEM radiation coupling requires a single MPI rank. "
                 "Run with: mpirun -n 1 python ..."
             )
+
+    if compute_directivity:
+        if radiation_model != "bem":
+            raise ValueError(
+                "Directivity computation requires --radiation-model bem"
+            )
+        if directivity_angles is None:
+            directivity_angles = np.arange(0, 181, 5)
+        if directivity_file is None:
+            directivity_file = str(Path(output_file).with_name("directivity.csv"))
+        # Build unit direction vectors for far-field evaluation
+        # Axisymmetric: directions in the xz-plane, theta from z-axis
+        theta_rad = np.radians(directivity_angles)
+        ff_directions = np.column_stack([
+            np.sin(theta_rad),
+            np.zeros(len(theta_rad)),
+            np.cos(theta_rad),
+        ])
+        directivity_results = []
 
     if bc_mode == "neumann":
         if driver is None or throat_area is None or z_horn_initial is None:
@@ -308,7 +337,7 @@ def run_simulation(
 
         # --- Solve ---
         if radiation_model == "bem":
-            p_h = coupled_solve(
+            solve_result = coupled_solve(
                 A_fem=a,
                 b_fem=L,
                 V=V,
@@ -316,7 +345,28 @@ def run_simulation(
                 outlet_tag=OUTLET_TAG,
                 k=k,
                 bcs=bcs or None,
+                return_trace_data=compute_directivity,
             )
+            if compute_directivity:
+                p_h, trace_data = solve_result
+                # Compute far-field directivity at this frequency
+                p_far = compute_far_field(
+                    trace_data["trace_space"],
+                    trace_data["p_trace"],
+                    trace_data["dpdn_trace"],
+                    k,
+                    ff_directions,
+                )
+                p_ref = 20e-6
+                spl_far = 20 * np.log10(np.abs(p_far) / p_ref + 1e-12)
+                for angle_deg, spl_val in zip(directivity_angles, spl_far):
+                    directivity_results.append({
+                        "frequency": frequency,
+                        "theta_deg": float(angle_deg),
+                        "spl_db": float(spl_val),
+                    })
+            else:
+                p_h = solve_result
         else:
             problem = LinearProblem(
                 a, L, bcs=bcs,
@@ -383,6 +433,13 @@ def run_simulation(
     results_df = pd.DataFrame(results)
     results_df.to_csv(output_path, index=False)
 
+    # Write directivity results if computed
+    if compute_directivity and directivity_results:
+        dir_df = pd.DataFrame(directivity_results)
+        dir_path = Path(directivity_file)
+        dir_df.to_csv(dir_path, index=False)
+        print(f"Directivity data written to: {dir_path}")
+
     print(f"\nSuccessfully ran simulation and generated results: {output_path}")
 
     return output_path
@@ -414,10 +471,20 @@ def main():
     parser.add_argument("--radiation-model", type=str, default="plane_wave",
                         choices=["plane_wave", "flanged_piston", "unflanged_piston", "bem"],
                         help="Radiation impedance model at the outlet (default: plane_wave).")
+    parser.add_argument("--compute-directivity", action="store_true",
+                        help="Compute far-field directivity (requires --radiation-model bem).")
+    parser.add_argument("--directivity-file", type=str, default=None,
+                        help="Output CSV path for directivity data.")
     args = parser.parse_args()
 
     # Build extra kwargs for neumann mode
-    extra_kwargs = {"bc_mode": args.bc_mode, "radiation_model": args.radiation_model}
+    extra_kwargs = {
+        "bc_mode": args.bc_mode,
+        "radiation_model": args.radiation_model,
+        "compute_directivity": args.compute_directivity,
+    }
+    if args.directivity_file:
+        extra_kwargs["directivity_file"] = args.directivity_file
 
     if args.bc_mode == "neumann":
         if not all([args.driver_json, args.driver_id, args.throat_area, args.phase_a_csv]):
