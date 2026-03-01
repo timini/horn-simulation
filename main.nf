@@ -27,6 +27,9 @@ params.radiation_model = "plane_wave"  // plane_wave, flanged_piston, unflanged_
 params.num_bands = 8       // Number of parallel jobs for the solver
 params.outdir = "./results"
 
+// Directivity (opt-in, single mode only, requires BEM)
+params.directivity = false
+
 // Auto mode settings
 params.target_f_low = 500
 params.target_f_high = 4000
@@ -164,6 +167,107 @@ process generate_phase_plot {
     script:
     """
     python3 -m horn_analysis.phase_plot ${final_csv} phase_response.png --group-delay
+    """
+}
+
+process generate_dashboard {
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    path final_csv
+
+    output:
+    path "dashboard.png"
+
+    script:
+    """
+    python3 -m horn_analysis.dashboard ${final_csv} dashboard.png
+    """
+}
+
+process render_horn_3d {
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    val throat_radius
+    val mouth_radius
+    val length
+    val profile
+
+    output:
+    path "horn_3d.png"
+
+    script:
+    """
+    python3 -m horn_analysis.horn_render \
+        horn_3d.png \
+        --throat-radius ${throat_radius} \
+        --mouth-radius ${mouth_radius} \
+        --length ${length} \
+        --profile ${profile}
+    """
+}
+
+process render_auto_horn_3d {
+    publishDir "${params.outdir}/auto", mode: 'copy'
+
+    input:
+    val profile
+
+    output:
+    path "horn_3d_${profile}.png"
+
+    script:
+    """
+    python3 -m horn_analysis.horn_render \
+        horn_3d_${profile}.png \
+        --throat-radius ${params.throat_radius} \
+        --mouth-radius ${params.mouth_radius} \
+        --length ${params.length} \
+        --profile ${profile}
+    """
+}
+
+process run_simulation_directivity {
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    path horn_step
+
+    output:
+    path "directivity.csv"
+
+    script:
+    """
+    python3 -m horn_solver.solver \
+        --step-file ${horn_step} \
+        --output-file solver_directivity.csv \
+        --min-freq ${params.min_freq} \
+        --max-freq ${params.max_freq} \
+        --num-intervals ${params.num_intervals} \
+        --length ${params.length} \
+        --mesh-size ${params.mesh_size} \
+        --radiation-model bem \
+        --compute-directivity \
+        --directivity-file directivity.csv
+    """
+}
+
+process generate_directivity_plots {
+    publishDir "${params.outdir}/directivity", mode: 'copy'
+
+    input:
+    path directivity_csv
+
+    output:
+    path "polar_directivity.png"
+    path "directivity_contour.png"
+    path "beamwidth.png"
+    path "directivity_index.png"
+
+    script:
+    """
+    python3 -m horn_analysis.directivity_plot ${directivity_csv} --output-dir .
     """
 }
 
@@ -614,6 +718,23 @@ workflow single {
     // 8. Impedance and phase plots
     generate_impedance_plot(ch_merged_results)
     generate_phase_plot(ch_merged_results)
+
+    // 9. Combined dashboard
+    generate_dashboard(ch_merged_results)
+
+    // 10. 3D horn geometry render (runs in parallel with simulation)
+    render_horn_3d(
+        params.throat_radius,
+        params.mouth_radius,
+        params.length,
+        params.profile
+    )
+
+    // 11. Directivity (opt-in, requires BEM)
+    if (params.directivity) {
+        ch_directivity_csv = run_simulation_directivity(ch_step_file)
+        generate_directivity_plots(ch_directivity_csv)
+    }
 }
 
 workflow auto {
@@ -668,6 +789,10 @@ workflow auto {
         ch_drivers_db,
         ch_prescreen,
     )
+
+    // 9. 3D horn geometry renders (one per profile, parallel)
+    ch_render_profiles = Channel.from("conical", "exponential", "hyperbolic")
+    render_auto_horn_3d(ch_render_profiles)
 }
 
 workflow fullauto {

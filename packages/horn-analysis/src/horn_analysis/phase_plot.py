@@ -9,6 +9,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+from horn_analysis import plot_theme
+
 
 def plot_phase(csv_file: str, output_file: str, group_delay: bool = False):
     """Plot phase response from solver CSV output.
@@ -30,16 +32,22 @@ def plot_phase(csv_file: str, output_file: str, group_delay: bool = False):
     phase_unwrapped_deg = np.degrees(phase_unwrapped_rad)
 
     if group_delay:
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+        fig, (ax1, ax2) = plot_theme.create_figure(figsize=(10, 8), nrows=2, ncols=1, sharex=True)
     else:
-        fig, ax1 = plt.subplots(figsize=(10, 6))
+        fig, ax1 = plot_theme.create_figure(figsize=(10, 6))
 
-    ax1.semilogx(freq, phase_unwrapped_deg, color="tab:blue")
+    ax1.plot(freq, phase_unwrapped_deg, color=plot_theme.COLORS["primary"], linewidth=1.4)
     ax1.set_ylabel("Phase (degrees)")
     ax1.set_title("Phase Response vs Frequency")
-    ax1.grid(True, which="both", ls="--", alpha=0.5)
+
+    f_min, f_max = freq.min(), freq.max()
 
     if group_delay:
+        plot_theme.setup_freq_axis(ax1, f_min, f_max)
+        # Remove x-label from top panel since bottom panel will have it
+        ax1.set_xlabel("")
+        plot_theme.setup_grid(ax1)
+
         # Group delay: τ_g = -dφ/dω = -(1/(2π)) * dφ_rad/df
         if len(freq) > 1:
             dphi = np.diff(phase_unwrapped_rad)
@@ -49,20 +57,19 @@ def plot_phase(csv_file: str, output_file: str, group_delay: bool = False):
             # Convert to milliseconds
             tau_g_ms = tau_g * 1000
 
-            ax2.semilogx(freq_mid, tau_g_ms, color="tab:green")
+            ax2.plot(freq_mid, tau_g_ms, color=plot_theme.COLORS["tertiary"], linewidth=1.4)
             ax2.set_ylabel("Group Delay (ms)")
-            ax2.set_xlabel("Frequency (Hz)")
-            ax2.grid(True, which="both", ls="--", alpha=0.5)
+            plot_theme.setup_freq_axis(ax2, f_min, f_max)
+            plot_theme.setup_grid(ax2)
         else:
-            ax2.set_xlabel("Frequency (Hz)")
             ax2.text(0.5, 0.5, "Insufficient data for group delay",
                      ha="center", va="center", transform=ax2.transAxes)
+            ax2.set_xlabel("Frequency (Hz)")
     else:
-        ax1.set_xlabel("Frequency (Hz)")
+        plot_theme.setup_freq_axis(ax1, f_min, f_max)
+        plot_theme.setup_grid(ax1)
 
-    plt.tight_layout()
-    plt.savefig(output_file, dpi=150)
-    plt.close()
+    plot_theme.save_figure(fig, output_file)
     print(f"Phase plot saved to {output_file}")
 
 

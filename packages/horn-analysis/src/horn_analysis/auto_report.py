@@ -139,7 +139,7 @@ def generate_auto_report(
         csv_pairs=csv_pairs,
         top_n=top_n,
         mouth_radius=mouth_radius,
-        horn_length=horn_length,
+        length=horn_length,
         derived_geometry=derived_geometry,
     )
     (out / "auto_report.html").write_text(html_report)

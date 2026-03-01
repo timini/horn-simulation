@@ -230,3 +230,173 @@ class TestPhasePlot:
         plot_phase(str(solver_csv_with_impedance_phase), str(output), group_delay=True)
         assert output.exists()
         assert output.stat().st_size > 0
+
+
+class TestDashboard:
+    def test_dashboard_creates_image(self, solver_csv_with_impedance_phase, tmp_path):
+        from horn_analysis.dashboard import generate_dashboard
+
+        output = tmp_path / "dashboard.png"
+        generate_dashboard(str(solver_csv_with_impedance_phase), str(output))
+        assert output.exists()
+        assert output.stat().st_size > 0
+
+
+# -- Horn 3D Render Tests ---------------------------------------------------
+
+class TestHornRender:
+    def test_render_conical_creates_image(self, tmp_path):
+        from horn_analysis.horn_render import render_horn_3d
+
+        output = tmp_path / "conical.png"
+        render_horn_3d(0.05, 0.2, 0.5, "conical", str(output))
+        assert output.exists()
+        assert output.stat().st_size > 0
+
+    def test_render_exponential_creates_image(self, tmp_path):
+        from horn_analysis.horn_render import render_horn_3d
+
+        output = tmp_path / "exponential.png"
+        render_horn_3d(0.05, 0.2, 0.5, "exponential", str(output))
+        assert output.exists()
+        assert output.stat().st_size > 0
+
+    def test_render_hyperbolic_creates_image(self, tmp_path):
+        from horn_analysis.horn_render import render_horn_3d
+
+        output = tmp_path / "hyperbolic.png"
+        render_horn_3d(0.05, 0.2, 0.5, "hyperbolic", str(output))
+        assert output.exists()
+        assert output.stat().st_size > 0
+
+    def test_render_without_profile_panel(self, tmp_path):
+        from horn_analysis.horn_render import render_horn_3d
+
+        output = tmp_path / "no_profile.png"
+        render_horn_3d(0.05, 0.2, 0.5, "conical", str(output), show_profile=False)
+        assert output.exists()
+        assert output.stat().st_size > 0
+
+    def test_radius_profile_values(self):
+        from horn_analysis.horn_render import _radius_profile
+
+        r_t, r_m, L = 0.05, 0.2, 0.5
+        for profile in ("conical", "exponential", "hyperbolic"):
+            r = _radius_profile(np.array([0.0, L]), r_t, r_m, L, profile)
+            assert r[0] == pytest.approx(r_t, rel=1e-10)
+            assert r[-1] == pytest.approx(r_m, rel=1e-10)
+
+    def test_radius_profile_unknown_raises(self):
+        from horn_analysis.horn_render import _radius_profile
+
+        with pytest.raises(ValueError, match="Unknown profile"):
+            _radius_profile(np.array([0.0]), 0.05, 0.2, 0.5, "parabolic")
+
+    def test_fig_to_b64_3d_returns_data_uri(self):
+        from horn_analysis.horn_render import fig_to_b64_3d
+
+        result = fig_to_b64_3d(0.05, 0.2, 0.5, "conical")
+        assert result.startswith("data:image/png;base64,")
+        assert len(result) > 100
+
+
+# -- Directivity Plot Tests --------------------------------------------------
+
+@pytest.fixture
+def directivity_csv(tmp_path):
+    """Create a synthetic directivity CSV with cos^2 pattern narrowing with frequency."""
+    csv_path = tmp_path / "directivity.csv"
+    freqs = [500, 1000, 2000, 4000, 8000]
+    angles = np.arange(0, 181, 5)
+    rows = []
+    for f in freqs:
+        # Narrower beam at higher frequency
+        n = f / 500  # exponent increases with frequency
+        for theta in angles:
+            # cos^n pattern gives narrowing beam
+            spl = 90 + 10 * np.log10(max(np.cos(np.radians(theta)) ** n, 1e-10))
+            rows.append({"frequency": f, "theta_deg": theta, "spl_db": spl})
+    df = pd.DataFrame(rows)
+    df.to_csv(csv_path, index=False)
+    return csv_path
+
+
+class TestDirectivityPlot:
+    def test_load_directivity(self, directivity_csv):
+        from horn_analysis.directivity_plot import load_directivity
+
+        df = load_directivity(str(directivity_csv))
+        assert "frequency" in df.columns
+        assert "theta_deg" in df.columns
+        assert "spl_db" in df.columns
+
+    def test_polar_directivity(self, directivity_csv, tmp_path):
+        from horn_analysis.directivity_plot import load_directivity, plot_polar_directivity
+
+        df = load_directivity(str(directivity_csv))
+        output = tmp_path / "polar.png"
+        plot_polar_directivity(df, output_file=str(output))
+        assert output.exists()
+        assert output.stat().st_size > 0
+
+    def test_directivity_contour(self, directivity_csv, tmp_path):
+        from horn_analysis.directivity_plot import load_directivity, plot_directivity_contour
+
+        df = load_directivity(str(directivity_csv))
+        output = tmp_path / "contour.png"
+        plot_directivity_contour(df, output_file=str(output))
+        assert output.exists()
+        assert output.stat().st_size > 0
+
+    def test_beamwidth(self, directivity_csv, tmp_path):
+        from horn_analysis.directivity_plot import load_directivity, plot_beamwidth
+
+        df = load_directivity(str(directivity_csv))
+        output = tmp_path / "beamwidth.png"
+        plot_beamwidth(df, output_file=str(output))
+        assert output.exists()
+        assert output.stat().st_size > 0
+
+    def test_directivity_index(self, directivity_csv, tmp_path):
+        from horn_analysis.directivity_plot import load_directivity, plot_directivity_index
+
+        df = load_directivity(str(directivity_csv))
+        output = tmp_path / "di.png"
+        plot_directivity_index(df, output_file=str(output))
+        assert output.exists()
+        assert output.stat().st_size > 0
+
+    def test_compute_beamwidth_values(self, directivity_csv):
+        from horn_analysis.directivity_plot import load_directivity, compute_beamwidth
+
+        df = load_directivity(str(directivity_csv))
+        freqs, bw = compute_beamwidth(df)
+        # Higher frequency should have narrower beamwidth
+        assert len(freqs) == 5
+        # Compare lowest and highest frequency beamwidths
+        assert bw[-1] < bw[0], "Higher frequency should have narrower beam"
+
+    def test_compute_directivity_index_values(self, directivity_csv):
+        from horn_analysis.directivity_plot import load_directivity, compute_directivity_index
+
+        df = load_directivity(str(directivity_csv))
+        freqs, di = compute_directivity_index(df)
+        # Horn concentrates sound -> DI should be positive
+        assert np.all(di > 0), "Directivity index should be positive for a horn"
+
+    def test_generate_directivity_report(self, directivity_csv, tmp_path):
+        from horn_analysis.directivity_plot import generate_directivity_report
+
+        output_dir = tmp_path / "directivity_report"
+        generate_directivity_report(str(directivity_csv), str(output_dir))
+
+        expected_files = [
+            "polar_directivity.png",
+            "directivity_contour.png",
+            "beamwidth.png",
+            "directivity_index.png",
+        ]
+        for fname in expected_files:
+            fpath = output_dir / fname
+            assert fpath.exists(), f"Missing: {fname}"
+            assert fpath.stat().st_size > 0, f"Empty: {fname}"
