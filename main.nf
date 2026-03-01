@@ -11,7 +11,7 @@ params.mode = "single"
 params.throat_radius = 0.05 // Radius of the horn's throat in meters
 params.mouth_radius = 0.2  // Radius of the horn's mouth in meters
 params.length = 0.5        // Length of the horn in meters
-params.profile = "conical" // Horn flare profile: conical, exponential, hyperbolic
+params.profile = "conical" // Horn flare profile: conical, exponential, hyperbolic, tractrix, os, lecleach, cd
 params.num_sections = 20   // Number of cross-sections for lofting
 
 // Simulation Settings
@@ -862,7 +862,7 @@ workflow auto {
     )
 
     // 2. Generate geometry for each profile using throat radius from prescreen
-    ch_profiles = Channel.from("conical", "exponential", "hyperbolic")
+    ch_profiles = Channel.from("conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd")
 
     // Extract throat radius from prescreen result
     ch_throat_radius = ch_prescreen.map { json_file ->
@@ -904,7 +904,7 @@ workflow auto {
     )
 
     // 9. 3D horn geometry renders (one per profile, parallel)
-    ch_render_profiles = Channel.from("conical", "exponential", "hyperbolic")
+    ch_render_profiles = Channel.from("conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd")
     render_auto_horn_3d(ch_render_profiles)
 }
 

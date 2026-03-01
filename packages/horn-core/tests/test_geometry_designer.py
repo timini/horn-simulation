@@ -99,15 +99,15 @@ class TestDeriveSimulationFreqRange:
 
 class TestGenerateFullautoCandidates:
     def test_default_grid_size(self):
-        """3 profiles x 1 throat x 3 mouth x 3 lengths = 27 max."""
+        """7 profiles x 1 throat x 3 mouth x 3 lengths = 63 max."""
         candidates, derived = generate_fullauto_candidates(
             target_f_low=500,
             target_f_high=4000,
             throat_radii=[0.025],
         )
-        # All 27 should pass since derived mouth radii >> 0.025
-        assert len(candidates) == 27
-        assert derived.candidate_count == 27
+        # All 63 should pass since derived mouth radii >> 0.025
+        assert len(candidates) == 63
+        assert derived.candidate_count == 63
 
     def test_all_profiles_represented(self):
         candidates, _ = generate_fullauto_candidates(
@@ -116,7 +116,7 @@ class TestGenerateFullautoCandidates:
             throat_radii=[0.025],
         )
         profiles = {c.profile for c in candidates}
-        assert profiles == {"conical", "exponential", "hyperbolic"}
+        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"}
 
     def test_mouth_exceeds_throat(self):
         """Every candidate must have mouth_radius > throat_radius."""
@@ -163,7 +163,7 @@ class TestGenerateFullautoCandidates:
             assert lo - 1e-9 <= c.length <= hi + 1e-9
 
     def test_custom_grid_size(self):
-        """num_mouth_radii=2, num_lengths=2 -> 3*1*2*2=12 max."""
+        """num_mouth_radii=2, num_lengths=2 -> 7*1*2*2=28 max."""
         candidates, _ = generate_fullauto_candidates(
             target_f_low=500,
             target_f_high=4000,
@@ -171,7 +171,7 @@ class TestGenerateFullautoCandidates:
             num_mouth_radii=2,
             num_lengths=2,
         )
-        assert len(candidates) == 12
+        assert len(candidates) == 28
 
     def test_multiple_throat_radii(self):
         """Two throat radii should roughly double the candidates."""
@@ -199,8 +199,8 @@ class TestGenerateFullautoCandidates:
         )
         # Should still produce some valid candidates
         assert len(candidates) > 0
-        # But fewer than the full grid
-        assert len(candidates) < 27
+        # But fewer than the full grid (7 profiles x 1 throat x 3 mouth x 3 lengths = 63)
+        assert len(candidates) < 63
 
     def test_derived_geometry_populated(self):
         _, derived = generate_fullauto_candidates(

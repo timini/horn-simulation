@@ -26,7 +26,7 @@ from horn_core.candidates import CandidateGeometry, write_candidates_csv
 # Speed of sound in air at ~20C
 C0 = 343.0
 
-DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic"]
+DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"]
 
 
 @dataclass
