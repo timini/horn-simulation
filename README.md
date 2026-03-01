@@ -1,76 +1,108 @@
 # Horn Loudspeaker Simulation Pipeline
 
-A containerized pipeline for simulating and analysing horn loudspeaker acoustic performance. Built with FEniCSx (FEM), gmsh, and orchestrated by Nextflow.
+> Design and simulate horn-loaded loudspeakers — from a target frequency band to ranked driver-horn recommendations — using FEM acoustics, a driver database, and automated optimization.
 
-## Pipeline Overview
+[![CI](https://github.com/timini/horn-simulation/actions/workflows/ci.yml/badge.svg)](https://github.com/timini/horn-simulation/actions/workflows/ci.yml)
+![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)
 
-The pipeline takes horn geometry parameters and driver characteristics as input, then runs a full acoustic simulation and produces frequency response plots.
+## What is this?
 
-```
-                         Horn Parameters
-                     (throat, mouth, length)
-                              |
-                              v
-                  +---------------------+
-                  |  generate_geometry   |  horn-geometry container
-                  |  (gmsh/OCC kernel)   |  Produces STEP file
-                  +---------------------+
-                              |
-                         horn.step
-                              |
-              +---------------+---------------+
-              |               |               |        Frequency band
-              v               v               v        parallelisation
-        +-----------+   +-----------+   +-----------+
-        |  solve    |   |  solve    |   |  solve    |  horn-solver container
-        |  band 0   |   |  band 1   |   |  band N   |  FEniCSx FEM
-        +-----------+   +-----------+   +-----------+
-              |               |               |
-         results_0.csv   results_1.csv   results_N.csv
-              |               |               |
-              +---------------+---------------+
-                              |
-                              v
-                  +---------------------+
-                  |   merge_results     |  horn-analysis container
-                  |   (pandas concat)   |  Combines band CSVs
-                  +---------------------+
-                              |
-                      final_results.csv
-                              |
-                              v
-                  +---------------------+
-                  |   generate_plots    |  horn-analysis container
-                  |   (matplotlib)      |  SPL vs Frequency plot
-                  +---------------------+
-                              |
-                    frequency_response.png
+An open-source tool for acoustic horn design. Give it a target frequency band and it will generate horn geometries, solve the Helmholtz equation with FEM, couple the results with real loudspeaker drivers via Thiele-Small parameters, and rank every driver-horn combination — producing a self-contained HTML report you can open in any browser.
+
+Built for audio engineers, acousticians, DIY speaker builders, and researchers.
+
+## Key features
+
+- **3 horn profiles** — conical, exponential, hyperbolic
+- **FEM Helmholtz solver** — FEniCSx/dolfinx with adaptive meshing and radiation BC
+- **Driver database** with Thiele-Small parameter coupling
+- **3 operating modes** — single simulation, auto comparison, full-auto design exploration
+- **Self-contained HTML reports** — rankings, plots, and driver tables, all base64-embedded
+- **Containerized and parallelized** — Docker + Nextflow, frequency bands solved in parallel
+
+## How it works
+
+### Pipeline flow
+
+```mermaid
+flowchart LR
+    A[Target frequency band] --> B[Pre-screen drivers]
+    A --> C[Generate horn geometry]
+    C --> D[FEM solver — Helmholtz equation]
+    D --> E[Couple with drivers]
+    E --> F[Score & rank combinations]
+    F --> G[HTML report + plots]
 ```
 
-### Packages
+### Package architecture
 
-| Package | Purpose | Key Dependencies |
-|---------|---------|-----------------|
-| `horn-geometry` | Procedural horn geometry generation | gmsh (OpenCASCADE) |
-| `horn-solver` | FEM acoustic solving + meshing | FEniCSx/dolfinx, gmsh |
-| `horn-analysis` | Result merging, plotting, scoring, ranking | pandas, matplotlib, scipy |
-| `horn-core` | Shared data structures (HornParameters, DriverParameters) | numpy |
-| `horn-drivers` | Driver database loading and validation | numpy, horn-core |
+```mermaid
+flowchart TB
+    subgraph Orchestration
+        NF[Nextflow pipeline]
+    end
+    subgraph Packages
+        CORE[horn-core<br/>parameters & data structures]
+        GEO[horn-geometry<br/>gmsh STEP generation]
+        SOLVER[horn-solver<br/>FEniCSx FEM — Helmholtz]
+        ANALYSIS[horn-analysis<br/>scoring, ranking, reports]
+        DRIVERS[horn-drivers<br/>driver database]
+    end
+    NF --> GEO --> SOLVER --> ANALYSIS
+    DRIVERS --> ANALYSIS
+    CORE --> GEO & SOLVER & ANALYSIS & DRIVERS
+```
 
-### What it does
+### Frequency parallelization
 
-1. **Geometry generation**: Creates a 3D STEP model of a conical horn from parametric inputs (throat radius, mouth radius, length) using gmsh's OpenCASCADE kernel
-2. **Meshing + Solving**: Imports the STEP file into gmsh, generates a tetrahedral volume mesh with tagged boundaries (inlet/outlet/walls), then solves the Helmholtz equation at each frequency using FEniCSx. The frequency range is split into N bands and solved in parallel across separate containers
-3. **Result merging**: Collects per-band CSV files and concatenates them into a single sorted dataset
-4. **Plotting**: Generates a frequency response plot (SPL vs frequency on a log scale)
+```mermaid
+flowchart TB
+    G[generate_geometry<br/>gmsh/OCC → STEP file] --> S0[solve band 0]
+    G --> S1[solve band 1]
+    G --> SN[solve band N]
+    S0 --> M[merge_results<br/>pandas concat]
+    S1 --> M
+    SN --> M
+    M --> P[generate_plots<br/>SPL vs frequency]
+```
 
-## Getting Started
+## Operating modes
+
+### Single mode (default)
+
+Simulate one horn with explicit geometry parameters and get a frequency response plot.
+
+```bash
+nextflow run main.nf -profile docker \
+    --throat_radius 0.05 --mouth_radius 0.2 --length 0.5
+```
+
+### Auto mode
+
+Fix the geometry, simulate all 3 profiles (conical, exponential, hyperbolic), couple every pre-screened driver, and rank the combinations. Only 3 FEM simulations — driver coupling is pure Python via the transfer function.
+
+```bash
+nextflow run main.nf -profile docker --mode auto \
+    --target_f_low 500 --target_f_high 4000 \
+    --mouth_radius 0.2 --length 0.5 --top_n 10
+```
+
+### Fullauto mode
+
+Specify **only** a target frequency band. The system derives horn geometry analytically (mouth radius from cutoff frequency, length from quarter-wave to half-wave), generates a grid of 3 profiles x N mouth radii x N lengths, runs FEM on all candidates, couples with pre-screened drivers, and ranks everything.
+
+```bash
+nextflow run main.nf -profile docker --mode fullauto \
+    --target_f_low 500 --target_f_high 4000
+```
+
+## Quick start
 
 ### Prerequisites
 
 - [Docker](https://www.docker.com/get-started)
 - [just](https://github.com/casey/just) (task runner)
-- [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html#installation) (for running the full pipeline)
+- [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html#installation)
 - **Java 11–22** (required by Nextflow; Java 25+ is not supported). On macOS: `brew install openjdk@21`
 
 ### Build
@@ -79,27 +111,30 @@ The pipeline takes horn geometry parameters and driver characteristics as input,
 just build
 ```
 
+### Run
+
+```bash
+nextflow run main.nf -profile docker --mode fullauto \
+    --target_f_low 500 --target_f_high 4000
+```
+
+Open the report:
+
+```bash
+open results/fullauto/report/auto_report.html
+```
+
 ### Test
 
-Run all package tests in Docker:
 ```bash
-just test
-```
-
-Test a single package:
-```bash
-just test-package horn-solver
-```
-
-### Run the Pipeline
-
-```bash
-nextflow run main.nf -profile docker
+just test                        # all packages
+just test-package horn-solver    # single package
 ```
 
 ## Parameters
 
-### Single mode (default)
+<details>
+<summary><strong>Single mode (default)</strong></summary>
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
@@ -114,7 +149,10 @@ nextflow run main.nf -profile docker
 | `num_bands` | Parallel frequency band jobs | `8` |
 | `outdir` | Output directory | `./results` |
 
-### Auto mode (`--mode auto`)
+</details>
+
+<details>
+<summary><strong>Auto mode (<code>--mode auto</code>)</strong></summary>
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
@@ -123,7 +161,11 @@ nextflow run main.nf -profile docker
 | `drivers_db` | Path to driver database JSON | `data/drivers.json` |
 | `top_n` | Number of top results to return | `10` |
 
-### Fullauto mode (`--mode fullauto`)
+
+</details>
+
+<details>
+<summary><strong>Fullauto mode (<code>--mode fullauto</code>)</strong></summary>
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
@@ -136,71 +178,19 @@ nextflow run main.nf -profile docker
 | `num_intervals` | Frequency steps per simulation | `100` |
 | `num_bands` | Parallel frequency band jobs | `8` |
 
-## Example Usage
+</details>
 
-### Quick development run
-```bash
-nextflow run main.nf -profile docker --outdir ./results/dev --num_intervals 10
-```
+## Packages
 
-### Full resolution analysis
-```bash
-nextflow run main.nf -profile docker --outdir ./results/full \
-    --min_freq 20 --max_freq 20000 --num_intervals 2000
-```
+| Package | Purpose | Key Dependencies |
+|---------|---------|-----------------|
+| `horn-core` | Shared data structures (`HornParameters`, `DriverParameters`) | numpy |
+| `horn-geometry` | Procedural horn geometry generation (STEP files) | gmsh (OpenCASCADE) |
+| `horn-solver` | FEM acoustic solving + meshing | FEniCSx/dolfinx, gmsh |
+| `horn-analysis` | Result merging, plotting, scoring, ranking, HTML reports | pandas, matplotlib, scipy |
+| `horn-drivers` | Driver database loading and validation | numpy, horn-core |
 
-### Compare two horn designs
-```bash
-# Run Horn A
-nextflow run main.nf -profile docker --outdir ./results/horn_A \
-    --throat_radius 0.05 --mouth_radius 0.2 --length 0.5
-
-# Run Horn B with different length
-nextflow run main.nf -profile docker --outdir ./results/horn_B \
-    --throat_radius 0.05 --mouth_radius 0.2 --length 0.8
-
-# Plot comparison
-python3 -m horn_analysis.compare_horns \
-    results/horn_A/final_results.csv "Horn A" \
-    results/horn_B/final_results.csv "Horn B" \
-    results/comparison.png
-```
-
-### Auto-select drivers and horn profiles
-```bash
-# Run the full auto pipeline: pre-screens drivers, simulates all 3 profiles
-# (conical, exponential, hyperbolic), couples each driver post-hoc, and ranks
-nextflow run main.nf -profile docker --mode auto \
-    --target_f_low 500 --target_f_high 4000 \
-    --mouth_radius 0.2 --length 0.5 --top_n 10
-```
-
-This runs only 3 FEM simulations (one per profile) and couples all pre-screened drivers in pure Python via the transfer function. Outputs: `auto_ranking.json`, `auto_comparison.png`, `auto_summary.txt`, and a self-contained `auto_report.html` (open in any browser — all plots are base64-embedded).
-
-### Fullauto: frequency-band-only horn design
-```bash
-# Specify ONLY a target frequency band — geometry is derived analytically
-# from horn acoustics formulas, then a grid of ~27 candidates is FEM-simulated
-nextflow run main.nf -profile docker --mode fullauto \
-    --target_f_low 500 --target_f_high 4000 --num_intervals 10
-```
-
-This derives mouth radius from `c0/(2*pi*f_low)` and length from quarter-wave to half-wave, generates a grid of 3 profiles x 3 mouth radii x 3 lengths, runs FEM on all candidates, couples with pre-screened drivers, and ranks. The HTML report includes a Design Summary section showing the analytical derivation and geometry columns in the rankings table.
-
-### CLI tools for individual steps
-```bash
-# Pre-screen drivers for a target spec
-horn-prescreen --drivers-db data/drivers.json \
-    --target-f-low 500 --target-f-high 4000 \
-    --mouth-radius 0.2 --length 0.5
-
-# Rank drivers against a solver result
-horn-rank --solver-csv results/final_results.csv \
-    --drivers-db data/drivers.json --throat-radius 0.025 \
-    --target-f-low 500 --target-f-high 4000 --top-n 5
-```
-
-## Acoustic Modelling
+## Acoustic modelling
 
 ### Governing equation
 
@@ -281,10 +271,6 @@ This is a monorepo with each package in `packages/`. Each package has its own Do
 
 The pipeline is orchestrated by Nextflow (`main.nf`), which maps each process to its corresponding Docker container via `nextflow.config`.
 
-## Current Status
-
-The pipeline runs end-to-end. SPL is computed from the outlet-surface RMS pressure with a Robin (radiation impedance) BC at the horn mouth. A validation suite verifies the solver against analytical solutions (straight tube, Webster equation) and provides infrastructure for cross-validation against published data.
-
 ## Roadmap
 
 Prioritised capabilities for reaching feature parity with tools like AKABAK. See linked GitHub issues for details.
@@ -308,7 +294,16 @@ Prioritised capabilities for reaching feature parity with tools like AKABAK. See
 
 ### Completed
 
+- Fullauto mode: derive horn geometry grid from a target frequency band
 - HTML report for auto-mode: single self-contained `auto_report.html` with rankings table, 4 embedded plots (coupled SPL, raw profile SPL, impedance, phase/group delay), driver T-S parameter table, and summary cards
 - Driver coupling with T-S parameters (transfer function + auto-select pipeline) — [#50](https://github.com/timini/horn-simulation/issues/50)
 - Analysis features: impedance plots, scoring, driver DB — [#35](https://github.com/timini/horn-simulation/issues/35)
 - Profile diversity: conical, exponential, hyperbolic
+
+## Contributing
+
+Contributions welcome. Please open an issue first to discuss what you'd like to change.
+
+## License
+
+See repository for license details.

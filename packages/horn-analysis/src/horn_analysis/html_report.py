@@ -211,7 +211,7 @@ def _render_rankings_rows(
         drv = drivers.get(r.get("driver_id", ""))
         drv_type = html.escape(drv.driver_type or "—") if drv else "—"
         drv_size = html.escape(drv.nominal_diameter or "—") if drv else "—"
-        drv_power = _fmt(drv.power_w, ".0f") if drv else "—"
+        drv_power = _fmt(getattr(drv, "power_w", None), ".0f") if drv else "—"
 
         geom_cols = ""
         if show_geometry:

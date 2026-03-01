@@ -17,7 +17,8 @@ WORKDIR /app
 COPY ./packages /app/packages
 RUN pip install --no-deps /app/packages/horn-core \
     /app/packages/horn-drivers \
-    && pip install /app/packages/horn-solver
+    && pip install /app/packages/horn-solver \
+    && pip install bempp-cl
 
 # --- Test Stage ---
 FROM production as test

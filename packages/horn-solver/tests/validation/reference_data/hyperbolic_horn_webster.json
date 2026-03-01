@@ -1,0 +1,25 @@
+{
+    "description": "Hyperbolic (cosh) horn validated against Webster horn equation analytical solution",
+    "physics": "Webster equation for cosh horn: p(x) = [A*exp(-j*k_h*x) + B*exp(j*k_h*x)] / cosh(beta*x) where k_h = sqrt(k^2 - beta^2)",
+    "geometry": {
+        "type": "hyperbolic",
+        "throat_radius_m": 0.0125,
+        "mouth_radius_m": 0.1,
+        "length_m": 0.3,
+        "expansion_ratio": 8.0,
+        "notes": "Chosen to match V2 8:1 radius ratio but with hyperbolic flare — isolates profile shape"
+    },
+    "expected": {
+        "tolerance_db": 3.0,
+        "cutoff_hz": 525,
+        "behavior": "High-pass: SPL higher above cutoff than below. Smooth transition at cutoff.",
+        "notes": "Webster is 1D approximation of 3D. Cutoff fc = beta*c0/(2*pi) where beta = acosh(r_m/r_t)/L."
+    },
+    "frequency_range": {
+        "min_hz": 200,
+        "max_hz": 4000,
+        "num_points": 20,
+        "spacing": "logarithmic"
+    },
+    "source": "Analytical solution of Webster horn equation for hyperbolic (cosh) profile"
+}

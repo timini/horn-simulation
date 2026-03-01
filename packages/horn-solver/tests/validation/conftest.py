@@ -1,5 +1,6 @@
 """Shared fixtures and helpers for the validation test suite."""
 
+import csv
 import json
 import pytest
 import numpy as np
@@ -7,7 +8,11 @@ from pathlib import Path
 
 try:
     from horn_solver.solver import run_simulation_from_step, C0
-    from horn_geometry.generator import create_conical_horn
+    from horn_geometry.generator import (
+        create_conical_horn,
+        create_exponential_horn,
+        create_hyperbolic_horn,
+    )
     import gmsh
 
     SOLVER_AVAILABLE = True
@@ -83,6 +88,7 @@ def run_solver_and_get_spl(
     horn_length: float,
     mesh_size: float = 0.01,
     tmp_dir: Path | None = None,
+    radiation_model: str = "plane_wave",
 ) -> tuple[np.ndarray, np.ndarray]:
     """Run the solver on a STEP file and return (frequencies, spl) arrays.
 
@@ -94,6 +100,7 @@ def run_solver_and_get_spl(
     horn_length : horn length for boundary tagging
     mesh_size : element size (m), default 5mm
     tmp_dir : directory for output CSV
+    radiation_model : radiation impedance model at the outlet
 
     Returns
     -------
@@ -117,6 +124,7 @@ def run_solver_and_get_spl(
         output_file=str(output_file),
         max_freq_mesh=freq_range[1],
         mesh_size=mesh_size,
+        radiation_model=radiation_model,
     )
 
     df = pd.read_csv(output_file)
@@ -221,6 +229,98 @@ def conical_horn_results(tmp_path_factory):
         freq_range=(freq_cfg["min_hz"], freq_cfg["max_hz"]),
         num_intervals=freq_cfg["num_points"],
         horn_length=geom["length_m"],
+        tmp_dir=tmp,
+    )
+    return frequencies, spl, ref
+
+
+# --- CSV reference helpers ---
+
+
+def load_csv_reference(filename: str) -> tuple[np.ndarray, np.ndarray] | None:
+    """Load frequency response reference data from a CSV file.
+
+    Returns (frequencies, spl) arrays, or None if the file has no data rows.
+    Header comment lines starting with '#' are skipped.
+    """
+    csv_path = REFERENCE_DATA_DIR / filename
+    if not csv_path.exists():
+        return None
+
+    frequencies = []
+    spl_values = []
+
+    with open(csv_path) as f:
+        reader = csv.DictReader(
+            (row for row in f if not row.startswith("#")),
+        )
+        for row in reader:
+            try:
+                frequencies.append(float(row["frequency_hz"]))
+                spl_values.append(float(row["spl_db"]))
+            except (ValueError, KeyError):
+                continue
+
+    if not frequencies:
+        return None
+
+    return np.array(frequencies), np.array(spl_values)
+
+
+def has_reference_data(filename: str) -> bool:
+    """Check if a reference CSV file has actual data rows."""
+    result = load_csv_reference(filename)
+    return result is not None
+
+
+# --- V4/V5 cached solver results ---
+
+
+@pytest.fixture(scope="module")
+def exponential_horn_results(tmp_path_factory):
+    """Solve V4 exponential horn once and cache (frequencies, spl, ref)."""
+    ref = load_reference("exponential_horn_webster.json")
+    geom = ref["geometry"]
+    freq_cfg = ref["frequency_range"]
+    tmp = tmp_path_factory.mktemp("v4")
+    step_file = tmp / "exponential_horn.step"
+    create_exponential_horn(
+        throat_radius=geom["throat_radius_m"],
+        mouth_radius=geom["mouth_radius_m"],
+        length=geom["length_m"],
+        output_file=step_file,
+    )
+    frequencies, spl = run_solver_and_get_spl(
+        step_file=step_file,
+        freq_range=(freq_cfg["min_hz"], freq_cfg["max_hz"]),
+        num_intervals=freq_cfg["num_points"],
+        horn_length=geom["length_m"],
+        mesh_size=0.002,
+        tmp_dir=tmp,
+    )
+    return frequencies, spl, ref
+
+
+@pytest.fixture(scope="module")
+def hyperbolic_horn_results(tmp_path_factory):
+    """Solve V5 hyperbolic horn once and cache (frequencies, spl, ref)."""
+    ref = load_reference("hyperbolic_horn_webster.json")
+    geom = ref["geometry"]
+    freq_cfg = ref["frequency_range"]
+    tmp = tmp_path_factory.mktemp("v5")
+    step_file = tmp / "hyperbolic_horn.step"
+    create_hyperbolic_horn(
+        throat_radius=geom["throat_radius_m"],
+        mouth_radius=geom["mouth_radius_m"],
+        length=geom["length_m"],
+        output_file=step_file,
+    )
+    frequencies, spl = run_solver_and_get_spl(
+        step_file=step_file,
+        freq_range=(freq_cfg["min_hz"], freq_cfg["max_hz"]),
+        num_intervals=freq_cfg["num_points"],
+        horn_length=geom["length_m"],
+        mesh_size=0.005,
         tmp_dir=tmp,
     )
     return frequencies, spl, ref

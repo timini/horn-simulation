@@ -1,0 +1,25 @@
+{
+    "description": "Exponential horn validated against Webster horn equation analytical solution",
+    "physics": "Webster equation for exponential horn: p(x) = exp(-m*x) * [A*exp(-j*k_e*x) + B*exp(j*k_e*x)] where k_e = sqrt(k^2 - m^2)",
+    "geometry": {
+        "type": "exponential",
+        "throat_radius_m": 0.005,
+        "mouth_radius_m": 0.02295,
+        "length_m": 0.12,
+        "flare_rate_m_inv": 12.7,
+        "notes": "Rasetshwane & Neely (JASA 2012, PMC3316681) axisymmetric exponential horn"
+    },
+    "expected": {
+        "tolerance_db": 3.0,
+        "cutoff_hz": 693,
+        "behavior": "High-pass: SPL higher above cutoff than below. Exponential decay below cutoff.",
+        "notes": "Webster is 1D approximation of 3D. Cutoff fc = alpha*c0/(2*pi) where alpha = m/L."
+    },
+    "frequency_range": {
+        "min_hz": 200,
+        "max_hz": 4000,
+        "num_points": 20,
+        "spacing": "logarithmic"
+    },
+    "source": "Analytical solution of Webster horn equation for exponential profile; geometry from Rasetshwane & Neely, JASA 2012"
+}
