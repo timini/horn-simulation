@@ -25,6 +25,7 @@ horn-auto-report = "horn_analysis.auto_report:main"
 horn-dashboard = "horn_analysis.dashboard:main"
 horn-render = "horn_analysis.horn_render:main"
 horn-directivity-plot = "horn_analysis.directivity_plot:main"
+horn-single-report = "horn_analysis.single_report:main"
 
 [project.optional-dependencies]
 test = [
