@@ -7,7 +7,7 @@ human-readable summary from ranked driver-horn combinations.
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -27,6 +27,9 @@ def generate_auto_report(
     target: TargetSpec,
     output_dir: str,
     top_n: int = 5,
+    mouth_radius: float | None = None,
+    horn_length: float | None = None,
+    derived_geometry: Optional[dict] = None,
 ) -> Path:
     """Generate the auto-select report with rankings, plots, and CSVs.
 
@@ -38,6 +41,9 @@ def generate_auto_report(
         target: Target frequency specification.
         output_dir: Directory for output files.
         top_n: Number of top candidates to include in detailed output.
+        mouth_radius: Horn mouth radius in metres (for report display).
+        horn_length: Horn length in metres (for report display).
+        derived_geometry: Optional dict from geometry_designer (fullauto mode).
 
     Returns:
         Path to the output directory.
@@ -132,6 +138,9 @@ def generate_auto_report(
         target=target,
         csv_pairs=csv_pairs,
         top_n=top_n,
+        mouth_radius=mouth_radius,
+        length=horn_length,
+        derived_geometry=derived_geometry,
     )
     (out / "auto_report.html").write_text(html_report)
 

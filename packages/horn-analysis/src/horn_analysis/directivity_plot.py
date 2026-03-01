@@ -22,6 +22,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+# NumPy 2.0 renamed trapz -> trapezoid
+_trapezoid = getattr(np, "trapezoid", np.trapz)
+
 from horn_analysis import plot_theme
 
 
@@ -273,8 +276,8 @@ def compute_directivity_index(
 
         # Numerical integration using trapezoidal rule
         integrand = p_sq * np.sin(theta_rad)
-        numerator = np.trapezoid(integrand, theta_rad)
-        denominator = np.trapezoid(np.sin(theta_rad), theta_rad)
+        numerator = _trapezoid(integrand, theta_rad)
+        denominator = _trapezoid(np.sin(theta_rad), theta_rad)
 
         if denominator > 0 and numerator > 0:
             p_sq_avg = numerator / denominator

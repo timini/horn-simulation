@@ -161,6 +161,7 @@ just test-package horn-solver    # single package
 | `drivers_db` | Path to driver database JSON | `data/drivers.json` |
 | `top_n` | Number of top results to return | `10` |
 
+
 </details>
 
 <details>

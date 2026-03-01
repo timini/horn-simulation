@@ -2,7 +2,8 @@
 
 // ========================================================================
 // Mode: "single" (default) runs one horn profile; "auto" runs all 3
-// profiles and ranks driver-horn combinations.
+// profiles and ranks driver-horn combinations; "fullauto" derives
+// geometry from a target frequency band and explores a grid.
 // ========================================================================
 params.mode = "single"
 
@@ -34,6 +35,10 @@ params.target_f_low = 500
 params.target_f_high = 4000
 params.drivers_db = "data/drivers.json"
 params.top_n = 10
+
+// Fullauto mode settings
+params.num_mouth_radii = 3 // Mouth radius grid points for fullauto
+params.num_lengths = 3     // Length grid points for fullauto
 
 // ========================================================================
 // Shared processes
@@ -460,6 +465,219 @@ generate_auto_report(
     target=target,
     output_dir='report',
     top_n=5,
+    mouth_radius=${params.mouth_radius},
+    horn_length=${params.length},
+)
+"
+    """
+}
+
+// ========================================================================
+// Fullauto mode processes
+// ========================================================================
+
+process derive_fullauto_geometry {
+    publishDir "${params.outdir}/fullauto", mode: 'copy'
+
+    input:
+    path prescreen_json
+
+    output:
+    path "candidates.csv"
+    path "design.json"
+
+    script:
+    """
+    python3 -m horn_core.geometry_designer \
+        --target-f-low ${params.target_f_low} \
+        --target-f-high ${params.target_f_high} \
+        --prescreen-json ${prescreen_json} \
+        --num-mouth-radii ${params.num_mouth_radii} \
+        --num-lengths ${params.num_lengths} \
+        --output candidates.csv \
+        --design-json design.json
+    """
+}
+
+process generate_fullauto_geometry {
+    input:
+    tuple val(candidate_id), val(profile), val(throat_radius), val(mouth_radius), val(length)
+
+    output:
+    tuple val(candidate_id), val(profile), val(mouth_radius), val(length), path("horn_${candidate_id}.step")
+
+    script:
+    """
+    python3 -m horn_geometry.generator \
+        --throat-radius ${throat_radius} \
+        --mouth-radius ${mouth_radius} \
+        --length ${length} \
+        --profile ${profile} \
+        --num-sections ${params.num_sections} \
+        --output-file horn_${candidate_id}.step
+    """
+}
+
+process run_fullauto_simulation {
+    input:
+    tuple val(candidate_id), val(profile), val(mouth_radius), val(length), path(horn_step), val(band_index), val(sim_min_freq), val(sim_max_freq)
+
+    output:
+    tuple val(candidate_id), path("results_${candidate_id}_${band_index}.csv")
+
+    script:
+    def band_width = (sim_max_freq - sim_min_freq) / (params.num_bands as double)
+    def min_f = sim_min_freq + band_width * band_index
+    def max_f = sim_min_freq + band_width * (band_index + 1)
+    def num_intervals_per_band = Math.ceil(params.num_intervals / (params.num_bands as double)) as int
+    """
+    echo "Running ${candidate_id} band ${band_index}: ${min_f} Hz to ${max_f} Hz"
+    python3 -m horn_solver.solver \
+        --step-file ${horn_step} \
+        --output-file results_${candidate_id}_${band_index}.csv \
+        --min-freq ${min_f} \
+        --max-freq ${max_f} \
+        --num-intervals ${num_intervals_per_band} \
+        --length ${length} \
+        --mesh-size ${params.mesh_size}
+    """
+}
+
+process merge_fullauto_results {
+    publishDir "${params.outdir}/fullauto", mode: 'copy'
+
+    input:
+    tuple val(candidate_id), path(csv_files)
+
+    output:
+    tuple val(candidate_id), path("${candidate_id}_results.csv")
+
+    script:
+    """
+    python3 -c "
+import pandas as pd, glob
+files = glob.glob('results_${candidate_id}_*.csv')
+df = pd.concat((pd.read_csv(f) for f in files), ignore_index=True)
+df.sort_values(by='frequency').to_csv('${candidate_id}_results.csv', index=False)
+"
+    """
+}
+
+process score_and_rank_fullauto {
+    publishDir "${params.outdir}/fullauto", mode: 'copy'
+
+    input:
+    path solver_csvs
+    path prescreen_json
+    path drivers_db
+    path candidates_csv
+
+    output:
+    path "ranked_results.json"
+
+    script:
+    """
+    python3 -c "
+import json, glob, csv
+from pathlib import Path
+from horn_drivers.loader import load_drivers
+from horn_analysis.rank_pipeline import rank_horn_drivers
+from horn_analysis.scoring import TargetSpec
+
+prescreen = json.loads(Path('${prescreen_json}').read_text())
+throat_radius = prescreen['throat_radius_m']
+target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high})
+
+# Load only pre-screened drivers
+all_drivers = load_drivers('${drivers_db}')
+driver_ids = set(prescreen['drivers'])
+drivers = [d for d in all_drivers if d.driver_id in driver_ids]
+
+# Build candidate lookup for geometry annotation
+candidates_lookup = {}
+with open('${candidates_csv}') as f:
+    for row in csv.DictReader(f):
+        candidates_lookup[row['candidate_id']] = row
+
+all_results = []
+for csv_path in sorted(glob.glob('*_results.csv')):
+    candidate_id = Path(csv_path).stem.replace('_results', '')
+    cand = candidates_lookup.get(candidate_id, {})
+    results = rank_horn_drivers(
+        solver_csv=csv_path,
+        horn_label=candidate_id,
+        throat_radius=throat_radius,
+        drivers=drivers,
+        target=target,
+        top_n=${params.top_n},
+    )
+    # Annotate each result with geometry info
+    for r in results:
+        r['mouth_radius'] = float(cand.get('mouth_radius', 0))
+        r['length'] = float(cand.get('length', 0))
+        r['profile'] = cand.get('profile', '')
+    all_results.extend(results)
+
+# Sort all by composite score and take overall top N
+all_results.sort(key=lambda r: r['composite_score'], reverse=True)
+all_results = all_results[:${params.top_n}]
+
+Path('ranked_results.json').write_text(json.dumps(all_results, indent=2))
+print(f'Ranked {len(all_results)} driver-horn combinations')
+"
+    """
+}
+
+process generate_fullauto_report {
+    publishDir "${params.outdir}/fullauto", mode: 'copy'
+
+    input:
+    path ranked_json
+    path solver_csvs
+    path drivers_db
+    path prescreen_json
+    path design_json
+
+    output:
+    path "report/auto_ranking.json"
+    path "report/auto_comparison.png"
+    path "report/auto_summary.txt"
+    path "report/auto_report.html"
+
+    script:
+    """
+    python3 -c "
+import json, glob
+from pathlib import Path
+from horn_drivers.loader import load_drivers
+from horn_analysis.scoring import TargetSpec
+from horn_analysis.auto_report import generate_auto_report
+
+prescreen = json.loads(Path('${prescreen_json}').read_text())
+throat_radius = prescreen['throat_radius_m']
+design = json.loads(Path('${design_json}').read_text())
+
+all_ranked = json.loads(Path('${ranked_json}').read_text())
+
+solver_csvs = {}
+for csv_path in sorted(glob.glob('*_results.csv')):
+    candidate_id = Path(csv_path).stem.replace('_results', '')
+    solver_csvs[candidate_id] = csv_path
+
+driver_list = load_drivers('${drivers_db}')
+drivers = {d.driver_id: d for d in driver_list}
+
+target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high})
+
+generate_auto_report(
+    all_ranked=all_ranked,
+    solver_csvs=solver_csvs,
+    drivers=drivers,
+    throat_radius=throat_radius,
+    target=target,
+    output_dir='report',
+    top_n=5,
+    derived_geometry=design,
 )
 "
     """
@@ -577,8 +795,74 @@ workflow auto {
     render_auto_horn_3d(ch_render_profiles)
 }
 
+workflow fullauto {
+    // 1. Pre-screen drivers (no mouth/length needed)
+    ch_drivers_db = Channel.fromPath(params.drivers_db)
+    ch_prescreen = prescreen_drivers(
+        params.target_f_low,
+        params.target_f_high,
+        0,  // placeholder — not used by prescreen filtering
+        0,  // placeholder — not used by prescreen filtering
+        ch_drivers_db,
+    )
+
+    // 2. Derive geometry from frequency band + prescreen throat radius
+    ch_geom_derived = derive_fullauto_geometry(ch_prescreen)
+    ch_candidates_csv = ch_geom_derived.map { csv, json -> csv }
+    ch_design_json = ch_geom_derived.map { csv, json -> json }
+
+    // 3. Parse candidates CSV into channel of tuples
+    ch_candidates = ch_candidates_csv
+        .splitCsv(header: true)
+        .map { row ->
+            tuple(row.candidate_id, row.profile, row.throat_radius as double,
+                  row.mouth_radius as double, row.length as double)
+        }
+
+    // 4. Generate STEP geometry for each candidate
+    ch_geometries = generate_fullauto_geometry(ch_candidates)
+
+    // 5. Read sim freq range from design.json and combine with band indices
+    ch_sim_range = ch_design_json.map { json_file ->
+        def data = new groovy.json.JsonSlurper().parse(json_file)
+        tuple(data.sim_freq_range[0] as double, data.sim_freq_range[1] as double)
+    }
+
+    ch_band_indices = Channel.from(0..<params.num_bands)
+    ch_sim_inputs = ch_geometries
+        .combine(ch_band_indices)
+        .combine(ch_sim_range)
+
+    // 6. Run FEM simulations (candidates x bands)
+    ch_band_results = run_fullauto_simulation(ch_sim_inputs)
+
+    // 7. Group by candidate_id and merge bands
+    ch_grouped = ch_band_results.groupTuple()
+    ch_merged = merge_fullauto_results(ch_grouped)
+
+    // 8. Score and rank all driver-horn combinations
+    ch_all_csvs = ch_merged.map { candidate_id, csv -> csv }.collect()
+    ch_ranked = score_and_rank_fullauto(
+        ch_all_csvs,
+        ch_prescreen,
+        ch_drivers_db,
+        ch_candidates_csv,
+    )
+
+    // 9. Generate report with design summary
+    generate_fullauto_report(
+        ch_ranked,
+        ch_all_csvs,
+        ch_drivers_db,
+        ch_prescreen,
+        ch_design_json,
+    )
+}
+
 workflow {
-    if (params.mode == "auto") {
+    if (params.mode == "fullauto") {
+        fullauto()
+    } else if (params.mode == "auto") {
         auto()
     } else {
         single()
