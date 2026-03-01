@@ -229,27 +229,45 @@ process render_auto_horn_3d {
 }
 
 process run_simulation_directivity {
+    input:
+    tuple path(horn_step), val(band_index)
+
+    output:
+    path "directivity_${band_index}.csv"
+
+    script:
+    def band_width = (params.max_freq - params.min_freq) / (params.num_bands as double)
+    def min_f = params.min_freq + band_width * band_index
+    def max_f = params.min_freq + band_width * (band_index + 1)
+    def num_intervals_per_band = Math.ceil(params.num_intervals / (params.num_bands as double)) as int
+    """
+    echo "Running directivity band ${band_index}: ${min_f} Hz to ${max_f} Hz"
+    python3 -m horn_solver.solver \
+        --step-file ${horn_step} \
+        --output-file solver_directivity_${band_index}.csv \
+        --min-freq ${min_f} \
+        --max-freq ${max_f} \
+        --num-intervals ${num_intervals_per_band} \
+        --length ${params.length} \
+        --mesh-size ${params.mesh_size} \
+        --radiation-model bem \
+        --compute-directivity \
+        --directivity-file directivity_${band_index}.csv
+    """
+}
+
+process merge_directivity_results {
     publishDir "${params.outdir}", mode: 'copy'
 
     input:
-    path horn_step
+    path(csv_files)
 
     output:
     path "directivity.csv"
 
     script:
     """
-    python3 -m horn_solver.solver \
-        --step-file ${horn_step} \
-        --output-file solver_directivity.csv \
-        --min-freq ${params.min_freq} \
-        --max-freq ${params.max_freq} \
-        --num-intervals ${params.num_intervals} \
-        --length ${params.length} \
-        --mesh-size ${params.mesh_size} \
-        --radiation-model bem \
-        --compute-directivity \
-        --directivity-file directivity.csv
+    python3 -c "import pandas as pd; import glob; all_files = glob.glob('directivity_*.csv'); df = pd.concat((pd.read_csv(f) for f in all_files), ignore_index=True); df = df.drop_duplicates(subset=['frequency', 'theta_deg'], keep='first'); df.sort_values(by=['frequency', 'theta_deg']).to_csv('directivity.csv', index=False)"
     """
 }
 
@@ -268,6 +286,80 @@ process generate_directivity_plots {
     script:
     """
     python3 -m horn_analysis.directivity_plot ${directivity_csv} --output-dir .
+    """
+}
+
+process generate_single_report {
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    path kpis_json
+    path final_csv
+    path spl_png
+    path impedance_png
+    path phase_png
+    path dashboard_png
+    path horn_3d_png
+
+    output:
+    path "single_report.html"
+
+    script:
+    """
+    horn-single-report \
+        --kpis ${kpis_json} \
+        --final-csv ${final_csv} \
+        --throat-radius ${params.throat_radius} \
+        --mouth-radius ${params.mouth_radius} \
+        --length ${params.length} \
+        --profile ${params.profile} \
+        --spl-png ${spl_png} \
+        --impedance-png ${impedance_png} \
+        --phase-png ${phase_png} \
+        --dashboard-png ${dashboard_png} \
+        --horn-3d-png ${horn_3d_png} \
+        --output single_report.html
+    """
+}
+
+process generate_single_report_with_directivity {
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    path kpis_json
+    path final_csv
+    path spl_png
+    path impedance_png
+    path phase_png
+    path dashboard_png
+    path horn_3d_png
+    path polar_png
+    path contour_png
+    path beamwidth_png
+    path di_png
+
+    output:
+    path "single_report.html"
+
+    script:
+    """
+    horn-single-report \
+        --kpis ${kpis_json} \
+        --final-csv ${final_csv} \
+        --throat-radius ${params.throat_radius} \
+        --mouth-radius ${params.mouth_radius} \
+        --length ${params.length} \
+        --profile ${params.profile} \
+        --spl-png ${spl_png} \
+        --impedance-png ${impedance_png} \
+        --phase-png ${phase_png} \
+        --dashboard-png ${dashboard_png} \
+        --horn-3d-png ${horn_3d_png} \
+        --polar-png ${polar_png} \
+        --contour-png ${contour_png} \
+        --beamwidth-png ${beamwidth_png} \
+        --di-png ${di_png} \
+        --output single_report.html
     """
 }
 
@@ -730,10 +822,31 @@ workflow single {
         params.profile
     )
 
-    // 11. Directivity (opt-in, requires BEM)
+    // 11. Directivity (opt-in, requires BEM) — parallelized across frequency bands
     if (params.directivity) {
-        ch_directivity_csv = run_simulation_directivity(ch_step_file)
+        ch_dir_band_indices = Channel.from(0..<params.num_bands)
+        ch_dir_inputs = ch_step_file.combine(ch_dir_band_indices)
+        ch_dir_band_results = run_simulation_directivity(ch_dir_inputs)
+        ch_directivity_csv = merge_directivity_results(ch_dir_band_results.collect())
         generate_directivity_plots(ch_directivity_csv)
+
+        // 12. HTML report with directivity
+        generate_single_report_with_directivity(
+            extract_kpis.out, ch_merged_results,
+            generate_plots.out, generate_impedance_plot.out,
+            generate_phase_plot.out, generate_dashboard.out, render_horn_3d.out,
+            generate_directivity_plots.out[0],
+            generate_directivity_plots.out[1],
+            generate_directivity_plots.out[2],
+            generate_directivity_plots.out[3],
+        )
+    } else {
+        // 12. HTML report without directivity
+        generate_single_report(
+            extract_kpis.out, ch_merged_results,
+            generate_plots.out, generate_impedance_plot.out,
+            generate_phase_plot.out, generate_dashboard.out, render_horn_3d.out,
+        )
     }
 }
 
