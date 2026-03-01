@@ -68,34 +68,45 @@ class TestPrescreenDrivers:
         result = prescreen_drivers([bad], config)
         assert result.count == 0
 
-    def test_cone_driver_filtered_for_high_freq(self, config):
-        """Cone drivers should be filtered when target_f_high > 2kHz."""
-        cone = _make_driver("cone", fs_hz=400, qes=0.4, driver_type="cone")
-        result = prescreen_drivers([cone], config)
+    def test_large_cone_filtered_for_high_freq(self, config):
+        """Large cone (e.g. 15") should be filtered when f_piston*factor < target_f_high."""
+        # 15" driver: Sd ~ 855 cm² = 0.0855 m²
+        # f_piston = 343/(2π·√(0.0855/π)) = ~331 Hz, ×10 = 3310 < 4000 → filtered
+        big_cone = _make_driver("big_cone", fs_hz=400, qes=0.4, sd_m2=0.0855, driver_type="cone")
+        result = prescreen_drivers([big_cone], config)
         assert result.count == 0
 
-    def test_compression_driver_filtered_for_low_freq(self):
-        """Compression drivers should be filtered when target_f_low < 200 Hz."""
+    def test_small_cone_passes_high_freq(self, config):
+        """Small cone (e.g. 6") should pass when f_piston*factor >= target_f_high."""
+        # 6" driver: Sd ~ 130 cm² = 0.0130 m²
+        # f_piston = 343/(2π·√(0.0130/π)) = ~849 Hz, ×10 = 8490 > 4000 → passes
+        small_cone = _make_driver("small_cone", fs_hz=400, qes=0.4, sd_m2=0.0130, driver_type="cone")
+        result = prescreen_drivers([small_cone], config)
+        assert result.count == 1
+
+    def test_compression_passes_low_freq(self):
+        """Compression drivers should pass low-freq targets (high f_piston)."""
         config = PrescreenConfig(
             target_f_low_hz=100,
             target_f_high_hz=1000,
             mouth_radius_m=0.3,
             length_m=0.8,
         )
-        comp = _make_driver("comp", fs_hz=80, qes=0.4, driver_type="compression")
+        # Sd=20cm²=0.0020 m², f_piston ~2186 Hz, ×10 = 21860 > 1000
+        comp = _make_driver("comp", fs_hz=80, qes=0.4, sd_m2=0.0020, driver_type="compression")
         result = prescreen_drivers([comp], config)
-        assert result.count == 0
+        assert result.count == 1
 
     def test_both_types_pass_mid_band(self):
-        """Both types should pass when 200 <= f_low and f_high <= 2000."""
+        """Both types should pass mid-band when Sd is appropriate."""
         config = PrescreenConfig(
             target_f_low_hz=300,
             target_f_high_hz=1500,
             mouth_radius_m=0.2,
             length_m=0.5,
         )
-        comp = _make_driver("comp", fs_hz=200, qes=0.4, driver_type="compression")
-        cone = _make_driver("cone", fs_hz=200, qes=0.4, driver_type="cone")
+        comp = _make_driver("comp", fs_hz=200, qes=0.4, sd_m2=0.0020, driver_type="compression")
+        cone = _make_driver("cone", fs_hz=200, qes=0.4, sd_m2=0.0130, driver_type="cone")
         result = prescreen_drivers([comp, cone], config)
         assert result.count == 2
 
