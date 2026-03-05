@@ -89,6 +89,36 @@ class TestSensitivityScore:
         assert score.avg_sensitivity_db == 80.0
 
 
+class TestBandwidthFloor:
+    def test_low_coverage_zeroes_composite(self):
+        """Bandwidth coverage < 10% should zero out the composite score."""
+        # Horn covers only 3.6% of target: (530-770) / (300-7000) = 240/6700 ≈ 3.6%
+        kpi = _make_kpi(
+            f3_low_hz=530.0,
+            f3_high_hz=770.0,
+            passband_ripple_db=1.0,
+            average_sensitivity_db=100.0,
+        )
+        target = TargetSpec(f_low_hz=300.0, f_high_hz=7000.0)
+        score = compute_selection_score(kpi, target)
+        assert score.bandwidth_coverage < 0.10
+        assert score.composite_score == 0.0
+
+    def test_above_floor_scores_normally(self):
+        """Bandwidth coverage >= 10% should score normally (not zeroed)."""
+        # Horn covers ~14%: (500-1450) / (500-7000) = 950/6500 ≈ 14.6%
+        kpi = _make_kpi(
+            f3_low_hz=500.0,
+            f3_high_hz=1450.0,
+            passband_ripple_db=2.0,
+            average_sensitivity_db=92.0,
+        )
+        target = TargetSpec(f_low_hz=500.0, f_high_hz=7000.0)
+        score = compute_selection_score(kpi, target)
+        assert score.bandwidth_coverage >= 0.10
+        assert score.composite_score > 0.0
+
+
 class TestCompositeScore:
     def test_perfect_score(self):
         """Full coverage, zero ripple, max sensitivity → composite ≈ 1.0."""

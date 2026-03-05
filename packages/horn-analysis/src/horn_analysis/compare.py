@@ -39,12 +39,16 @@ def plot_multi_comparison(
     else:
         fig, ax_plot = plot_theme.create_figure(figsize=(12, 8))
 
+    _linestyles = ["-", "--", "-.", ":", (0, (3, 1, 1, 1))]
+
     all_freq = []
     all_spl = []
     for i, (csv_path, label) in enumerate(file_label_pairs):
         df = pd.read_csv(csv_path)
         color = plot_theme.MULTI_COLORS[i % len(plot_theme.MULTI_COLORS)]
-        ax_plot.plot(df["frequency"], df["spl"], label=label, color=color, linewidth=1.4)
+        ls = _linestyles[i % len(_linestyles)]
+        ax_plot.plot(df["frequency"], df["spl"], label=label,
+                     color=color, linestyle=ls, linewidth=1.8)
         all_freq.extend(df["frequency"].values)
         all_spl.extend(df["spl"].values)
 

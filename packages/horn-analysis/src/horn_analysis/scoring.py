@@ -90,6 +90,10 @@ def compute_selection_score(
         + weights["sensitivity"] * float(sensitivity_score)
     )
 
+    # --- Bandwidth floor: non-functional combos score zero ---
+    if bandwidth_coverage < 0.10:
+        composite = 0.0
+
     return SelectionScore(
         driver_id=driver_id,
         horn_label=horn_label,

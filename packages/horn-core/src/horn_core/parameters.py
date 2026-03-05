@@ -56,11 +56,22 @@ class DriverParameters:
     cms_m_per_n: Optional[float] = field(default=None, repr=False)
     rms_kg_per_s: Optional[float] = field(default=None, repr=False)
 
+    # Phase plug exit area (m²) — for drivers like 8" cones with phase plugs
+    # where the effective throat area is much smaller than Sd
+    exit_area_m2: Optional[float] = None
+
     # Optional metadata
     driver_type: Optional[str] = None
     nominal_diameter: Optional[str] = None  # e.g. "18in", "15in", "1in"
     xmax_m: Optional[float] = None
     nominal_impedance_ohm: Optional[float] = None
+    power_w: Optional[float] = None           # RMS / AES / continuous power (W)
+    peak_power_w: Optional[float] = None      # Peak / program power (W)
+
+    @property
+    def effective_throat_area(self) -> float:
+        """Return the effective throat area: exit_area_m2 if set, else sd_m2."""
+        return self.exit_area_m2 if self.exit_area_m2 is not None else self.sd_m2
 
     def __post_init__(self):
         omega_s = 2.0 * np.pi * self.fs_hz

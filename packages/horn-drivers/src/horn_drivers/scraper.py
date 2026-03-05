@@ -127,6 +127,10 @@ def _parse_data_woofer(json_str: str) -> Optional[dict]:
         si["nominal_impedance_ohm"] = float(raw["z"])
     if raw.get("xmax") is not None and raw["xmax"] > 0:
         si["xmax_m"] = float(raw["xmax"]) * 1e-3  # mm -> m
+    if raw.get("pmax") is not None and raw["pmax"] > 0:
+        pmax = float(raw["pmax"])
+        si["peak_power_w"] = pmax             # pmax is program power
+        si["power_w"] = pmax / 2.0            # RMS ≈ program / 2
 
     return si
 
