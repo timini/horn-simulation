@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 from scipy.optimize import brentq
+from scipy.signal import savgol_filter
 
 
 @dataclass
@@ -62,9 +63,15 @@ def extract_kpis_from_arrays(freq: np.ndarray, spl: np.ndarray) -> HornKPI:
 
     # Find f3_low: search from lowest freq up to peak
     f3_low = _find_crossing(spl_minus_threshold, freq[0], freq[peak_idx], direction="rising")
+    if f3_low is None and spl_minus_threshold(freq[0]) >= 0:
+        # Response is above -3 dB at the low measurement boundary
+        f3_low = float(freq[0])
 
     # Find f3_high: search from peak to highest freq
     f3_high = _find_crossing(spl_minus_threshold, freq[peak_idx], freq[-1], direction="falling")
+    if f3_high is None and spl_minus_threshold(freq[-1]) >= 0:
+        # Response is above -3 dB at the high measurement boundary
+        f3_high = float(freq[-1])
 
     # Derived KPIs
     bandwidth_hz = None
@@ -76,12 +83,20 @@ def extract_kpis_from_arrays(freq: np.ndarray, spl: np.ndarray) -> HornKPI:
         bandwidth_hz = f3_high - f3_low
         bandwidth_octaves = np.log2(f3_high / f3_low) if f3_low > 0 else None
 
-        # Passband: frequencies within [f3_low, f3_high]
-        mask = (freq >= f3_low) & (freq <= f3_high)
-        if np.any(mask):
-            passband_spl = spl[mask]
-            passband_ripple = float(np.max(passband_spl) - np.min(passband_spl))
-            avg_sensitivity = float(np.mean(passband_spl))
+        # Passband: resample onto uniform log grid and smooth to remove
+        # band-stitching artifacts before computing ripple/sensitivity
+        n_passband = max(200, len(freq) * 2)
+        freq_uniform = np.geomspace(f3_low, f3_high, n_passband)
+        spl_passband = np.array([float(spl_interp(f)) for f in freq_uniform])
+
+        # Light Savitzky-Golay smoothing to suppress band-boundary glitches
+        # Window must be odd and < n_passband; 11 points is ~5% of 200
+        sg_window = min(11, n_passband if n_passband % 2 == 1 else n_passband - 1)
+        if sg_window >= 5:
+            spl_passband = savgol_filter(spl_passband, sg_window, polyorder=3)
+
+        passband_ripple = float(np.max(spl_passband) - np.min(spl_passband))
+        avg_sensitivity = float(np.mean(spl_passband))
 
     return HornKPI(
         peak_spl_db=peak_spl,
