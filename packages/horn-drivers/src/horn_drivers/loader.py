@@ -34,6 +34,7 @@ def _driver_from_dict(d: dict) -> DriverParameters:
     le_h = params.get("le_h") or _mh_to_h(params.get("le_mh"))
     sd_m2 = params.get("sd_m2") or params.get("sd_sq_meters")
     xmax_m = params.get("xmax_m") or _mm_to_m(params.get("xmax_mm"))
+    exit_area_m2 = params.get("exit_area_m2") or _cm2_to_m2(params.get("exit_area_cm2"))
 
     return DriverParameters(
         driver_id=d.get("driver_id", "unknown"),
@@ -48,10 +49,13 @@ def _driver_from_dict(d: dict) -> DriverParameters:
         qms=params.get("qms"),
         qes=params.get("qes"),
         qts=params.get("qts"),
+        exit_area_m2=exit_area_m2,
         driver_type=d.get("driver_type"),
         nominal_diameter=d.get("nominal_diameter"),
         xmax_m=xmax_m,
         nominal_impedance_ohm=params.get("nominal_impedance_ohm"),
+        power_w=params.get("power_w"),
+        peak_power_w=params.get("peak_power_w"),
     )
 
 
@@ -125,3 +129,7 @@ def _mh_to_h(val: Optional[float]) -> Optional[float]:
 
 def _mm_to_m(val: Optional[float]) -> Optional[float]:
     return val * 1e-3 if val is not None else None
+
+
+def _cm2_to_m2(val: Optional[float]) -> Optional[float]:
+    return val * 1e-4 if val is not None else None

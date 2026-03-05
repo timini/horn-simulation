@@ -12,6 +12,7 @@ from horn_core.geometry_designer import (
     derive_mouth_radius,
     derive_mouth_radius_range,
     derive_simulation_freq_range,
+    generate_auto_candidates,
     generate_fullauto_candidates,
 )
 
@@ -236,3 +237,91 @@ class TestGenerateFullautoCandidates:
         )
         assert derived.ideal_mouth_radius == pytest.approx(0.01365, rel=1e-2)
         assert derived.length_range[1] < 0.05  # half-wave at 4000 Hz ~0.043m
+
+
+class TestGenerateAutoCandidates:
+    def test_all_free(self):
+        """With no fixed params, behaves like fullauto: 7×1×3×3 = 63."""
+        candidates, derived = generate_auto_candidates(
+            target_f_low=500,
+            target_f_high=4000,
+            throat_radii=[0.025],
+        )
+        assert len(candidates) == 63
+        assert derived.candidate_count == 63
+
+    def test_fixed_mouth_radius(self):
+        """Fixed mouth radius → 7×1×1×3 = 21."""
+        candidates, derived = generate_auto_candidates(
+            target_f_low=500,
+            target_f_high=4000,
+            throat_radii=[0.025],
+            mouth_radius=0.15,
+        )
+        assert len(candidates) == 21
+        # All candidates should have the fixed mouth radius
+        for c in candidates:
+            assert c.mouth_radius == pytest.approx(0.15)
+        # Derived range should be fixed
+        assert derived.mouth_radius_range[0] == derived.mouth_radius_range[1] == 0.15
+
+    def test_fixed_length(self):
+        """Fixed length → 7×1×3×1 = 21."""
+        candidates, derived = generate_auto_candidates(
+            target_f_low=500,
+            target_f_high=4000,
+            throat_radii=[0.025],
+            length=0.3,
+        )
+        assert len(candidates) == 21
+        for c in candidates:
+            assert c.length == pytest.approx(0.3)
+        assert derived.length_range[0] == derived.length_range[1] == 0.3
+
+    def test_both_fixed(self):
+        """Fixed mouth + length → 7×1×1×1 = 7 (like old auto)."""
+        candidates, derived = generate_auto_candidates(
+            target_f_low=500,
+            target_f_high=4000,
+            throat_radii=[0.025],
+            mouth_radius=0.15,
+            length=0.3,
+        )
+        assert len(candidates) == 7
+        profiles = {c.profile for c in candidates}
+        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"}
+
+    def test_multiple_throat_radii_fixed_geom(self):
+        """3 throat radii with fixed mouth+length → 7×3×1×1 = 21."""
+        candidates, _ = generate_auto_candidates(
+            target_f_low=500,
+            target_f_high=4000,
+            throat_radii=[0.015, 0.020, 0.025],
+            mouth_radius=0.15,
+            length=0.3,
+        )
+        assert len(candidates) == 21
+
+    def test_candidate_ids_prefixed_auto(self):
+        """Candidate IDs should start with 'auto_'."""
+        candidates, _ = generate_auto_candidates(
+            target_f_low=500,
+            target_f_high=4000,
+            throat_radii=[0.025],
+            mouth_radius=0.15,
+            length=0.3,
+        )
+        for c in candidates:
+            assert c.candidate_id.startswith("auto_")
+
+    def test_sim_freq_range_always_set(self):
+        """Simulation freq range should be set regardless of fixed params."""
+        _, derived = generate_auto_candidates(
+            target_f_low=500,
+            target_f_high=4000,
+            throat_radii=[0.025],
+            mouth_radius=0.15,
+            length=0.3,
+        )
+        assert derived.sim_freq_range[0] < 500
+        assert derived.sim_freq_range[1] > 4000

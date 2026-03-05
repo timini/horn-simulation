@@ -87,6 +87,89 @@ def derive_simulation_freq_range(
     return (sim_min, sim_max)
 
 
+def generate_auto_candidates(
+    target_f_low: float,
+    target_f_high: float,
+    throat_radii: List[float],
+    mouth_radius: Optional[float] = None,
+    length: Optional[float] = None,
+    num_mouth_radii: int = 3,
+    num_lengths: int = 3,
+    profiles: Optional[List[str]] = None,
+) -> tuple:
+    """Generate geometry candidates for unified auto mode.
+
+    When mouth_radius or length is provided, it is fixed (1 value).
+    When None, the range is derived from target_f_low.
+
+    Args:
+        target_f_low: Target low-frequency cutoff (Hz).
+        target_f_high: Target high-frequency cutoff (Hz).
+        throat_radii: Throat radii (m) from prescreen (1-3 values).
+        mouth_radius: Fixed mouth radius (m), or None to derive range.
+        length: Fixed horn length (m), or None to derive range.
+        num_mouth_radii: Grid points for mouth radius (used when mouth_radius is None).
+        num_lengths: Grid points for length (used when length is None).
+        profiles: Horn profile types. Defaults to all seven.
+
+    Returns:
+        Tuple of (candidates, derived_geometry).
+    """
+    if profiles is None:
+        profiles = DEFAULT_PROFILES
+
+    # Mouth radius: fixed or derived
+    if mouth_radius is not None:
+        mouth_range = (mouth_radius, mouth_radius)
+        mouth_radii = [mouth_radius]
+    else:
+        mouth_range = derive_mouth_radius_range(target_f_low)
+        mouth_radii = np.linspace(mouth_range[0], mouth_range[1], num_mouth_radii).tolist()
+
+    # Length: fixed or derived
+    if length is not None:
+        length_range = (length, length)
+        lengths = [length]
+    else:
+        length_range = derive_length_range(target_f_low)
+        lengths = np.linspace(length_range[0], length_range[1], num_lengths).tolist()
+
+    sim_range = derive_simulation_freq_range(target_f_low, target_f_high)
+
+    candidates = []
+    idx = 0
+    for profile in profiles:
+        for r_throat in throat_radii:
+            for r_mouth in mouth_radii:
+                for horn_length in lengths:
+                    if r_mouth <= r_throat:
+                        continue
+                    candidate_id = f"auto_{profile[:3]}_{idx:04d}"
+                    candidates.append(
+                        CandidateGeometry(
+                            candidate_id=candidate_id,
+                            profile=profile,
+                            throat_radius=r_throat,
+                            mouth_radius=round(r_mouth, 6),
+                            length=round(horn_length, 6),
+                        )
+                    )
+                    idx += 1
+
+    ideal_mouth = derive_mouth_radius(target_f_low)
+    derived = DerivedGeometry(
+        target_f_low=target_f_low,
+        target_f_high=target_f_high,
+        ideal_mouth_radius=ideal_mouth,
+        mouth_radius_range=mouth_range,
+        length_range=length_range,
+        sim_freq_range=sim_range,
+        candidate_count=len(candidates),
+    )
+
+    return candidates, derived
+
+
 def generate_fullauto_candidates(
     target_f_low: float,
     target_f_high: float,
@@ -174,6 +257,14 @@ def main():
         help="Prescreen result JSON (provides throat_radius_m).",
     )
     parser.add_argument(
+        "--mouth-radius", type=float, default=None,
+        help="Fixed mouth radius (m). If omitted, derive range from f_low.",
+    )
+    parser.add_argument(
+        "--length", type=float, default=None,
+        help="Fixed horn length (m). If omitted, derive range from f_low.",
+    )
+    parser.add_argument(
         "--num-mouth-radii", type=int, default=3, help="Mouth radius grid points."
     )
     parser.add_argument(
@@ -191,12 +282,14 @@ def main():
     args = parser.parse_args()
 
     prescreen = json.loads(Path(args.prescreen_json).read_text())
-    throat_radius = prescreen["throat_radius_m"]
+    throat_radii = prescreen.get("throat_radii_m") or [prescreen["throat_radius_m"]]
 
-    candidates, derived = generate_fullauto_candidates(
+    candidates, derived = generate_auto_candidates(
         target_f_low=args.target_f_low,
         target_f_high=args.target_f_high,
-        throat_radii=[throat_radius],
+        throat_radii=throat_radii,
+        mouth_radius=args.mouth_radius,
+        length=args.length,
         num_mouth_radii=args.num_mouth_radii,
         num_lengths=args.num_lengths,
     )
