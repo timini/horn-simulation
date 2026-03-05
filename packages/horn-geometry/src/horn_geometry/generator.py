@@ -7,6 +7,45 @@ from typing import Callable
 import argparse
 
 
+def _adaptive_z_positions(
+    radius_func: Callable[[float], float],
+    length: float,
+    num_sections: int,
+) -> np.ndarray:
+    """Compute z-positions that concentrate sections where the radius changes fast.
+
+    Uses a blended metric: 50 % uniform arc-length + 50 % radius-change.  This
+    ensures adequate section density everywhere (no huge gaps in flat regions)
+    while still packing extra sections into steep regions (e.g. the mouth of a
+    tractrix).  Degenerates to uniform spacing for constant-gradient profiles.
+    """
+    n_samples = 5000
+    z_fine = np.linspace(0, length, n_samples)
+    r_fine = np.array([radius_func(z) for z in z_fine])
+
+    dr = np.abs(np.diff(r_fine))
+    dz = np.diff(z_fine)
+
+    # Blend: uniform component (dz) + curvature component (dr)
+    total_dr = dr.sum()
+    total_dz = dz.sum()
+
+    if total_dr == 0:
+        return np.linspace(0, length, num_sections)
+
+    # Normalise both to the same scale, then blend 50/50
+    metric = 0.5 * (dz / total_dz) + 0.5 * (dr / total_dr)
+    cum_metric = np.concatenate(([0.0], np.cumsum(metric)))
+
+    targets = np.linspace(0, cum_metric[-1], num_sections)
+    z_positions = np.interp(targets, cum_metric, z_fine)
+
+    # Guarantee exact endpoints
+    z_positions[0] = 0.0
+    z_positions[-1] = length
+    return z_positions
+
+
 def _loft_horn_profile(
     radius_func: Callable[[float], float],
     length: float,
@@ -30,7 +69,7 @@ def _loft_horn_profile(
     gmsh.model.add(model_name)
     gmsh.option.setNumber("General.Terminal", 1)
 
-    z_positions = np.linspace(0, length, num_sections)
+    z_positions = _adaptive_z_positions(radius_func, length, num_sections)
     curve_loops = []
 
     for z in z_positions:

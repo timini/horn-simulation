@@ -87,15 +87,30 @@ def plot_polar_directivity(
     ax.set_thetamin(0)
     ax.set_thetamax(180)
 
+    # Determine if data is already relative (on-axis near 0 dB) or absolute
+    db_range = 40  # show 40 dB of dynamic range
+    all_on_axis = df[df["theta_deg"] == df["theta_deg"].min()]["spl_db"]
+    ref_level = all_on_axis.max()
+    # Shift so peak on-axis = 0 dB, then offset so plot radius is non-negative
+    # Display: radius = spl_db - (ref_level - db_range), clipped at 0
+    r_floor = ref_level - db_range
+
     colors = plot_theme.MULTI_COLORS
     for i, freq in enumerate(frequencies):
         sub = df[df["frequency"] == freq].sort_values("theta_deg")
         theta_rad = np.radians(sub["theta_deg"].values)
         spl = sub["spl_db"].values
+        r = np.clip(spl - r_floor, 0, None)
         label = f"{freq:.0f} Hz" if freq < 1000 else f"{freq / 1000:.1f} kHz"
-        ax.plot(theta_rad, spl, color=colors[i % len(colors)], linewidth=1.3, label=label)
+        ax.plot(theta_rad, r, color=colors[i % len(colors)], linewidth=1.3, label=label)
 
-    ax.set_title("Polar Directivity", pad=20)
+    # Custom radial tick labels showing actual dB values
+    r_ticks = np.linspace(0, db_range, 5)
+    ax.set_rticks(r_ticks)
+    ax.set_yticklabels([f"{v + r_floor:.0f}" for v in r_ticks], fontsize=7)
+    ax.set_rlim(0, db_range + 2)
+
+    ax.set_title("Polar Directivity (dB)", pad=20)
     ax.legend(loc="lower left", fontsize=7, bbox_to_anchor=(1.05, 0))
 
     plot_theme.save_figure(fig, output_file)
@@ -148,7 +163,7 @@ def plot_directivity_contour(
     ax.set_ylabel("Angle (degrees)")
     ax.set_title("Directivity Contour")
     cbar = fig.colorbar(mesh, ax=ax, pad=0.02)
-    cbar.set_label("SPL (dB)")
+    cbar.set_label("Relative SPL (dB)")
     plot_theme.setup_grid(ax)
 
     plot_theme.save_figure(fig, output_file)
@@ -265,8 +280,10 @@ def compute_directivity_index(
         theta_deg = sub["theta_deg"].values
         spl = sub["spl_db"].values
 
-        # Convert SPL to linear pressure squared (relative)
-        p_sq = 10 ** (spl / 10)
+        # Convert relative dB to linear pressure squared ratio
+        # spl_db is relative to on-axis (0 dB = on-axis), so
+        # p_sq_ratio = 10^(spl_db / 10) gives p²/p²_on_axis
+        p_sq = 10 ** (spl / 10.0)
 
         theta_rad = np.radians(theta_deg)
 
@@ -275,6 +292,7 @@ def compute_directivity_index(
         p_sq_on = p_sq[idx_on]
 
         # Numerical integration using trapezoidal rule
+        # DI = p²_on / <p²> where <p²> = ∫ p² sin(θ) dθ / ∫ sin(θ) dθ
         integrand = p_sq * np.sin(theta_rad)
         numerator = _trapezoid(integrand, theta_rad)
         denominator = _trapezoid(np.sin(theta_rad), theta_rad)

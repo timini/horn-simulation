@@ -245,6 +245,41 @@ class TestProfileGeometricValidation:
 
 
 @pytest.mark.skipif(gmsh is None, reason="gmsh not available")
+class TestProfileMeshable:
+    """Verify that every profile produces a geometry that gmsh can actually mesh."""
+
+    THROAT_R = 0.025
+    MOUTH_R = 0.15
+    LENGTH = 0.3
+
+    @pytest.fixture(params=["conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"])
+    def profile_name(self, request):
+        return request.param
+
+    def test_all_profiles_meshable(self, profile_name, tmp_path):
+        step = create_horn(
+            profile=profile_name,
+            throat_radius=self.THROAT_R,
+            mouth_radius=self.MOUTH_R,
+            length=self.LENGTH,
+            output_file=tmp_path / f"{profile_name}.step",
+            num_sections=20,
+        )
+        gmsh.initialize()
+        gmsh.option.setNumber("General.Terminal", 0)
+        gmsh.model.add("mesh_check")
+        gmsh.model.occ.importShapes(str(step))
+        gmsh.model.occ.synchronize()
+        gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 0.01)
+        try:
+            gmsh.model.mesh.generate(3)
+            nodes = gmsh.model.mesh.getNodes()
+            assert len(nodes[0]) > 0, f"{profile_name}: mesh produced no nodes"
+        finally:
+            gmsh.finalize()
+
+
+@pytest.mark.skipif(gmsh is None, reason="gmsh not available")
 class TestCreateHornDispatch:
     """Test the create_horn dispatch function."""
 

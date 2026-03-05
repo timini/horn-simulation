@@ -30,6 +30,9 @@ def generate_auto_report(
     mouth_radius: float | None = None,
     horn_length: float | None = None,
     derived_geometry: Optional[dict] = None,
+    total_candidates: int | None = None,
+    total_scored: int | None = None,
+    lem_results: Optional[dict] = None,
 ) -> Path:
     """Generate the auto-select report with rankings, plots, and CSVs.
 
@@ -44,6 +47,8 @@ def generate_auto_report(
         mouth_radius: Horn mouth radius in metres (for report display).
         horn_length: Horn length in metres (for report display).
         derived_geometry: Optional dict from geometry_designer (fullauto mode).
+        total_candidates: Total number of geometry candidates simulated.
+        total_scored: Total number of driver-horn combinations scored.
 
     Returns:
         Path to the output directory.
@@ -74,7 +79,8 @@ def generate_auto_report(
         solver_spl = df["spl"].values
         z_real = df["z_real"].values
         z_imag = df["z_imag"].values
-        throat_area = np.pi * throat_radius ** 2
+        cand_throat = result.get("throat_radius", throat_radius)
+        throat_area = np.pi * cand_throat ** 2
 
         p_throat = compute_driver_response(drv, freq, z_real, z_imag, throat_area)
         coupled_spl = scale_solver_spl(solver_spl, p_throat)
@@ -98,17 +104,30 @@ def generate_auto_report(
         )
 
     # 4. Human-readable summary
+    scored_display = total_scored if total_scored is not None else len(all_ranked)
     lines = [
         "Horn Driver Auto-Select Results",
         "=" * 40,
         f"Target: {target.f_low_hz:.0f} Hz - {target.f_high_hz:.0f} Hz",
         f"Throat radius: {throat_radius:.4f} m",
         f"Profiles evaluated: {', '.join(solver_csvs.keys())}",
-        f"Total candidates scored: {len(all_ranked)}",
+        f"Total candidates scored: {scored_display}",
+    ]
+
+    if lem_results:
+        lines.extend([
+            "",
+            "LEM Prescreening:",
+            f"  Candidates evaluated by LEM: {lem_results.get('total_evaluated', 'N/A')}",
+            f"  Driver-horn pairs scored: {lem_results.get('total_pairs', 'N/A')}",
+            f"  Passed to FEM: {len(lem_results.get('filtered_candidate_ids', []))}",
+        ])
+
+    lines.extend([
         "",
         f"Top {len(top_results)} Results:",
         "-" * 40,
-    ]
+    ])
 
     for rank, result in enumerate(top_results, 1):
         lines.append(
@@ -141,6 +160,9 @@ def generate_auto_report(
         mouth_radius=mouth_radius,
         length=horn_length,
         derived_geometry=derived_geometry,
+        total_candidates=total_candidates,
+        total_scored=total_scored,
+        lem_results=lem_results,
     )
     (out / "auto_report.html").write_text(html_report)
 

@@ -23,6 +23,27 @@ try:
     from bempp.api.external import fenicsx as bempp_fenicsx
     from bempp.api.assembly.blocked_operator import BlockedDiscreteOperator
 
+    # Patch bempp's fenics_space_info for dolfinx 0.8 compatibility.
+    # bempp-cl 0.3.x calls element.family() which doesn't exist on
+    # dolfinx 0.8's _BasixElement; the family lives on basix_element instead.
+    _orig_space_info = bempp_fenicsx.fenics_space_info
+
+    def _patched_space_info(fenics_space):
+        element = fenics_space.ufl_element()
+        if hasattr(element, "family"):
+            return _orig_space_info(fenics_space)
+        # dolfinx 0.8: pull family name from basix_element
+        import basix
+        _family_map = {
+            basix.ElementFamily.P: "Lagrange",
+        }
+        be = element.basix_element
+        family = _family_map.get(be.family, str(be.family))
+        degree = be.degree
+        return (family, degree)
+
+    bempp_fenicsx.fenics_space_info = _patched_space_info
+
     BEMPP_AVAILABLE = True
 except ImportError:
     BEMPP_AVAILABLE = False

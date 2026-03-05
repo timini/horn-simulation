@@ -124,7 +124,19 @@ def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float) 
     gmsh.option.setNumber("Mesh.MeshSizeMin", mesh_size)
     gmsh.option.setNumber("Mesh.MeshSizeMax", mesh_size)
     gmsh.model.mesh.generate(3)
-    
+
+    # Check mesh size before converting to dolfinx (avoid OOM)
+    node_tags, _, _ = gmsh.model.mesh.getNodes()
+    n_nodes = len(node_tags)
+    max_nodes = int(os.environ.get("HORN_MAX_MESH_NODES", "100000"))
+    if n_nodes > max_nodes:
+        gmsh.finalize()
+        raise RuntimeError(
+            f"Mesh too large: {n_nodes} nodes exceeds limit of {max_nodes}. "
+            f"Skipping this candidate to avoid OOM."
+        )
+    print(f"Mesh nodes: {n_nodes} (limit: {max_nodes})")
+
     # Note the change here: we are now capturing all three return values.
     domain, cell_tags, facet_tags = gmshio.model_to_mesh(gmsh.model, MPI.COMM_WORLD, 0, gdim=3)
     gmsh.finalize()
@@ -357,8 +369,12 @@ def run_simulation(
                     k,
                     ff_directions,
                 )
-                p_ref = 20e-6
-                spl_far = 20 * np.log10(np.abs(p_far) / p_ref + 1e-12)
+                # Far-field operators return pattern values with arbitrary
+                # scaling.  Normalise so that the on-axis (theta=0) magnitude
+                # is 0 dB, giving a relative radiation pattern in dB.
+                p_far_abs = np.abs(p_far)
+                p_on_axis = p_far_abs[0] if p_far_abs[0] > 0 else 1e-30
+                spl_far = 20 * np.log10(p_far_abs / p_on_axis + 1e-30)
                 for angle_deg, spl_val in zip(directivity_angles, spl_far):
                     directivity_results.append({
                         "frequency": frequency,
