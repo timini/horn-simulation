@@ -175,6 +175,35 @@ def request(
         backoff = min(backoff * 2, max_backoff)
 
 
+class OriginWedged(RuntimeError):
+    """The site answers 200 but serves the wrong page for the URL requested.
+
+    Seen for real: after an outage the origin came back returning one
+    identical driver page for every path, including nonsense ones. A scrape
+    that trusted those responses would have overwritten the whole database
+    with copies of a single driver, so this is treated as fatal.
+    """
+
+
+def page_identity(soup) -> Optional[str]:
+    """The path this page claims to be, from its og:url meta tag."""
+    meta = soup.find("meta", attrs={"property": "og:url"})
+    if not meta or not meta.get("content"):
+        return None
+    content = meta["content"].strip()
+    if content.startswith(BASE_URL):
+        content = content[len(BASE_URL):]
+    return "/" + content.lstrip("/")
+
+
+def _paths_match(requested_url: str, claimed_path: Optional[str]) -> bool:
+    """True unless the page positively identifies itself as somewhere else."""
+    if claimed_path is None:
+        return True  # nothing to check against
+    requested = requested_url[len(BASE_URL):] if requested_url.startswith(BASE_URL) else requested_url
+    return requested.rstrip("/").lower() == claimed_path.rstrip("/").lower()
+
+
 def origin_is_up(session, delay: float = 0.0) -> bool:
     """Cheap liveness probe that does not retry."""
     try:
@@ -184,11 +213,50 @@ def origin_is_up(session, delay: float = 0.0) -> bool:
         return False
 
 
+def origin_is_healthy(session, delay: float = 0.0) -> bool:
+    """Liveness plus routing sanity.
+
+    A 200 is not enough: the origin has been observed serving one identical
+    driver page for every path. Ask for a path that cannot exist. A healthy
+    site rejects it; a wedged one answers 200 with a page whose og:url names
+    somewhere else entirely.
+
+    Comparing response bodies is not good enough, because the pages carry
+    something dynamic and two fetches of the same URL differ by a byte.
+    """
+    from bs4 import BeautifulSoup
+
+    try:
+        _polite_sleep(delay)
+        if session.get(BASE_URL, timeout=20).status_code != 200:
+            return False
+        nonsense = f"{BASE_URL}/__horn_sim_probe_{random.randint(10**6, 10**7)}"
+        _polite_sleep(delay)
+        probe = session.get(nonsense, timeout=20)
+    except Exception:
+        return False
+
+    if probe.status_code in (404, 410):
+        return True  # unknown paths are rejected, so routing works
+    if probe.status_code != 200:
+        # 429, 403 and friends tell us nothing about routing, and starting a
+        # long scrape while being throttled is the wrong move either way.
+        print(f"  probe returned HTTP {probe.status_code}; not starting yet")
+        return False
+
+    claimed = page_identity(BeautifulSoup(probe.text, "html.parser"))
+    if not _paths_match(nonsense, claimed):
+        print(f"  origin answers 200 for a nonexistent path and calls it "
+              f"{claimed}; routing is broken, treating as down")
+        return False
+    return True
+
+
 def wait_for_origin(session, patience_s: float, probe_interval: float = 120.0) -> bool:
     """Block until the site answers, or until *patience_s* runs out."""
     deadline = time.monotonic() + patience_s
     while True:
-        if origin_is_up(session):
+        if origin_is_healthy(session):
             return True
         if time.monotonic() >= deadline:
             return False
@@ -296,6 +364,15 @@ def scrape_driver_page(
         return None
 
     soup = BeautifulSoup(resp.text, "html.parser")
+
+    # Refuse to trust a page that says it is a different driver: a wedged
+    # origin serving one page for every URL would otherwise fill the whole
+    # database with copies of it.
+    claimed = page_identity(soup)
+    if not _paths_match(url, claimed):
+        raise OriginWedged(
+            f"asked for {url} but the page identifies itself as {claimed}"
+        )
 
     # --- Primary: extract from data-woofer JSON ---
     si = None
@@ -572,6 +649,8 @@ def scrape_all(
                 params = scrape_driver_page(
                     entry["url"], session, delay=delay, patience_s=patience_s,
                 )
+            except OriginWedged:
+                raise
             except Exception as e:
                 print(f"\n    ERROR: {e}")
                 params = None
@@ -691,19 +770,28 @@ def main():
             return 1
         print("Site is responding; starting.")
 
-    count = scrape_all(
-        db_dir=db_dir,
-        max_manufacturers=args.max_manufacturers,
-        manufacturer_filter=mfr_filter,
-        delay=args.delay,
-        patience_s=patience_s,
-        refresh=args.refresh,
-        state_path=Path(args.state) if args.state else None,
-        required_fields=tuple(
-            f.strip() for f in args.require_fields.split(",") if f.strip()
-        ),
-    )
+    try:
+        count = scrape_all(
+            db_dir=db_dir,
+            max_manufacturers=args.max_manufacturers,
+            manufacturer_filter=mfr_filter,
+            delay=args.delay,
+            patience_s=patience_s,
+            refresh=args.refresh,
+            state_path=Path(args.state) if args.state else None,
+            required_fields=tuple(
+                f.strip() for f in args.require_fields.split(",") if f.strip()
+            ),
+        )
+    except OriginWedged as exc:
+        print(f"\nABORTED: {exc}")
+        print("The site is answering but serving the wrong pages. Nothing was "
+              "written from this point on; re-run when it recovers.")
+        return 2
     print(f"\nScraped {count} drivers total.")
+    if count == 0:
+        print("Nothing was scraped. Treating this as a failed run so a retry "
+              "does not mistake it for a completed database.")
     if db_dir:
         total = sum(1 for _ in db_dir.rglob("*.json"))
         print(f"Database: {db_dir} ({total} drivers)")
