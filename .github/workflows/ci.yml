@@ -8,6 +8,14 @@ on:
 jobs:
   test_nextflow:
     runs-on: ubuntu-latest
+    env:
+      # Pin the toolchain. The installer takes the latest release, so CI
+      # silently changed under us: Nextflow's strict syntax parser became the
+      # default and rejects the Groovy spread operator that nf-test emits in
+      # its generated process harness ("Unexpected input: '*'" on
+      # `run_simulation(*input)`). Nothing in this repo changed. NXF_VER is
+      # read by both the installer and the launcher, so it is set job-wide.
+      NXF_VER: '24.10.5'
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
