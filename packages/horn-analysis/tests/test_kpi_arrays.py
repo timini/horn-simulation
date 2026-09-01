@@ -35,7 +35,7 @@ class TestExtractKpisFromArrays:
     def test_matches_csv_version(self, bandpass_data, bandpass_csv):
         """Array version should produce similar results to CSV version.
 
-        Note: passband_ripple and avg_sensitivity may differ slightly due to
+        Note: passband_ripple and avg level may differ slightly due to
         resampling onto a uniform log grid + Savgol smoothing.
         """
         freq, spl = bandpass_data
@@ -61,12 +61,12 @@ class TestExtractKpisFromArrays:
         if from_csv.bandwidth_octaves is not None:
             assert from_arrays.bandwidth_octaves == pytest.approx(from_csv.bandwidth_octaves, rel=1e-6)
 
-        # Ripple and sensitivity use resampled+smoothed data, so allow wider tolerance
+        # Ripple and level use resampled+smoothed data, so allow wider tolerance
         if from_csv.passband_ripple_db is not None:
             assert from_arrays.passband_ripple_db == pytest.approx(from_csv.passband_ripple_db, abs=0.5)
 
-        if from_csv.average_sensitivity_db is not None:
-            assert from_arrays.average_sensitivity_db == pytest.approx(from_csv.average_sensitivity_db, abs=0.3)
+        if from_csv.average_level_db is not None:
+            assert from_arrays.average_level_db == pytest.approx(from_csv.average_level_db, abs=0.3)
 
     def test_peak_detection(self, bandpass_data):
         """Should detect the peak correctly."""
@@ -117,4 +117,4 @@ class TestExtractKpisFromArrays:
         # Without smoothing, ripple would be ~1.0 dB (the injected glitch).
         # With smoothing, it should be well under 0.5 dB.
         assert result.passband_ripple_db < 0.5
-        assert result.average_sensitivity_db == pytest.approx(90.0, abs=0.2)
+        assert result.average_level_db == pytest.approx(90.0, abs=0.2)

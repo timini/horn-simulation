@@ -22,8 +22,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# NumPy 2.0 renamed trapz -> trapezoid
-_trapezoid = getattr(np, "trapezoid", np.trapz)
+# NumPy 2.0 renamed trapz -> trapezoid. The fallback must not be evaluated
+# eagerly: np.trapz raises AttributeError on NumPy 2.x, so getattr's default
+# argument would blow up before it could return the new name.
+_trapezoid = getattr(np, "trapezoid", None) or np.trapz
 
 from horn_analysis import plot_theme
 

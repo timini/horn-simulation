@@ -104,7 +104,7 @@ def setup_spl_axis(ax, spl_data, division: float = 5):
         y_hi += division
     ax.set_ylim(y_lo, y_hi)
     ax.set_yticks(np.arange(y_lo, y_hi + division, division))
-    ax.set_ylabel("SPL (dB)")
+    ax.set_ylabel("Mouth-plane SPL (dB re 20 \u00b5Pa)")
 
 
 # -- Grid styling --------------------------------------------------------------

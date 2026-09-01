@@ -117,14 +117,14 @@ _HTML_TEMPLATE = """\
 </p>
 
 <div class="cards">
-  <div class="card"><div class="label">Peak SPL (dB)</div><div class="value">{peak_spl}</div></div>
+  <div class="card"><div class="label">Peak mouth-plane SPL (dB)</div><div class="value">{peak_spl}</div></div>
   <div class="card"><div class="label">Peak Freq (Hz)</div><div class="value">{peak_freq}</div></div>
   <div class="card"><div class="label">f3 Low (Hz)</div><div class="value">{f3_low}</div></div>
   <div class="card"><div class="label">f3 High (Hz)</div><div class="value">{f3_high}</div></div>
   <div class="card"><div class="label">Bandwidth (Hz)</div><div class="value">{bandwidth_hz}</div></div>
   <div class="card"><div class="label">Bandwidth (oct)</div><div class="value">{bandwidth_oct}</div></div>
   <div class="card"><div class="label">Ripple (dB)</div><div class="value">{ripple}</div></div>
-  <div class="card"><div class="label">Avg Sensitivity (dB)</div><div class="value">{avg_sens}</div></div>
+  <div class="card"><div class="label">Avg mouth-plane level (dB)</div><div class="value">{avg_sens}</div></div>
 </div>
 
 <h2>Horn Geometry</h2>
@@ -241,7 +241,7 @@ def generate_single_report(
         "bandwidth_hz": _fmt(kpis.get("bandwidth_hz"), ".0f"),
         "bandwidth_oct": _fmt(kpis.get("bandwidth_octaves"), ".2f"),
         "ripple": _fmt(kpis.get("passband_ripple_db"), ".1f"),
-        "avg_sens": _fmt(kpis.get("avg_sensitivity_db"), ".1f"),
+        "avg_sens": _fmt(kpis.get("avg_level_db"), ".1f"),
         # Embedded images
         "horn_3d_src": _img_b64(horn_3d_png),
         "spl_src": _img_b64(spl_png),

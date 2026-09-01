@@ -137,7 +137,7 @@ def generate_auto_report(
         lines.append(f"     Score: {result['composite_score']:.3f}  "
                       f"BW coverage: {result['bandwidth_coverage']:.1%}  "
                       f"Ripple: {result['passband_ripple_db']:.1f} dB  "
-                      f"Sensitivity: {result['avg_sensitivity_db']:.1f} dB")
+                      f"Avg level: {result['avg_level_db']:.1f} dB")
         if "kpi" in result:
             kpi = result["kpi"]
             f3l = f"{kpi['f3_low_hz']:.0f}" if kpi.get("f3_low_hz") else "N/A"

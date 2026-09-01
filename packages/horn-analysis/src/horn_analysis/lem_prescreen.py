@@ -118,7 +118,7 @@ def lem_prescreen_candidates(
                 "composite_score": score.composite_score,
                 "bandwidth_coverage": score.bandwidth_coverage,
                 "passband_ripple_db": score.passband_ripple_db,
-                "avg_sensitivity_db": score.avg_sensitivity_db,
+                "avg_level_db": score.avg_level_db,
             })
 
     # Sort by composite score descending

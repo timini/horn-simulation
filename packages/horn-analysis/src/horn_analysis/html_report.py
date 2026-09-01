@@ -76,7 +76,7 @@ def _plot_coupled_spl_comparison(
 
     if all_freq:
         plot_theme.setup_freq_axis(ax, min(all_freq), max(all_freq))
-    ax.set_ylabel("SPL (dB)")
+    ax.set_ylabel("Mouth-plane SPL (dB re 20 \u00b5Pa)")
     ax.set_title("Coupled SPL \u2014 Top Candidates")
     plot_theme.setup_grid(ax)
     ax.legend(fontsize=8, loc="best")
@@ -134,7 +134,7 @@ def _plot_raw_profile_spl(
 
     if all_freq:
         plot_theme.setup_freq_axis(ax, min(all_freq), max(all_freq))
-    ax.set_ylabel("SPL (dB)")
+    ax.set_ylabel("Mouth-plane SPL (dB re 20 \u00b5Pa)")
     ax.set_title("Raw Horn SPL by Profile (uncoupled)")
     plot_theme.setup_grid(ax)
     ax.legend(fontsize=9)
@@ -273,7 +273,7 @@ def _render_rankings_rows(
             f"<td><strong>{_fmt(r.get('composite_score'), '.3f')}</strong></td>"
             f"<td>{_fmt(r.get('bandwidth_coverage'), '.1%')}</td>"
             f"<td>{_fmt(r.get('passband_ripple_db'), '.1f')}</td>"
-            f"<td>{_fmt(r.get('avg_sensitivity_db'), '.1f')}</td>"
+            f"<td>{_fmt(r.get('avg_level_db'), '.1f')}</td>"
             f"<td>{f3l} \u2014 {f3h}</td>"
             f"<td>{_fmt(kpi.get('peak_spl_db'), '.1f')}</td>"
             f"</tr>"
@@ -369,7 +369,7 @@ _HTML_TEMPLATE = """\
   <div class="card"><div class="label">Top shown</div><div class="value">{n_top}</div></div>
   <div class="card"><div class="label">Best score</div><div class="value">{best_score}</div></div>
   <div class="card"><div class="label">Best BW coverage</div><div class="value">{best_bw}</div></div>
-  <div class="card"><div class="label">Best sensitivity</div><div class="value">{best_sens}</div></div>
+  <div class="card"><div class="label">Best avg level</div><div class="value">{best_sens}</div></div>
   <div class="card"><div class="label">Lowest ripple</div><div class="value">{best_ripple}</div></div>
 </div>
 
@@ -385,7 +385,7 @@ _HTML_TEMPLATE = """\
   <th>#</th><th>Manufacturer</th><th>Model</th><th>Type</th><th>Size</th><th>Power (W)</th><th>Profile</th>
   {geometry_header_cols}
   <th>Score</th>
-  <th>BW Cov.</th><th>Ripple (dB)</th><th>Sensitivity (dB)</th><th>f3 range (Hz)</th><th>Peak (dB)</th>
+  <th>BW Cov.</th><th>Ripple (dB)</th><th>Avg level (dB)</th><th>f3 range (Hz)</th><th>Peak (dB)</th>
 </tr>
 </thead>
 <tbody>
@@ -519,7 +519,7 @@ def generate_html_report(
         max((r.get("bandwidth_coverage", 0) for r in top_results), default=None), ".1%"
     ) if top_results else "\u2014"
     best_sens = _fmt(
-        max((r.get("avg_sensitivity_db", 0) for r in top_results), default=None), ".1f"
+        max((r.get("avg_level_db", 0) for r in top_results), default=None), ".1f"
     ) if top_results else "\u2014"
     best_ripple = _fmt(
         min((r.get("passband_ripple_db", 99) for r in top_results), default=None), ".1f"

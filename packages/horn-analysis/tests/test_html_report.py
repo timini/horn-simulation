@@ -78,7 +78,7 @@ def report_inputs(tmp_path):
                 "composite_score": 0.85 - i * 0.05 - list(solver_csvs).index(profile) * 0.02,
                 "bandwidth_coverage": 0.90 - i * 0.1,
                 "passband_ripple_db": 2.5 + i * 0.5,
-                "avg_sensitivity_db": 92.0 - i * 2.0,
+                "avg_level_db": 92.0 - i * 2.0,
                 "kpi": {
                     "f3_low_hz": 520.0,
                     "f3_high_hz": 3800.0,

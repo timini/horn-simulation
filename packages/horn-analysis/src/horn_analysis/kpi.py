@@ -1,11 +1,15 @@
 """KPI extraction from horn frequency response data.
 
+The ``spl`` column is the area-averaged RMS pressure on the horn mouth
+plane, in dB re 20 uPa. It is a mouth-plane level, not a 1 m sensitivity;
+see docs/model-assumptions.md. Every KPI below inherits that definition.
+
 Computes key performance indicators from a CSV with (frequency, spl) columns:
 - f3_low / f3_high: -3 dB cutoff frequencies
 - bandwidth_hz / bandwidth_octaves: usable bandwidth
 - passband_ripple_db: max - min SPL within the -3 dB band
-- average_sensitivity_db: mean SPL in the passband
-- peak_spl_db / peak_frequency_hz: maximum SPL point
+- average_level_db: mean mouth-plane level in the passband
+- peak_spl_db / peak_frequency_hz: maximum mouth-plane level
 """
 
 import json
@@ -23,7 +27,11 @@ from scipy.signal import savgol_filter
 
 @dataclass
 class HornKPI:
-    """Key performance indicators for a horn frequency response."""
+    """Key performance indicators for a horn frequency response.
+
+    All dB values are mouth-plane levels (dB re 20 uPa), not 1 m
+    sensitivities. See docs/model-assumptions.md.
+    """
     peak_spl_db: float
     peak_frequency_hz: float
     f3_low_hz: Optional[float]
@@ -31,7 +39,7 @@ class HornKPI:
     bandwidth_hz: Optional[float]
     bandwidth_octaves: Optional[float]
     passband_ripple_db: Optional[float]
-    average_sensitivity_db: Optional[float]
+    average_level_db: Optional[float]
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -42,7 +50,7 @@ def extract_kpis_from_arrays(freq: np.ndarray, spl: np.ndarray) -> HornKPI:
 
     Args:
         freq: Array of frequency values in Hz.
-        spl: Array of SPL values in dB.
+        spl: Array of mouth-plane SPL values (dB re 20 uPa).
 
     Returns:
         HornKPI dataclass with computed metrics.
@@ -77,14 +85,14 @@ def extract_kpis_from_arrays(freq: np.ndarray, spl: np.ndarray) -> HornKPI:
     bandwidth_hz = None
     bandwidth_octaves = None
     passband_ripple = None
-    avg_sensitivity = None
+    avg_level = None
 
     if f3_low is not None and f3_high is not None:
         bandwidth_hz = f3_high - f3_low
         bandwidth_octaves = np.log2(f3_high / f3_low) if f3_low > 0 else None
 
         # Passband: resample onto uniform log grid and smooth to remove
-        # band-stitching artifacts before computing ripple/sensitivity
+        # band-stitching artifacts before computing ripple/level
         n_passband = max(200, len(freq) * 2)
         freq_uniform = np.geomspace(f3_low, f3_high, n_passband)
         spl_passband = np.array([float(spl_interp(f)) for f in freq_uniform])
@@ -96,7 +104,7 @@ def extract_kpis_from_arrays(freq: np.ndarray, spl: np.ndarray) -> HornKPI:
             spl_passband = savgol_filter(spl_passband, sg_window, polyorder=3)
 
         passband_ripple = float(np.max(spl_passband) - np.min(spl_passband))
-        avg_sensitivity = float(np.mean(spl_passband))
+        avg_level = float(np.mean(spl_passband))
 
     return HornKPI(
         peak_spl_db=peak_spl,
@@ -106,7 +114,7 @@ def extract_kpis_from_arrays(freq: np.ndarray, spl: np.ndarray) -> HornKPI:
         bandwidth_hz=bandwidth_hz,
         bandwidth_octaves=float(bandwidth_octaves) if bandwidth_octaves is not None else None,
         passband_ripple_db=passband_ripple,
-        average_sensitivity_db=avg_sensitivity,
+        average_level_db=avg_level,
     )
 
 

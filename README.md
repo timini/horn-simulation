@@ -236,15 +236,28 @@ For example, at `f_max = 8000 Hz`: λ_min = 43 mm, so h_adaptive = 7.1 mm.
 
 ### SPL calculation
 
-Sound Pressure Level is computed from the RMS pressure integrated over the **outlet surface** (horn mouth), giving a physically meaningful metric independent of mesh refinement or horn volume:
+The primary level reported by the solver is the **mouth-plane SPL**: the RMS pressure
+averaged over the outlet surface (the horn mouth), referenced to 20 µPa.
 
 ```
 p_rms = √( ∫_outlet |p|² ds  /  A_outlet )
 
-SPL = 20 × log₁₀(p_rms / p_ref)
+mouth-plane SPL = 20 × log₁₀(p_rms / p_ref)
 ```
 
-where `p_ref = 20 µPa` is the standard acoustic reference pressure. The outlet area `A_outlet` is computed once before the frequency loop since the mesh is static.
+where `p_ref = 20 µPa`. The outlet area `A_outlet` is computed once before the
+frequency loop since the mesh is static.
+
+**This is not a 1 W / 1 m sensitivity.** It is the pressure on the mouth aperture
+itself, at zero distance, averaged over an aperture that may be tens of centimetres
+across. It is self-consistent, so it ranks candidate geometries correctly, but it is
+not directly comparable with a manufacturer sensitivity figure, a Hornresp or AKABAK
+result, or a measurement.
+
+For a figure that is comparable, the pipeline also reports an **estimated on-axis SPL
+at 1 m**, derived from the mouth volume velocity with an analytical radiator model.
+That estimate carries its own assumptions and accuracy limits, both documented in
+[docs/model-assumptions.md](docs/model-assumptions.md).
 
 ### Frequency sweep
 
@@ -306,4 +319,4 @@ Contributions welcome. Please open an issue first to discuss what you'd like to 
 
 ## License
 
-See repository for license details.
+MIT. See [LICENSE](LICENSE).

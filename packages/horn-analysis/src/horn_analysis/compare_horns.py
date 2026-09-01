@@ -32,7 +32,7 @@ def plot_comparison(file_a, label_a, file_b, label_b, output_file):
     plot_theme.setup_grid(ax)
 
     ax.set_title('Horn Frequency Response Comparison')
-    ax.set_ylabel('Sound Pressure Level (dB)')
+    ax.set_ylabel('Mouth-plane SPL (dB re 20 \u00b5Pa)')
     ax.legend()
 
     plot_theme.save_figure(fig, output_file)
