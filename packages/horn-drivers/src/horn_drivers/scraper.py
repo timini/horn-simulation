@@ -252,7 +252,7 @@ def origin_is_healthy(session, delay: float = 0.0) -> bool:
     return True
 
 
-def wait_for_origin(session, patience_s: float, probe_interval: float = 120.0) -> bool:
+def wait_for_origin(session, patience_s: float, probe_interval: float = 600.0) -> bool:
     """Block until the site answers, or until *patience_s* runs out."""
     deadline = time.monotonic() + patience_s
     while True:
