@@ -13,6 +13,10 @@ INLET_TAG, OUTLET_TAG, WALL_TAG = 2, 3, 4
 C0 = 343.0  # Speed of sound in air (m/s)
 RHO0 = 1.225 # Density of air (kg/m^3)
 
+# A direct LU solve should land near machine precision. Anything above this is
+# a sign the factorisation struggled, so the frequency gets flagged.
+RESIDUAL_WARN_THRESHOLD = 1e-8
+
 from dolfinx import mesh, fem
 from dolfinx.fem.petsc import LinearProblem
 from mpi4py import MPI
@@ -76,6 +80,31 @@ def _compute_neumann_velocity(
     v_n = velocity * driver.sd_m2 / throat_area
     return v_n
 
+def _solve_diagnostics(problem, p_h) -> Tuple[float, int]:
+    """Relative residual and PETSc converged reason for one frequency solve.
+
+    ``ksp_type=preonly`` with ``pc_type=lu`` performs no convergence test, so a
+    failed factorisation can return a plausible-looking field without raising.
+    Computing ||Ax - b|| / ||b|| explicitly is the only way to notice.
+
+    Returns ``(relative_residual, converged_reason)``. A negative converged
+    reason is a PETSc failure code. Returns ``(nan, 0)`` if the diagnostics
+    cannot be obtained, which must not be treated as a passing solve.
+    """
+    try:
+        residual = problem.b.duplicate()
+        problem.A.mult(p_h.x.petsc_vec, residual)   # residual = A x
+        residual.axpy(-1.0, problem.b)              # residual = A x - b
+        r_norm = residual.norm()
+        b_norm = problem.b.norm()
+        residual.destroy()
+        relative = float(r_norm / b_norm) if b_norm > 0.0 else float(r_norm)
+        return relative, int(problem.solver.getConvergedReason())
+    except Exception as exc:  # pragma: no cover - depends on the PETSc build
+        print(f"      (solve diagnostics unavailable: {exc})")
+        return float("nan"), 0
+
+
 def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float) -> Tuple["mesh.Mesh", "mesh.MeshTags"]:
     """
     Generates a mesh from a STEP file and tags the boundaries.
@@ -124,7 +153,19 @@ def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float) 
     gmsh.option.setNumber("Mesh.MeshSizeMin", mesh_size)
     gmsh.option.setNumber("Mesh.MeshSizeMax", mesh_size)
     gmsh.model.mesh.generate(3)
-    
+
+    # Check mesh size before converting to dolfinx (avoid OOM)
+    node_tags, _, _ = gmsh.model.mesh.getNodes()
+    n_nodes = len(node_tags)
+    max_nodes = int(os.environ.get("HORN_MAX_MESH_NODES", "100000"))
+    if n_nodes > max_nodes:
+        gmsh.finalize()
+        raise RuntimeError(
+            f"Mesh too large: {n_nodes} nodes exceeds limit of {max_nodes}. "
+            f"Skipping this candidate to avoid OOM."
+        )
+    print(f"Mesh nodes: {n_nodes} (limit: {max_nodes})")
+
     # Note the change here: we are now capturing all three return values.
     domain, cell_tags, facet_tags = gmshio.model_to_mesh(gmsh.model, MPI.COMM_WORLD, 0, gdim=3)
     gmsh.finalize()
@@ -357,8 +398,12 @@ def run_simulation(
                     k,
                     ff_directions,
                 )
-                p_ref = 20e-6
-                spl_far = 20 * np.log10(np.abs(p_far) / p_ref + 1e-12)
+                # Far-field operators return pattern values with arbitrary
+                # scaling.  Normalise so that the on-axis (theta=0) magnitude
+                # is 0 dB, giving a relative radiation pattern in dB.
+                p_far_abs = np.abs(p_far)
+                p_on_axis = p_far_abs[0] if p_far_abs[0] > 0 else 1e-30
+                spl_far = 20 * np.log10(p_far_abs / p_on_axis + 1e-30)
                 for angle_deg, spl_val in zip(directivity_angles, spl_far):
                     directivity_results.append({
                         "frequency": frequency,
@@ -367,12 +412,16 @@ def run_simulation(
                     })
             else:
                 p_h = solve_result
+            # The BEM path is a Picard iteration over two solvers, so there is
+            # no single monolithic system to take a residual of.
+            residual_rel, converged_reason = float("nan"), 0
         else:
             problem = LinearProblem(
                 a, L, bcs=bcs,
                 petsc_options={"ksp_type": "preonly", "pc_type": "lu"},
             )
             p_h = problem.solve()
+            residual_rel, converged_reason = _solve_diagnostics(problem, p_h)
 
         # --- Post-processing ---
         p_outlet_sq = fem.assemble_scalar(
@@ -418,14 +467,25 @@ def run_simulation(
         z_real = float(np.real(z_throat))
         z_imag = float(np.imag(z_throat))
 
-        print(f"      -> p_rms = {p_rms:.4f}, SPL = {spl:.2f} dB, "
-              f"phase = {phase_deg:.1f}, Z = {z_real:.1f} + {z_imag:.1f}j")
+        residual_note = ""
+        if not np.isnan(residual_rel):
+            residual_note = f", residual = {residual_rel:.2e}"
+            if residual_rel > RESIDUAL_WARN_THRESHOLD or converged_reason < 0:
+                print(f"      WARNING: {frequency:.1f} Hz solve is suspect "
+                      f"(relative residual {residual_rel:.2e}, "
+                      f"PETSc converged reason {converged_reason}). "
+                      f"Treat this frequency's result as unreliable.")
+        print(f"      -> p_rms = {p_rms:.4f}, mouth-plane SPL = {spl:.2f} dB, "
+              f"phase = {phase_deg:.1f}, Z = {z_real:.1f} + {z_imag:.1f}j"
+              f"{residual_note}")
         results.append({
             "frequency": frequency,
             "spl": spl,
             "phase_deg": phase_deg,
             "z_real": z_real,
             "z_imag": z_imag,
+            "residual": residual_rel,
+            "converged_reason": converged_reason,
         })
 
     # --- Output Generation ---

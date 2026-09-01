@@ -92,7 +92,7 @@ class TestRankHornDrivers:
         assert scores == sorted(scores, reverse=True)
 
     def test_higher_bl_ranks_higher(self, solver_csv, target):
-        """Higher BL (force factor) generally produces higher sensitivity -> higher rank."""
+        """Higher BL (force factor) generally produces higher mouth-plane level -> higher rank."""
         low_bl = _make_driver("low_bl", bl_tm=3.0)
         high_bl = _make_driver("high_bl", bl_tm=15.0)
         results = rank_horn_drivers(
@@ -103,7 +103,7 @@ class TestRankHornDrivers:
             target=target,
             top_n=2,
         )
-        # Higher BL should produce higher sensitivity and rank first
+        # Higher BL should produce a higher mouth-plane level and rank first
         assert results[0]["driver_id"] == "high_bl"
 
     def test_top_n_limits_results(self, solver_csv, target):
