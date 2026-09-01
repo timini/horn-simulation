@@ -156,12 +156,66 @@ _HTML_TEMPLATE = """\
 
 {directivity_section}
 
+{diagnostics_section}
+
 <div class="footer">Horn Simulation Report &mdash; generated {timestamp}</div>
 
 </div>
 </body>
 </html>
 """
+
+
+# Above this relative residual a direct LU solve is not trustworthy.
+RESIDUAL_WARN_THRESHOLD = 1e-8
+
+
+def _diagnostics_section(df) -> str:
+    """Solver-health block built from the per-frequency residual column.
+
+    Returns an empty string for results produced before the solver recorded
+    residuals, so older CSVs still render.
+    """
+    import numpy as np
+
+    if "residual" not in df.columns:
+        return ""
+    residuals = df["residual"].to_numpy(dtype=float)
+    finite = residuals[np.isfinite(residuals)]
+    if finite.size == 0:
+        # The BEM path iterates two solvers and reports no monolithic residual.
+        return ""
+
+    worst = float(np.max(finite))
+    worst_freq = float(df["frequency"].to_numpy(dtype=float)[int(np.nanargmax(residuals))])
+    # A frequency is suspect if either criterion trips, so OR them rather than
+    # summing two counts that can refer to the same frequency.
+    bad = np.isfinite(residuals) & (residuals > RESIDUAL_WARN_THRESHOLD)
+    if "converged_reason" in df.columns:
+        reasons = df["converged_reason"].to_numpy(dtype=float)
+        bad |= np.isfinite(reasons) & (reasons < 0)
+    suspect = int(np.count_nonzero(bad))
+
+    if suspect:
+        verdict = (f'<span style="color:#b91c1c;font-weight:600;">'
+                   f'{suspect} of {len(df)} frequencies exceeded the residual threshold. '
+                   f'Treat those points as unreliable.</span>')
+    else:
+        verdict = ('<span style="color:#15803d;font-weight:600;">'
+                   'All frequencies solved to machine precision.</span>')
+
+    return (
+        '<h2>Solver Diagnostics</h2>\n'
+        '<div class="design-summary">\n'
+        '  <dl style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));'
+        'gap:6px 24px;margin:0;">\n'
+        f'    <div><dt>Worst relative residual</dt><dd>{worst:.2e}</dd></div>\n'
+        f'    <div><dt>At frequency</dt><dd>{worst_freq:.0f} Hz</dd></div>\n'
+        f'    <div><dt>Threshold</dt><dd>{RESIDUAL_WARN_THRESHOLD:.0e}</dd></div>\n'
+        '  </dl>\n'
+        f'  <p style="margin:12px 0 0 0;font-size:0.9em;">{verdict}</p>\n'
+        '</div>\n'
+    )
 
 
 def generate_single_report(
@@ -187,8 +241,9 @@ def generate_single_report(
     """
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
-    # Freq range from CSV if available
+    # Freq range and solver health from the merged results CSV, if available
     freq_range = ""
+    diagnostics_section = ""
     if final_csv:
         try:
             import pandas as pd
@@ -196,6 +251,7 @@ def generate_single_report(
             fmin = df["frequency"].min()
             fmax = df["frequency"].max()
             freq_range = f"{fmin:.0f} \u2014 {fmax:.0f} Hz &nbsp;|&nbsp; "
+            diagnostics_section = _diagnostics_section(df)
         except Exception:
             pass
 
@@ -250,6 +306,7 @@ def generate_single_report(
         "dashboard_src": _img_b64(dashboard_png),
         # Conditional section
         "directivity_section": directivity_section,
+        "diagnostics_section": diagnostics_section,
     })
 
 
