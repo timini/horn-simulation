@@ -2,6 +2,7 @@
 name = "horn-solver"
 version = "0.1.0"
 description = "FEniCSx-based horn simulation and meshing."
+license = "MIT"
 dependencies = [
     "meshio",
     "pandas",

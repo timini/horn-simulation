@@ -2,6 +2,7 @@
 name = "horn-simulation"
 version = "0.1.0"
 description = "Horn loudspeaker simulation pipeline"
+license = "MIT"
 requires-python = ">=3.10"
 
 [tool.uv.workspace]

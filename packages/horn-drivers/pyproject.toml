@@ -2,6 +2,7 @@
 name = "horn-drivers"
 version = "0.1.0"
 description = "Driver database, loader, scraper and validation for the Horn project."
+license = "MIT"
 dependencies = [
     "numpy",
     "horn-core",
