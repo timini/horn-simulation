@@ -51,12 +51,14 @@ def os_radius(z: float, r_t: float, r_m: float, L: float) -> float:
 
 def _build_lecleach_interp(r_t: float, r_m: float, L: float):
     """Pre-compute the Le Cléac'h interpolation arrays."""
-    t = np.linspace(np.pi - 1e-6, np.pi / 2, 500)
+    ratio = r_t / r_m
+    if ratio == 1:
+        return np.array([0., L]), np.array([r_t, r_m])
+    t = np.linspace(np.pi - np.arcsin(ratio), np.pi / 2, 500)
     y, x = np.sin(t), np.log(np.tan(t / 2)) + np.cos(t)
+    y[0] = ratio
     x -= x[0]
-    idx = np.searchsorted(y, r_t / r_m)
-    x_c, y_c = x[idx:] - x[idx], y[idx:]
-    return x_c / x_c[-1] * L, y_c / y_c[-1] * r_m
+    return x / x[-1] * L, y * r_m
 
 
 def lecleach_radius(z: float, r_t: float, r_m: float, L: float) -> float:

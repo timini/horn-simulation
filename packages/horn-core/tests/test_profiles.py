@@ -33,12 +33,12 @@ class TestEndpoints:
     def test_throat_radius(self, profile):
         func = get_radius_func(profile, THROAT_R, MOUTH_R, LENGTH)
         # Le Cléac'h clips the tractrix curve, so throat radius is approximate
-        tol = 0.02 if profile == "lecleach" else 1e-3
+        tol = 1e-3
         assert func(0.0) == pytest.approx(THROAT_R, rel=tol)
 
     def test_mouth_radius(self, profile):
         func = get_radius_func(profile, THROAT_R, MOUTH_R, LENGTH)
-        tol = 0.02 if profile == "lecleach" else 1e-3
+        tol = 1e-3
         assert func(LENGTH) == pytest.approx(MOUTH_R, rel=tol)
 
 

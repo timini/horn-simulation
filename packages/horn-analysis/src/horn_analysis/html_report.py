@@ -510,7 +510,7 @@ def generate_html_report(
     all_ranked: List[dict],
     solver_csvs: Dict[str, str],
     drivers: Dict[str, DriverParameters],
-    throat_radius: float,
+    throat_radius: float | None,
     target: TargetSpec,
     csv_pairs: List[Tuple[str, str]],
     top_n: int = 5,
@@ -642,7 +642,7 @@ def generate_html_report(
         throat_display = (f"{min(radii):.4f} — {max(radii):.4f} m (search range)"
                           if min(radii) != max(radii) else f"{radii[0]:.4f} m")
     else:
-        throat_display = "not available" if show_geometry else f"{throat_radius:.4f} m"
+        throat_display = "not available" if show_geometry or throat_radius is None else f"{throat_radius:.4f} m"
 
     # Mouth/Length display: for fullauto show "varies", for auto show fixed value
     if show_geometry:

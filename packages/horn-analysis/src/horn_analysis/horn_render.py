@@ -62,12 +62,9 @@ def _radius_profile(
         theta = np.arctan2(np.sqrt(mouth_radius**2 - throat_radius**2), length)
         return np.sqrt(throat_radius**2 + (z * np.tan(theta)) ** 2)
     elif profile == "lecleach":
-        t = np.linspace(np.pi - 1e-6, np.pi / 2, 500)
-        y, x = np.sin(t), np.log(np.tan(t / 2)) + np.cos(t)
-        x -= x[0]
-        idx = np.searchsorted(y, throat_radius / mouth_radius)
-        x_c, y_c = x[idx:] - x[idx], y[idx:]
-        return np.interp(z, x_c / x_c[-1] * length, y_c / y_c[-1] * mouth_radius)
+        from horn_core.profiles import get_radius_func
+        radius = get_radius_func("lecleach", throat_radius, mouth_radius, length)
+        return np.array([radius(float(zi)) for zi in z])
     elif profile == "cd":
         frac = 0.3
         z_t = frac * length

@@ -14,17 +14,27 @@ def compare_curves(reference, prediction, low, high, *, relative=False):
         validate_response(frame.frequency, frame.spl)
         if frame.frequency.iloc[0] > low or frame.frequency.iloc[-1] < high:
             raise ValueError("Both datasets must bracket the entire comparison band")
-    grid = np.unique(np.r_[low, high, reference.frequency[(reference.frequency>low)&(reference.frequency<high)], prediction.frequency[(prediction.frequency>low)&(prediction.frequency<high)]])
+    # A fixed grid weights equal log-frequency bandwidth equally, independently
+    # of how densely either source sampled a particular part of the band.
+    grid = np.geomspace(low, high, 10001)
     a = np.interp(np.log(grid), np.log(reference.frequency), reference.spl)
     b = np.interp(np.log(grid), np.log(prediction.frequency), prediction.spl)
     if relative:
         # Explicit shape-only comparison, never satisfies the absolute gate.
         a, b = a-a[0], b-b[0]
     error = np.abs(a-b)
+    # Preserve exact extrema at every original knot, without letting those
+    # knots change the bandwidth-weighted percentile gates.
+    knots = np.unique(np.r_[low, high, reference.frequency, prediction.frequency])
+    knots = knots[(knots >= low) & (knots <= high)]
+    knot_error = np.interp(np.log(knots), np.log(reference.frequency), reference.spl) - np.interp(np.log(knots), np.log(prediction.frequency), prediction.spl)
+    if relative:
+        knot_error -= knot_error[0]
     median, p95 = float(np.median(error)), float(np.percentile(error,95))
     return {"mode": "relative_shape" if relative else "absolute_level",
             "median_absolute_error_db":median, "p95_absolute_error_db":p95,
-            "max_absolute_error_db":float(error.max()), "samples":len(grid),
+            "max_absolute_error_db":float(np.abs(knot_error).max()), "samples":len(grid),
+            "comparison_grid": "10001 points uniform in log frequency",
             "comparison_band_hz":[low,high], "level_gate_passed": not relative and median<=2 and p95<=4,
             "shape_gate_passed": (median<=2 and p95<=4) if relative else None,
             "physical_validation_passed": False,

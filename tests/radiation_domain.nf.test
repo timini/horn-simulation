@@ -62,6 +62,8 @@ nextflow_pipeline {
         then {
             assert workflow.success
             def rank = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/ranked_results.json"))
+            assert !new File("${outputDir}/auto/report/auto_report.html").text.contains("Throat radius: 0.0000")
+            assert new File("${outputDir}/auto/report/auto_summary.txt").text.contains("Throat radius: not available")
             assert rank.status == "no_feasible_design"
             assert rank.reason == "no_geometry_in_radiation_domain"
             assert rank.total_candidates == 0
@@ -71,6 +73,37 @@ nextflow_pipeline {
             assert rank.rejected.size() > 0
             assert rank.rejected.every { it.rejection_reasons.contains("radiation_model_out_of_domain") }
             assert new File("${outputDir}/auto/report/auto_report.html").text.contains("radiation model domain")
+        }
+    }
+    test("Mixed unflanged candidates keep valid designs") {
+        when {
+            params {
+                mode = "auto"
+                target_f_low = 1000
+                target_f_high = 1100
+                drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                throat_radius = 0.01
+                min_mouth_radius = 0.03
+                max_mouth_radius = 0.07
+                num_mouth_radii = 2
+                length = 0.08
+                radiation_model = "unflanged_piston"
+                flange_width = 0.03
+                max_ripple_db = 100
+                lem_top_n = 1
+                refinement_budget = 0
+                num_bands = 2
+                num_intervals = 6
+                mesh_size = 0.01
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            def lem = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/lem_results.json"))
+            assert lem.filtered_candidate_ids.size() == 1
+            assert lem.rankings.any { it.simulation_eligible == false }
+            assert new File("${outputDir}/auto/report/auto_report.html").exists()
         }
     }
 }

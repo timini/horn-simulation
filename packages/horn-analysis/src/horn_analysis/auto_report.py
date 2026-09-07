@@ -20,7 +20,7 @@ def generate_auto_report(
     all_ranked: List[dict],
     solver_csvs: Dict[str, str],
     drivers: Dict[str, DriverParameters],
-    throat_radius: float,
+    throat_radius: float | None,
     target: TargetSpec,
     output_dir: str,
     top_n: int = 5,
@@ -118,7 +118,7 @@ def generate_auto_report(
         "Scores within 0.02 are near-ties for comparison; physical uncertainty is not quantified.",
         "=" * 40,
         f"Target: {target.f_low_hz:.0f} Hz - {target.f_high_hz:.0f} Hz",
-        "Throat radii: see each candidate below" if derived_geometry else f"Throat radius: {throat_radius:.4f} m",
+        "Throat radii: see each candidate below" if derived_geometry else (f"Throat radius: {throat_radius:.4f} m" if throat_radius is not None else "Throat radius: not available"),
         f"Profiles evaluated: {', '.join(solver_csvs.keys())}",
         f"Total candidates scored: {scored_display}",
     ]

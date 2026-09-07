@@ -207,14 +207,8 @@ def create_lecleach_horn(
     Tractrix curve with constant a = mouth_radius, clipped where radius >= throat_radius.
     Gentle expansion at throat, aggressive flare at mouth.
     """
-    t = np.linspace(np.pi - 1e-6, np.pi / 2, 500)
-    y, x = np.sin(t), np.log(np.tan(t / 2)) + np.cos(t)
-    x -= x[0]
-    idx = np.searchsorted(y, throat_radius / mouth_radius)
-    x_c, y_c = x[idx:] - x[idx], y[idx:]
-
-    def radius_func(z: float) -> float:
-        return float(np.interp(z, x_c / x_c[-1] * length, y_c / y_c[-1] * mouth_radius))
+    from horn_core.profiles import get_radius_func
+    radius_func = get_radius_func("lecleach", throat_radius, mouth_radius, length)
 
     return _loft_horn_profile(radius_func, length, num_sections, output_file, "lecleach_horn")
 

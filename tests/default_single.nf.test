@@ -8,6 +8,7 @@ nextflow_pipeline {
         when {
             params {
                 mode = "single"
+                horn_3d_png = "${projectDir}/tests/data/my render ' image.png"
                 min_freq = 200
                 max_freq = 400
                 num_bands = 1
@@ -19,6 +20,7 @@ nextflow_pipeline {
         }
         then {
             assert workflow.success
+            assert new File("${outputDir}/single_report.html").text.contains("iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB")
             def spec = new groovy.json.JsonSlurper().parse(new File("${outputDir}/resolved_specification.json"))
             assert spec.parameters.throat_radius == 0.05
             assert spec.parameters.mouth_radius == 0.2

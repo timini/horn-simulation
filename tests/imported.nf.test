@@ -26,6 +26,7 @@ nextflow_pipeline {
                 length = 0.08
                 driver_id = "synthetic-smoke"
                 drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                horn_3d_png = "${projectDir}/tests/data/my render ' image.png"
                 min_freq = 500
                 max_freq = 1000
                 num_bands = 1
@@ -36,6 +37,7 @@ nextflow_pipeline {
         }
         then {
             assert workflow.success
+            assert new File("${outputDir}/single_report.html").text.contains("iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB")
             def report = new File("${outputDir}/single_report.html").text
             assert report.contains("Inlet area (CAD)")
             assert report.contains("Mouth area (CAD)")

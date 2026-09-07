@@ -73,3 +73,16 @@ def test_pipe_import_preserves_measurement_units_and_extensionless_exports(tmp_p
     assert not result['physical_validation_passed']
     with pytest.raises(ValueError, match='checksum'):
         import_pipe_archive(raw + b'changed', record, tmp_path)
+
+
+def test_comparison_gate_is_invariant_to_nonuniform_resampling():
+    from numpy import interp, log
+    sparse = pd.DataFrame({"frequency": [100., 110., 120., 1000.], "spl": [90., 90., 100., 100.]})
+    reference = pd.DataFrame({"frequency": [100., 1000.], "spl": [90., 90.]})
+    dense_f = np.unique(np.r_[sparse.frequency, np.geomspace(100., 110., 5000)])
+    dense = pd.DataFrame({"frequency": dense_f, "spl": interp(log(dense_f), log(sparse.frequency), sparse.spl)})
+    a = compare_curves(reference, sparse, 100, 1000)
+    b = compare_curves(reference, dense, 100, 1000)
+    assert a == b
+    assert not b["level_gate_passed"]
+    assert b["median_absolute_error_db"] == 10.
