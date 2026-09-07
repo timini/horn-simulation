@@ -30,6 +30,8 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 # --- Test Stage ---
 # This stage adds test files and dependencies to the production image.
 FROM production as test
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+COPY ./scripts/run_pipeline.py /app/scripts/run_pipeline.py
 WORKDIR /app
 ENV PYTHONPATH /app
 

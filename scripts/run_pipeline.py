@@ -24,9 +24,12 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def source_hashes():
+def source_hashes(run_dir=None):
     files = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=ROOT).decode().split("\0")
-    return {name: digest(ROOT/name) for name in sorted(set(files)) if name and not name.startswith((".nf-test/", ".nextflow/", "results/", "work/")) and (ROOT/name).is_file()}
+    return {name: digest(ROOT/name) for name in sorted(set(files))
+            if name and not name.startswith((".nf-test/", ".nextflow/", "results/", "work/"))
+            and (ROOT/name).is_file()
+            and (run_dir is None or not (ROOT/name).resolve().is_relative_to(Path(run_dir).resolve()))}
 
 
 def inspect_images():
@@ -74,7 +77,7 @@ def main():
     manifest_path = run_dir/"manifest.json"
     if any(x in forwarded for x in ("-work-dir", "-w", "-log", "-c", "-C")):
         parser.error("The launcher owns work, log and container configuration paths")
-    images, hashes = inspect_images(), source_hashes()
+    images, hashes = inspect_images(), source_hashes(run_dir)
     run_environment = java_environment()
     previous = None
     resume_tokens = []
