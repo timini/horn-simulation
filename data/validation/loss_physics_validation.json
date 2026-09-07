@@ -1,0 +1,169 @@
+{
+  "protocol": {
+    "air": {
+      "c": 346.28592,
+      "rho": 1.18449,
+      "gamma": 1.402,
+      "viscosity": 1.83183e-05,
+      "conductivity": 0.02613336,
+      "heat_capacity": 1004.16
+    },
+    "cases": {
+      "Brass_O": [
+        0.007,
+        0.007,
+        0.002,
+        "finite_flange"
+      ],
+      "Wood_O": [
+        0.007,
+        0.007,
+        0.007,
+        "finite_flange"
+      ],
+      "3D_O": [
+        0.007,
+        0.007,
+        0.007,
+        "finite_flange"
+      ],
+      "Brass_C": [
+        0.007,
+        0.007,
+        0.0,
+        "closed"
+      ],
+      "Wood_C": [
+        0.007,
+        0.007,
+        0.0,
+        "closed"
+      ],
+      "3D_C": [
+        0.007,
+        0.007,
+        0.0,
+        "closed"
+      ],
+      "Cone_O": [
+        0.005,
+        0.0113,
+        0.0027,
+        "finite_flange"
+      ],
+      "Cone_C": [
+        0.005,
+        0.0113,
+        0.0,
+        "closed"
+      ]
+    },
+    "frequency_range_hz": [
+      110,
+      3900
+    ],
+    "loss_model": "boundary_layer",
+    "fit_parameters": [],
+    "magnitude_limits_db": {
+      "median": 2,
+      "p95": 4
+    },
+    "prediction_sha256": {
+      "3D_O-prediction.csv": "a6c248ca71071bebbd703d5eff4666e287ff03818e8a4722ce27cb7b1f5f0e31",
+      "3D_C-prediction.csv": "acce16102567cba7b35c34fe7a0e45531721c1513036841c60bb15e1f255196a",
+      "Brass_C-prediction.csv": "acce16102567cba7b35c34fe7a0e45531721c1513036841c60bb15e1f255196a",
+      "Cone_C-prediction.csv": "b31a0e1aabe95fb99b75e1d50c31f1dfc462bb0c87023bc5c4fa5f2b68f8416b",
+      "Wood_O-prediction.csv": "a6c248ca71071bebbd703d5eff4666e287ff03818e8a4722ce27cb7b1f5f0e31",
+      "Wood_C-prediction.csv": "acce16102567cba7b35c34fe7a0e45531721c1513036841c60bb15e1f255196a",
+      "Brass_O-prediction.csv": "74474dc1c20dbc3472bc2f9a0a681dfe0ad4aa1d07c4091f75c279438cc3c627",
+      "Cone_O-prediction.csv": "0e9f4996bc04a56b33aaed8c05bad503b3f35b603d9552c91afca958d21aec30"
+    },
+    "source_archive_sha256": "724b96be96e210e52e939ecceb78d919df46b9001af89defc5912118f8584fcd",
+    "source_url": "https://zenodo.org/records/20024938",
+    "code_sha256": {
+      "/workspace/scripts/validate_duct_physics.py": "d01af8489ceb248cd94e361787ba272d5dd2805464b879f6107768bd04102fbd",
+      "packages/horn-core/src/horn_core/duct.py": "bf07a65a60fd697f22cb99f7f03890f9efae688ff1b240102b9ea17cde1fbb3d",
+      "packages/horn-core/src/horn_core/webster.py": "f1218085bb57cd1404b9eac00b69a9da510ae1b874008920f75d8aa3c84eb991",
+      "packages/horn-solver/src/horn_solver/solver.py": "eb5faa8c1e2c03a0ad3cf4f60079c590d1ddc1268e5bdb611bce62b9bfb48d20"
+    }
+  },
+  "cases": {
+    "Brass_O": {
+      "curves": 36,
+      "magnitude_passes": 36,
+      "median_p95_db": 1.1384618899305603
+    },
+    "Wood_O": {
+      "curves": 36,
+      "magnitude_passes": 29,
+      "median_p95_db": 3.4050853578761906
+    },
+    "3D_O": {
+      "curves": 37,
+      "magnitude_passes": 36,
+      "median_p95_db": 1.6288907322562383
+    },
+    "Brass_C": {
+      "curves": 45,
+      "magnitude_passes": 41,
+      "median_p95_db": 2.447156732861161
+    },
+    "Wood_C": {
+      "curves": 45,
+      "magnitude_passes": 21,
+      "median_p95_db": 4.078957930322787
+    },
+    "3D_C": {
+      "curves": 46,
+      "magnitude_passes": 33,
+      "median_p95_db": 2.220065468207828
+    },
+    "Cone_O": {
+      "curves": 28,
+      "magnitude_passes": 26,
+      "median_p95_db": 2.936545883502639
+    },
+    "Cone_C": {
+      "curves": 26,
+      "magnitude_passes": 15,
+      "median_p95_db": 3.523937258158538
+    }
+  },
+  "independent_numerical_comparisons": {
+    "Raw_data/Simulated_Impedance/Cone_closed/Cone-closed_Operator-C_1DFEM_PlaneWave.txt": {
+      "median_db": 0.00010365487966051693,
+      "p95_db": 0.008931877119180365,
+      "max_db": 0.08194584839071116,
+      "p95_scaled_complex_error": 0.0006965559805013927,
+      "magnitude_agreement": true
+    },
+    "Raw_data/Simulated_Impedance/Cylinder_closed/Cylinder-closed_Operator-C_1DFEM_ZK.txt": {
+      "median_db": 9.165838623899776e-05,
+      "p95_db": 0.008742808147174515,
+      "max_db": 0.06733101954294819,
+      "p95_scaled_complex_error": 0.0008378623809808636,
+      "magnitude_agreement": true
+    },
+    "Raw_data/Simulated_Impedance/Cylinder_finite_flanged_width2mm/Cylinder-flanged-W2mm_Operator-C_1DFEM_Zk.txt": {
+      "median_db": 0.00014191956427901596,
+      "p95_db": 0.00908226100684019,
+      "max_db": 0.06487935704827338,
+      "p95_scaled_complex_error": 0.0012848778324869407,
+      "magnitude_agreement": true
+    },
+    "Raw_data/Simulated_Impedance/Cylinder_finite_flanged_width7mm/Cylinder-flanged-W7mm_Operator-C_1DFEM_ZK.txt": {
+      "median_db": 0.00014251529308253238,
+      "p95_db": 0.00900857571880803,
+      "max_db": 0.06450009073486165,
+      "p95_scaled_complex_error": 0.0012654177610426638,
+      "magnitude_agreement": true
+    }
+  },
+  "physical_horn_workflow_validated": false,
+  "scope": "Nominal rigid pipe input impedance only; magnitude gates do not validate motor, output SPL or all specimen uncertainties.",
+  "measurement_count": 299,
+  "magnitude_passes": 237,
+  "held_out_count": 263,
+  "held_out_magnitude_passes": 201,
+  "attribution": "Alexis Ernoult and benchmark contributors, Zenodo 20024938 v2, CC BY 4.0. Summary computed by this project; no model fitting."
+}

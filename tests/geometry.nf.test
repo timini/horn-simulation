@@ -1,0 +1,26 @@
+nextflow_process {
+
+    name "Test Process generate_geometry"
+    script "../main.nf"
+    process "generate_geometry"
+    config "nextflow.config"
+    profile "docker"
+
+    test("Should run the generate_geometry process") {
+        when {
+            process {
+                """
+                input[0] = 0.05
+                input[1] = 0.2
+                input[2] = 0.5
+                input[3] = "conical"
+                input[4] = 20
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out[0].size() > 0
+        }
+    }
+}

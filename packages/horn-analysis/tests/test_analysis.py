@@ -118,8 +118,8 @@ class TestKPI:
         json_str = json.dumps(d)
         assert len(json_str) > 0
 
-    def test_flat_response_no_f3(self, tmp_path):
-        """A flat response at the peak should have no -3dB crossing below the peak."""
+    def test_flat_response_covers_full_range(self, tmp_path):
+        """A flat response covers the full measurement range (never drops 3 dB)."""
         from horn_analysis.kpi import extract_kpis
 
         csv_path = tmp_path / "flat.csv"
@@ -129,9 +129,9 @@ class TestKPI:
 
         kpis = extract_kpis(str(csv_path))
         assert kpis.peak_spl_db == pytest.approx(90.0)
-        # With perfectly flat response, there's no -3dB crossing
-        assert kpis.f3_low_hz is None
-        assert kpis.f3_high_hz is None
+        # Flat response is above -3 dB at both edges → full range
+        assert kpis.f3_low_hz == pytest.approx(100.0)
+        assert kpis.f3_high_hz == pytest.approx(10000.0)
 
 
 class TestMultiComparison:

@@ -147,3 +147,16 @@ class TestRankHornDrivers:
         kpi = results[0]["kpi"]
         assert kpi["peak_spl_db"] > 0
         assert kpi["peak_frequency_hz"] > 0
+
+
+def test_ranking_checks_actual_solver_mouth_for_each_driver(solver_csv):
+    frame = pd.read_csv(solver_csv)
+    frame['mouth_area_m2'] = np.pi * .02**2
+    frame.to_csv(solver_csv, index=False)
+    drivers = [_make_driver('fits', sd_m2=.001), _make_driver('oversize', sd_m2=.002)]
+    rows = rank_horn_drivers(solver_csv, 'fixture', .02, drivers,
+                            TargetSpec(500, 4000, max_ripple_db=100.))
+    by_id = {row['driver_id']: row for row in rows}
+    assert 'driver_larger_than_mouth' not in by_id['fits']['rejection_reasons']
+    assert 'driver_larger_than_mouth' in by_id['oversize']['rejection_reasons']
+    assert not by_id['oversize']['model_feasible']

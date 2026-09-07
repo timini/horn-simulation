@@ -33,7 +33,11 @@ class TestExtractKpisFromArrays:
         assert isinstance(result, HornKPI)
 
     def test_matches_csv_version(self, bandpass_data, bandpass_csv):
-        """Array version should produce identical results to CSV version."""
+        """Array version should produce similar results to CSV version.
+
+        Note: passband_ripple and avg_sensitivity may differ slightly due to
+        resampling onto a uniform log grid + Savgol smoothing.
+        """
         freq, spl = bandpass_data
         from_arrays = extract_kpis_from_arrays(freq, spl)
         from_csv = extract_kpis(bandpass_csv)
@@ -57,11 +61,12 @@ class TestExtractKpisFromArrays:
         if from_csv.bandwidth_octaves is not None:
             assert from_arrays.bandwidth_octaves == pytest.approx(from_csv.bandwidth_octaves, rel=1e-6)
 
+        # Ripple and sensitivity use resampled+smoothed data, so allow wider tolerance
         if from_csv.passband_ripple_db is not None:
-            assert from_arrays.passband_ripple_db == pytest.approx(from_csv.passband_ripple_db, rel=1e-6)
+            assert from_arrays.passband_ripple_db == pytest.approx(from_csv.passband_ripple_db, abs=0.5)
 
         if from_csv.average_sensitivity_db is not None:
-            assert from_arrays.average_sensitivity_db == pytest.approx(from_csv.average_sensitivity_db, rel=1e-6)
+            assert from_arrays.average_sensitivity_db == pytest.approx(from_csv.average_sensitivity_db, abs=0.3)
 
     def test_peak_detection(self, bandpass_data):
         """Should detect the peak correctly."""
@@ -71,10 +76,18 @@ class TestExtractKpisFromArrays:
         assert result.peak_frequency_hz > 0
 
     def test_flat_response(self):
-        """Flat response should have no -3dB crossings."""
+        """Flat response covers the full measurement range (never drops 3 dB)."""
         freq = np.geomspace(100, 10000, 50)
         spl = np.full_like(freq, 90.0)
         result = extract_kpis_from_arrays(freq, spl)
         assert result.peak_spl_db == pytest.approx(90.0)
-        assert result.f3_low_hz is None
-        assert result.f3_high_hz is None
+        assert result.f3_low_hz == pytest.approx(100.0)
+        assert result.f3_high_hz == pytest.approx(10000.0)
+
+@pytest.mark.parametrize("offset", [-2.8, 2.8])
+def test_reported_ripple_preserves_one_sample_extremum(offset):
+    freq = np.geomspace(100, 10000, 101)
+    levels = np.full(101, 90.)
+    levels[43] += offset
+    result = extract_kpis_from_arrays(freq, levels)
+    assert result.passband_ripple_db == pytest.approx(abs(offset))

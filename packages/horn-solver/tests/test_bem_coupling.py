@@ -96,15 +96,15 @@ class TestBemOperators:
         K_op = double_layer(space, space, space, k)
         Id_op = identity(space, space, space)
 
-        # Neumann BC: dp/dn = -j*k*rho*c*v0 on sphere surface
+        # Bempp outgoing exp(+ikr)/r uses exp(-iwt): dp/dn = +i*omega*rho*v.
         # For unit velocity v0=1, outward normal velocity:
         v0 = 1.0
-        neumann_data = -1j * k * rho * c * v0 * np.ones(space.global_dof_count)
+        neumann_data = 1j * k * rho * c * v0 * np.ones(space.global_dof_count)
         neumann_gf = bempp_api.GridFunction(space, coefficients=neumann_data)
 
-        # Integral equation: (0.5*I + K) * p = V * dp/dn
+        # Exterior trace identity: (K - 0.5*I) p = V dp/dn.
         # Solve for p
-        lhs = 0.5 * Id_op + K_op
+        lhs = K_op - 0.5 * Id_op
         rhs_gf = V_op * neumann_gf
 
         from scipy.sparse.linalg import gmres
@@ -114,11 +114,8 @@ class TestBemOperators:
         p_coeffs, info = gmres(lhs_disc, rhs_vec, atol=1e-8)
         assert info == 0, f"GMRES did not converge: info={info}"
 
-        # Analytical surface pressure for pulsating sphere
-        # p(a) = rho*c*v0 * j*ka / (1 + j*ka) (exact for monopole)
-        # But for a pulsating sphere (all modes), the exact result is:
-        # p(a) = -rho*c*v0 * h0'(ka) / h0(ka) where h0 is spherical Hankel
-        # For simplicity, use the monopole (n=0) approximation
+        # Exact n=0 outgoing spherical wave p=A h0(kr), so
+        # p/v = i*rho*c*h0(ka)/h0_prime(ka), not its reciprocal.
         from scipy.special import spherical_jn, spherical_yn
 
         def spherical_hankel1(n, z):
@@ -130,7 +127,9 @@ class TestBemOperators:
         # For pulsating sphere: only n=0 mode contributes
         h0 = spherical_hankel1(0, ka)
         h0p = spherical_hankel1_deriv(0, ka)
-        p_analytical = -rho * c * v0 * h0p / h0
+        p_analytical = 1j * rho * c * v0 * h0 / h0p
+
+        np.testing.assert_allclose(np.mean(p_coeffs), p_analytical, rtol=.05)
 
         # Compare RMS pressure
         p_rms_bem = np.sqrt(np.mean(np.abs(p_coeffs) ** 2))
@@ -154,6 +153,7 @@ class TestTraceExtraction:
 
     def test_trace_from_unit_cube(self):
         """Extract BEM trace space from a DOLFINx unit cube."""
+        import horn_solver.bem_coupling  # Apply the dolfinx 0.8 compatibility adapter
         from bempp.api.external import fenicsx as bempp_fenicsx
         from dolfinx import fem, mesh
         from mpi4py import MPI
@@ -171,6 +171,7 @@ class TestTraceExtraction:
 
     def test_trace_matrix_maps_correctly(self):
         """Trace matrix should map constant FEM field to constant BEM field."""
+        import horn_solver.bem_coupling  # Apply the dolfinx 0.8 compatibility adapter
         from bempp.api.external import fenicsx as bempp_fenicsx
         from dolfinx import fem, mesh
         from mpi4py import MPI
@@ -219,36 +220,11 @@ class TestBemCouplingModule:
 
 
 class TestE2eWithBemBC:
-    """End-to-end test: run the solver with radiation_model='bem'."""
+    """An invalid legacy exterior model must not produce usable horn results."""
 
-    def test_bem_produces_finite_spl(self, tmp_path):
-        """Solver with BEM radiation BC should produce finite SPL values."""
-        from pathlib import Path
+    def test_legacy_coupling_is_rejected_before_meshing(self, tmp_path):
         from horn_solver.solver import run_simulation_from_step
-
-        step_file = Path(__file__).parent / "test_box.stp"
-        if not step_file.exists():
-            pytest.skip("test_box.stp not found")
-
-        output_file = tmp_path / "results.csv"
-
-        driver_params = {"Bl": 5.0, "Re": 6.0, "length": 1.0}
-        freq_range = (200.0, 500.0)
-
-        result_path = run_simulation_from_step(
-            step_file=str(step_file),
-            driver_params=driver_params,
-            freq_range=freq_range,
-            num_intervals=3,  # few points for speed
-            output_file=str(output_file),
-            max_freq_mesh=freq_range[1],
-            mesh_size=1.0,
-            radiation_model="bem",
-        )
-
-        assert result_path.exists()
-
-        import pandas as pd
-        results_df = pd.read_csv(result_path)
-        assert len(results_df) == 3
-        assert all(np.isfinite(results_df["spl"].values)), "SPL values should be finite"
+        with pytest.raises(NotImplementedError, match="whole-boundary trace"):
+            run_simulation_from_step("unused.step",(200,500),3,{"length":1.},
+                                     str(tmp_path/"results.csv"),500,radiation_model="bem")
+        assert not (tmp_path/"results.csv").exists()

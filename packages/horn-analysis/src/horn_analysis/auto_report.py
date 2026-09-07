@@ -1,8 +1,5 @@
-"""Auto-select report generation for driver-horn ranking results.
-
-Produces ranking JSON, comparison plots, individual CSVs, and a
-human-readable summary from ranked driver-horn combinations.
-"""
+"""Reports for experimental driver-horn predictions and their evidence gaps."""
+from horn_analysis.evaluation import coupled_output
 
 import argparse
 import json
@@ -23,13 +20,17 @@ def generate_auto_report(
     all_ranked: List[dict],
     solver_csvs: Dict[str, str],
     drivers: Dict[str, DriverParameters],
-    throat_radius: float,
+    throat_radius: float | None,
     target: TargetSpec,
     output_dir: str,
     top_n: int = 5,
     mouth_radius: float | None = None,
     horn_length: float | None = None,
     derived_geometry: Optional[dict] = None,
+    total_candidates: int | None = None,
+    total_scored: int | None = None,
+    lem_results: Optional[dict] = None,
+    no_feasible_reason: Optional[str] = None,
 ) -> Path:
     """Generate the auto-select report with rankings, plots, and CSVs.
 
@@ -44,6 +45,8 @@ def generate_auto_report(
         mouth_radius: Horn mouth radius in metres (for report display).
         horn_length: Horn length in metres (for report display).
         derived_geometry: Optional dict from geometry_designer (fullauto mode).
+        total_candidates: Total number of geometry candidates simulated.
+        total_scored: Total number of driver-horn combinations scored.
 
     Returns:
         Path to the output directory.
@@ -53,6 +56,8 @@ def generate_auto_report(
 
     # Sort all results by composite score
     all_ranked.sort(key=lambda r: r["composite_score"], reverse=True)
+    from horn_analysis.search import annotate_comparable_candidates
+    all_ranked = annotate_comparable_candidates(all_ranked)
     top_results = all_ranked[:top_n]
 
     # 1. Full ranking JSON
@@ -65,7 +70,7 @@ def generate_auto_report(
         horn_label = result["horn_label"]
 
         if driver_id not in drivers or horn_label not in solver_csvs:
-            continue
+            raise ValueError(f"Missing driver or solver response for {driver_id}/{horn_label}")
 
         drv = drivers[driver_id]
         solver_csv = solver_csvs[horn_label]
@@ -74,10 +79,9 @@ def generate_auto_report(
         solver_spl = df["spl"].values
         z_real = df["z_real"].values
         z_imag = df["z_imag"].values
-        throat_area = np.pi * throat_radius ** 2
+        cand_throat = result.get("throat_radius", throat_radius)
 
-        p_throat = compute_driver_response(drv, freq, z_real, z_imag, throat_area)
-        coupled_spl = scale_solver_spl(solver_spl, p_throat)
+        coupled_spl, _, metric = coupled_output(df, drv, target, cand_throat)
 
         csv_name = f"coupled_{rank:02d}_{driver_id}_{horn_label}.csv"
         csv_path = out / csv_name
@@ -97,18 +101,42 @@ def generate_auto_report(
             kpi_table=True,
         )
 
+    else:
+        from horn_analysis import plot_theme
+        fig, ax = plot_theme.create_figure()
+        ax.text(.5, .5, "No feasible design in evaluated candidates", ha="center", va="center", transform=ax.transAxes)
+        fig.savefig(out / "auto_comparison.png")
+        import matplotlib.pyplot as plt
+        plt.close(fig)
+
     # 4. Human-readable summary
+    scored_display = total_scored if total_scored is not None else len(all_ranked)
     lines = [
-        "Horn Driver Auto-Select Results",
+        "Horn Driver Auto-Select Results — experimental predictions",
+        "Status: experimental_candidates" if all_ranked else "Status: no_feasible_design",
+        "No recommendation is physically validated. See evidence gaps in ranking JSON.",
+        "Scores within 0.02 are near-ties for comparison; physical uncertainty is not quantified.",
         "=" * 40,
         f"Target: {target.f_low_hz:.0f} Hz - {target.f_high_hz:.0f} Hz",
-        f"Throat radius: {throat_radius:.4f} m",
+        "Throat radii: see each candidate below" if derived_geometry else (f"Throat radius: {throat_radius:.4f} m" if throat_radius is not None else "Throat radius: not available"),
         f"Profiles evaluated: {', '.join(solver_csvs.keys())}",
-        f"Total candidates scored: {len(all_ranked)}",
+        f"Total candidates scored: {scored_display}",
+    ]
+
+    if lem_results:
+        lines.extend([
+            "",
+            "LEM Prescreening:",
+            f"  Candidates evaluated by LEM: {lem_results.get('total_evaluated', 'N/A')}",
+            f"  Driver-horn pairs scored: {lem_results.get('total_pairs', 'N/A')}",
+            f"  Passed to FEM: {len(lem_results.get('filtered_candidate_ids', []))}",
+        ])
+
+    lines.extend([
         "",
         f"Top {len(top_results)} Results:",
         "-" * 40,
-    ]
+    ])
 
     for rank, result in enumerate(top_results, 1):
         lines.append(
@@ -118,7 +146,9 @@ def generate_auto_report(
         lines.append(f"     Score: {result['composite_score']:.3f}  "
                       f"BW coverage: {result['bandwidth_coverage']:.1%}  "
                       f"Ripple: {result['passband_ripple_db']:.1f} dB  "
-                      f"Sensitivity: {result['avg_sensitivity_db']:.1f} dB")
+                      f"Mean output level: {result['avg_sensitivity_db']:.1f} dB")
+        if all(result.get(key) is not None for key in ("throat_radius", "mouth_radius", "length")):
+            lines.append(f"     Throat radius: {result['throat_radius']:.6f} m; mouth radius: {result['mouth_radius']:.6f} m; length: {result['length']:.6f} m")
         if "kpi" in result:
             kpi = result["kpi"]
             f3l = f"{kpi['f3_low_hz']:.0f}" if kpi.get("f3_low_hz") else "N/A"
@@ -127,6 +157,8 @@ def generate_auto_report(
                           f"Peak: {kpi['peak_spl_db']:.1f} dB @ {kpi['peak_frequency_hz']:.0f} Hz")
         lines.append("")
 
+    if no_feasible_reason and not all_ranked:
+        lines.append("Reason: " + no_feasible_reason)
     (out / "auto_summary.txt").write_text("\n".join(lines))
 
     # 5. Self-contained HTML report
@@ -141,6 +173,10 @@ def generate_auto_report(
         mouth_radius=mouth_radius,
         length=horn_length,
         derived_geometry=derived_geometry,
+        total_candidates=total_candidates,
+        total_scored=total_scored,
+        lem_results=lem_results,
+        no_feasible_reason=no_feasible_reason,
     )
     (out / "auto_report.html").write_text(html_report)
 

@@ -53,6 +53,9 @@ def _fmt(value, fmt: str = ".1f", fallback: str = "\u2014") -> str:
 
 # -- Plot generators --------------------------------------------------------
 
+_COMPARISON_LINESTYLES = ["-", "--", "-.", ":", (0, (3, 1, 1, 1))]
+
+
 def _plot_coupled_spl_comparison(
     csv_pairs: List[Tuple[str, str]],
     target: TargetSpec,
@@ -61,13 +64,12 @@ def _plot_coupled_spl_comparison(
     fig, ax = plot_theme.create_figure(figsize=(11, 5.5))
 
     all_freq = []
-    for csv_path, label in csv_pairs:
+    for i, (csv_path, label) in enumerate(csv_pairs):
         df = pd.read_csv(csv_path)
-        # Extract profile name from label (last word in parens)
-        profile = label.rsplit("(", 1)[-1].rstrip(")") if "(" in label else ""
-        style = plot_theme.profile_style(profile)
+        color = plot_theme.MULTI_COLORS[i % len(plot_theme.MULTI_COLORS)]
+        ls = _COMPARISON_LINESTYLES[i % len(_COMPARISON_LINESTYLES)]
         ax.plot(df["frequency"], df["spl"], label=label,
-                color=style["color"], linestyle=style["linestyle"], linewidth=1.4)
+                color=color, linestyle=ls, linewidth=1.8)
         all_freq.extend(df["frequency"].values)
 
     plot_theme.target_band_span(ax, target)
@@ -75,11 +77,42 @@ def _plot_coupled_spl_comparison(
     if all_freq:
         plot_theme.setup_freq_axis(ax, min(all_freq), max(all_freq))
     ax.set_ylabel("SPL (dB)")
-    ax.set_title("Coupled SPL \u2014 Top Candidates")
+    ax.set_title("Estimated observer output \u2014 Top Candidates")
     plot_theme.setup_grid(ax)
     ax.legend(fontsize=8, loc="best")
     fig.tight_layout()
     return plot_theme.fig_to_b64(fig)
+
+
+_SHORT_TO_PROFILE = {
+    "con": "conical",
+    "exp": "exponential",
+    "hyp": "hyperbolic",
+    "tra": "tractrix",
+    "os": "os",
+    "lec": "lecleach",
+    "cd": "cd",
+}
+
+
+def _pick_representative_per_profile(solver_csvs: Dict[str, str]) -> Dict[str, str]:
+    """Select one representative candidate per horn profile.
+
+    Groups candidates by profile (extracted from IDs like ``auto_hyp_0012``)
+    and picks the median candidate from each group.
+    """
+    groups: Dict[str, list] = {}
+    for cid, path in solver_csvs.items():
+        parts = cid.split("_")
+        short = parts[1] if len(parts) >= 2 else cid
+        profile = _SHORT_TO_PROFILE.get(short, short)
+        groups.setdefault(profile, []).append((cid, path))
+
+    result: Dict[str, str] = {}
+    for profile, items in sorted(groups.items()):
+        items.sort()
+        result[profile] = items[len(items) // 2][1]
+    return result
 
 
 def _plot_raw_profile_spl(
@@ -205,6 +238,23 @@ def _profile_badge(profile: str) -> str:
     )
 
 
+_EVIDENCE_LABELS = {
+    "driver_usable_band_unknown": "Driver operating band is unknown",
+    "driver_parameter_provenance_missing": "Driver parameters lack a verified source",
+    "driver_interface_unverified": "Driver chamber or throat adapter has not been validated",
+    "moving_mass_and_rear_load_not_separated": "Diaphragm mass and rear air load have not been characterized separately",
+    "maximum_output_limits_unknown": "Power or excursion limits are missing",
+    "mechanical_damping_unknown": "Mechanical damping is unknown",
+}
+
+
+def _render_evidence_summary(results):
+    return "<ul>" + "".join(
+        "<li><strong>" + html.escape(r.get("model_name") or r.get("driver_id", "")) + "</strong>: "
+        + html.escape("; ".join(_EVIDENCE_LABELS.get(g, g.replace("_", " ")) for g in r.get("evidence_gaps", []))
+                      or "Independent assembly validation is pending") + ".</li>" for r in results) + "</ul>"
+
+
 def _render_rankings_rows(
     ranked_results: List[dict],
     drivers: Dict[str, DriverParameters],
@@ -223,6 +273,7 @@ def _render_rankings_rows(
         geom_cols = ""
         if show_geometry:
             geom_cols = (
+                f"<td>{_fmt(r.get('throat_radius'), '.4f')}</td>"
                 f"<td>{_fmt(r.get('mouth_radius'), '.4f')}</td>"
                 f"<td>{_fmt(r.get('length'), '.4f')}</td>"
             )
@@ -237,7 +288,7 @@ def _render_rankings_rows(
             f"<td>{drv_power}</td>"
             f"<td>{_profile_badge(r.get('horn_label', ''))}</td>"
             f"{geom_cols}"
-            f"<td><strong>{_fmt(r.get('composite_score'), '.3f')}</strong></td>"
+            f"<td><strong>{_fmt(r.get('composite_score'), '.3f')}</strong>{' (near tie)' if r.get('comparison_status') == 'near_tie' else ''}</td>"
             f"<td>{_fmt(r.get('bandwidth_coverage'), '.1%')}</td>"
             f"<td>{_fmt(r.get('passband_ripple_db'), '.1f')}</td>"
             f"<td>{_fmt(r.get('avg_sensitivity_db'), '.1f')}</td>"
@@ -302,9 +353,10 @@ _HTML_TEMPLATE = """\
   .card .label {{ font-size: 0.75em; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; }}
   .card .value {{ font-size: 1.5em; font-weight: 700; color: #0f172a; margin-top: 4px; }}
   /* Tables */
-  table {{ width: 100%; border-collapse: collapse; font-size: 0.85em; background: #fff; border-radius: 8px; overflow: hidden; }}
+  .table-wrap {{ overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -4px; padding: 0 4px; }}
+  table {{ width: 100%; border-collapse: collapse; font-size: 0.85em; background: #fff; border-radius: 8px; overflow: hidden; min-width: 800px; }}
   th {{ background: #f1f5f9; text-align: left; padding: 10px 12px; font-weight: 600; white-space: nowrap; }}
-  td {{ padding: 8px 12px; border-top: 1px solid #e2e8f0; }}
+  td {{ padding: 8px 12px; border-top: 1px solid #e2e8f0; white-space: nowrap; }}
   tr:hover {{ background: #f8fafc; }}
   /* Plots */
   .plot {{ text-align: center; margin: 16px 0; }}
@@ -321,9 +373,18 @@ _HTML_TEMPLATE = """\
 <div class="container">
 
 <h1>Horn Auto-Select Report</h1>
+<div class="design-summary"><strong>{assessment_status}</strong>
+{no_feasible_reason}
+<p>Predictions are experimental. Driver suitability and the exterior model require independent validation.
+The observer estimate assumes a uniformly moving circular aperture in an infinite baffle.
+Raw horn plots show mouth-plane pressure. Legacy inputs contain mouth-plane levels only.</p>
+<p>Drive: {drive_voltage} V RMS. Observer: {observer_distance} m on axis from mouth plane.
+Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume, not manufacturing walls.</p>
+<p>Acoustic models used: {physics_summary}. Scores within 0.02 are near-ties for comparison; physical uncertainty remains unquantified.</p>
+{evidence_summary}</div>
 <p class="subtitle">
   Target: {target_low:.0f} Hz — {target_high:.0f} Hz &nbsp;|&nbsp;
-  Throat: {throat_radius:.4f} m &nbsp;|&nbsp;
+  Throat radius: {throat_display} &nbsp;|&nbsp;
   Mouth: {mouth_radius} &nbsp;|&nbsp;
   Length: {horn_length} &nbsp;|&nbsp;
   Profiles: {profiles} &nbsp;|&nbsp;
@@ -335,7 +396,7 @@ _HTML_TEMPLATE = """\
   <div class="card"><div class="label">Top shown</div><div class="value">{n_top}</div></div>
   <div class="card"><div class="label">Best score</div><div class="value">{best_score}</div></div>
   <div class="card"><div class="label">Best BW coverage</div><div class="value">{best_bw}</div></div>
-  <div class="card"><div class="label">Best sensitivity</div><div class="value">{best_sens}</div></div>
+  <div class="card"><div class="label">Best mean output</div><div class="value">{best_sens}</div></div>
   <div class="card"><div class="label">Lowest ripple</div><div class="value">{best_ripple}</div></div>
 </div>
 
@@ -344,21 +405,23 @@ _HTML_TEMPLATE = """\
 {geometry_section}
 
 <h2>Rankings</h2>
+<div class="table-wrap">
 <table>
 <thead>
 <tr>
   <th>#</th><th>Manufacturer</th><th>Model</th><th>Type</th><th>Size</th><th>Power (W)</th><th>Profile</th>
   {geometry_header_cols}
   <th>Score</th>
-  <th>BW Cov.</th><th>Ripple (dB)</th><th>Sensitivity (dB)</th><th>f3 range (Hz)</th><th>Peak (dB)</th>
+  <th>BW Cov.</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz)</th><th>Peak (dB)</th>
 </tr>
 </thead>
 <tbody>
 {rankings_rows}
 </tbody>
 </table>
+</div>
 
-<h2>Coupled SPL — Top Candidates</h2>
+<h2>Estimated observer output — top candidates</h2>
 <div class="plot"><img src="{plot_coupled_spl}" alt="Coupled SPL comparison"></div>
 
 <h2>Raw Horn SPL by Profile</h2>
@@ -371,6 +434,7 @@ _HTML_TEMPLATE = """\
 </div>
 
 <h2>Pre-Screened Drivers</h2>
+<div class="table-wrap">
 <table>
 <thead>
 <tr>
@@ -382,6 +446,7 @@ _HTML_TEMPLATE = """\
 {drivers_rows}
 </tbody>
 </table>
+</div>
 
 <div class="footer">Horn Auto-Select Report &mdash; generated {timestamp}</div>
 
@@ -394,23 +459,49 @@ _HTML_TEMPLATE = """\
 # -- Public entry point -----------------------------------------------------
 
 def _render_design_summary(derived_geometry: dict) -> str:
-    """Render the Design Summary section for fullauto mode."""
+    """Render the Design Summary section with optimization parameters."""
+    tr = derived_geometry.get("throat_radius_range", [])
+    throat_desc = " — ".join(_fmt(v, ".4f") for v in tr) + " m" if tr else "Unknown"
     mr = derived_geometry.get("mouth_radius_range", [])
     lr = derived_geometry.get("length_range", [])
     sr = derived_geometry.get("sim_freq_range", [])
+
+    # Determine fixed vs optimized for mouth radius and length
+    mr_fixed = len(mr) == 2 and abs(mr[1] - mr[0]) < 1e-6
+    lr_fixed = len(lr) == 2 and abs(lr[1] - lr[0]) < 1e-6
+
+    if mr_fixed:
+        mouth_desc = f'{_fmt(mr[0], ".3f")} m <span style="color:#059669;font-weight:600">(fixed)</span>'
+    else:
+        mouth_desc = (
+            f'{_fmt(mr[0] if mr else None, ".4f")} — '
+            f'{_fmt(mr[1] if len(mr) > 1 else None, ".4f")} m '
+            f'<span style="color:#2563eb;font-weight:600">(optimized)</span>'
+        )
+
+    if lr_fixed:
+        length_desc = f'{_fmt(lr[0], ".3f")} m <span style="color:#059669;font-weight:600">(fixed)</span>'
+    else:
+        length_desc = (
+            f'{_fmt(lr[0] if lr else None, ".4f")} — '
+            f'{_fmt(lr[1] if len(lr) > 1 else None, ".4f")} m '
+            f'<span style="color:#2563eb;font-weight:600">(optimized, &lambda;/4 to &lambda;/2)</span>'
+        )
+
     return (
         '<h2>Design Summary</h2>\n'
         '<div class="design-summary"><dl>'
+        f'<dt>Target frequency band</dt><dd>{_fmt(derived_geometry.get("target_f_low"), ".0f")} — '
+        f'{_fmt(derived_geometry.get("target_f_high"), ".0f")} Hz</dd>'
+        f'<dt>Throat radius range</dt><dd>{throat_desc}</dd>'
+        f'<dt>Mouth radius</dt><dd>{mouth_desc}</dd>'
+        f'<dt>Length</dt><dd>{length_desc}</dd>'
         f'<dt>Ideal mouth radius</dt><dd>{_fmt(derived_geometry.get("ideal_mouth_radius"), ".4f")} m '
         f'(from c&#8320;/2&pi;f<sub>low</sub>)</dd>'
-        f'<dt>Mouth radius range</dt><dd>{_fmt(mr[0] if mr else None, ".4f")} — '
-        f'{_fmt(mr[1] if len(mr) > 1 else None, ".4f")} m (&plusmn;30%)</dd>'
-        f'<dt>Length range</dt><dd>{_fmt(lr[0] if lr else None, ".4f")} — '
-        f'{_fmt(lr[1] if len(lr) > 1 else None, ".4f")} m '
-        f'(&lambda;/4 to &lambda;/2)</dd>'
         f'<dt>Simulation freq range</dt><dd>{_fmt(sr[0] if sr else None, ".0f")} — '
         f'{_fmt(sr[1] if len(sr) > 1 else None, ".0f")} Hz (&plusmn;0.5 octave)</dd>'
-        f'<dt>Candidate count</dt><dd>{derived_geometry.get("candidate_count", "—")}</dd>'
+        f'<dt>Profiles</dt><dd>7 (conical, exponential, hyperbolic, tractrix, OS, Le Cl&eacute;ac&#8217;h, CD)</dd>'
+        f'<dt>Geometry candidates</dt><dd>{derived_geometry.get("candidate_count", "—")}</dd>'
         '</dl></div>'
     )
 
@@ -419,13 +510,17 @@ def generate_html_report(
     all_ranked: List[dict],
     solver_csvs: Dict[str, str],
     drivers: Dict[str, DriverParameters],
-    throat_radius: float,
+    throat_radius: float | None,
     target: TargetSpec,
     csv_pairs: List[Tuple[str, str]],
     top_n: int = 5,
     mouth_radius: Optional[float] = None,
     length: Optional[float] = None,
     derived_geometry: Optional[dict] = None,
+    total_candidates: Optional[int] = None,
+    total_scored: Optional[int] = None,
+    lem_results: Optional[dict] = None,
+    no_feasible_reason: Optional[str] = None,
 ) -> str:
     """Generate a self-contained HTML report string.
 
@@ -440,6 +535,8 @@ def generate_html_report(
         mouth_radius: Horn mouth radius in metres (enables 3D geometry renders).
         length: Horn length in metres (enables 3D geometry renders).
         derived_geometry: Optional dict from geometry_designer (fullauto mode).
+        total_candidates: Total geometry candidates simulated.
+        total_scored: Total driver-horn combinations scored (before top-N).
 
     Returns:
         Complete HTML document as a string.
@@ -459,9 +556,10 @@ def generate_html_report(
         min((r.get("passband_ripple_db", 99) for r in top_results), default=None), ".1f"
     ) if top_results else "\u2014"
 
-    # Generate 3D horn geometry renders (when dimensions are provided)
+    # Generate 3D horn geometry renders from top-ranked candidates
     geometry_html = ""
-    if mouth_radius is not None and length is not None:
+    if mouth_radius is not None and length is not None and not show_geometry:
+        # Fixed geometry: render each profile
         geom_imgs = []
         for profile in sorted(solver_csvs.keys()):
             b64 = fig_to_b64_3d(
@@ -476,12 +574,46 @@ def generate_html_report(
                 f'alt="{html.escape(profile.capitalize())} horn geometry"></div>'
             )
         geometry_html = "\n".join(geom_imgs)
+    elif top_results:
+        # Variable geometry (auto/fullauto): render unique geometries from top results
+        seen = set()
+        geom_imgs = []
+        for r in top_results:
+            profile = r.get("profile", "") or r.get("horn_label", "")
+            horn_label = r.get("horn_label", "")
+            mr = r.get("mouth_radius")
+            ln = r.get("length")
+            tr = r.get("throat_radius", throat_radius)
+            if profile and mr and ln and mr > tr:
+                key = (profile, round(tr, 6), round(mr, 6), round(ln, 6))
+                if key not in seen:
+                    seen.add(key)
+                    title = (
+                        f"{profile.capitalize()} ({horn_label})"
+                        f" — throat {tr*1000:.1f}, mouth {mr*1000:.1f}, L {ln*1000:.0f} mm"
+                    )
+                    b64 = fig_to_b64_3d(
+                        throat_radius=tr,
+                        mouth_radius=mr,
+                        length=ln,
+                        profile=profile,
+                        title=title,
+                        figsize=(12, 5),
+                    )
+                    geom_imgs.append(
+                        f'<div class="plot"><img src="{b64}" '
+                        f'alt="{html.escape(title)}"></div>'
+                    )
+        geometry_html = "\n".join(geom_imgs)
+
+    # Reduce to one representative per profile for raw/impedance/phase plots
+    representative_csvs = _pick_representative_per_profile(solver_csvs)
 
     # Generate plots
     plot_coupled_spl = _plot_coupled_spl_comparison(csv_pairs, target)
-    plot_raw_spl = _plot_raw_profile_spl(solver_csvs, target)
-    plot_impedance = _plot_profile_impedance(solver_csvs)
-    plot_phase = _plot_profile_phase(solver_csvs)
+    plot_raw_spl = _plot_raw_profile_spl(representative_csvs, target)
+    plot_impedance = _plot_profile_impedance(representative_csvs)
+    plot_phase = _plot_profile_phase(representative_csvs)
 
     # Render tables
     rankings_rows = _render_rankings_rows(top_results, drivers, show_geometry=show_geometry)
@@ -489,7 +621,28 @@ def generate_html_report(
 
     # Conditional sections for fullauto
     design_summary_section = _render_design_summary(derived_geometry) if show_geometry else ""
-    geometry_header_cols = '<th>Mouth R (m)</th><th>Length (m)</th>' if show_geometry else ""
+
+    # LEM prescreen stats
+    if lem_results:
+        lem_total = lem_results.get("total_evaluated", "—")
+        lem_pairs = lem_results.get("total_pairs", "—")
+        lem_passed = len(lem_results.get("filtered_candidate_ids", []))
+        design_summary_section += (
+            '<h2>LEM Prescreening</h2>\n'
+            '<div class="design-summary"><dl>'
+            f'<dt>Candidates evaluated (LEM/Webster)</dt><dd>{lem_total}</dd>'
+            f'<dt>Driver-horn pairs scored</dt><dd>{lem_pairs}</dd>'
+            f'<dt>Candidates passed to FEM</dt><dd>{lem_passed}</dd>'
+            '</dl></div>'
+        )
+    geometry_header_cols = '<th>Throat R (m)</th><th>Mouth R (m)</th><th>Length (m)</th>' if show_geometry else ""
+
+    radii = (derived_geometry or {}).get("throat_radius_range") or [r["throat_radius"] for r in all_ranked if r.get("throat_radius") is not None]
+    if radii:
+        throat_display = (f"{min(radii):.4f} — {max(radii):.4f} m (search range)"
+                          if min(radii) != max(radii) else f"{radii[0]:.4f} m")
+    else:
+        throat_display = "not available" if show_geometry or throat_radius is None else f"{throat_radius:.4f} m"
 
     # Mouth/Length display: for fullauto show "varies", for auto show fixed value
     if show_geometry:
@@ -512,15 +665,24 @@ def generate_html_report(
     else:
         geometry_section = ""
 
+    n_scored = total_scored if total_scored is not None else len(all_ranked)
+
     return _HTML_TEMPLATE.format_map({
+        "no_feasible_reason": "<p>"+html.escape(no_feasible_reason)+"</p>" if no_feasible_reason and not top_results else "",
+        "assessment_status": "Experimental candidates — not validated recommendations" if top_results else "No feasible design in the evaluated set",
+        "physics_summary": html.escape(", ".join(sorted({str(r.get("loss_model", "lossless"))+" / "+str(r.get("radiation_model", "legacy unknown")) for r in top_results})) or "No candidates"),
+        "drive_voltage": target.voltage_rms,
+        "observer_distance": target.observation_distance_m,
+        "ripple_limit": target.max_ripple_db,
+        "evidence_summary": _render_evidence_summary(top_results),
         "target_low": target.f_low_hz,
         "target_high": target.f_high_hz,
-        "throat_radius": throat_radius,
+        "throat_display": throat_display,
         "mouth_radius": mouth_display,
         "horn_length": length_display,
         "profiles": ", ".join(sorted(solver_csvs.keys())),
         "timestamp": timestamp,
-        "n_scored": len(all_ranked),
+        "n_scored": n_scored,
         "n_top": len(top_results),
         "best_score": best_score,
         "best_bw": best_bw,

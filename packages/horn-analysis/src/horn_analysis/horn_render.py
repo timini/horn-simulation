@@ -62,12 +62,9 @@ def _radius_profile(
         theta = np.arctan2(np.sqrt(mouth_radius**2 - throat_radius**2), length)
         return np.sqrt(throat_radius**2 + (z * np.tan(theta)) ** 2)
     elif profile == "lecleach":
-        t = np.linspace(np.pi - 1e-6, np.pi / 2, 500)
-        y, x = np.sin(t), np.log(np.tan(t / 2)) + np.cos(t)
-        x -= x[0]
-        idx = np.searchsorted(y, throat_radius / mouth_radius)
-        x_c, y_c = x[idx:] - x[idx], y[idx:]
-        return np.interp(z, x_c / x_c[-1] * length, y_c / y_c[-1] * mouth_radius)
+        from horn_core.profiles import get_radius_func
+        radius = get_radius_func("lecleach", throat_radius, mouth_radius, length)
+        return np.array([radius(float(zi)) for zi in z])
     elif profile == "cd":
         frac = 0.3
         z_t = frac * length
@@ -220,6 +217,9 @@ def fig_to_b64_3d(
     n_theta = kwargs.pop("n_theta", 60)
     show_profile = kwargs.pop("show_profile", True)
     figsize = kwargs.pop("figsize", (14, 6))
+    title = kwargs.pop("title", None)
+
+    base_title = title or f"{profile.capitalize()} Horn"
 
     z_vals = np.linspace(0, length, n_z)
     r_vals = _radius_profile(z_vals, throat_radius, mouth_radius, length, profile)
@@ -245,7 +245,7 @@ def fig_to_b64_3d(
     ax3d.set_xlabel("Axial position (m)")
     ax3d.set_ylabel("X (m)")
     ax3d.set_zlabel("Y (m)")
-    ax3d.set_title(f"{profile.capitalize()} Horn — 3D View")
+    ax3d.set_title("3D View", fontsize=9)
     ax3d.view_init(elev=20, azim=-60)
 
     max_range = max(length, 2 * mouth_radius) / 2
@@ -263,9 +263,11 @@ def fig_to_b64_3d(
         ax2d.plot(z_mm, -r_mm, color=plot_theme.COLORS["primary"], linewidth=1.4)
         ax2d.set_xlabel("Axial position (mm)")
         ax2d.set_ylabel("Radius (mm)")
-        ax2d.set_title(f"{profile.capitalize()} Horn — Wall Profile")
+        ax2d.set_title("Wall Profile", fontsize=9)
         ax2d.set_aspect("equal", adjustable="datalim")
         plot_theme.setup_grid(ax2d)
+
+    fig.suptitle(base_title, fontsize=11, fontweight="bold")
 
     fig.tight_layout()
     fig.savefig(buf, format="png", dpi=150, bbox_inches="tight")
@@ -295,9 +297,18 @@ def main():
                         help="Horn flare profile (default: conical)")
     parser.add_argument("--no-profile-panel", action="store_true",
                         help="Omit the 2D cross-section panel")
+    parser.add_argument("--imported-geometry", action="store_true", help="Show a placeholder instead of inventing a parametric shape")
     args = parser.parse_args()
 
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+
+    if args.imported_geometry:
+        fig, ax = plt.subplots(figsize=(8, 3))
+        ax.axis("off")
+        ax.text(.5, .5, "Imported STEP geometry\nParametric render unavailable", ha="center", va="center", fontsize=16)
+        fig.savefig(args.output, dpi=150, bbox_inches="tight")
+        plt.close(fig)
+        return
 
     render_horn_3d(
         throat_radius=args.throat_radius,

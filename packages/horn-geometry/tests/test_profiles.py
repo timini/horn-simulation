@@ -125,7 +125,7 @@ class TestProfileGeometricValidation:
         """Compute volume by numerical integration: V = integral pi*r(z)^2 dz."""
         z = np.linspace(0, length, n)
         r = np.array([radius_func(zi) for zi in z])
-        return np.trapz(np.pi * r**2, z)
+        return np.sum(np.diff(z) * np.pi * (r[1:]**2 + r[:-1]**2) / 2)
 
     def test_tractrix_volume(self, tmp_path):
         step = create_tractrix_horn(
@@ -168,14 +168,11 @@ class TestProfileGeometricValidation:
             self.THROAT_R, self.MOUTH_R, self.LENGTH,
             tmp_path / "lecleach.step", num_sections=40,
         )
-        t = np.linspace(np.pi - 1e-6, np.pi / 2, 500)
-        y, x = np.sin(t), np.log(np.tan(t / 2)) + np.cos(t)
-        x -= x[0]
-        idx = np.searchsorted(y, self.THROAT_R / self.MOUTH_R)
-        x_c, y_c = x[idx:] - x[idx], y[idx:]
-        def rf(z):
-            return float(np.interp(z, x_c / x_c[-1] * self.LENGTH, y_c / y_c[-1] * self.MOUTH_R))
-        expected = self._numerical_volume(rf, self.LENGTH)
+        # Integrate the continuous tractrix analytically, independently of the
+        # generator's sampled interpolation and STEP loft.
+        t0 = np.pi - np.arcsin(self.THROAT_R / self.MOUTH_R)
+        axial_span = np.log(np.tan(t0 / 2)) + np.cos(t0)
+        expected = np.pi * self.MOUTH_R**2 * self.LENGTH * (-np.cos(t0)**3) / (3 * axial_span)
         actual = self._get_step_volume(step)
         assert np.isclose(actual, expected, rtol=0.02), (
             f"Le Cléac'h volume mismatch: expected={expected:.6e}, actual={actual:.6e}"
@@ -234,14 +231,48 @@ class TestProfileGeometricValidation:
             expected_mouth = np.pi * self.MOUTH_R**2
             assert throat_area is not None, f"{profile}: no throat face found at z=0"
             assert mouth_area is not None, f"{profile}: no mouth face found at z=L"
-            # Le Cléac'h clips the tractrix curve, so throat radius is approximate
-            tol = 0.02 if profile in ("lecleach", "tractrix") else 0.01
+            tol = 0.02 if profile == "tractrix" else 0.01
             assert np.isclose(throat_area, expected_throat, rtol=tol), (
                 f"{profile} throat area: expected={expected_throat:.6e}, actual={throat_area:.6e}"
             )
             assert np.isclose(mouth_area, expected_mouth, rtol=tol), (
                 f"{profile} mouth area: expected={expected_mouth:.6e}, actual={mouth_area:.6e}"
             )
+
+
+@pytest.mark.skipif(gmsh is None, reason="gmsh not available")
+class TestProfileMeshable:
+    """Verify that every profile produces a geometry that gmsh can actually mesh."""
+
+    THROAT_R = 0.025
+    MOUTH_R = 0.15
+    LENGTH = 0.3
+
+    @pytest.fixture(params=["conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"])
+    def profile_name(self, request):
+        return request.param
+
+    def test_all_profiles_meshable(self, profile_name, tmp_path):
+        step = create_horn(
+            profile=profile_name,
+            throat_radius=self.THROAT_R,
+            mouth_radius=self.MOUTH_R,
+            length=self.LENGTH,
+            output_file=tmp_path / f"{profile_name}.step",
+            num_sections=20,
+        )
+        gmsh.initialize()
+        gmsh.option.setNumber("General.Terminal", 0)
+        gmsh.model.add("mesh_check")
+        gmsh.model.occ.importShapes(str(step))
+        gmsh.model.occ.synchronize()
+        gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 0.01)
+        try:
+            gmsh.model.mesh.generate(3)
+            nodes = gmsh.model.mesh.getNodes()
+            assert len(nodes[0]) > 0, f"{profile_name}: mesh produced no nodes"
+        finally:
+            gmsh.finalize()
 
 
 @pytest.mark.skipif(gmsh is None, reason="gmsh not available")

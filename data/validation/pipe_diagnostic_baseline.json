@@ -1,0 +1,72 @@
+{
+  "reference_url": "https://zenodo.org/records/20024938",
+  "reference_archive_sha256": "724b96be96e210e52e939ecceb78d919df46b9001af89defc5912118f8584fcd",
+  "reference_manifest_sha256": "7591d687f95ce8d7555c9d7d5f846c37f07c1f79ef743e146aa455e3aac9f528",
+  "script_sha256": "3ef3f8c5e5a445dcc31e87c3b3f0f2892ca4b7a74d0dc33aa7094c7a4355aea3",
+  "status": "model_gap_diagnostic",
+  "physical_validation_passed": false,
+  "frequency_range_hz": [
+    110.0,
+    3900.0
+  ],
+  "log_frequency_samples": 20001,
+  "measurement_curves": 36,
+  "operators": 4,
+  "frequency_mapping": "solver_frequency = reference_frequency * 343 / 346.28592; normalized Z = specific Z / (rho_solver*c_solver)",
+  "fit_parameters": [],
+  "known_model_mismatches": [
+    "No thermoviscous wall losses",
+    "Unflanged approximation versus measured 2 mm finite flange"
+  ],
+  "magnitude_gate": {
+    "median_db_max": 2,
+    "p95_db_max": 4,
+    "passing_curves": 16
+  },
+  "fem_vs_same_model_tmm": [
+    {
+      "mesh_m": 0.004,
+      "p95_scaled_complex_error_vs_tmm": 0.04983131640291023,
+      "max_scaled_complex_error_vs_tmm": 0.3128462968778266
+    },
+    {
+      "mesh_m": 0.002,
+      "p95_scaled_complex_error_vs_tmm": 0.013090490354623181,
+      "max_scaled_complex_error_vs_tmm": 0.10544078053546461
+    }
+  ],
+  "schema_version": 1,
+  "recorded_on": "2026-09-07",
+  "model_source_sha256": {
+    "packages/horn-core/src/horn_core/webster.py": "77b5c02254e3a293b77a5f94ab767b2c14b3f66e7170c04ecf0a0e4746c2ccad",
+    "packages/horn-solver/src/horn_solver/solver.py": "a23c02a28b9355c749534dfe9301eb71c23434757c350b8593fb3f2b34f028fe",
+    "packages/horn-solver/src/horn_solver/radiation.py": "58ac3c7af3cb53425054fe45e9b0d9f88d92163f8664dcca5db7c5fe03b3c97a"
+  },
+  "aggregate_measurement_errors": {
+    "median_magnitude_error_db": {
+      "min": 0.45862153935525224,
+      "median": 0.8198555235666081,
+      "max": 1.5808440951685716
+    },
+    "p95_magnitude_error_db": {
+      "min": 2.7891260630586814,
+      "median": 4.2439768910815925,
+      "max": 6.586648409580387
+    },
+    "max_magnitude_error_db": {
+      "min": 27.91604180503615,
+      "median": 30.387493661499704,
+      "max": 33.54435705993269
+    },
+    "first_peak_height_error_db": {
+      "min": 25.054046844418025,
+      "median": 25.661097808909133,
+      "max": 32.19207666347141
+    },
+    "first_peak_frequency_hz": {
+      "min": 459.89232161801476,
+      "median": 462.7731429349742,
+      "max": 465.8380697457155
+    }
+  }
+}

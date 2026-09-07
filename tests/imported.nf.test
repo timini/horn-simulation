@@ -1,0 +1,56 @@
+nextflow_pipeline {
+    name "Imported STEP interface"
+    script "../main.nf"
+    config "nextflow.config"
+    profile "docker"
+
+    test("Imported STEP requires its actual axial length") {
+        when {
+            params {
+                mode = "single"
+                step_file = "${projectDir}/tests/data/my horn ' geometry.step"
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.failed
+            assert workflow.stdout.toString().contains("requires an explicit positive --length")
+        }
+    }
+
+    test("Imported STEP runs with an explicit matching length") {
+        when {
+            params {
+                mode = "single"
+                step_file = "${projectDir}/tests/data/my horn ' geometry.step"
+                length = 0.08
+                driver_id = "synthetic ' smoke"
+                drivers_db = "${projectDir}/tests/data/my drivers ' database.json"
+                horn_3d_png = "${projectDir}/tests/data/my render ' image.png"
+                min_freq = 500
+                max_freq = 1000
+                num_bands = 1
+                num_intervals = 3
+                mesh_size = 0.01
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            assert new File("${outputDir}/single_report.html").text.contains("iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB")
+            def report = new File("${outputDir}/single_report.html").text
+            assert report.contains("Inlet area (CAD)")
+            assert report.contains("Mouth area (CAD)")
+            assert report.contains("Imported step")
+            assert !report.contains("<dt>Throat radius</dt>")
+            assert !report.contains("<dt>Mouth diameter</dt>")
+            def kpis = new groovy.json.JsonSlurper().parse(new File("${outputDir}/driver_horn_kpis.json"))
+            assert kpis.throat_radius_m == null
+            assert Math.abs(kpis.inlet_area_m2 - Math.PI * 0.025 * 0.025) < 0.0000001
+            def spec = new groovy.json.JsonSlurper().parse(new File("${outputDir}/resolved_specification.json"))
+            assert spec.parameters.throat_radius == null
+            assert spec.parameters.mouth_radius == null
+            assert spec.parameters.length == 0.08
+        }
+    }
+}

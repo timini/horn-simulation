@@ -28,14 +28,14 @@ COLORS = {
 }
 
 MULTI_COLORS = [
-    "#1f4e79",
-    "#c0392b",
-    "#27864e",
-    "#7b4ea3",
-    "#d4831a",
-    "#2a9d8f",
-    "#6c5b7b",
-    "#c97b3d",
+    "#2563eb",  # vivid blue
+    "#dc2626",  # vivid red
+    "#16a34a",  # vivid green
+    "#9333ea",  # vivid purple
+    "#ea580c",  # vivid orange
+    "#0891b2",  # cyan
+    "#c026d3",  # magenta
+    "#ca8a04",  # amber
 ]
 
 PROFILE_STYLES = {

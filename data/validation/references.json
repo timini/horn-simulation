@@ -1,0 +1,291 @@
+{
+  "schema_version": 1,
+  "retrieved_on": "2026-09-07",
+  "references": [
+    {
+      "id": "waslo-seos15",
+      "source_url": "https://libinst.com/SEOS/",
+      "download_url": "https://libinst.com/SEOS/SEOS15/SEOS15.zip",
+      "archive_name": "SEOS15.zip",
+      "sha256": "abc8361c559ec44c752aac521cb19a7eca7794efa05d287f1ca3a512e75193bc",
+      "format": "zip_frd_zma",
+      "reference_kind": "published_diy_measurement_files",
+      "description": "SEOS15: 13 horizontal and 13 vertical response curves, 0\u201390 degrees in 7.5 degree increments.",
+      "author": "Bill Waslo / Liberty Instruments",
+      "absolute_level_calibrated": false,
+      "conditions": {
+        "distance_m": null,
+        "voltage_rms": null,
+        "gating_ms": null,
+        "baffle": "requires reconstruction from design documentation"
+      },
+      "limitations": [
+        "Archive does not establish absolute calibration or exact excitation.",
+        "Establish raw versus crossover-filtered response before model comparison.",
+        "SEOS geometry is non-axisymmetric; current simple profile generators do not reproduce it.",
+        "Do not assume zero-filled phase columns are measured phase."
+      ],
+      "reuse": "Publicly downloadable; no explicit redistribution license identified. Download locally; do not vendor source archives."
+    },
+    {
+      "id": "waslo-seos12-d12lfa",
+      "source_url": "https://libinst.com/SEOS/",
+      "download_url": "https://libinst.com/SEOS/SEOSD12LFAAug2012.zip",
+      "archive_name": "SEOSD12LFAAug2012.zip",
+      "sha256": "c88958764a96c23768bbda704d835b19e288fc1ae12242ec887f5e09e3259f3a",
+      "format": "zip_frd_zma",
+      "reference_kind": "published_diy_measurement_files",
+      "description": "SEOS12/DNA360 and Delta12LFA system: tweeter, woofer, combined response and electrical impedance.",
+      "author": "Bill Waslo / Liberty Instruments",
+      "absolute_level_calibrated": false,
+      "conditions": {
+        "distance_m": null,
+        "voltage_rms": null,
+        "gating_ms": null,
+        "baffle": "requires reconstruction from design documentation"
+      },
+      "limitations": [
+        "Archive does not establish absolute calibration or exact excitation.",
+        "Establish raw versus crossover-filtered response before model comparison.",
+        "SEOS geometry is non-axisymmetric; current simple profile generators do not reproduce it.",
+        "Do not assume zero-filled phase columns are measured phase."
+      ],
+      "reuse": "Publicly downloadable; no explicit redistribution license identified. Download locally; do not vendor source archives."
+    },
+    {
+      "id": "waslo-seos12-designer12",
+      "source_url": "https://libinst.com/SEOS/",
+      "download_url": "https://libinst.com/SEOS/SEOSDES12Aug2012.zip",
+      "archive_name": "SEOSDES12Aug2012.zip",
+      "sha256": "90516c1862749b9b8fb6b0e16bba7692d52f7c94120d274a216f50a63b1734fe",
+      "format": "zip_frd_zma",
+      "reference_kind": "published_diy_measurement_files",
+      "description": "SEOS12/DNA360 and Designer12 system. Tweeter data duplicate the Delta12LFA archive; not another independent horn measurement.",
+      "author": "Bill Waslo / Liberty Instruments",
+      "absolute_level_calibrated": false,
+      "conditions": {
+        "distance_m": null,
+        "voltage_rms": null,
+        "gating_ms": null,
+        "baffle": "requires reconstruction from design documentation"
+      },
+      "limitations": [
+        "Archive does not establish absolute calibration or exact excitation.",
+        "Establish raw versus crossover-filtered response before model comparison.",
+        "SEOS geometry is non-axisymmetric; current simple profile generators do not reproduce it.",
+        "Do not assume zero-filled phase columns are measured phase."
+      ],
+      "reuse": "Publicly downloadable; no explicit redistribution license identified. Download locally; do not vendor source archives."
+    },
+    {
+      "id": "mtg-shootout",
+      "source_url": "https://www.mtg-designs.com/tips-tricks-tests/waveguide-shootout",
+      "description": "Large standardized horn/waveguide comparison collection. Individual pages identify driver, dimensions, gating, smoothing and off-axis plots. Parent page withdraws inaccurate early distortion measurements.",
+      "reference_kind": "measured_plots",
+      "format": "source_page",
+      "absolute_level_calibrated": false,
+      "reuse": "Retain source attribution; inspect source-specific reuse conditions before redistribution."
+    },
+    {
+      "id": "mtg-st260",
+      "source_url": "https://www.mtg-designs.com/tips-tricks-tests/waveguide-shootout/1in-bolt-horns/ath-st260",
+      "description": "ST260 with Celestion CDX1-1731. 1m, 4.5ms gate, 1/48 octave; freestanding round horn.",
+      "reference_kind": "measured_plots",
+      "format": "source_page",
+      "absolute_level_calibrated": false,
+      "reuse": "Retain source attribution; inspect source-specific reuse conditions before redistribution."
+    },
+    {
+      "id": "mtg-tritonia-m",
+      "source_url": "https://www.mtg-designs.com/tips-tricks-tests/waveguide-shootout/1in-bolt-horns/tritonia-m",
+      "description": "Same Tritonia-M with Celestion CDX1-1731 and B&C DH450-8. 1m, 4.5ms, 1/48 octave. Non-axisymmetric.",
+      "reference_kind": "measured_plots",
+      "format": "source_page",
+      "absolute_level_calibrated": false,
+      "reuse": "Retain source attribution; inspect source-specific reuse conditions before redistribution."
+    },
+    {
+      "id": "ath-gen2",
+      "source_url": "https://at-horns.eu/gen2m.html",
+      "description": "Many named driver/adapter/body combinations. Explicitly uncalibrated SPL and varying voltage; indoors, 4.5\u20135ms gate. Shape only.",
+      "reference_kind": "measured_plots",
+      "format": "source_page",
+      "absolute_level_calibrated": false,
+      "reuse": "Retain source attribution; inspect source-specific reuse conditions before redistribution."
+    },
+    {
+      "id": "ath-a460d",
+      "source_url": "https://at-horns.eu/A460D.html",
+      "description": "Prototype measurements of DH450, DF10.144LK, DF10.171K, DE360, BMS4554; same calibration caveats as Gen2.",
+      "reference_kind": "measured_plots",
+      "format": "source_page",
+      "absolute_level_calibrated": false,
+      "reuse": "Retain source attribution; inspect source-specific reuse conditions before redistribution."
+    },
+    {
+      "id": "ath-st260-project",
+      "source_url": "https://at-horns.eu/ST260.html",
+      "description": "CC BY-NC-SA 4.0 geometry and ABEC project. Downloaded ABEC archive contains input geometry/observation settings, not computed curves. Five linked DIY builds.",
+      "reference_kind": "independent_numerical_project",
+      "format": "source_page",
+      "absolute_level_calibrated": false,
+      "reuse": "Retain source attribution; inspect source-specific reuse conditions before redistribution."
+    },
+    {
+      "id": "jwsound-paraflex",
+      "source_url": "https://www.jwsound.live/paraflex-2x12-measurements",
+      "description": "Downloadable REW .mdat; Type O 2x12v2, two B&C12NBX100-8 in parallel, ground plane at10m; environment and calibration listed, input-normalized sensitivity explicitly not provided. Folded multi-path topology outside current scope.",
+      "reference_kind": "measured_rew_archive",
+      "format": "source_page",
+      "absolute_level_calibrated": false,
+      "reuse": "Retain source attribution; inspect source-specific reuse conditions before redistribution."
+    },
+    {
+      "id": "ampslab-jbl2414hc",
+      "source_url": "https://audiokarma.org/forums/threads/excellent-crossover-design-simulation-for-jbl-2414hc-on-jbl-6x12-clone-waveguide.1019895/",
+      "description": "Published JBL2414HC/H6512 FRD+ZMA attachment supplied by Ampslab. Access returned403; source archive not acquired. Do not substitute another JBL clone geometry.",
+      "reference_kind": "measurement_archive_not_acquired",
+      "format": "source_page",
+      "absolute_level_calibrated": false,
+      "reuse": "Retain source attribution; inspect source-specific reuse conditions before redistribution."
+    },
+    {
+      "id": "rasetshwane-neely2015",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4617734/",
+      "description": "Calibrated measured reflectance of known conical, exponential and parabolic horns; sealed cap with fitted impedance. Suitable input-impedance reference after retrieving data and reproducing termination; not open-mouth sensitivity.",
+      "reference_kind": "measured_paper_figures",
+      "format": "source_page",
+      "absolute_level_calibrated": false,
+      "reuse": "Retain source attribution; inspect source-specific reuse conditions before redistribution."
+    },
+    {
+      "id": "kolbrek-exp-mid",
+      "source_url": "https://kolbrek.hornspeakersystems.info/index.php/horns/exponential-midrange-1",
+      "description": "Author-built 200Hz rectangular exponential horn with Altec288B, outdoor response and impedance. Needs matched geometry/interface and graph digitization.",
+      "reference_kind": "measured_plots",
+      "format": "source_page",
+      "absolute_level_calibrated": false,
+      "reuse": "Retain source attribution; inspect source-specific reuse conditions before redistribution."
+    },
+    {
+      "id": "waslo-seos12-delta12a",
+      "source_url": "https://libinst.com/SEOS/",
+      "download_url": "https://libinst.com/SEOS/SEOS12+Eminence%20pro%20woofers/SEOS12%20Delta%2012A.zip",
+      "archive_name": "SEOS12-Delta12A.zip",
+      "sha256": "9d4438b60a745091b7739fba18915ccaa0b6a1b68fcf9a37b46460a197d9e1bb",
+      "format": "zip_frd_zma",
+      "reference_kind": "published_diy_measurement_files",
+      "description": "SEOS12 white driver and Eminence Delta12A: two FRD and two ZMA files. Names indicate 30-inch response, but full setup and filtering still need verification.",
+      "author": "Bill Waslo / Liberty Instruments",
+      "absolute_level_calibrated": false,
+      "conditions": {
+        "distance_m": null,
+        "voltage_rms": null,
+        "gating_ms": null,
+        "baffle": "requires reconstruction from design documentation"
+      },
+      "limitations": [
+        "Archive does not establish absolute calibration or exact excitation.",
+        "Establish raw versus crossover-filtered response before model comparison.",
+        "SEOS geometry is non-axisymmetric; current simple profile generators do not reproduce it.",
+        "Do not assume zero-filled phase columns are measured phase."
+      ],
+      "reuse": "Publicly downloadable; no explicit redistribution license identified. Download locally; do not vendor source archives."
+    },
+    {
+      "id": "waslo-seos12-deltalite2512",
+      "source_url": "https://libinst.com/SEOS/",
+      "download_url": "https://libinst.com/SEOS/SEOS12+Eminence%20pro%20woofers/SEOS12%20DeltaLite2512.zip",
+      "archive_name": "SEOS12-DeltaLite2512.zip",
+      "sha256": "8d85d7d0473daf534c975421bca0ccdbc8768911fac6fbe9bb03ff37a245384d",
+      "format": "zip_frd_zma",
+      "reference_kind": "published_diy_measurement_files",
+      "description": "SEOS12 white driver and Eminence DeltaLite2512: two FRD and two ZMA files. Check duplicate tweeter evidence across systems.",
+      "author": "Bill Waslo / Liberty Instruments",
+      "absolute_level_calibrated": false,
+      "conditions": {
+        "distance_m": null,
+        "voltage_rms": null,
+        "gating_ms": null,
+        "baffle": "requires reconstruction from design documentation"
+      },
+      "limitations": [
+        "Archive does not establish absolute calibration or exact excitation.",
+        "Establish raw versus crossover-filtered response before model comparison.",
+        "SEOS geometry is non-axisymmetric; current simple profile generators do not reproduce it.",
+        "Do not assume zero-filled phase columns are measured phase."
+      ],
+      "reuse": "Publicly downloadable; no explicit redistribution license identified. Download locally; do not vendor source archives."
+    },
+    {
+      "id": "ernoult-pipe-impedance-v2",
+      "source_url": "https://zenodo.org/records/20024938",
+      "download_url": "https://zenodo.org/records/20024938/files/Raw_data.zip",
+      "archive_name": "pipe-impedance-20024938.zip",
+      "sha256": "724b96be96e210e52e939ecceb78d919df46b9001af89defc5912118f8584fcd",
+      "format": "zip_pipe_impedance",
+      "reference_kind": "mixed_measured_and_independently_simulated_impedance",
+      "description": "Ernoult et al.: 180mm cylinders and cones. Repeated measurements and separate independent TMM/FEM/MM simulations. Measured Z normalized by rho*c/S; simulated Z in Pa*s/m^3.",
+      "author": "Augustin Ernoult, Romain Viala, Jeremy Cabaret, Juliette Chabassier, Tom Colinot, Jean-Pierre Dalmont, Jean-Baptiste Doc, Vincent Freour",
+      "reuse": "CC BY 4.0, verified in Zenodo record metadata.",
+      "conditions": {
+        "length_m": 0.18,
+        "cylinder_inner_diameter_m": 0.014,
+        "cone_inner_diameters_m": [
+          0.01,
+          0.0226
+        ],
+        "measurement_temperature_correction": "Already transposed by authors to dry air at 25 degrees Celsius; do not correct twice.",
+        "c_m_s": 346.28592,
+        "rho_kg_m3": 1.18449,
+        "phase_convention": "exp(+i*omega*t), consistent with author analytical impedance functions",
+        "measured_end_conditions": "Closed; cylinder finite circular flange width 2mm (brass) or 7mm (wood/ABS); cone flange 2.7mm.",
+        "unflanged_data": "Simulation only, not measurements."
+      },
+      "supporting_sources": [
+        {
+          "url": "https://gitlab.inria.fr/aernoult/acoustic-impedance-benchmark/-/raw/main/benchmark_analysis_tools.py",
+          "sha256": "41aa1739ff43134559679f9a1866753836d5f490d0dff74b4081f5cbe4313bc9",
+          "purpose": "Physical constants and impedance convention; inspected as text, not executed."
+        },
+        {
+          "url": "https://zenodo.org/records/20024938/files/README.md",
+          "sha256": "5c3053259b99f979eb5606abbc8c77e269de2a0a7f3a1f8544581260738d0a6f",
+          "purpose": "Units and temperature correction."
+        }
+      ],
+      "limitations": [
+        "Production solver currently has no thermoviscous wall losses, finite-flange radiation or closed-end selection.",
+        "Repeated measurements, duplicate exports and multiple specimens must not be counted as independent assemblies.",
+        "Agreement on pipe impedance does not validate driver coupling or horn far-field output."
+      ]
+    },
+    {
+      "id": "sa-park-conical-assemblies-2014",
+      "source_url": "https://doi.org/10.5050/KSNVE.2014.24.7.537",
+      "author_copy_url": "https://www.researchgate.net/profile/Seok-Tae-Park/publication/272658964_A_Study_on_the_Acoustic_Modeling_of_Horn_-_Analysis_and_Design_of_Acoustic_Horn_-/links/5d1df03592851cf440642941/A-Study-on-the-Acoustic-Modeling-of-Horn-Analysis-and-Design-of-Acoustic-Horn.pdf",
+      "format": "published_figures_and_parameters",
+      "reference_kind": "physical_horn_driver_assembly_candidate",
+      "description": "Two conical horn assemblies with measured impedance and sensitivity; author-uploaded paper inspected as text.",
+      "known_geometry": {
+        "throat_diameter_m": 0.018,
+        "mouth_diameter_m": 0.08,
+        "lengths_m": [
+          0.535,
+          0.136
+        ],
+        "diaphragm_effective_diameter_m": 0.084,
+        "compression_gap_m": 0.001,
+        "equivalent_phase_plug_channel_length_m": 0.053
+      },
+      "limitations": [
+        "Measured curves have not been extracted; local PDF binary retrieval failed.",
+        "The published model includes chamber/rear-volume and frequency-dependent electrical terms absent from the simple motor coupling.",
+        "Source-reported fitted parameters and correction filters must not be confused with independent validation of this pipeline.",
+        "Absolute drive/observation normalization and digitization uncertainty require verification before comparison."
+      ],
+      "reuse": "Author-uploaded article, copyright retained; do not vendor full paper without permission.",
+      "physical_validation_passed": false
+    }
+  ]
+}

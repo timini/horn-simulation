@@ -1,18 +1,8 @@
-"""BEM coupling for the horn mouth radiation boundary condition.
+"""Research BEM operators; production horn coupling is disabled.
 
-Uses bempp-cl (Numba backend) to replace the local Robin BC at the outlet
-with a nonlocal BEM radiation condition that captures the exact exterior
-acoustic field without simplifying assumptions about mouth geometry.
-
-The coupling follows the standard FEM-BEM approach for exterior Helmholtz:
-  - FEM solves the interior (horn) domain
-  - BEM handles the exterior (free-field) radiation at the mouth
-  - The two are coupled through the acoustic trace on the outlet boundary
-
-Requires:
-  - bempp-cl (pip install bempp-cl)
-  - DOLFINx v0.8 with P1 Lagrange elements
-  - Single MPI rank (bempp-cl does not support parallel FEM-BEM coupling)
+The legacy trace mapped the whole FEM boundary, ignoring the mouth tag. It
+cannot establish a mouth-only exterior radiation solution. Standalone BEM
+operators remain available for independent backend validation.
 """
 
 import numpy as np
@@ -22,6 +12,27 @@ try:
     import bempp.api as bempp_api
     from bempp.api.external import fenicsx as bempp_fenicsx
     from bempp.api.assembly.blocked_operator import BlockedDiscreteOperator
+
+    # Patch bempp's fenics_space_info for dolfinx 0.8 compatibility.
+    # bempp-cl 0.3.x calls element.family() which doesn't exist on
+    # dolfinx 0.8's _BasixElement; the family lives on basix_element instead.
+    _orig_space_info = bempp_fenicsx.fenics_space_info
+
+    def _patched_space_info(fenics_space):
+        element = fenics_space.ufl_element()
+        if hasattr(element, "family"):
+            return _orig_space_info(fenics_space)
+        # dolfinx 0.8: pull family name from basix_element
+        import basix
+        _family_map = {
+            basix.ElementFamily.P: "Lagrange",
+        }
+        be = element.basix_element
+        family = _family_map.get(be.family, str(be.family))
+        degree = be.degree
+        return (family, degree)
+
+    bempp_fenicsx.fenics_space_info = _patched_space_info
 
     BEMPP_AVAILABLE = True
 except ImportError:
@@ -54,11 +65,7 @@ def extract_outlet_trace(V, facet_tags, outlet_tag: int):
     trace_space : bempp function space on the outlet boundary mesh
     trace_matrix : sparse matrix mapping FEM DOFs -> BEM boundary DOFs
     """
-    check_bempp_available()
-
-    trace_space, trace_matrix = bempp_fenicsx.fenics_to_bempp_trace_data(V)
-
-    return trace_space, trace_matrix
+    raise NotImplementedError("Mouth-only BEM trace is not implemented; whole-boundary substitution is invalid")
 
 
 def build_bem_operators(trace_space, k: float):
@@ -186,6 +193,8 @@ def coupled_solve(
     trace_data : dict (only when *return_trace_data* is True)
         ``{"trace_space": ..., "p_trace": ..., "dpdn_trace": ...}``
     """
+    raise NotImplementedError("Legacy FEM-BEM horn coupling is disabled pending mouth-only exterior validation")
+
     check_bempp_available()
 
     from dolfinx import fem

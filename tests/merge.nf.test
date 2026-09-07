@@ -1,0 +1,47 @@
+nextflow_process {
+
+    name "Test Process merge_results"
+    script "../main.nf"
+    process "merge_results"
+    config "nextflow.config"
+    profile "docker"
+
+    test("Should merge CSV result files") {
+        when {
+            params {
+                min_freq = 100
+                max_freq = 1000
+                num_intervals = 3
+                num_bands = 1
+            }
+            process {
+                """
+                input[0] = [file("${projectDir}/tests/data/results_0.csv")]
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out[0].size() > 0
+        }
+    }
+    test("Missing frequency band prevents merged results") {
+        when {
+            params {
+                min_freq = 100
+                max_freq = 1000
+                num_intervals = 6
+                num_bands = 2
+            }
+            process {
+                """
+                input[0] = [file("${projectDir}/tests/data/results_0.csv")]
+                """
+            }
+        }
+        then {
+            assert process.failed
+            assert process.errorReport.contains("Incomplete simulation")
+        }
+    }
+}

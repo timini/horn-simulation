@@ -7,7 +7,8 @@ specification before running FEM simulations.
 import argparse
 import json
 import math
-from dataclasses import dataclass, asdict
+import re
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Tuple, Optional
 
@@ -26,8 +27,10 @@ class PrescreenConfig:
     mouth_radius_m: Optional[float] = None
     length_m: Optional[float] = None
     min_ebp: float = 50.0
-    horn_load_factor: float = 10.0
-    sd_ratio_range: Tuple[float, float] = (0.3, 3.0)
+    ka_max: float = 2 * math.pi  # ~6.28, absolute cap on throat ka at f_high
+    min_nominal_diameter_in: Optional[float] = None
+    max_nominal_diameter_in: Optional[float] = None
+    throat_fractions: Optional[List[float]] = None  # override default [0.3,0.65,1.0]
 
 
 @dataclass
@@ -35,14 +38,24 @@ class PrescreenResult:
     """Result of driver pre-screening."""
     drivers: List[DriverParameters]
     throat_radius_m: float
+    throat_radii_m: List[float]
     count: int
 
     def to_dict(self) -> dict:
         return {
             "drivers": [d.driver_id for d in self.drivers],
             "throat_radius_m": self.throat_radius_m,
+            "throat_radii_m": self.throat_radii_m,
             "count": self.count,
         }
+
+
+def _parse_diameter_inches(d: Optional[str]) -> Optional[float]:
+    """Parse a nominal diameter string like '4in' or '6.5' to inches."""
+    if not d:
+        return None
+    m = re.match(r"(\d+(?:\.\d+)?)", d)
+    return float(m.group(1)) if m else None
 
 
 def prescreen_drivers(
@@ -51,12 +64,17 @@ def prescreen_drivers(
 ) -> PrescreenResult:
     """Filter drivers to candidates suitable for the target horn.
 
+    Throat radius is decoupled from driver size — the throat is a property
+    of the horn (constrained by acoustics at f_high), not the driver.
+
     Filtering criteria:
     1. fs_hz < target_f_low_hz * 1.5 -- driver resonance in or near target band
     2. fs_hz / qes > min_ebp -- horn suitability (Efficiency Bandwidth Product)
-    3. Upper freq capability: f_piston * horn_load_factor >= target_f_high
-    4. Representative throat radius = median(sqrt(Sd/pi)) of passing drivers
-    5. Filter drivers whose effective radius is outside sd_ratio_range of representative
+    3. Optional nominal diameter filter (user-specified min/max)
+    4. Driver must physically fit in the horn mouth
+
+    Throat radii are derived from acoustic constraints (ka ≤ ka_max at f_high),
+    not from driver Sd.
 
     Args:
         drivers: Full list of drivers from the database.
@@ -65,7 +83,20 @@ def prescreen_drivers(
     Returns:
         PrescreenResult with filtered drivers and representative throat radius.
     """
+    if config.throat_fractions is not None and (
+        not config.throat_fractions or any(not math.isfinite(f) or not 0 < f <= 1 for f in config.throat_fractions)
+    ):
+        raise ValueError("Throat fractions must be finite and within (0, 1]")
+    if not math.isfinite(config.ka_max) or config.ka_max <= 0:
+        raise ValueError("Throat ka cap must be positive and finite")
     candidates = []
+
+    # Max driver radius: driver must fit inside the horn mouth
+    if config.mouth_radius_m is not None and config.mouth_radius_m > 0:
+        max_driver_radius = config.mouth_radius_m
+    else:
+        ideal_mouth = _SPEED_OF_SOUND / (2 * math.pi * config.target_f_low_hz)
+        max_driver_radius = ideal_mouth
 
     for drv in drivers:
         # 1. Resonance frequency check
@@ -78,50 +109,60 @@ def prescreen_drivers(
             if ebp < config.min_ebp:
                 continue
         else:
-            # Cannot compute EBP, skip
             continue
 
-        # 3. Upper frequency capability from Sd
-        #    f_piston = c / (2π·a_eff) where a_eff = √(Sd/π)
-        #    Horn loading extends usable range by ~10× above piston breakup
-        if drv.sd_m2 > 0:
-            a_eff = math.sqrt(drv.sd_m2 / math.pi)
-            f_piston = _SPEED_OF_SOUND / (2 * math.pi * a_eff)
-            if f_piston * config.horn_load_factor < config.target_f_high_hz:
-                continue
+        # 3. Optional nominal diameter filter
+        if config.min_nominal_diameter_in is not None or config.max_nominal_diameter_in is not None:
+            dia_in = _parse_diameter_inches(drv.nominal_diameter)
+            if dia_in is not None:
+                if config.min_nominal_diameter_in is not None and dia_in < config.min_nominal_diameter_in:
+                    continue
+                if config.max_nominal_diameter_in is not None and dia_in > config.max_nominal_diameter_in:
+                    continue
+
+        # 4. Driver must fit in the horn mouth
+        drv_radius = math.sqrt(drv.effective_throat_area / math.pi)
+        if drv_radius > max_driver_radius:
+            continue
 
         candidates.append(drv)
 
     if not candidates:
-        return PrescreenResult(drivers=[], throat_radius_m=0.0, count=0)
+        return PrescreenResult(drivers=[], throat_radius_m=0.0, throat_radii_m=[], count=0)
 
-    # 4. Compute representative throat radius
-    radii = [math.sqrt(d.sd_m2 / math.pi) for d in candidates if d.sd_m2 > 0]
-    if not radii:
-        return PrescreenResult(drivers=[], throat_radius_m=0.0, count=0)
+    # Derive throat radii from acoustic constraints (ka ≤ ka_max at f_high)
+    a_acoustic_max = _SPEED_OF_SOUND * config.ka_max / (
+        2 * math.pi * config.target_f_high_hz
+    )
 
-    representative_radius = float(np.median(radii))
+    # Acoustic range: fractions of the maximum acoustic throat radius
+    fractions = config.throat_fractions if config.throat_fractions else [0.3, 0.65, 1.0]
+    acoustic_radii = [a_acoustic_max * f for f in fractions]
 
-    # 5. Filter by Sd ratio relative to representative
-    lo, hi = config.sd_ratio_range
-    filtered = []
-    for drv in candidates:
-        if drv.sd_m2 <= 0:
-            continue
-        drv_radius = math.sqrt(drv.sd_m2 / math.pi)
-        ratio = drv_radius / representative_radius
-        if lo <= ratio <= hi:
-            filtered.append(drv)
+    # Also include driver-matched radii for direct-coupling scenarios
+    driver_radii = [
+        math.sqrt(d.effective_throat_area / math.pi)
+        for d in candidates if d.effective_throat_area > 0
+    ]
+    direct_radii = [r for r in driver_radii if r <= a_acoustic_max]
 
-    # Recompute representative from final set
-    if filtered:
-        final_radii = [math.sqrt(d.sd_m2 / math.pi) for d in filtered]
-        representative_radius = float(np.median(final_radii))
+    all_radii = sorted(set(
+        min(round(r, 6), a_acoustic_max) for r in acoustic_radii + direct_radii
+    ))
+
+    # Keep at most 5 to limit combinatorial explosion
+    if len(all_radii) > 5:
+        indices = np.linspace(0, len(all_radii) - 1, 5, dtype=int)
+        all_radii = [all_radii[i] for i in indices]
+
+    representative_radius = all_radii[len(all_radii) // 2]
+    throat_radii_m = all_radii
 
     return PrescreenResult(
-        drivers=filtered,
+        drivers=candidates,
         throat_radius_m=representative_radius,
-        count=len(filtered),
+        throat_radii_m=throat_radii_m,
+        count=len(candidates),
     )
 
 
@@ -136,8 +177,15 @@ def main():
     parser.add_argument("--mouth-radius", type=float, default=None, help="Horn mouth radius (m). Optional for fullauto mode.")
     parser.add_argument("--length", type=float, default=None, help="Horn length (m). Optional for fullauto mode.")
     parser.add_argument("--min-ebp", type=float, default=50.0, help="Minimum EBP threshold.")
-    parser.add_argument("--horn-load-factor", type=float, default=10.0,
-                        help="Multiplier on piston frequency for horn-loaded upper limit estimate.")
+    parser.add_argument("--ka-max", type=float, default=2 * math.pi,
+                        help="Absolute cap on throat ka at f_high (default 2π ≈ 6.28).")
+    parser.add_argument("--min-diameter", type=float, default=None,
+                        help="Minimum driver nominal diameter (inches).")
+    parser.add_argument("--max-diameter", type=float, default=None,
+                        help="Maximum driver nominal diameter (inches).")
+    parser.add_argument("--throat-fractions", type=str, default=None,
+                        help="Comma-separated throat radius fractions of a_max (default '0.3,0.65,1.0'). "
+                             "Use smaller values for phase-plug-tiny throats, e.g. '0.1,0.25,0.5,0.75,1.0'.")
     parser.add_argument("--output", type=str, default="prescreen_result.json", help="Output JSON file.")
     args = parser.parse_args()
 
@@ -146,18 +194,25 @@ def main():
     drivers = load_drivers(args.drivers_db)
     print(f"Loaded {len(drivers)} drivers from {args.drivers_db}")
 
+    throat_fractions = None
+    if args.throat_fractions:
+        throat_fractions = [float(x) for x in args.throat_fractions.split(",")]
+
     config = PrescreenConfig(
         target_f_low_hz=args.target_f_low,
         target_f_high_hz=args.target_f_high,
         mouth_radius_m=args.mouth_radius,
         length_m=args.length,
         min_ebp=args.min_ebp,
-        horn_load_factor=args.horn_load_factor,
+        ka_max=args.ka_max,
+        min_nominal_diameter_in=args.min_diameter,
+        max_nominal_diameter_in=args.max_diameter,
+        throat_fractions=throat_fractions,
     )
 
     result = prescreen_drivers(drivers, config)
 
-    output = json.dumps(result.to_dict(), indent=2)
+    output = json.dumps({**result.to_dict(), "ka_max": config.ka_max}, indent=2)
     Path(args.output).write_text(output)
     print(f"Pre-screening complete: {result.count} drivers passed")
     print(f"Representative throat radius: {result.throat_radius_m:.4f} m")

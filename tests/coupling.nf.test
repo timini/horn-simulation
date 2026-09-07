@@ -1,0 +1,32 @@
+nextflow_process {
+    name "Single-driver voltage forwarding"
+    script "../main.nf"
+    process "couple_with_driver"
+    config "nextflow.config"
+    profile "docker"
+
+    test("Coupling uses the requested RMS voltage and physical area") {
+        when {
+            params {
+                driver_id = "synthetic-smoke"
+                voltage_rms = 5.66
+            }
+            process {
+                """
+                input[0] = file("${projectDir}/tests/data/results_0.csv")
+                input[1] = 0.025
+                input[2] = "test"
+                input[3] = file("${projectDir}/tests/data/smoke_drivers.json")
+                """
+            }
+        }
+        then {
+            assert process.success
+            def kpi = new groovy.json.JsonSlurper().parse(new File(process.out[2][0]))
+            assert kpi.drive_voltage_v == 5.66
+            def first = new File(process.out[0][0]).text.readLines()[1].split(',')[1].toDouble()
+            // Independent two-equation motor balance, using the fixture's .01 m² inlet.
+            assert Math.abs(first - 127.17639864923825) < 0.000001
+        }
+    }
+}

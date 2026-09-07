@@ -23,6 +23,21 @@ class TargetSpec:
     f_high_hz: float
     max_length_m: Optional[float] = None
     max_mouth_radius_m: Optional[float] = None
+    voltage_rms: float = 2.83
+    observation_distance_m: float = 1.0
+    max_ripple_db: float = 6.0
+    max_compression_ratio: float = 10.0
+    min_output_db: Optional[float] = None
+
+    def __post_init__(self):
+        from horn_core.acoustics import validate_band
+        validate_band(self.f_low_hz, self.f_high_hz)
+        for name in ("voltage_rms", "observation_distance_m", "max_ripple_db", "max_compression_ratio", "max_length_m", "max_mouth_radius_m"):
+            value = getattr(self, name)
+            if value is not None and (not np.isfinite(value) or value <= 0):
+                raise ValueError(f"{name} must be finite and positive")
+        if self.min_output_db is not None and not np.isfinite(self.min_output_db):
+            raise ValueError("Minimum output must be finite")
 
 
 @dataclass
@@ -89,6 +104,10 @@ def compute_selection_score(
         + weights["ripple"] * ripple_score
         + weights["sensitivity"] * float(sensitivity_score)
     )
+
+    # --- Bandwidth floor: non-functional combos score zero ---
+    if bandwidth_coverage < 0.10:
+        composite = 0.0
 
     return SelectionScore(
         driver_id=driver_id,

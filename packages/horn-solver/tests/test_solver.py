@@ -6,15 +6,22 @@ import numpy as np
 # Define physical group tags for boundaries
 INLET_TAG, OUTLET_TAG, WALL_TAG = 2, 3, 4
 
-def test_mesh_boundary_tagging():
+def _small_horn(tmp_path):
+    from horn_geometry.generator import create_conical_horn
+    path = tmp_path / "horn.step"
+    create_conical_horn(.025, .05, .08, path)
+    return path
+
+
+def test_mesh_boundary_tagging(tmp_path):
     print("\n--- Running test: test_mesh_boundary_tagging ---\n")
-    step_file = Path(__file__).parent / "test_box.stp"
+    step_file = _small_horn(tmp_path)
 
     # Call the new, testable meshing function
     domain, facet_tags = create_mesh_from_step(
         step_file=str(step_file),
-        mesh_size=1.0, # Coarse mesh for speed
-        horn_length=1.0, # Dummy value for testing
+        mesh_size=0.01, # Coarse mesh for speed
+        horn_length=0.08, # Dummy value for testing
     )
 
     # Check that the facet tags have been created and contain the correct markers
@@ -34,13 +41,13 @@ def test_mesh_boundary_tagging():
 def test_e2e_meshing_and_solving(tmp_path):
     print("\n--- Running test: test_e2e_meshing_and_solving ---\n")
     # This test uses a pre-generated STEP file to avoid a dependency on FreeCAD
-    step_file = Path(__file__).parent / "test_box.stp"
+    step_file = _small_horn(tmp_path)
     output_file = tmp_path / "results.csv"
     print(f"STEP file: {step_file}")
     print(f"Output file: {output_file}")
 
     # Define dummy inputs
-    driver_params = {"Bl": 5.0, "Re": 6.0}
+    driver_params = {"length": 0.08}
     freq_range = (100.0, 1000.0)
     print("Inputs defined.")
 
@@ -53,7 +60,7 @@ def test_e2e_meshing_and_solving(tmp_path):
         num_intervals=10,
         output_file=str(output_file),
         max_freq_mesh=freq_range[1],
-        mesh_size=1.0,  # Use a very coarse mesh for speed
+        mesh_size=0.01,  # Use a very coarse mesh for speed
     )
     print("run_simulation_from_step finished.")
 
@@ -87,10 +94,10 @@ def test_e2e_meshing_and_solving(tmp_path):
 
 def test_e2e_with_flanged_piston_bc(tmp_path):
     print("\n--- Running test: test_e2e_with_flanged_piston_bc ---\n")
-    step_file = Path(__file__).parent / "test_box.stp"
+    step_file = _small_horn(tmp_path)
     output_file = tmp_path / "results.csv"
 
-    driver_params = {"Bl": 5.0, "Re": 6.0, "length": 1.0}
+    driver_params = {"Bl": 5.0, "Re": 6.0, "length": 0.08}
     freq_range = (100.0, 1000.0)
 
     result_path = run_simulation_from_step(
@@ -100,7 +107,7 @@ def test_e2e_with_flanged_piston_bc(tmp_path):
         num_intervals=10,
         output_file=str(output_file),
         max_freq_mesh=freq_range[1],
-        mesh_size=1.0,
+        mesh_size=0.01,
         radiation_model="flanged_piston",
     )
 
@@ -115,10 +122,10 @@ def test_e2e_with_flanged_piston_bc(tmp_path):
 
 def test_e2e_with_radiation_bc(tmp_path):
     print("\n--- Running test: test_e2e_with_radiation_bc ---\n")
-    step_file = Path(__file__).parent / "test_box.stp"
+    step_file = _small_horn(tmp_path)
     output_file = tmp_path / "results.csv"
 
-    driver_params = {"Bl": 5.0, "Re": 6.0, "length": 1.0}
+    driver_params = {"Bl": 5.0, "Re": 6.0, "length": 0.08}
     freq_range = (100.0, 1000.0)
 
     result_path = run_simulation_from_step(
@@ -128,7 +135,7 @@ def test_e2e_with_radiation_bc(tmp_path):
         num_intervals=10,
         output_file=str(output_file),
         max_freq_mesh=freq_range[1],
-        mesh_size=1.0,
+        mesh_size=0.01,
     )
 
     assert result_path.exists(), "The simulation output CSV was not created."

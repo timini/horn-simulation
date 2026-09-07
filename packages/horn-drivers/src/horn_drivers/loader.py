@@ -15,6 +15,7 @@ directory or a JSON file.
 """
 
 import json
+import warnings
 from pathlib import Path
 from typing import List, Optional
 
@@ -31,27 +32,52 @@ def _driver_from_dict(d: dict) -> DriverParameters:
     params = d.get("parameters", d)
 
     # Unit conversions — source may use convenience units
-    le_h = params.get("le_h") or _mh_to_h(params.get("le_mh"))
-    sd_m2 = params.get("sd_m2") or params.get("sd_sq_meters")
-    xmax_m = params.get("xmax_m") or _mm_to_m(params.get("xmax_mm"))
+    # Only missing values fall back to aliases. Explicit zero limits must
+    # reach validation, and zero inductance is a valid limiting case.
+    le_h = params.get("le_h")
+    if le_h is None:
+        le_h = _mh_to_h(params.get("le_mh"))
+    sd_m2 = params.get("sd_m2")
+    if sd_m2 is None:
+        sd_m2 = params.get("sd_sq_meters")
+    xmax_m = params.get("xmax_m")
+    if xmax_m is None:
+        xmax_m = _mm_to_m(params.get("xmax_mm"))
+    exit_area_m2 = params.get("exit_area_m2")
+    if exit_area_m2 is None:
+        exit_area_m2 = _cm2_to_m2(params.get("exit_area_cm2"))
+    re_ohm = params.get("re_ohm")
+    if re_ohm is None:
+        re_ohm = params.get("re_ohms", 0.0)
 
     return DriverParameters(
         driver_id=d.get("driver_id", "unknown"),
         manufacturer=d.get("manufacturer", ""),
         model_name=d.get("model_name", ""),
         fs_hz=params["fs_hz"],
-        re_ohm=params.get("re_ohm") or params.get("re_ohms", 0.0),
+        re_ohm=re_ohm,
         bl_tm=params.get("bl_tm", 0.0),
-        sd_m2=sd_m2 or 0.0,
+        sd_m2=sd_m2 if sd_m2 is not None else 0.0,
         mms_kg=params.get("mms_kg", 0.0),
-        le_h=le_h or 0.0,
+        le_h=le_h if le_h is not None else 0.0,
         qms=params.get("qms"),
         qes=params.get("qes"),
         qts=params.get("qts"),
+        exit_area_m2=exit_area_m2,
         driver_type=d.get("driver_type"),
         nominal_diameter=d.get("nominal_diameter"),
         xmax_m=xmax_m,
         nominal_impedance_ohm=params.get("nominal_impedance_ohm"),
+        power_w=params.get("power_w"),
+        peak_power_w=params.get("peak_power_w"),
+        usable_f_low_hz=d.get("usable_f_low_hz"),
+        usable_f_high_hz=d.get("usable_f_high_hz"),
+        parameter_source=d.get("parameter_source"),
+        interface_model=d.get("interface_model"),
+        mmd_kg=params.get("mmd_kg"),
+        rear_load_mass_kg=params.get("rear_load_mass_kg"),
+        cms_m_per_n=params.get("cms_m_per_n"),
+        rms_kg_per_s=params.get("rms_kg_per_s"),
     )
 
 
@@ -97,21 +123,27 @@ def load_drivers_raw(db_path: str) -> List[dict]:
 
 
 def load_drivers(db_path: str) -> List[DriverParameters]:
-    """Load all drivers from a database (directory or JSON file).
+    """Load valid drivers, with explicit warnings for rejected database records.
 
     Supports:
       - v3 directory: ``db_path/{Manufacturer}/{driver-id}.json``
       - v2 single file: ``{ "schema_version": 2, "drivers": [...] }``
       - v1 single file: ``{ "driver_id": { ... }, ... }``
     """
-    return [_driver_from_dict(d) for d in load_drivers_raw(db_path)]
+    drivers = []
+    for record in load_drivers_raw(db_path):
+        try:
+            drivers.append(_driver_from_dict(record))
+        except (KeyError, TypeError, ValueError, ZeroDivisionError, OverflowError) as error:
+            warnings.warn(f"Rejected driver {record.get('driver_id', 'unknown')}: {error}", RuntimeWarning, stacklevel=2)
+    return drivers
 
 
 def load_driver(db_path: str, driver_id: str) -> DriverParameters:
-    """Load a single driver by ID from a database."""
-    for driver in load_drivers(db_path):
-        if driver.driver_id == driver_id:
-            return driver
+    """Load a single driver by ID, raising its validation error if invalid."""
+    for record in load_drivers_raw(db_path):
+        if record.get("driver_id") == driver_id:
+            return _driver_from_dict(record)
     raise KeyError(f"Driver '{driver_id}' not found in {db_path}")
 
 
@@ -125,3 +157,7 @@ def _mh_to_h(val: Optional[float]) -> Optional[float]:
 
 def _mm_to_m(val: Optional[float]) -> Optional[float]:
     return val * 1e-3 if val is not None else None
+
+
+def _cm2_to_m2(val: Optional[float]) -> Optional[float]:
+    return val * 1e-4 if val is not None else None

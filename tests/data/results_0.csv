@@ -1,0 +1,4 @@
+frequency,spl,z_real,z_imag,schema_version,inlet_area_m2,mouth_area_m2,mouth_u_real,mouth_u_imag,radiation_model,phasor_convention,bc_mode,mouth_p_real,mouth_p_imag
+100,94,420,0,2,0.01,0.02,0.0001,0,plane_wave,exp(+iwt)_rms,dirichlet,1.0,0.0
+316.22776601683796,94,420,0,2,0.01,0.02,0.0001,0,plane_wave,exp(+iwt)_rms,dirichlet,1.0,0.0
+1000,94,420,0,2,0.01,0.02,0.0001,0,plane_wave,exp(+iwt)_rms,dirichlet,1.0,0.0
