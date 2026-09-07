@@ -1,17 +1,8 @@
 import pytest
 from pathlib import Path
 
-# Try to import FreeCAD, skip if not available
-try:
-    import FreeCAD
-    import Part
-except ImportError:
-    FreeCAD = None
-
 from horn_geometry.generator import create_conical_horn
 
-reason = "FreeCAD module not found. Run this test inside the geometry container."
-@pytest.mark.skipif(FreeCAD is None, reason=reason)
 def test_generator_creates_step_file_smoke_test(tmp_path):
     """
     A simple smoke test to ensure the geometry creation function

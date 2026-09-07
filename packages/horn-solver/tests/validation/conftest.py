@@ -16,8 +16,8 @@ try:
     import gmsh
 
     SOLVER_AVAILABLE = True
-except ImportError:
-    SOLVER_AVAILABLE = False
+except ImportError as exc:
+    raise RuntimeError("Required solver validation dependencies are unavailable") from exc
 
 REFERENCE_DATA_DIR = Path(__file__).parent / "reference_data"
 

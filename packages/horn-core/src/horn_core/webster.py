@@ -13,6 +13,7 @@ solver output suitable for prescreening large candidate grids.
 import numpy as np
 from scipy.special import j1, struve
 from typing import Callable, Tuple
+from horn_core.duct import DEFAULT_AIR, circular_duct_properties, circular_pipe_radiation
 
 # Speed of sound and air density at ~20 °C
 C0 = 343.0
@@ -67,7 +68,7 @@ def _segment_matrix(k: float, S: float, dz: float) -> np.ndarray:
     ], dtype=complex)
 
 
-def compute_throat_impedance_tmm(
+def compute_horn_transfer_tmm(
     frequencies: np.ndarray,
     radius_func: Callable[[float], float],
     length: float,
@@ -75,8 +76,11 @@ def compute_throat_impedance_tmm(
     mouth_radius: float,
     n_segments: int = 200,
     radiation_model: str = "flanged_piston",
-) -> Tuple[np.ndarray, np.ndarray]:
-    """Compute specific acoustic impedance at the horn throat using TMM.
+    loss_model: str = "lossless",
+    flange_width: float = 0.,
+    air=DEFAULT_AIR,
+) -> dict:
+    """Compute unit-inlet-pressure impedance and mouth transfer using TMM.
 
     Slices the horn into cylindrical segments at their midpoint radius,
     builds the cascaded transfer matrix from throat to mouth, and applies
@@ -92,53 +96,62 @@ def compute_throat_impedance_tmm(
         radiation_model: "flanged_piston" or "unflanged".
 
     Returns:
-        Tuple of (z_real, z_imag) arrays — specific acoustic impedance
-        at the throat in Pa·s/m, matching the FEM solver CSV format.
+        Dictionary of specific throat impedance (Pa·s/m), mouth pressure
+        (Pa/Pa), mouth volume velocity (m³/s/Pa), and physical areas (m²).
     """
-    # Segment boundaries and midpoint radii
-    z_edges = np.linspace(0, length, n_segments + 1)
-    dz = length / n_segments
-    z_mid = 0.5 * (z_edges[:-1] + z_edges[1:])
-    r_mid = np.array([radius_func(z) for z in z_mid])
-    S_mid = np.pi * r_mid**2
+    from horn_core.acoustics import validate_response
+    frequencies = validate_response(frequencies)
+    if not np.isfinite([length, throat_radius, mouth_radius]).all() or min(length, throat_radius, mouth_radius) <= 0:
+        raise ValueError("Horn dimensions must be finite and positive")
+    if n_segments < 2:
+        raise ValueError("At least two TMM segments are required")
+    if radiation_model not in {"plane_wave", "flanged_piston", "unflanged", "unflanged_piston", "finite_flange", "closed"}:
+        raise ValueError("TMM supports local radiation models only")
+    z_mid = (np.arange(n_segments) + 0.5) * length / n_segments
+    areas = np.pi * np.array([radius_func(z) for z in z_mid])**2
+    if not np.isfinite(areas).all() or np.any(areas <= 0):
+        raise ValueError("Invalid horn section area")
+    k = 2 * np.pi * frequencies / air.c
+    a_mouth = mouth_radius
+    if radiation_model == "closed":
+        z_norm = np.zeros(len(k), dtype=complex)
+    elif radiation_model == "finite_flange":
+        z_norm = circular_pipe_radiation(k, a_mouth, flange_width)
+    elif radiation_model == "plane_wave":
+        z_norm = np.ones(len(k), dtype=complex)
+    elif radiation_model == "flanged_piston":
+        z_norm = np.array([piston_radiation_impedance(ki, a_mouth) for ki in k])
+    else:
+        if np.any(k * a_mouth >= 1.5):
+            raise ValueError("Unflanged low-ka approximation requires ka < 1.5")
+        z_norm = np.array([unflanged_radiation_impedance(ki, a_mouth) for ki in k])
+    mouth_area = np.pi * mouth_radius**2
+    load = z_norm * air.rho * air.c / mouth_area
+    matrices = np.tile(np.eye(2, dtype=complex), (len(k), 1, 1))
+    for area in areas:
+        propagation_k, specific_zc = circular_duct_properties(frequencies, np.sqrt(area/np.pi), air=air, loss_model=loss_model)
+        cos_kl, sin_kl = np.cos(propagation_k*length/n_segments), np.sin(propagation_k*length/n_segments)
+        zc = specific_zc / area
+        segment = np.empty_like(matrices)
+        segment[:, 0, 0] = segment[:, 1, 1] = cos_kl
+        segment[:, 0, 1] = 1j * zc * sin_kl
+        segment[:, 1, 0] = 1j * sin_kl / zc
+        matrices = matrices @ segment
+    pressure_denominator = matrices[:, 0, 0]*load + matrices[:, 0, 1]
+    flow_denominator = matrices[:, 1, 0]*load + matrices[:, 1, 1]
+    if radiation_model == "closed":
+        pressure_denominator, flow_denominator = matrices[:, 0, 0], matrices[:, 1, 0]
+    impedance = pressure_denominator / flow_denominator * np.pi*throat_radius**2
+    return {
+        "z_real": impedance.real, "z_imag": impedance.imag,
+        "mouth_pressure_transfer": (1 if radiation_model == "closed" else load) / pressure_denominator,
+        "mouth_volume_velocity_transfer": np.zeros(len(k), dtype=complex) if radiation_model == "closed" else 1 / pressure_denominator,
+        "inlet_area_m2": np.pi*throat_radius**2,
+        "mouth_area_m2": mouth_area,
+    }
 
-    z_real_out = np.zeros(len(frequencies))
-    z_imag_out = np.zeros(len(frequencies))
 
-    a_mouth = radius_func(length)
-    S_throat = np.pi * throat_radius**2
-
-    for i_f, freq in enumerate(frequencies):
-        k = 2.0 * np.pi * freq / C0
-
-        # Radiation impedance at the mouth (normalised → acoustic)
-        if radiation_model == "flanged_piston":
-            z_rad_norm = piston_radiation_impedance(k, a_mouth)
-        else:
-            z_rad_norm = unflanged_radiation_impedance(k, a_mouth)
-
-        S_mouth = np.pi * a_mouth**2
-        Z_load = z_rad_norm * RHO0 * C0 / S_mouth  # acoustic impedance
-
-        # Cascade transfer matrices: T_total = T_0 · T_1 · ... · T_{N-1}
-        # Maps (p, U) at throat to (p, U) at mouth
-        T = np.eye(2, dtype=complex)
-        for seg in range(n_segments):
-            T_seg = _segment_matrix(k, S_mid[seg], dz)
-            T = T @ T_seg
-
-        # Throat acoustic impedance from transfer matrix:
-        # p_throat = T11*p_mouth + T12*U_mouth
-        # U_throat = T21*p_mouth + T22*U_mouth
-        # At mouth: p_mouth = Z_load * U_mouth
-        # So: Z_throat = p_throat/U_throat
-        #   = (T11*Z_load + T12) / (T21*Z_load + T22)
-        Z_throat_acoustic = (T[0, 0] * Z_load + T[0, 1]) / (T[1, 0] * Z_load + T[1, 1])
-
-        # Convert acoustic → specific acoustic impedance
-        Z_throat_specific = Z_throat_acoustic * S_throat
-
-        z_real_out[i_f] = np.real(Z_throat_specific)
-        z_imag_out[i_f] = np.imag(Z_throat_specific)
-
-    return z_real_out, z_imag_out
+def compute_throat_impedance_tmm(*args, **kwargs):
+    """Compatibility wrapper returning specific throat impedance components."""
+    result = compute_horn_transfer_tmm(*args, **kwargs)
+    return result["z_real"], result["z_imag"]

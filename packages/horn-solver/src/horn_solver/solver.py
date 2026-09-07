@@ -10,6 +10,8 @@ from dolfinx.io import gmshio
 INLET_TAG, OUTLET_TAG, WALL_TAG = 2, 3, 4
 
 # Physical constants
+from horn_core.duct import DEFAULT_AIR, AirProperties, boundary_layer_depths, circular_pipe_radiation
+
 C0 = 343.0  # Speed of sound in air (m/s)
 RHO0 = 1.225 # Density of air (kg/m^3)
 
@@ -18,6 +20,9 @@ from dolfinx.fem.petsc import LinearProblem
 from mpi4py import MPI
 import ufl
 from petsc4py.PETSc import ScalarType
+from petsc4py import PETSc
+
+from horn_core.acoustics import validate_band, SCHEMA_VERSION
 
 from horn_solver.radiation import (
     piston_radiation_impedance,
@@ -76,7 +81,7 @@ def _compute_neumann_velocity(
     v_n = velocity * driver.sd_m2 / throat_area
     return v_n
 
-def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float) -> Tuple["mesh.Mesh", "mesh.MeshTags"]:
+def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float, geometry_order: int = 1) -> Tuple["mesh.Mesh", "mesh.MeshTags"]:
     """
     Generates a mesh from a STEP file and tags the boundaries.
     """
@@ -104,16 +109,23 @@ def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float) 
 
     surfaces = gmsh.model.occ.getEntities(dim=2)
     for surface in surfaces:
-        com = gmsh.model.occ.getCenterOfMass(surface[0], surface[1])
+        bbox = gmsh.model.getBoundingBox(surface[0], surface[1])
         # Identify surfaces by their Z-coordinate.
         # Inlet (throat) is at z=0, Outlet (mouth) is at z=horn_length.
-        if np.isclose(com[2], 0.0):
+        if np.allclose([bbox[2], bbox[5]], 0.0, atol=1e-6):
             inlet_surfaces.append(surface[1])
-        elif np.isclose(com[2], horn_length):
+        elif np.allclose([bbox[2], bbox[5]], horn_length, atol=1e-6, rtol=0):
             outlet_surfaces.append(surface[1])
         else:
             wall_surfaces.append(surface[1])
     
+    if not inlet_surfaces or not outlet_surfaces or not wall_surfaces:
+        gmsh.finalize()
+        raise ValueError("STEP must contain an acoustic volume with planar inlet at z=0 and mouth at z=length")
+    cad_areas = {
+        "inlet": sum(gmsh.model.occ.getMass(2, t) for t in inlet_surfaces),
+        "mouth": sum(gmsh.model.occ.getMass(2, t) for t in outlet_surfaces),
+    }
     gmsh.model.addPhysicalGroup(2, inlet_surfaces, INLET_TAG)
     gmsh.model.setPhysicalName(2, INLET_TAG, "inlet")
     gmsh.model.addPhysicalGroup(2, outlet_surfaces, OUTLET_TAG)
@@ -124,6 +136,8 @@ def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float) 
     gmsh.option.setNumber("Mesh.MeshSizeMin", mesh_size)
     gmsh.option.setNumber("Mesh.MeshSizeMax", mesh_size)
     gmsh.model.mesh.generate(3)
+    if geometry_order == 2:
+        gmsh.model.mesh.setOrder(2)
 
     # Check mesh size before converting to dolfinx (avoid OOM)
     node_tags, _, _ = gmsh.model.mesh.getNodes()
@@ -141,6 +155,7 @@ def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float) 
     domain, cell_tags, facet_tags = gmshio.model_to_mesh(gmsh.model, MPI.COMM_WORLD, 0, gdim=3)
     gmsh.finalize()
 
+    domain.horn_boundary_areas = cad_areas
     return domain, facet_tags
 
 def run_simulation_from_step(
@@ -160,15 +175,18 @@ def run_simulation_from_step(
     """
     if not fem:
         raise ImportError("FEniCSx (dolfinx) is required for the simulation.")
+    if kwargs.get("radiation_model") == "bem":
+        raise NotImplementedError("Legacy FEM-BEM horn coupling is disabled: its whole-boundary trace does not represent a mouth-only exterior problem")
 
     horn_length = driver_params.get("length", 0.4)
 
     # Frequency-adaptive meshing: element size < λ/6 = c/(6*f_max)
-    adaptive_size = C0 / (6.0 * max_freq_mesh)
+    adaptive_size = kwargs.get("air", DEFAULT_AIR).c / (6.0 * max_freq_mesh)
     final_mesh_size = min(mesh_size, adaptive_size)
     print(f"Mesh size: user={mesh_size}, adaptive={adaptive_size:.4f}, using={final_mesh_size:.4f}")
 
-    domain, facet_tags = create_mesh_from_step(step_file, final_mesh_size, horn_length)
+    domain, facet_tags = create_mesh_from_step(step_file, final_mesh_size, horn_length,
+                                               geometry_order=kwargs.get("element_degree", 1))
     print(f"Successfully loaded mesh: {domain.name} with "
           f"{domain.topology.index_map(domain.topology.dim).size_global} cells.")
 
@@ -192,6 +210,11 @@ def run_simulation(
     compute_directivity: bool = False,
     directivity_file: Optional[str] = None,
     directivity_angles: Optional[np.ndarray] = None,
+    loss_model: str = "lossless",
+    flange_width: float = 0.,
+    air: AirProperties = DEFAULT_AIR,
+    element_degree: int = 1,
+    minimum_wall_scale: Optional[float] = None,
 ) -> Path:
     """Run the FEM simulation for the Helmholtz equation.
 
@@ -223,6 +246,18 @@ def run_simulation(
     Returns:
         Path to the output CSV file.
     """
+    if loss_model not in {"lossless", "boundary_layer"}:
+        raise ValueError("FEM supports lossless or boundary_layer walls")
+    if radiation_model == "bem":
+        raise NotImplementedError("Legacy FEM-BEM horn coupling is disabled: its whole-boundary trace does not represent a mouth-only exterior problem")
+    if element_degree not in (1, 2):
+        raise ValueError("Supported finite-element degrees are 1 and 2")
+    if not np.isfinite(flange_width) or flange_width < 0:
+        raise ValueError("Flange width must be finite and nonnegative")
+    if radiation_model == "bem" and (loss_model != "lossless" or air != DEFAULT_AIR):
+        raise ValueError("BEM does not support custom air or wall losses")
+    if bc_mode == "neumann" and air != DEFAULT_AIR:
+        raise ValueError("Driver Neumann coupling with custom air is not supported")
     if radiation_model == "bem":
         if not BEMPP_AVAILABLE:
             raise ImportError(
@@ -269,22 +304,41 @@ def run_simulation(
             kind="linear", fill_value="extrapolate",
         )
 
+    if bc_mode not in {"dirichlet", "neumann"}:
+        raise ValueError("Unknown inlet boundary condition")
+    if radiation_model not in {"plane_wave", "flanged_piston", "unflanged_piston", "finite_flange", "closed", "bem"}:
+        raise ValueError("Unknown radiation model")
+    if radiation_model == "bem" and bc_mode == "neumann":
+        raise ValueError("BEM Neumann coupling has not been validated")
     min_freq, max_freq = freq_range
+    validate_band(min_freq, max_freq)
+    if num_intervals < 2:
+        raise ValueError("At least two frequency points are required")
     frequencies = np.geomspace(min_freq, max_freq, num_intervals)
 
     # --- FEM Problem Setup ---
-    V = fem.functionspace(domain, ("Lagrange", 1))
+    V = fem.functionspace(domain, ("Lagrange", element_degree))
 
     ds = ufl.Measure("ds", domain=domain, subdomain_data=facet_tags)
     one = fem.Constant(domain, ScalarType(1.0))
     outlet_area = fem.assemble_scalar(fem.form(one * ds(OUTLET_TAG)))
     outlet_area = domain.comm.allreduce(outlet_area, op=MPI.SUM).real
+    if not np.isfinite(outlet_area) or outlet_area <= 0:
+        raise ValueError("Mesh has no valid mouth boundary")
     print(f"Outlet surface area: {outlet_area:.6f} m^2")
 
     # Equivalent circular mouth radius for radiation impedance models
-    a_mouth = np.sqrt(outlet_area / np.pi)
+    cad_areas = getattr(domain, "horn_boundary_areas", {})
+    physical_mouth_area = cad_areas.get("mouth", outlet_area)
+    a_mouth = np.sqrt(physical_mouth_area / np.pi)
     print(f"Equivalent mouth radius: {a_mouth:.4f} m (radiation_model={radiation_model})")
 
+    if loss_model == "boundary_layer":
+        if minimum_wall_scale is None or not np.isfinite(minimum_wall_scale) or minimum_wall_scale <= 0:
+            raise ValueError("Boundary-layer model requires a declared positive minimum wall curvature/gap scale")
+        depths = boundary_layer_depths(min_freq, air)
+        if max(depths)/minimum_wall_scale > .1:
+            raise ValueError("Boundary-layer depth / minimum wall scale must be <= 0.1")
     results = []
 
     mode_label = f"({bc_mode} BC)"
@@ -298,25 +352,41 @@ def run_simulation(
         q = ufl.TestFunction(V)
 
         omega = 2 * np.pi * frequency
-        k = omega / C0
+        k = omega / air.c
 
         # Helmholtz weak form
         a = (ufl.inner(ufl.grad(p), ufl.grad(q)) * ufl.dx
              - k**2 * ufl.inner(p, q) * ufl.dx)
 
+        if loss_model == "boundary_layer":
+            dv, dt = boundary_layer_depths(frequency, air)
+            normal = ufl.FacetNormal(domain)
+            tangent_p = ufl.grad(p)-ufl.dot(ufl.grad(p), normal)*normal
+            tangent_q = ufl.grad(q)-ufl.dot(ufl.grad(q), normal)*normal
+            # Berggren et al. Eq.31, conjugated test functions, exp(+i wt).
+            a += ((1j-1)*dv/2 * ufl.inner(tangent_p, tangent_q)
+                  +(1j-1)*(air.gamma-1)*dt*k**2/2 * ufl.inner(p,q))*ds(WALL_TAG)
+
         # Robin BC at outlet (radiation impedance) — skipped for BEM mode
         if radiation_model == "bem":
             # BEM provides the nonlocal radiation condition; no local Robin term
             pass
+        elif radiation_model == "closed":
+            z_specific = None  # rigid termination; exactly zero mouth flow
+        elif radiation_model == "finite_flange":
+            z_specific = complex(circular_pipe_radiation(k, a_mouth, flange_width))
+            a += (1j * k / z_specific) * ufl.inner(p, q) * ds(OUTLET_TAG)
         elif radiation_model == "flanged_piston":
             z_specific = piston_radiation_impedance(k, a_mouth)
-            a -= 1j * k * z_specific * ufl.inner(p, q) * ds(OUTLET_TAG)
+            a += (1j * k / z_specific) * ufl.inner(p, q) * ds(OUTLET_TAG)
         elif radiation_model == "unflanged_piston":
+            if k * a_mouth >= 1.5:
+                raise ValueError("Unflanged approximation requires ka < 1.5")
             z_specific = unflanged_radiation_impedance(k, a_mouth)
-            a -= 1j * k * z_specific * ufl.inner(p, q) * ds(OUTLET_TAG)
+            a += (1j * k / z_specific) * ufl.inner(p, q) * ds(OUTLET_TAG)
         else:
             z_specific = 1.0 + 0.0j  # plane_wave: Z = rho*c
-            a -= 1j * k * z_specific * ufl.inner(p, q) * ds(OUTLET_TAG)
+            a += (1j * k / z_specific) * ufl.inner(p, q) * ds(OUTLET_TAG)
 
         bcs = []
 
@@ -329,12 +399,12 @@ def run_simulation(
                 frequency, driver, throat_area, z_r, z_i,
             )
 
-            # Neumann source: dp/dn = -jωρ₀·v_n
+            # Neumann source: dp/dn = +jωρ₀·v_n
             # In the weak form, the boundary integral becomes:
-            # L += -jωρ₀·v_n · q · ds(INLET)
-            neumann_val = -1j * omega * RHO0 * v_n
+            # L += +jωρ₀·v_n · q · ds(INLET)
+            neumann_val = 1j * omega * air.rho * v_n
             L = (ufl.inner(fem.Constant(domain, ScalarType(0.0)), q) * ufl.dx
-                 + fem.Constant(domain, ScalarType(neumann_val)) * q * ds(INLET_TAG))
+                 + ufl.inner(fem.Constant(domain, ScalarType(neumann_val)), q) * ds(INLET_TAG))
         else:
             # --- Dirichlet mode (Phase A): p=1 at inlet ---
             L = ufl.inner(fem.Constant(domain, ScalarType(0.0)), q) * ufl.dx
@@ -389,7 +459,20 @@ def run_simulation(
                 petsc_options={"ksp_type": "preonly", "pc_type": "lu"},
             )
             p_h = problem.solve()
+            residual_vector = problem.b.duplicate()
+            try:
+                problem.A.mult(p_h.x.petsc_vec, residual_vector)
+                residual_vector.axpy(-1.0, problem.b)
+                relative_residual = float(residual_vector.norm()/max(problem.b.norm(),1e-30))
+            finally:
+                residual_vector.destroy()
+            converged_reason = int(problem.solver.getConvergedReason())
+            if not np.isfinite(relative_residual) or relative_residual > 1e-8 or converged_reason <= 0:
+                raise RuntimeError(f"Unreliable solve at {frequency:g} Hz: residual={relative_residual:g}, PETSc reason={converged_reason}")
 
+        # bempp uses exp(-i wt); expose exp(+i wt) consistently downstream.
+        if radiation_model == "bem":
+            p_h.x.array[:] = np.conjugate(p_h.x.array)
         # --- Post-processing ---
         p_outlet_sq = fem.assemble_scalar(
             fem.form(ufl.inner(p_h, p_h) * ds(OUTLET_TAG))
@@ -413,35 +496,102 @@ def run_simulation(
         dp_dn_integral = domain.comm.allreduce(dp_dn_integral, op=MPI.SUM)
         inlet_area_val = fem.assemble_scalar(fem.form(one * ds(INLET_TAG)))
         inlet_area_val = domain.comm.allreduce(inlet_area_val, op=MPI.SUM).real
-        dp_dn_avg = dp_dn_integral / inlet_area_val if inlet_area_val > 0 else 0.0
+        if bc_mode == "dirichlet" and radiation_model != "bem":
+            # Recover integrated Dirichlet flux from the variational reaction.
+            # Direct P1 boundary gradients are only first-order and introduce
+            # large impedance errors near a throat-velocity minimum.
+            reaction = fem.petsc.assemble_vector(fem.form(ufl.action(a, p_h) - L))
+            reaction.ghostUpdate(addv=PETSc.InsertMode.ADD, mode=PETSc.ScatterMode.REVERSE)
+            owned = V.dofmap.index_map.size_local * V.dofmap.index_map_bs
+            inlet_owned = inlet_dofs[inlet_dofs < owned]
+            dp_dn_integral = domain.comm.allreduce(np.sum(reaction.array[inlet_owned]), op=MPI.SUM)
+            reaction.destroy()
+        physical_inlet_area = cad_areas.get("inlet", inlet_area_val)
+        # Specific impedance uses the physical CAD area; integrated FEM flux
+        # is retained. This keeps p/U identical across impedance domains.
+        dp_dn_avg = dp_dn_integral / physical_inlet_area if physical_inlet_area > 0 else 0.0
 
         if bc_mode == "dirichlet":
-            # Z = p_inlet / v_n, with p_inlet = 1
+            if inlet_area_val <= 0:
+                raise ValueError("Mesh has no valid inlet boundary")
+            # Inward velocity = dp/dn / (i omega rho), exp(+i wt).
             if abs(dp_dn_avg) > 1e-30:
-                z_throat = (1j * omega * RHO0) / (-dp_dn_avg)
+                z_throat = (1j * omega * air.rho) / dp_dn_avg
             else:
-                z_throat = 0.0 + 0.0j
+                raise FloatingPointError("Cannot recover impedance from zero inlet flow")
         else:
             # In Neumann mode, compute impedance from average inlet pressure
             p_inlet_integral = fem.assemble_scalar(fem.form(p_h * ds(INLET_TAG)))
             p_inlet_integral = domain.comm.allreduce(p_inlet_integral, op=MPI.SUM)
             p_inlet_avg = p_inlet_integral / inlet_area_val if inlet_area_val > 0 else 0.0
             if abs(v_n) > 1e-30:
-                z_throat = p_inlet_avg / v_n
+                z_throat = p_inlet_avg * physical_inlet_area / (v_n * inlet_area_val)
             else:
-                z_throat = 0.0 + 0.0j
+                raise FloatingPointError("Cannot recover impedance from zero inlet flow")
 
         z_real = float(np.real(z_throat))
         z_imag = float(np.imag(z_throat))
 
         print(f"      -> p_rms = {p_rms:.4f}, SPL = {spl:.2f} dB, "
               f"phase = {phase_deg:.1f}, Z = {z_real:.1f} + {z_imag:.1f}j")
+        # Local Robin condition gives outward mouth volume velocity exactly
+        # in its own model. For BEM use the normal pressure gradient.
+        if radiation_model == "bem":
+            grad_out = fem.assemble_scalar(fem.form(ufl.dot(ufl.grad(p_h), n) * ds(OUTLET_TAG)))
+            grad_out = domain.comm.allreduce(grad_out, op=MPI.SUM)
+            mouth_u = -grad_out / (1j * omega * air.rho)
+        elif radiation_model == "closed":
+            mouth_u = 0j
+        else:
+            mouth_u = p_outlet_integral / (air.rho * air.c * z_specific)
+        input_u = (dp_dn_integral/(1j*omega*air.rho) if bc_mode == "dirichlet"
+                   else v_n*inlet_area_val)
+        input_p = 1.0 if bc_mode == "dirichlet" else p_inlet_avg
+        input_power = float(np.real(input_p*np.conjugate(input_u)))
+        output_power = (0. if radiation_model in {"closed", "bem"} else
+                        float(p_outlet_sq*np.real(1/z_specific)/(air.rho*air.c)))
+        viscous_power = thermal_power = 0.
+        if loss_model == "boundary_layer":
+            tangent_h = ufl.grad(p_h)-ufl.dot(ufl.grad(p_h), normal)*normal
+            gv = fem.assemble_scalar(fem.form(ufl.inner(tangent_h,tangent_h)*ds(WALL_TAG)))
+            gt = fem.assemble_scalar(fem.form(ufl.inner(p_h,p_h)*ds(WALL_TAG)))
+            viscous_power = float(domain.comm.allreduce(gv, op=MPI.SUM).real*dv/(2*omega*air.rho))
+            thermal_power = float(domain.comm.allreduce(gt, op=MPI.SUM).real*(air.gamma-1)*dt*omega/(2*air.rho*air.c**2))
         results.append({
             "frequency": frequency,
             "spl": spl,
             "phase_deg": phase_deg,
             "z_real": z_real,
             "z_imag": z_imag,
+            "schema_version": SCHEMA_VERSION,
+            "relative_residual": relative_residual,
+            "converged_reason": converged_reason,
+            "inlet_area_m2": float(physical_inlet_area),
+            "mesh_inlet_area_m2": float(inlet_area_val),
+            "mouth_area_m2": float(physical_mouth_area),
+            "mesh_mouth_area_m2": float(outlet_area),
+            "mouth_u_real": float(mouth_u.real),
+            "mouth_u_imag": float(mouth_u.imag),
+            "mouth_p_real": float(p_avg.real),
+            "mouth_p_imag": float(p_avg.imag),
+            "radiation_model": radiation_model,
+            "loss_model": loss_model,
+            "flange_width_m": flange_width,
+            "air_c_m_s": air.c,
+            "air_rho_kg_m3": air.rho,
+            "air_gamma": air.gamma,
+            "air_viscosity_pa_s": air.viscosity,
+            "air_conductivity_w_m_k": air.conductivity,
+            "air_heat_capacity_j_kg_k": air.heat_capacity,
+            "element_degree": element_degree,
+            "input_acoustic_power_w": input_power,
+            "mouth_acoustic_power_w": output_power,
+            "viscous_wall_power_w": viscous_power,
+            "thermal_wall_power_w": thermal_power,
+            "power_balance_available": radiation_model != "bem",
+            "bc_mode": bc_mode,
+            "phasor_convention": "exp(+iwt)_rms",
+            "mesh_cells": domain.topology.index_map(domain.topology.dim).size_global,
         })
 
     # --- Output Generation ---
@@ -485,16 +635,24 @@ def main():
     parser.add_argument("--phase-a-csv", type=str, default=None,
                         help="Phase A solver CSV with Z_horn data (required for neumann mode).")
     parser.add_argument("--radiation-model", type=str, default="plane_wave",
-                        choices=["plane_wave", "flanged_piston", "unflanged_piston", "bem"],
+                        choices=["plane_wave", "flanged_piston", "unflanged_piston", "finite_flange", "closed", "bem"],
                         help="Radiation impedance model at the outlet (default: plane_wave).")
     parser.add_argument("--compute-directivity", action="store_true",
                         help="Compute far-field directivity (requires --radiation-model bem).")
     parser.add_argument("--directivity-file", type=str, default=None,
                         help="Output CSV path for directivity data.")
+    parser.add_argument("--loss-model", choices=["lossless", "boundary_layer"], default="lossless")
+    parser.add_argument("--flange-width", type=float, default=0.)
+    parser.add_argument("--minimum-wall-scale", type=float)
+    parser.add_argument("--element-degree", type=int, default=1)
     args = parser.parse_args()
 
     # Build extra kwargs for neumann mode
     extra_kwargs = {
+        "loss_model": args.loss_model,
+        "flange_width": args.flange_width,
+        "minimum_wall_scale": args.minimum_wall_scale,
+        "element_degree": args.element_degree,
         "bc_mode": args.bc_mode,
         "radiation_model": args.radiation_model,
         "compute_directivity": args.compute_directivity,

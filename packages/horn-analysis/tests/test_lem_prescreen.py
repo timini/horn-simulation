@@ -189,10 +189,10 @@ class TestLemPrescreenCandidates:
             assert "profile" in entry
 
 
-class TestKnownGoodGeometry:
-    """A well-matched horn should rank higher than a poorly-matched one."""
+class TestWideBandRejection:
+    """A plausible shape is not automatically feasible over a broad band."""
 
-    def test_good_beats_bad(self):
+    def test_neither_shape_is_promoted_past_hard_ripple_limit(self):
         driver = _make_driver(fs_hz=300, sd_m2=0.0008)
         good = _make_candidate("good", "exponential", 0.025, 0.15, 0.3)
         bad = _make_candidate("bad", "conical", 0.025, 0.03, 0.05)  # tiny horn
@@ -206,8 +206,9 @@ class TestKnownGoodGeometry:
             num_frequencies=50,
             top_n=2,
         )
-        # The well-matched horn should appear first in filtered IDs
-        assert result["filtered_candidate_ids"][0] == "good"
+        assert set(result["filtered_candidate_ids"]) == {"good", "bad"}
+        assert all(not row["model_feasible"] for row in result["rankings"])
+        assert all(row["composite_score"] == 0 for row in result["rankings"])
 
 
 class TestCsvIO:

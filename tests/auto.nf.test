@@ -1,0 +1,88 @@
+nextflow_pipeline {
+    name "Tiny automatic workflow"
+    script "../main.nf"
+    config "nextflow.config"
+    profile "docker"
+
+    test("Band to ranked report with a bounded refinement") {
+        when {
+            params {
+                mode = "auto"
+                target_f_low = 1000
+                target_f_high = 1200
+                throat_radius = 0.025
+                mouth_radius = 0.05
+                min_length = 0.07
+                max_length = 0.09
+                num_lengths = 2
+                drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                num_intervals = 12
+                num_bands = 2
+                lem_top_n = 2
+                refinement_budget = 1
+                mesh_size = 0.01
+                loss_model = "boundary_layer"
+                minimum_wall_scale = 0.01
+                element_degree = 2
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            def ranking = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/refinement/ranked_results.json"))
+            assert ranking.results.size() > 0
+            assert ranking.refinement.new_evaluations <= 1
+            assert ranking.results.every { it.loss_model == "boundary_layer" && it.element_degree == 2 }
+            assert ranking.results.every { it.validation_status == "experimental_prediction" }
+            assert new File("${outputDir}/auto/report/auto_report.html").length() > 0
+        }
+    }
+    test("No suitable drivers produces an explicit empty report") {
+        when {
+            params {
+                mode = "auto"
+                target_f_low = 700
+                target_f_high = 1200
+                mouth_radius = 0.001
+                drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            def ranking = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/ranked_results.json"))
+            assert ranking.status == "no_feasible_design"
+            assert ranking.reason == "no_drivers_passed_prescreen"
+            assert ranking.results == []
+            assert new File("${outputDir}/auto/report/auto_report.html").length() > 0
+        }
+    }
+    test("An impossible ripple requirement produces rejected candidates") {
+        when {
+            params {
+                mode = "auto"
+                target_f_low = 700
+                target_f_high = 1200
+                throat_radius = 0.025
+                mouth_radius = 0.05
+                length = 0.08
+                drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                num_intervals = 12
+                num_bands = 2
+                lem_top_n = 1
+                refinement_budget = 1
+                max_ripple_db = 0.01
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            def ranking = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/refinement/ranked_results.json"))
+            assert ranking.status == "no_feasible_design"
+            assert ranking.results == []
+            assert ranking.rejected.size() > 0
+            assert ranking.refinement.reason == "no_feasible_seed"
+            assert new File("${outputDir}/auto/report/auto_report.html").length() > 0
+        }
+    }
+}

@@ -30,6 +30,7 @@ class PrescreenConfig:
     ka_max: float = 2 * math.pi  # ~6.28, absolute cap on throat ka at f_high
     min_nominal_diameter_in: Optional[float] = None
     max_nominal_diameter_in: Optional[float] = None
+    throat_fractions: Optional[List[float]] = None  # override default [0.3,0.65,1.0]
 
 
 @dataclass
@@ -129,7 +130,8 @@ def prescreen_drivers(
     )
 
     # Acoustic range: fractions of the maximum acoustic throat radius
-    acoustic_radii = [a_acoustic_max * f for f in [0.3, 0.65, 1.0]]
+    fractions = config.throat_fractions if config.throat_fractions else [0.3, 0.65, 1.0]
+    acoustic_radii = [a_acoustic_max * f for f in fractions]
 
     # Also include driver-matched radii for direct-coupling scenarios
     driver_radii = [
@@ -175,6 +177,9 @@ def main():
                         help="Minimum driver nominal diameter (inches).")
     parser.add_argument("--max-diameter", type=float, default=None,
                         help="Maximum driver nominal diameter (inches).")
+    parser.add_argument("--throat-fractions", type=str, default=None,
+                        help="Comma-separated throat radius fractions of a_max (default '0.3,0.65,1.0'). "
+                             "Use smaller values for phase-plug-tiny throats, e.g. '0.1,0.25,0.5,0.75,1.0'.")
     parser.add_argument("--output", type=str, default="prescreen_result.json", help="Output JSON file.")
     args = parser.parse_args()
 
@@ -182,6 +187,10 @@ def main():
 
     drivers = load_drivers(args.drivers_db)
     print(f"Loaded {len(drivers)} drivers from {args.drivers_db}")
+
+    throat_fractions = None
+    if args.throat_fractions:
+        throat_fractions = [float(x) for x in args.throat_fractions.split(",")]
 
     config = PrescreenConfig(
         target_f_low_hz=args.target_f_low,
@@ -192,6 +201,7 @@ def main():
         ka_max=args.ka_max,
         min_nominal_diameter_in=args.min_diameter,
         max_nominal_diameter_in=args.max_diameter,
+        throat_fractions=throat_fractions,
     )
 
     result = prescreen_drivers(drivers, config)

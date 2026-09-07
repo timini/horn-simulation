@@ -18,7 +18,7 @@ COPY ./packages /app/packages
 RUN pip install --no-deps /app/packages/horn-core \
     /app/packages/horn-drivers \
     && pip install /app/packages/horn-solver \
-    && pip install 'bempp-cl==0.3.1'
+    && pip install 'bempp-cl==0.3.1' /app/packages/horn-analysis /app/packages/horn-geometry
 
 # --- Test Stage ---
 FROM production as test

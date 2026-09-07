@@ -1,0 +1,53 @@
+# Implementation and validation status — issue 81
+
+Updated 7 September 2026. Band-to-driver-and-horn search, bounded refinement, CAD export and reports run automatically. **Physical recommendation validation is not complete**, and issue 81 remains open. Reports distinguish model feasibility from missing evidence and do not certify purchases or builds.
+
+## Implemented
+
+- Isolated runs with source archive/patch, input hashes, actual container IDs, command, run status and exact Nextflow session ID. Resume rejects changed source, data, images or arguments.
+- Consistent RMS pressure, velocity, impedance and voltage conventions across analytical screening, FEM and motor coupling. Actual CAD inlet/mouth areas include annular openings. The listening-distance approximation is explicitly a uniform baffled piston.
+- Corrected FEM radiation sign, boundary reaction for inlet impedance, quadratic geometry/field elements, fail-closed linear-solve residuals, and exported power accounting. Optional thermoviscous wall losses and finite-flange pipe radiation have matched-reference tests.
+- Complete-band merge validation: missing bands, missing samples, inconsistent metadata, nonfinite responses and excessive overlap discrepancies terminate the run.
+- Requested-band ripple/output constraints, known driver-band and compression rejection, missing-provenance/interface/mass flags, and linear excursion/input-power rejection at the requested voltage.
+- Fixed-budget analytical shortlist with score and geometry diversity, bounded refinement, explicit boundary/budget status, and near-tied score reporting. A result is the best evaluated candidate, never a proven global optimum.
+- Explicit empty and rejected outcomes; coupled response files and acoustic air-volume CAD; default assumptions and experimental labels in reports.
+- Three manufacturer-sourced motor variants in `data/drivers-curated`, with supplied/derived/missing fields distinguished. Their throat interfaces and separate air loads are unresolved; they are not promoted to physically validated drivers.
+- Published reference importer with archive hashes, units, phase availability and duplicate detection. Six acquired archives contain 383 curves, 378 unique files: 299 research measurements, 40 independent simulations and 44 DIY response/impedance files.
+- Disabled the invalid legacy FEM–BEM horn coupling at public entry points. It mapped the whole boundary instead of a verified mouth-only exterior problem. Independent backend/operator tests remain available.
+- Native container builds, repaired Nextflow tests, pinned Nextflow/nf-test CI versions, and a dedicated production acoustic lane requiring all 13 declared cases without skips.
+
+## Demonstrated evidence
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Full solver suite after wall-loss/residual changes | 48 passed, one optional straight-tube regime skipped | `results/validation-81/loss-physics/all-solver-tests.xml` |
+| Three-mesh production wall-loss case | Complex impedance, finest-mesh output convergence, passivity and RMS energy balance pass | `packages/horn-solver/tests/validation/test_wall_losses.py` |
+| Independent published numerical impedances | All four comparisons pass; p95 magnitude error <0.010 dB | `data/validation/loss_physics_validation.json` |
+| Published measured impedances | 237/299 pass magnitude limits, including 201/263 held-out curves; failures retained | [Full comparison and limits](LOSS_PHYSICS_VALIDATION.md) |
+| Direct production FEM versus measurements | 90/100 comparisons pass on the three open geometries | `results/validation-81/loss-physics/held-out-final/validation.json` |
+| Earlier band-only database run | 239 drivers, 231 geometries / 55,209 analytical pairs; 106 tasks completed in 6m23s | `results/validation-81/band-only-final/manifest.json` |
+| Earlier exact resume | All 14 tasks cached; output hashes unchanged | `results/validation-81/reproducible-auto/manifest.json` |
+| Earlier finite-grid audit | 20 geometries × three synthetic motors: all six feasible pairs retained, winner regret zero | `results/validation-81/search-benchmark/search_benchmark.json` |
+
+The earlier band-only run produced a Beyma 3FR30Nd/hyperbolic experimental candidate with 19.868 mm throat diameter, 141.934 mm mouth diameter and 171.5 mm length. It had insufficient driver/interface evidence. This is historical execution evidence, not a recommendation or evidence for the latest source snapshot. Likewise the earlier resume and six-feasible-pair benchmark do not replace final release checks.
+
+## Outstanding gates
+
+1. Reproduce a fully characterized horn-and-driver assembly and a held-out comparison assembly, including chamber/adapter, source voltage and observation environment. Pipe impedance agreement cannot establish absolute loudspeaker output or driver ranking.
+2. Establish verified driver interfaces and separate diaphragm/rear-load parameters. Manufacturer data improve traceability but do not fill those missing quantities.
+3. Investigate failed material/closed-end impedance comparisons. The new loss model is substantially better but does not pass every measured case; do not broaden its physical domain by adjusting thresholds.
+4. Validate the listening-distance/exterior approximation beyond ideal piston references. Directivity and arbitrary free-standing horn radiation are outside the supported release.
+5. Retain complete final search and clean-checkout integration evidence with the release. Acoustic CAD still needs mechanical design before fabrication.
+
+## Reproduce
+
+```sh
+just build
+just test-local
+just test-nextflow
+just run-auto --target_f_low 1000 --target_f_high 1200
+```
+
+Use `--drivers_db data/drivers-curated` for traceable manufacturer inputs. Losses are opt-in with `--loss_model boundary_layer --minimum_wall_scale 0.01 --element_degree 2` only where that scale is conservative for the actual geometry. See [the acoustic contract](ACOUSTIC_CONTRACT.md) and [loss validation](LOSS_PHYSICS_VALIDATION.md).
+
+The launcher selects an available compatible Java without changing global settings. The checked-in validation scripts emit protocols, complete comparisons and hashes. Large third-party archives are downloaded locally from pinned sources rather than vendored without reuse permission.

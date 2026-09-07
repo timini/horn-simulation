@@ -104,6 +104,7 @@ _HTML_TEMPLATE = """\
 </style>
 </head>
 <body>
+<p>Experimental simulation. SPL refers to mouth-plane pressure, not sensitivity at one metre. Imported CAD is an acoustic air volume.</p>
 <div class="container">
 
 <h1>Horn Simulation Report</h1>
@@ -124,7 +125,7 @@ _HTML_TEMPLATE = """\
   <div class="card"><div class="label">Bandwidth (Hz)</div><div class="value">{bandwidth_hz}</div></div>
   <div class="card"><div class="label">Bandwidth (oct)</div><div class="value">{bandwidth_oct}</div></div>
   <div class="card"><div class="label">Ripple (dB)</div><div class="value">{ripple}</div></div>
-  <div class="card"><div class="label">Avg Sensitivity (dB)</div><div class="value">{avg_sens}</div></div>
+  <div class="card"><div class="label">Mean mouth level (dB)</div><div class="value">{avg_sens}</div></div>
 </div>
 
 <h2>Horn Geometry</h2>
@@ -154,6 +155,8 @@ _HTML_TEMPLATE = """\
   <div class="plot"><img src="{phase_src}" alt="Phase response"></div>
 </div>
 
+{coupled_section}
+
 {directivity_section}
 
 <div class="footer">Horn Simulation Report &mdash; generated {timestamp}</div>
@@ -180,6 +183,8 @@ def generate_single_report(
     directivity_contour_png: Optional[str] = None,
     beamwidth_png: Optional[str] = None,
     directivity_index_png: Optional[str] = None,
+    coupled_png: Optional[str] = None,
+    coupled_kpis: Optional[dict] = None,
 ) -> str:
     """Generate a self-contained HTML report string for a single-mode run.
 
@@ -198,6 +203,39 @@ def generate_single_report(
             freq_range = f"{fmin:.0f} \u2014 {fmax:.0f} Hz &nbsp;|&nbsp; "
         except Exception:
             pass
+
+    # Driver-coupled section
+    coupled_section = ""
+    if coupled_png and coupled_kpis:
+        ck = coupled_kpis
+        drv_label = f"{ck.get('manufacturer', '')} {ck.get('model_name', '')}".strip() or ck.get("driver_id", "(driver)")
+        le_mh = (ck.get("le_h") or 0) * 1000
+        coupled_section = f"""
+<h2>Driver + Horn Coupled Response</h2>
+<div class="design-summary" style="margin-bottom:12px;">
+  <dl style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:6px 24px;margin:0;">
+    <div><dt>Driver</dt><dd>{html.escape(drv_label)}</dd></div>
+    <div><dt>Fs</dt><dd>{_fmt(ck.get('fs_hz'), '.0f')} Hz</dd></div>
+    <div><dt>Qts</dt><dd>{_fmt(ck.get('qts'), '.2f')}</dd></div>
+    <div><dt>Bl</dt><dd>{_fmt(ck.get('bl_tm'), '.1f')} T·m</dd></div>
+    <div><dt>Le</dt><dd>{_fmt(le_mh, '.2f')} mH</dd></div>
+    <div><dt>Mms</dt><dd>{_fmt((ck.get('mms_kg') or 0) * 1000, '.1f')} g</dd></div>
+    <div><dt>Drive voltage</dt><dd>{_fmt(ck.get('drive_voltage_v'), '.2f')} V</dd></div>
+  </dl>
+</div>
+<div class="cards">
+  <div class="card"><div class="label">Coupled peak (dB)</div><div class="value">{_fmt(ck.get('peak_spl_db'), '.1f')}</div></div>
+  <div class="card"><div class="label">Peak Freq (Hz)</div><div class="value">{_fmt(ck.get('peak_frequency_hz'), '.0f')}</div></div>
+  <div class="card"><div class="label">f3 Low (Hz)</div><div class="value">{_fmt(ck.get('f3_low_hz'), '.0f')}</div></div>
+  <div class="card"><div class="label">f3 High (Hz)</div><div class="value">{_fmt(ck.get('f3_high_hz'), '.0f')}</div></div>
+  <div class="card"><div class="label">Ripple (dB)</div><div class="value">{_fmt(ck.get('passband_ripple_db'), '.1f')}</div></div>
+  <div class="card"><div class="label">Mean mouth level (dB)</div><div class="value">{_fmt(ck.get('average_sensitivity_db'), '.1f')}</div></div>
+</div>
+<div class="plot"><img src="{_img_b64(coupled_png)}" alt="Coupled SPL response"></div>
+<p class="subtitle"><strong>Note:</strong> the FEM models acoustic horn loading only; cone-breakup
+above the driver's published linear range is not modelled. Real high-frequency response
+will roll off according to the driver's diaphragm physics.</p>
+"""
 
     # Directivity section
     directivity_section = ""
@@ -241,14 +279,15 @@ def generate_single_report(
         "bandwidth_hz": _fmt(kpis.get("bandwidth_hz"), ".0f"),
         "bandwidth_oct": _fmt(kpis.get("bandwidth_octaves"), ".2f"),
         "ripple": _fmt(kpis.get("passband_ripple_db"), ".1f"),
-        "avg_sens": _fmt(kpis.get("avg_sensitivity_db"), ".1f"),
+        "avg_sens": _fmt(kpis.get("average_sensitivity_db"), ".1f"),
         # Embedded images
         "horn_3d_src": _img_b64(horn_3d_png),
         "spl_src": _img_b64(spl_png),
         "impedance_src": _img_b64(impedance_png),
         "phase_src": _img_b64(phase_png),
         "dashboard_src": _img_b64(dashboard_png),
-        # Conditional section
+        # Conditional sections
+        "coupled_section": coupled_section,
         "directivity_section": directivity_section,
     })
 
@@ -270,10 +309,17 @@ def main():
     parser.add_argument("--contour-png", default=None)
     parser.add_argument("--beamwidth-png", default=None)
     parser.add_argument("--di-png", default=None)
+    parser.add_argument("--coupled-png", default=None,
+                        help="Path to coupled_spl.png from couple_single (optional).")
+    parser.add_argument("--coupled-kpis", default=None,
+                        help="Path to driver_horn_kpis.json from couple_single (optional).")
     parser.add_argument("--output", required=True, help="Output HTML path")
     args = parser.parse_args()
 
     kpis = json.loads(Path(args.kpis).read_text())
+    coupled_kpis = None
+    if args.coupled_kpis:
+        coupled_kpis = json.loads(Path(args.coupled_kpis).read_text())
 
     report_html = generate_single_report(
         throat_radius=args.throat_radius,
@@ -291,6 +337,8 @@ def main():
         directivity_contour_png=args.contour_png,
         beamwidth_png=args.beamwidth_png,
         directivity_index_png=args.di_png,
+        coupled_png=args.coupled_png,
+        coupled_kpis=coupled_kpis,
     )
 
     out = Path(args.output)

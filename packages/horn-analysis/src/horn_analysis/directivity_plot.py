@@ -23,7 +23,7 @@ import numpy as np
 import pandas as pd
 
 # NumPy 2.0 renamed trapz -> trapezoid
-_trapezoid = getattr(np, "trapezoid", np.trapz)
+_trapezoid = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
 
 from horn_analysis import plot_theme
 

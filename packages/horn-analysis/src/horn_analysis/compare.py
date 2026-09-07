@@ -79,7 +79,7 @@ def plot_multi_comparison(
         col_labels = [
             "Horn", "Peak (dB)", "Peak Freq (Hz)",
             "f3 Low (Hz)", "f3 High (Hz)", "BW (oct)",
-            "Ripple (dB)", "Avg Sens (dB)",
+            "Ripple (dB)", "Mean level (dB)",
         ]
 
         ax_table.axis("off")

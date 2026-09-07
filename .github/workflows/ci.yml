@@ -9,18 +9,20 @@ jobs:
   test_nextflow:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
       - name: Install Nextflow
         run: |
-          wget -qO- get.nextflow.io | bash
+          NXF_VER=24.10.5 bash <(curl -fsSL https://get.nextflow.io)
           sudo mv nextflow /usr/local/bin/
       - name: Install nf-test
         uses: nf-core/setup-nf-test@v1
+        with:
+          version: 0.9.5
       - name: Install just
         uses: extractions/setup-just@v2
       - name: Build Docker images
@@ -34,7 +36,7 @@ jobs:
       matrix:
         package: [horn-core, horn-drivers]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -52,15 +54,15 @@ jobs:
       matrix:
         package: [horn-geometry, horn-solver, horn-analysis]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build test image
         run: docker build -t ${{ matrix.package }}:test --target test -f ./packages/${{ matrix.package }}/Dockerfile .
       - name: Run tests (skip validation on PRs)
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            docker run --rm ${{ matrix.package }}:test pytest packages/${{ matrix.package }}/tests -v -m "not validation"
+            docker run --rm ${{ matrix.package }}:test pytest /app/packages/${{ matrix.package }}/tests -v -m "not validation"
           else
-            docker run --rm ${{ matrix.package }}:test pytest packages/${{ matrix.package }}/tests -v
+            docker run --rm ${{ matrix.package }}:test pytest /app/packages/${{ matrix.package }}/tests -v
           fi
       - name: Login to Docker Hub
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'

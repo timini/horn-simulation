@@ -77,7 +77,7 @@ def _plot_coupled_spl_comparison(
     if all_freq:
         plot_theme.setup_freq_axis(ax, min(all_freq), max(all_freq))
     ax.set_ylabel("SPL (dB)")
-    ax.set_title("Coupled SPL \u2014 Top Candidates")
+    ax.set_title("Estimated observer output \u2014 Top Candidates")
     plot_theme.setup_grid(ax)
     ax.legend(fontsize=8, loc="best")
     fig.tight_layout()
@@ -355,6 +355,14 @@ _HTML_TEMPLATE = """\
 <div class="container">
 
 <h1>Horn Auto-Select Report</h1>
+<div class="design-summary"><strong>{assessment_status}</strong>
+<p>Predictions are experimental. Driver suitability and the exterior model require independent validation.
+The observer estimate assumes a uniformly moving circular aperture in an infinite baffle.
+Raw horn plots show mouth-plane pressure. Legacy inputs contain mouth-plane levels only.</p>
+<p>Drive: {drive_voltage} V RMS. Observer: {observer_distance} m on axis from mouth plane.
+Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume, not manufacturing walls.</p>
+<p>Acoustic models used: {physics_summary}. Scores within 0.02 are near-ties for comparison; physical uncertainty remains unquantified..</p>
+{evidence_summary}</div>
 <p class="subtitle">
   Target: {target_low:.0f} Hz — {target_high:.0f} Hz &nbsp;|&nbsp;
   Throat: {throat_radius:.4f} m &nbsp;|&nbsp;
@@ -369,7 +377,7 @@ _HTML_TEMPLATE = """\
   <div class="card"><div class="label">Top shown</div><div class="value">{n_top}</div></div>
   <div class="card"><div class="label">Best score</div><div class="value">{best_score}</div></div>
   <div class="card"><div class="label">Best BW coverage</div><div class="value">{best_bw}</div></div>
-  <div class="card"><div class="label">Best sensitivity</div><div class="value">{best_sens}</div></div>
+  <div class="card"><div class="label">Best mean output</div><div class="value">{best_sens}</div></div>
   <div class="card"><div class="label">Lowest ripple</div><div class="value">{best_ripple}</div></div>
 </div>
 
@@ -385,7 +393,7 @@ _HTML_TEMPLATE = """\
   <th>#</th><th>Manufacturer</th><th>Model</th><th>Type</th><th>Size</th><th>Power (W)</th><th>Profile</th>
   {geometry_header_cols}
   <th>Score</th>
-  <th>BW Cov.</th><th>Ripple (dB)</th><th>Sensitivity (dB)</th><th>f3 range (Hz)</th><th>Peak (dB)</th>
+  <th>BW Cov.</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz)</th><th>Peak (dB)</th>
 </tr>
 </thead>
 <tbody>
@@ -394,7 +402,7 @@ _HTML_TEMPLATE = """\
 </table>
 </div>
 
-<h2>Coupled SPL — Top Candidates</h2>
+<h2>Estimated observer output — top candidates</h2>
 <div class="plot"><img src="{plot_coupled_spl}" alt="Coupled SPL comparison"></div>
 
 <h2>Raw Horn SPL by Profile</h2>
@@ -630,6 +638,12 @@ def generate_html_report(
     n_scored = total_scored if total_scored is not None else len(all_ranked)
 
     return _HTML_TEMPLATE.format_map({
+        "assessment_status": "Experimental candidates — not validated recommendations" if top_results else "No feasible design in the evaluated set",
+        "physics_summary": html.escape(", ".join(sorted({str(r.get("loss_model", "lossless"))+" / "+str(r.get("radiation_model", "legacy unknown")) for r in top_results})) or "No candidates"),
+        "drive_voltage": target.voltage_rms,
+        "observer_distance": target.observation_distance_m,
+        "ripple_limit": target.max_ripple_db,
+        "evidence_summary": "<ul>" + "".join("<li>" + html.escape(r.get("driver_id", "")) + ": " + html.escape(", ".join(r.get("evidence_gaps", [])) or "Independent assembly validation pending") + "</li>" for r in top_results) + "</ul>",
         "target_low": target.f_low_hz,
         "target_high": target.f_high_hz,
         "throat_radius": throat_radius,

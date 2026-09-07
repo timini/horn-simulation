@@ -67,6 +67,12 @@ class DriverParameters:
     nominal_impedance_ohm: Optional[float] = None
     power_w: Optional[float] = None           # RMS / AES / continuous power (W)
     peak_power_w: Optional[float] = None      # Peak / program power (W)
+    usable_f_low_hz: Optional[float] = None
+    usable_f_high_hz: Optional[float] = None
+    parameter_source: Optional[str] = None
+    interface_model: Optional[str] = None
+    mmd_kg: Optional[float] = None  # diaphragm mass without the measured free-air load
+    rear_load_mass_kg: Optional[float] = None
 
     @property
     def effective_throat_area(self) -> float:
@@ -74,6 +80,12 @@ class DriverParameters:
         return self.exit_area_m2 if self.exit_area_m2 is not None else self.sd_m2
 
     def __post_init__(self):
+        for name in ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg"):
+            value = getattr(self, name)
+            if not np.isfinite(value) or value <= 0:
+                raise ValueError(f"{self.driver_id}: {name} must be finite and positive")
+        if not np.isfinite(self.le_h) or self.le_h < 0:
+            raise ValueError(f"{self.driver_id}: le_h must be finite and nonnegative")
         omega_s = 2.0 * np.pi * self.fs_hz
 
         # Derive Cms from Mms and fs: Cms = 1 / (Mms * omega_s^2)

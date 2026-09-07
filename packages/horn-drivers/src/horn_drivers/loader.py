@@ -56,6 +56,14 @@ def _driver_from_dict(d: dict) -> DriverParameters:
         nominal_impedance_ohm=params.get("nominal_impedance_ohm"),
         power_w=params.get("power_w"),
         peak_power_w=params.get("peak_power_w"),
+        usable_f_low_hz=d.get("usable_f_low_hz"),
+        usable_f_high_hz=d.get("usable_f_high_hz"),
+        parameter_source=d.get("parameter_source"),
+        interface_model=d.get("interface_model"),
+        mmd_kg=params.get("mmd_kg"),
+        rear_load_mass_kg=params.get("rear_load_mass_kg"),
+        cms_m_per_n=params.get("cms_m_per_n"),
+        rms_kg_per_s=params.get("rms_kg_per_s"),
     )
 
 

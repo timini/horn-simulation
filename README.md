@@ -11,9 +11,18 @@ An open-source tool for acoustic horn design. Give it a target frequency band an
 
 Built for audio engineers, acousticians, DIY speaker builders, and researchers.
 
+**Current status: experimental predictions.** The complete automatic workflow runs, including bounded refinement, failure checks and reports. Its driver/interface and listening-distance output models have not passed independent physical validation. Missing driver evidence is reported as `insufficient_evidence`; an unsuccessful search returns no feasible design. Acoustic STEP exports describe an air volume, not fabrication-ready hardware.
+
+Use `just run-auto --target_f_low 500 --target_f_high 4000` for an isolated run. The launcher writes a manifest, source snapshot and container hashes under a new `results/<run-id>/` directory. Defaults are 2.83 V RMS, 1 m from the mouth, 6 dB maximum band ripple, a uniform baffled-piston observer, ten screened geometries and six additional refinement evaluations. Override these with `--voltage_rms`, `--observation_distance`, `--max_ripple_db`, `--lem_top_n` and `--refinement_budget`. Fix dimensions or set minimum/maximum search bounds when space is limited.
+
+Optional thermoviscous losses and finite-flange pipe radiation now have independent impedance checks; see [the measured results and remaining failures](docs/LOSS_PHYSICS_VALIDATION.md). Legacy FEM–BEM horn coupling and directivity are disabled pending a correct exterior model.
+
+See [acoustic assumptions](docs/ACOUSTIC_CONTRACT.md), [existing measurement sources and importer](docs/VALIDATION_DATA.md), and [implementation/validation status](docs/IMPLEMENTATION_STATUS.md). Resume only an unchanged source/data/container snapshot with `python scripts/run_pipeline.py --run-dir results/<run-id> -resume`.
+
+
 ## Key features
 
-- **3 horn profiles** — conical, exponential, hyperbolic
+- **7 horn profiles** — conical, exponential, hyperbolic, tractrix, oblate spheroid, Le Cléac’h, and constant directivity
 - **FEM Helmholtz solver** — FEniCSx/dolfinx with adaptive meshing and radiation BC
 - **Driver database** with Thiele-Small parameter coupling
 - **3 operating modes** — single simulation, auto comparison, full-auto design exploration
@@ -79,7 +88,7 @@ nextflow run main.nf -profile docker \
 
 ### Auto mode
 
-Fix the geometry, simulate all 3 profiles (conical, exponential, hyperbolic), couple every pre-screened driver, and rank the combinations. Only 3 FEM simulations — driver coupling is pure Python via the transfer function.
+Fix any dimensions you know, derive the others from the band, screen seven profile families, evaluate a shortlist with FEM, and refine within a fixed budget. Ranking uses the requested band and records infeasible combinations and missing evidence.
 
 ```bash
 nextflow run main.nf -profile docker --mode auto \
@@ -89,7 +98,7 @@ nextflow run main.nf -profile docker --mode auto \
 
 ### Fullauto mode
 
-Specify **only** a target frequency band. The system derives horn geometry analytically (mouth radius from cutoff frequency, length from quarter-wave to half-wave), generates a grid of 3 profiles x N mouth radii x N lengths, runs FEM on all candidates, couples with pre-screened drivers, and ranks everything.
+Specify **only** a target frequency band. The system derives horn geometry analytically (mouth radius from cutoff frequency, length from quarter-wave to half-wave), generates a grid of seven profiles and candidate dimensions, screens it analytically, runs FEM on a shortlist, and refines promising dimensions. Reports describe the best evaluated candidates, not a proven global optimum.
 
 ```bash
 nextflow run main.nf -profile docker --mode fullauto \
@@ -121,7 +130,7 @@ nextflow run main.nf -profile docker --mode fullauto \
 Open the report:
 
 ```bash
-open results/fullauto/report/auto_report.html
+# Open the auto/report/auto_report.html path under the run directory printed by the launcher.
 ```
 
 ### Test

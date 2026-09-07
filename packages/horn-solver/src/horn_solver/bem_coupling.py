@@ -1,18 +1,8 @@
-"""BEM coupling for the horn mouth radiation boundary condition.
+"""Research BEM operators; production horn coupling is disabled.
 
-Uses bempp-cl (Numba backend) to replace the local Robin BC at the outlet
-with a nonlocal BEM radiation condition that captures the exact exterior
-acoustic field without simplifying assumptions about mouth geometry.
-
-The coupling follows the standard FEM-BEM approach for exterior Helmholtz:
-  - FEM solves the interior (horn) domain
-  - BEM handles the exterior (free-field) radiation at the mouth
-  - The two are coupled through the acoustic trace on the outlet boundary
-
-Requires:
-  - bempp-cl (pip install bempp-cl)
-  - DOLFINx v0.8 with P1 Lagrange elements
-  - Single MPI rank (bempp-cl does not support parallel FEM-BEM coupling)
+The legacy trace mapped the whole FEM boundary, ignoring the mouth tag. It
+cannot establish a mouth-only exterior radiation solution. Standalone BEM
+operators remain available for independent backend validation.
 """
 
 import numpy as np
@@ -75,11 +65,7 @@ def extract_outlet_trace(V, facet_tags, outlet_tag: int):
     trace_space : bempp function space on the outlet boundary mesh
     trace_matrix : sparse matrix mapping FEM DOFs -> BEM boundary DOFs
     """
-    check_bempp_available()
-
-    trace_space, trace_matrix = bempp_fenicsx.fenics_to_bempp_trace_data(V)
-
-    return trace_space, trace_matrix
+    raise NotImplementedError("Mouth-only BEM trace is not implemented; whole-boundary substitution is invalid")
 
 
 def build_bem_operators(trace_space, k: float):
@@ -207,6 +193,8 @@ def coupled_solve(
     trace_data : dict (only when *return_trace_data* is True)
         ``{"trace_space": ..., "p_trace": ..., "dpdn_trace": ...}``
     """
+    raise NotImplementedError("Legacy FEM-BEM horn coupling is disabled pending mouth-only exterior validation")
+
     check_bempp_available()
 
     from dolfinx import fem

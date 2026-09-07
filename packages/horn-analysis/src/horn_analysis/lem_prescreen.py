@@ -19,10 +19,12 @@ import numpy as np
 from horn_core.candidates import CandidateGeometry
 from horn_core.parameters import DriverParameters
 from horn_core.profiles import get_radius_func
-from horn_core.webster import compute_throat_impedance_tmm
+from horn_core.webster import compute_horn_transfer_tmm
+from horn_core.acoustics import baffled_piston_on_axis, pressure_level
+from horn_analysis.evaluation import evaluate_response
 from horn_analysis.kpi import extract_kpis_from_arrays
 from horn_analysis.scoring import TargetSpec, compute_selection_score
-from horn_analysis.transfer_function import compute_driver_response
+from horn_analysis.transfer_function import compute_driver_response, compute_driver_operating_point
 
 
 P_REF = 20e-6  # reference pressure for dB SPL (Pa)
@@ -44,6 +46,10 @@ def lem_prescreen_candidates(
     num_frequencies: int = 100,
     top_n: int = 10,
     n_segments: int = 200,
+    radiation_model: str = "flanged_piston",
+    target: Optional[TargetSpec] = None,
+    loss_model: str = "lossless",
+    flange_width: float = 0.,
 ) -> dict:
     """Score all (candidate, driver) pairs using TMM + driver coupling.
 
@@ -69,8 +75,10 @@ def lem_prescreen_candidates(
         Dict with keys: total_evaluated, total_pairs, top_n, rankings (list),
         filtered_candidate_ids (list of unique candidate IDs).
     """
-    frequencies = np.linspace(sim_freq_range[0], sim_freq_range[1], num_frequencies)
-    target = TargetSpec(f_low_hz=target_f_low, f_high_hz=target_f_high)
+    if top_n < 1 or num_frequencies < 2:
+        raise ValueError("Positive shortlist and at least two frequencies required")
+    frequencies = np.geomspace(sim_freq_range[0], sim_freq_range[1], num_frequencies)
+    target = target or TargetSpec(f_low_hz=target_f_low, f_high_hz=target_f_high)
 
     all_scores = []
 
@@ -83,30 +91,31 @@ def lem_prescreen_candidates(
             radius_func = get_radius_func(
                 cand.profile, cand.throat_radius, cand.mouth_radius, cand.length
             )
-            z_real, z_imag = compute_throat_impedance_tmm(
+            transfer = compute_horn_transfer_tmm(
                 frequencies=frequencies,
                 radius_func=radius_func,
                 length=cand.length,
                 throat_radius=cand.throat_radius,
                 mouth_radius=cand.mouth_radius,
                 n_segments=n_segments,
+                radiation_model=radiation_model, loss_model=loss_model, flange_width=flange_width,
             )
-            tmm_cache[cache_key] = (z_real, z_imag)
+            tmm_cache[cache_key] = transfer
 
-        z_real, z_imag = tmm_cache[cache_key]
+        transfer = tmm_cache[cache_key]
+        z_real, z_imag = transfer["z_real"], transfer["z_imag"]
         throat_area = np.pi * cand.throat_radius**2
 
         for drv in drivers:
-            p_throat = compute_driver_response(
-                drv, frequencies, z_real, z_imag, throat_area
+            point = compute_driver_operating_point(
+                drv, frequencies, z_real, z_imag, throat_area, target.voltage_rms
             )
-            coupled_spl = _spl_from_pressure(p_throat)
-            kpi = extract_kpis_from_arrays(frequencies, coupled_spl)
-            score = compute_selection_score(
-                kpi, target,
-                driver_id=drv.driver_id,
-                horn_label=cand.candidate_id,
-            )
+            p_throat = point["throat_pressure"]
+            coupled_spl = pressure_level(baffled_piston_on_axis(
+                frequencies, transfer["mouth_volume_velocity_transfer"]*p_throat,
+                transfer["mouth_area_m2"], target.observation_distance_m))
+            assessment = evaluate_response(frequencies, coupled_spl, target, drv, throat_area,
+                                           cand.length, cand.mouth_radius, operating_point=point)
 
             all_scores.append({
                 "candidate_id": cand.candidate_id,
@@ -115,30 +124,21 @@ def lem_prescreen_candidates(
                 "mouth_radius": cand.mouth_radius,
                 "length": cand.length,
                 "driver_id": drv.driver_id,
-                "composite_score": score.composite_score,
-                "bandwidth_coverage": score.bandwidth_coverage,
-                "passband_ripple_db": score.passband_ripple_db,
-                "avg_sensitivity_db": score.avg_sensitivity_db,
+                **assessment,
+                "output_metric": "uniform_baffled_piston_on_axis",
             })
 
     # Sort by composite score descending
     all_scores.sort(key=lambda x: x["composite_score"], reverse=True)
 
-    # Collect unique top-N candidate IDs (by best score per candidate)
-    seen_ids = set()
-    filtered_ids = []
-    for entry in all_scores:
-        cid = entry["candidate_id"]
-        if cid not in seen_ids:
-            seen_ids.add(cid)
-            filtered_ids.append(cid)
-            if len(filtered_ids) >= top_n:
-                break
+    from horn_analysis.search import shortlist_geometries
+    filtered_ids = shortlist_geometries(all_scores, top_n)
 
     return {
         "total_evaluated": len(candidates),
         "total_pairs": len(all_scores),
         "top_n": top_n,
+        "shortlist_policy": "80% score, remaining slots diverse within 0.02 score; fixed total budget",
         "filtered_candidate_ids": filtered_ids,
         "rankings": all_scores,
     }
@@ -186,6 +186,13 @@ def main():
     parser.add_argument("--design-json", required=True, help="Design JSON with sim_freq_range.")
     parser.add_argument("--target-f-low", type=float, required=True, help="Target low freq (Hz).")
     parser.add_argument("--target-f-high", type=float, required=True, help="Target high freq (Hz).")
+    parser.add_argument("--voltage",type=float,default=2.83)
+    parser.add_argument("--distance",type=float,default=1.)
+    parser.add_argument("--max-ripple",type=float,default=6.)
+    parser.add_argument("--max-compression",type=float,default=10.)
+    parser.add_argument("--radiation-model", default="flanged_piston")
+    parser.add_argument("--loss-model", choices=["lossless", "boundary_layer"], default="lossless")
+    parser.add_argument("--flange-width", type=float, default=0.)
     parser.add_argument("--top-n", type=int, default=10, help="Number of top candidates for FEM.")
     parser.add_argument("--num-frequencies", type=int, default=100, help="Frequency points for TMM.")
     parser.add_argument("--output", required=True, help="Output LEM results JSON.")
@@ -218,6 +225,8 @@ def main():
         sim_freq_range=sim_freq_range,
         num_frequencies=args.num_frequencies,
         top_n=args.top_n,
+        radiation_model=args.radiation_model, loss_model=args.loss_model, flange_width=args.flange_width,
+        target=TargetSpec(args.target_f_low,args.target_f_high,voltage_rms=args.voltage,observation_distance_m=args.distance,max_ripple_db=args.max_ripple,max_compression_ratio=args.max_compression),
     )
 
     # Write outputs
