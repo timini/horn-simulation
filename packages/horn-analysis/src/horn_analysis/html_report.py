@@ -238,6 +238,23 @@ def _profile_badge(profile: str) -> str:
     )
 
 
+_EVIDENCE_LABELS = {
+    "driver_usable_band_unknown": "Driver operating band is unknown",
+    "driver_parameter_provenance_missing": "Driver parameters lack a verified source",
+    "driver_interface_unverified": "Driver chamber or throat adapter has not been validated",
+    "moving_mass_and_rear_load_not_separated": "Diaphragm mass and rear air load have not been characterized separately",
+    "maximum_output_limits_unknown": "Power or excursion limits are missing",
+    "mechanical_damping_unknown": "Mechanical damping is unknown",
+}
+
+
+def _render_evidence_summary(results):
+    return "<ul>" + "".join(
+        "<li><strong>" + html.escape(r.get("model_name") or r.get("driver_id", "")) + "</strong>: "
+        + html.escape("; ".join(_EVIDENCE_LABELS.get(g, g.replace("_", " ")) for g in r.get("evidence_gaps", []))
+                      or "Independent assembly validation is pending") + ".</li>" for r in results) + "</ul>"
+
+
 def _render_rankings_rows(
     ranked_results: List[dict],
     drivers: Dict[str, DriverParameters],
@@ -270,7 +287,7 @@ def _render_rankings_rows(
             f"<td>{drv_power}</td>"
             f"<td>{_profile_badge(r.get('horn_label', ''))}</td>"
             f"{geom_cols}"
-            f"<td><strong>{_fmt(r.get('composite_score'), '.3f')}</strong></td>"
+            f"<td><strong>{_fmt(r.get('composite_score'), '.3f')}</strong>{' (near tie)' if r.get('comparison_status') == 'near_tie' else ''}</td>"
             f"<td>{_fmt(r.get('bandwidth_coverage'), '.1%')}</td>"
             f"<td>{_fmt(r.get('passband_ripple_db'), '.1f')}</td>"
             f"<td>{_fmt(r.get('avg_sensitivity_db'), '.1f')}</td>"
@@ -361,7 +378,7 @@ The observer estimate assumes a uniformly moving circular aperture in an infinit
 Raw horn plots show mouth-plane pressure. Legacy inputs contain mouth-plane levels only.</p>
 <p>Drive: {drive_voltage} V RMS. Observer: {observer_distance} m on axis from mouth plane.
 Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume, not manufacturing walls.</p>
-<p>Acoustic models used: {physics_summary}. Scores within 0.02 are near-ties for comparison; physical uncertainty remains unquantified..</p>
+<p>Acoustic models used: {physics_summary}. Scores within 0.02 are near-ties for comparison; physical uncertainty remains unquantified.</p>
 {evidence_summary}</div>
 <p class="subtitle">
   Target: {target_low:.0f} Hz — {target_high:.0f} Hz &nbsp;|&nbsp;
@@ -643,7 +660,7 @@ def generate_html_report(
         "drive_voltage": target.voltage_rms,
         "observer_distance": target.observation_distance_m,
         "ripple_limit": target.max_ripple_db,
-        "evidence_summary": "<ul>" + "".join("<li>" + html.escape(r.get("driver_id", "")) + ": " + html.escape(", ".join(r.get("evidence_gaps", [])) or "Independent assembly validation pending") + "</li>" for r in top_results) + "</ul>",
+        "evidence_summary": _render_evidence_summary(top_results),
         "target_low": target.f_low_hz,
         "target_high": target.f_high_hz,
         "throat_radius": throat_radius,
