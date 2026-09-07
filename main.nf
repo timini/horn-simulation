@@ -235,13 +235,14 @@ process couple_with_driver {
     path "driver_horn_kpis.json"
 
     script:
+    def throat_flag = !params.step_file && throat_radius != null ? "--throat-radius ${throat_radius}" : ""
     """
-    python3 -m horn_analysis.couple_single \
+    python3 -m horn_analysis.couple_single ${params.step_file ? "--imported-geometry" : ""} \
         --solver-csv ${final_csv} \
         --drivers-db ${drivers_db} \
         --driver-id ${params.driver_id} \
         --voltage ${params.voltage_rms} \
-        --throat-radius ${throat_radius} \
+        ${throat_flag} \
         --profile ${profile} \
         --output-csv coupled_spl.csv \
         --output-png coupled_spl.png \
@@ -1064,7 +1065,14 @@ workflow {
     }
     def outputRoot = new File(params.outdir as String)
     outputRoot.mkdirs()
-    new File(outputRoot, 'resolved_specification.json').text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([specification_version: 2, parameters: params]))
+    def resolvedParameters = [:]
+    params.each { key, value -> resolvedParameters[key] = value }
+    if (params.mode == 'single' && !params.step_file) {
+        [throat_radius: 0.05, mouth_radius: 0.2, length: 0.5].each { key, value ->
+            if (resolvedParameters[key] == null) resolvedParameters[key] = value
+        }
+    }
+    new File(outputRoot, 'resolved_specification.json').text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([specification_version: 2, parameters: resolvedParameters]))
     if (params.mode == "fullauto" || params.mode == "auto") {
         auto()
     } else {

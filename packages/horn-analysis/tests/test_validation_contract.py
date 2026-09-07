@@ -113,3 +113,28 @@ def test_single_coupling_rejects_already_driven_neumann_results(tmp_path,monkeyp
     with pytest.raises(ValueError,match='Dirichlet transfer'):
         single.couple(str(p),'unused','test',.025,output_csv=str(tmp_path/'coupled.csv'))
     assert not (tmp_path/'coupled.csv').exists()
+
+
+def test_imported_coupling_labels_only_the_actual_area(tmp_path, monkeypatch):
+    import json
+    import matplotlib.axes
+    import horn_analysis.couple_single as single
+    from horn_core.parameters import DriverParameters
+    driver = DriverParameters('test','Test','Motor',200.,6.,5.,.002,.004,.0001,qms=5.,qes=.4)
+    monkeypatch.setattr(single, 'load_driver', lambda *_: driver)
+    titles = []
+    original = matplotlib.axes.Axes.set_title
+    def capture(self, label, *args, **kwargs):
+        titles.append(label)
+        return original(self, label, *args, **kwargs)
+    monkeypatch.setattr(matplotlib.axes.Axes, 'set_title', capture)
+    csv = write_band(tmp_path, 0, 100, 1000)
+    payload = tmp_path/'kpis.json'
+    single.couple(str(csv), 'unused', 'test', .05, imported_geometry=True,
+                  output_csv=str(tmp_path/'coupled.csv'), output_png=str(tmp_path/'coupled.png'),
+                  output_kpis=str(payload))
+    result = json.loads(payload.read_text())
+    assert result['throat_radius_m'] is None
+    assert result['inlet_area_m2'] == pytest.approx(pd.read_csv(csv).inlet_area_m2.iloc[0])
+    assert any('Inlet area' in title for title in titles)
+    assert all('Throat radius' not in title for title in titles)

@@ -29,12 +29,13 @@ def couple(
     solver_csv: str,
     drivers_db: str,
     driver_id: str,
-    throat_radius: float,
+    throat_radius: float | None = None,
     profile: str = "horn",
     voltage: float = 2.83,
     output_csv: str = "coupled_spl.csv",
     output_png: str = "coupled_spl.png",
     output_kpis: str = "driver_horn_kpis.json",
+    imported_geometry: bool = False,
 ):
     """Compute and write the coupled driver+horn response."""
     drv = load_driver(drivers_db, driver_id)
@@ -49,7 +50,7 @@ def couple(
     z_real = df["z_real"].values
     z_imag = df["z_imag"].values
 
-    throat_area = inlet_area_from_frame(df, throat_radius)
+    throat_area = inlet_area_from_frame(df, None if imported_geometry else throat_radius)
 
     p_throat = compute_driver_response(drv, freq, z_real, z_imag, throat_area, voltage)
     coupled_spl = scale_solver_spl(solver_spl, p_throat)
@@ -73,7 +74,8 @@ def couple(
         "le_h": drv.le_h,
         "mms_kg": drv.mms_kg,
         "sd_m2": drv.sd_m2,
-        "throat_radius_m": throat_radius,
+        "throat_radius_m": None if imported_geometry else throat_radius,
+        "inlet_area_m2": throat_area,
         "drive_voltage_v": voltage,
     }
     Path(output_kpis).write_text(json.dumps(kpi_payload, indent=2))
@@ -97,9 +99,11 @@ def couple(
 
     ax.set_xlabel("Frequency (Hz)")
     ax.set_ylabel("Mouth-plane pressure level (dB re 20 µPa)")
+    interface_label = (f"Inlet area {throat_area:.8g} m²" if imported_geometry or throat_radius is None
+                       else f"Throat radius {throat_radius * 1000:.1f} mm")
     ax.set_title(
         f"Driver + horn coupled response — {drv.manufacturer} {drv.model_name}\n"
-        f"Throat radius {throat_radius * 1000:.1f} mm; driver drive {voltage:g} V RMS"
+        f"{interface_label}; driver drive {voltage:g} V RMS"
     )
     ax.legend(loc="lower center", fontsize=9)
     ax.grid(True, which="both", alpha=0.3)
@@ -121,7 +125,8 @@ def main():
     parser.add_argument("--solver-csv", required=True, help="Merged FEM solver CSV (frequency, spl, z_real, z_imag).")
     parser.add_argument("--drivers-db", required=True, help="Driver database directory or JSON file.")
     parser.add_argument("--driver-id", required=True, help="Driver ID to load from the database.")
-    parser.add_argument("--throat-radius", type=float, required=True, help="Horn throat radius (m).")
+    parser.add_argument("--throat-radius", type=float, default=None, help="Known circular throat radius (m); omitted for imported CAD.")
+    parser.add_argument("--imported-geometry", action="store_true")
     parser.add_argument("--profile", default="horn", help="Horn profile label (cosmetic).")
     parser.add_argument("--voltage", type=float, default=2.83, help="Drive voltage (V).")
     parser.add_argument("--output-csv", default="coupled_spl.csv")
@@ -139,6 +144,7 @@ def main():
         output_csv=args.output_csv,
         output_png=args.output_png,
         output_kpis=args.output_kpis,
+        imported_geometry=args.imported_geometry,
     )
 
 
