@@ -20,20 +20,24 @@ Updated 7 September 2026. Band-to-driver-and-horn search, bounded refinement, CA
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Clean-checkout local packages | 309 passed | `/tmp/horn-clean-local.xml` |
-| Complete Nextflow suite | All ten tests passed across the full suite and added cases, including loss/refinement and missing-band rejection | `/tmp/horn-nextflow-final.log`, `/tmp/horn-nextflow-extra.log`, `/tmp/horn-nextflow-wide.log` |
+| Clean-checkout local packages before review | 309 passed | `/tmp/horn-clean-local.xml` |
+| Local packages after review fixes | 333 passed | `results/validation-81/review-local.xml` |
+| Complete Nextflow suite after review fixes | All twelve tests passed in one run, including loss/refinement and missing-band rejection | `results/validation-81/review-nextflow.xml` |
 | Expanded finite-grid search | Four bands, 20 geometries × three manufacturer motors; 36/59/52/37 feasible pairs; 100% top-ten recall and zero regret in all cases | `data/validation/search_benchmark_summary.json` |
 | Full solver suite after wall-loss/residual changes | 48 passed, one optional straight-tube regime skipped | `results/validation-81/loss-physics/all-solver-tests.xml` |
 | Three-mesh production wall-loss case | Complex impedance, finest-mesh output convergence, passivity and RMS energy balance pass | `packages/horn-solver/tests/validation/test_wall_losses.py` |
 | Independent published numerical impedances | All four comparisons pass; p95 magnitude error <0.010 dB | `data/validation/loss_physics_validation.json` |
 | Published measured impedances | 237/299 pass magnitude limits, including 201/263 held-out curves; failures retained | [Full comparison and limits](LOSS_PHYSICS_VALIDATION.md) |
 | Direct production FEM versus measurements | 90/100 comparisons pass on the three open geometries | `results/validation-81/loss-physics/held-out-final/validation.json` |
+| Fresh clean-checkout band-only run | 235 screened drivers, 231 geometries; 106 tasks completed in 6m28s. All 80 original simulation bands also pass the stricter complex-join gate | `data/validation/band_only_release_summary.json` |
 | Earlier band-only database run | 239 drivers, 231 geometries / 55,209 analytical pairs; 106 tasks completed in 6m23s | `results/validation-81/band-only-final/manifest.json` |
 | Clean-checkout interruption/resume | Interrupted after three tasks; resumed the same session; numerical/ranking files identical to an uninterrupted run. Other differences limited to timestamps/output directory | `data/validation/resume_validation_summary.json` |
 | Earlier exact resume | All 14 tasks cached; output hashes unchanged | `results/validation-81/reproducible-auto/manifest.json` |
 | Earlier finite-grid audit | 20 geometries × three synthetic motors: all six feasible pairs retained, winner regret zero | `results/validation-81/search-benchmark/search_benchmark.json` |
 
 The earlier band-only run produced a Beyma 3FR30Nd/hyperbolic experimental candidate with 19.868 mm throat diameter, 141.934 mm mouth diameter and 171.5 mm length. It had insufficient driver/interface evidence. This is historical execution evidence, not a recommendation or evidence for the latest source snapshot. Likewise the earlier resume and six-feasible-pair benchmark do not replace final release checks.
+
+Review corrections also enforce each independently known driver-band endpoint, constrain custom throat fractions, propagate single-driver voltage, reject inconsistent complex band joins, and report valid-but-empty size searches. The custom run directory is excluded from source hashing so it cannot invalidate its own resume.
 
 ## Outstanding gates
 

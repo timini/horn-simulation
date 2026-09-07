@@ -60,7 +60,7 @@ def write_band(tmp_path, index, low, high):
     f = np.geomspace(low,high,3)
     frame = pd.DataFrame({"frequency":f,"spl":94.,"z_real":420.,"z_imag":0.,
         "schema_version":2,"inlet_area_m2":.01,"mouth_area_m2":.02,
-        "mouth_u_real":.0001,"mouth_u_imag":0.,"radiation_model":"plane_wave",
+        "mouth_u_real":.0001,"mouth_u_imag":0.,"mouth_p_real":1.,"mouth_p_imag":0.,"radiation_model":"plane_wave",
         "phasor_convention":"exp(+iwt)_rms","bc_mode":"dirichlet"})
     p = tmp_path/f"results_candidate_{index}.csv"
     frame.to_csv(p,index=False)
@@ -85,3 +85,31 @@ def test_merger_rejects_missing_band_and_deduplicates_valid_endpoints(tmp_path):
 def test_bad_targets_fail_before_simulation(low,high):
     with pytest.raises(ValueError):
         TargetSpec(low,high)
+
+
+@pytest.mark.parametrize('prefix,value', [('z',-420+0j),('mouth_p',1j),('mouth_u',-.0001+0j)])
+def test_overlap_rejects_complex_disagreement_even_when_spl_matches(tmp_path,prefix,value):
+    p0=write_band(tmp_path,0,100,550);p1=write_band(tmp_path,1,550,1000)
+    frame=pd.read_csv(p1)
+    frame.loc[0,prefix+'_real']=value.real;frame.loc[0,prefix+'_imag']=value.imag
+    frame.to_csv(p1,index=False)
+    with pytest.raises(ValueError,match='complex '+prefix+' mismatch'):
+        merge_bands([p0,p1],num_bands=2,min_freq=100,max_freq=1000,points_per_band=3,output=tmp_path/'out.csv')
+    assert not (tmp_path/'out.csv').exists()
+
+
+def test_overlap_allows_small_complex_mesh_error_near_zero(tmp_path):
+    p0=write_band(tmp_path,0,100,550);p1=write_band(tmp_path,1,550,1000)
+    frame=pd.read_csv(p1);frame.loc[0,'z_imag']=.01;frame.loc[0,'mouth_u_imag']=1e-9;frame.to_csv(p1,index=False)
+    assert len(merge_bands([p0,p1],num_bands=2,min_freq=100,max_freq=1000,points_per_band=3,output=tmp_path/'out.csv'))==5
+
+
+def test_single_coupling_rejects_already_driven_neumann_results(tmp_path,monkeypatch):
+    import horn_analysis.couple_single as single
+    from horn_core.parameters import DriverParameters
+    d=DriverParameters('test','Test','Motor',200.,6.,5.,.002,.004,.0001,qms=5.,qes=.4)
+    monkeypatch.setattr(single,'load_driver',lambda *_:d)
+    p=write_band(tmp_path,0,100,1000);frame=pd.read_csv(p);frame['bc_mode']='neumann';frame.to_csv(p,index=False)
+    with pytest.raises(ValueError,match='Dirichlet transfer'):
+        single.couple(str(p),'unused','test',.025,output_csv=str(tmp_path/'coupled.csv'))
+    assert not (tmp_path/'coupled.csv').exists()

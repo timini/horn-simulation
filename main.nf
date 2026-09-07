@@ -240,6 +240,7 @@ process couple_with_driver {
         --solver-csv ${final_csv} \
         --drivers-db ${drivers_db} \
         --driver-id ${params.driver_id} \
+        --voltage ${params.voltage_rms} \
         --throat-radius ${throat_radius} \
         --profile ${profile} \
         --output-csv coupled_spl.csv \
@@ -491,7 +492,7 @@ process prescreen_drivers {
 process report_no_drivers {
     publishDir "${params.outdir}/auto", mode: 'copy'
     input:
-    path prescreen_json
+    tuple val(empty_reason), path(empty_metadata)
     output:
     path "report/*"
     path "ranked_results.json"
@@ -503,8 +504,9 @@ from pathlib import Path
 from horn_analysis.auto_report import generate_auto_report
 from horn_analysis.scoring import TargetSpec
 target = TargetSpec(${params.target_f_low}, ${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio})
-generate_auto_report([], {}, {}, 0, target, "report", total_candidates=0, total_scored=0)
-Path("ranked_results.json").write_text(json.dumps({"status":"no_feasible_design", "reason":"no_drivers_passed_prescreen", "results":[], "rejected":[], "total_candidates":0, "total_scored":0, "validation_status":"independent_validation_pending"}, indent=2))
+reasons = {"no_drivers_passed_prescreen": "No drivers passed the initial screening for this request.", "size_constraints_exclude_search_range": "No geometry remains within the requested size limits and current search range.", "no_mouth_larger_than_throat": "The searched mouth sizes are no larger than the throat."}
+generate_auto_report([], {}, {}, 0, target, "report", total_candidates=0, total_scored=0, no_feasible_reason=reasons["${empty_reason}"])
+Path("ranked_results.json").write_text(json.dumps({"status":"no_feasible_design", "reason":"${empty_reason}", "results":[], "rejected":[], "total_candidates":0, "total_scored":0, "validation_status":"independent_validation_pending"}, indent=2))
 '
     """
 }
@@ -946,14 +948,23 @@ workflow auto {
         eligible: new groovy.json.JsonSlurper().parse(path).count > 0
         empty: true
     }
-    report_no_drivers(ch_driver_branches.empty)
     ch_prescreen = ch_driver_branches.eligible
 
     // 2. Derive geometry grid from frequency band + prescreen throat radii
     //    Fixed params (mouth_radius, length) are passed via CLI flags in the process
     ch_geom_derived = derive_auto_geometry(ch_prescreen)
-    ch_candidates_csv = ch_geom_derived.map { csv, json -> csv }
-    ch_design_json = ch_geom_derived.map { csv, json -> json }
+    ch_geometry_branches = ch_geom_derived.branch { csv, json ->
+        eligible: new groovy.json.JsonSlurper().parse(json).candidate_count > 0
+        empty: true
+    }
+    ch_empty_drivers = ch_driver_branches.empty.map { path -> tuple('no_drivers_passed_prescreen', path) }
+    ch_empty_geometry = ch_geometry_branches.empty.map { csv, json ->
+        def data = new groovy.json.JsonSlurper().parse(json)
+        tuple(data.reason, json)
+    }
+    report_no_drivers(ch_empty_drivers.mix(ch_empty_geometry))
+    ch_candidates_csv = ch_geometry_branches.eligible.map { csv, json -> csv }
+    ch_design_json = ch_geometry_branches.eligible.map { csv, json -> json }
 
     // 3. LEM/Webster prescreening — score all candidates analytically,
     //    pass only the top N to expensive STEP + FEM stages

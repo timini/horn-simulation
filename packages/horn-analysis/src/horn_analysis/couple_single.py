@@ -40,6 +40,10 @@ def couple(
     drv = load_driver(drivers_db, driver_id)
 
     df = pd.read_csv(solver_csv)
+    if "schema_version" in df and (
+        not (df.schema_version == 2).all() or "bc_mode" not in df or not (df.bc_mode == "dirichlet").all()
+    ):
+        raise ValueError("Single-driver coupling requires a unit-pressure Dirichlet transfer run")
     freq = df["frequency"].values
     solver_spl = df["spl"].values
     z_real = df["z_real"].values
@@ -82,7 +86,7 @@ def couple(
     fig, ax = plt.subplots(figsize=(11, 6.5))
     label = f"{drv.manufacturer} {drv.model_name} + {profile} horn"
     ax.semilogx(freq, coupled_spl, label=label, linewidth=2.0, color="#1f77b4")
-    ax.semilogx(freq, solver_spl, label="Horn only (acoustic load)",
+    ax.semilogx(freq, solver_spl, label="Horn at unit inlet pressure (1 Pa RMS)",
                 linewidth=1.0, color="#888888", linestyle="--")
 
     # Mark KPI points
@@ -95,7 +99,7 @@ def couple(
     ax.set_ylabel("Mouth-plane pressure level (dB re 20 µPa)")
     ax.set_title(
         f"Driver + horn coupled response — {drv.manufacturer} {drv.model_name}\n"
-        f"Conical throat r={throat_radius * 1000:.1f} mm; horn_only is the bare-horn impedance loading"
+        f"Throat radius {throat_radius * 1000:.1f} mm; driver drive {voltage:g} V RMS"
     )
     ax.legend(loc="lower center", fontsize=9)
     ax.grid(True, which="both", alpha=0.3)

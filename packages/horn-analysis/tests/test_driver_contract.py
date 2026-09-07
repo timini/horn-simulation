@@ -61,3 +61,19 @@ def test_zero_mechanical_impedance_has_finite_motor_solution():
     np.testing.assert_allclose(point['velocity_rms'],[2./5.],atol=1e-12)
     np.testing.assert_allclose(point['current_rms'],[0.],atol=1e-12)
     np.testing.assert_allclose(point['throat_pressure'],[0.])
+
+
+import pytest
+
+
+@pytest.mark.parametrize('low,high,target,feasible', [
+    (None,1500.,(500,2000),False), (800.,None,(500,2000),False),
+    (None,2500.,(500,2000),True), (300.,None,(500,2000),True),
+])
+def test_each_known_driver_band_edge_is_enforced(low, high, target, feasible):
+    d=DriverParameters('fixture','Test','Motor',100.,6.,5.,.002,.004,.0001,
+                       qms=5.,qes=.4,usable_f_low_hz=low,usable_f_high_hz=high)
+    result=evaluate_response(np.array([500.,1000.,2000.]),np.full(3,90.),TargetSpec(*target),d,.002)
+    assert result['model_feasible'] is feasible
+    assert ('outside_driver_usable_band' in result['rejection_reasons']) is not feasible
+    assert 'driver_usable_band_unknown' in result['evidence_gaps']

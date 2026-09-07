@@ -114,4 +114,26 @@ nextflow_pipeline {
         }
     }
 
+    test("A valid tight size cap produces an explicit empty report") {
+        when {
+            params {
+                mode = "auto"
+                target_f_low = 500
+                target_f_high = 2000
+                max_length = 0.1
+                drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            def ranking = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/ranked_results.json"))
+            assert ranking.status == "no_feasible_design"
+            assert ranking.reason == "size_constraints_exclude_search_range"
+            assert ranking.results == []
+            assert new File("${outputDir}/auto/report/auto_report.html").length() > 0
+            assert !new File("${outputDir}/auto/geometry").exists()
+        }
+    }
+
 }

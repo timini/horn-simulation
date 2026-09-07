@@ -30,6 +30,7 @@ def generate_auto_report(
     total_candidates: int | None = None,
     total_scored: int | None = None,
     lem_results: Optional[dict] = None,
+    no_feasible_reason: Optional[str] = None,
 ) -> Path:
     """Generate the auto-select report with rankings, plots, and CSVs.
 
@@ -154,6 +155,8 @@ def generate_auto_report(
                           f"Peak: {kpi['peak_spl_db']:.1f} dB @ {kpi['peak_frequency_hz']:.0f} Hz")
         lines.append("")
 
+    if no_feasible_reason and not all_ranked:
+        lines.append("Reason: " + no_feasible_reason)
     (out / "auto_summary.txt").write_text("\n".join(lines))
 
     # 5. Self-contained HTML report
@@ -171,6 +174,7 @@ def generate_auto_report(
         total_candidates=total_candidates,
         total_scored=total_scored,
         lem_results=lem_results,
+        no_feasible_reason=no_feasible_reason,
     )
     (out / "auto_report.html").write_text(html_report)
 

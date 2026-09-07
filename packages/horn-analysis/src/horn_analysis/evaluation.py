@@ -68,7 +68,8 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
             reasons.append("compression_ratio_exceeded")
         if driver.usable_f_low_hz is None or driver.usable_f_high_hz is None:
             missing.append("driver_usable_band_unknown")
-        elif driver.usable_f_low_hz > target.f_low_hz or driver.usable_f_high_hz < target.f_high_hz:
+        if ((driver.usable_f_low_hz is not None and driver.usable_f_low_hz > target.f_low_hz)
+                or (driver.usable_f_high_hz is not None and driver.usable_f_high_hz < target.f_high_hz)):
             reasons.append("outside_driver_usable_band")
         if driver.rms_kg_per_s is None:
             missing.append("mechanical_damping_unknown")

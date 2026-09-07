@@ -35,3 +35,10 @@ The optional BEM path remains experimental and is excluded from automatic optimi
 ## Losses and numerical acceptance
 
 Optional boundary-layer wall loss, finite-flange pipe termination and quadratic elements are documented with their restricted domains in [loss validation](LOSS_PHYSICS_VALIDATION.md). Every production frequency solve rejects a nonfinite or relative residual above 1e-8 and a nonpositive solver convergence reason. Side-wall viscous/thermal and inlet/outlet RMS powers are exported separately. Direct motor coupling requires the default air properties. The legacy FEM–BEM entry points are disabled because their boundary mapping was invalid.
+
+
+## Frequency-band joins
+
+Adjacent endpoint samples must agree in mouth pressure level within 0.5 dB and in complex throat impedance, mouth pressure and mouth volume velocity. The complex tolerance is 5% of the larger endpoint magnitude plus 1% of a fixed unit-pressure reference scale (ρc for specific impedance, 1 Pa for mouth pressure, mouth area/(ρc) for volume velocity). The fixed floor keeps comparisons meaningful near zeros without allowing phase changes to hide behind equal SPL. A failed join requires mesh refinement; no smoothing or arbitrary choice of the duplicate bypasses it.
+
+A known lower or upper driver-band limit is enforced even if the other endpoint is missing. Custom throat fractions must be finite and within (0, 1], and quantization cannot exceed the declared ka cap. Positive size caps that leave no geometry in the current heuristic range produce an explicit empty report; contradictory or nonpositive bounds remain invalid inputs.

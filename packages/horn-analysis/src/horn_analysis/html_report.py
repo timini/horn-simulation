@@ -373,6 +373,7 @@ _HTML_TEMPLATE = """\
 
 <h1>Horn Auto-Select Report</h1>
 <div class="design-summary"><strong>{assessment_status}</strong>
+{no_feasible_reason}
 <p>Predictions are experimental. Driver suitability and the exterior model require independent validation.
 The observer estimate assumes a uniformly moving circular aperture in an infinite baffle.
 Raw horn plots show mouth-plane pressure. Legacy inputs contain mouth-plane levels only.</p>
@@ -515,6 +516,7 @@ def generate_html_report(
     total_candidates: Optional[int] = None,
     total_scored: Optional[int] = None,
     lem_results: Optional[dict] = None,
+    no_feasible_reason: Optional[str] = None,
 ) -> str:
     """Generate a self-contained HTML report string.
 
@@ -655,6 +657,7 @@ def generate_html_report(
     n_scored = total_scored if total_scored is not None else len(all_ranked)
 
     return _HTML_TEMPLATE.format_map({
+        "no_feasible_reason": "<p>"+html.escape(no_feasible_reason)+"</p>" if no_feasible_reason and not top_results else "",
         "assessment_status": "Experimental candidates — not validated recommendations" if top_results else "No feasible design in the evaluated set",
         "physics_summary": html.escape(", ".join(sorted({str(r.get("loss_model", "lossless"))+" / "+str(r.get("radiation_model", "legacy unknown")) for r in top_results})) or "No candidates"),
         "drive_voltage": target.voltage_rms,

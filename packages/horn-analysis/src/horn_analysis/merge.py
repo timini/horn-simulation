@@ -32,7 +32,7 @@ def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output
             raise ValueError(f"Incomplete or incorrect frequency grid in band {index}")
         if "schema_version" not in df or not (df.schema_version == 2).all():
             raise ValueError("Old solver results cannot be merged into a schema-2 run")
-        for col in ("inlet_area_m2", "mouth_area_m2", "mouth_u_real", "mouth_u_imag", "radiation_model", "phasor_convention", "bc_mode"):
+        for col in ("inlet_area_m2", "mouth_area_m2", "mouth_u_real", "mouth_u_imag", "mouth_p_real", "mouth_p_imag", "radiation_model", "phasor_convention", "bc_mode"):
             if col not in df or df[col].isna().any():
                 raise ValueError(f"Missing acoustic contract column {col}")
         frames.append(df)
@@ -49,10 +49,26 @@ def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output
                 "air_heat_capacity_j_kg_k", "element_degree"):
         if col in joined and (joined[col].isna().any() or joined[col].nunique() != 1):
             raise ValueError(f"Inconsistent {col} across bands")
-    # Band endpoints overlap deliberately; reject unexplained mesh discontinuity.
+    # An SPL match alone does not constrain the complex transfers used by the
+    # motor. Check impedance and aperture pressure/volume velocity as well.
+    from horn_core.duct import DEFAULT_AIR
+    characteristic = (float(joined.air_c_m_s.iloc[0])*float(joined.air_rho_kg_m3.iloc[0])
+                      if "air_c_m_s" in joined and "air_rho_kg_m3" in joined
+                      else DEFAULT_AIR.c*DEFAULT_AIR.rho)
+    scales = {"z": characteristic, "mouth_p": 1.,
+              "mouth_u": float(joined.mouth_area_m2.iloc[0])/characteristic}
     for _, rows in joined.groupby("frequency"):
-        if len(rows) > 1 and rows.spl.max()-rows.spl.min() > 0.5:
+        if len(rows) < 2:
+            continue
+        if rows.spl.max()-rows.spl.min() > 0.5:
             raise ValueError("Band boundary pressure mismatch exceeds 0.5 dB; refine mesh")
+        for prefix, scale in scales.items():
+            values = rows[prefix+"_real"].to_numpy()+1j*rows[prefix+"_imag"].to_numpy()
+            # 5% relative complex difference plus 1% of a fixed unit-pressure
+            # reference scale near zeros; phase jumps cannot hide behind SPL.
+            tolerance = .05*np.maximum(np.abs(values),abs(values[0])) + .01*scale
+            if np.any(np.abs(values-values[0]) > tolerance):
+                raise ValueError(f"Band boundary complex {prefix} mismatch; refine mesh")
     joined = joined.drop_duplicates("frequency", keep="first")
     validate_response(joined.frequency, joined.spl)
     joined.to_csv(output, index=False)

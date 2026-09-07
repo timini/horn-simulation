@@ -40,6 +40,8 @@ class DerivedGeometry:
     length_range: tuple  # (min, max)
     sim_freq_range: tuple  # (min, max) extended for rolloff
     candidate_count: int
+    status: str = "candidates_generated"
+    reason: Optional[str] = None
 
 
 def derive_mouth_radius(f_low: float) -> float:
@@ -129,6 +131,10 @@ def generate_auto_candidates(
         profiles = DEFAULT_PROFILES
 
     for name, value, lower, upper in (("mouth radius", mouth_radius, min_mouth_radius, max_mouth_radius), ("length", length, min_length, max_length)):
+        if any(bound is not None and (not np.isfinite(bound) or bound <= 0) for bound in (lower, upper)):
+            raise ValueError(f"Invalid {name} bounds")
+        if lower is not None and upper is not None and lower > upper:
+            raise ValueError(f"Invalid {name} bounds: minimum exceeds maximum")
         if value is not None and (not np.isfinite(value) or value <= 0 or (lower is not None and value < lower) or (upper is not None and value > upper)):
             raise ValueError(f"Fixed {name} conflicts with valid dimensions or requested bounds")
 
@@ -142,10 +148,8 @@ def generate_auto_candidates(
             lo = min_mouth_radius
         if max_mouth_radius is not None:
             hi = max_mouth_radius
-        if not 0 < lo <= hi:
-            raise ValueError("Invalid mouth radius bounds")
         mouth_range = (lo, hi)
-        mouth_radii = np.linspace(lo, hi, num_mouth_radii).tolist()
+        mouth_radii = np.linspace(lo, hi, num_mouth_radii).tolist() if lo <= hi else []
 
     # Length: fixed or derived
     if length is not None:
@@ -157,10 +161,8 @@ def generate_auto_candidates(
             lo = min_length
         if max_length is not None:
             hi = max_length
-        if not 0 < lo <= hi:
-            raise ValueError("Invalid horn length bounds")
         length_range = (lo, hi)
-        lengths = np.linspace(lo, hi, num_lengths).tolist()
+        lengths = np.linspace(lo, hi, num_lengths).tolist() if lo <= hi else []
 
     sim_range = derive_simulation_freq_range(target_f_low, target_f_high)
 
@@ -178,14 +180,12 @@ def generate_auto_candidates(
                             candidate_id=candidate_id,
                             profile=profile,
                             throat_radius=r_throat,
-                            mouth_radius=round(r_mouth, 6),
-                            length=round(horn_length, 6),
+                            mouth_radius=float(r_mouth),
+                            length=float(horn_length),
                         )
                     )
                     idx += 1
 
-    if not candidates:
-        raise ValueError("No feasible horn geometry within the supplied bounds")
     ideal_mouth = derive_mouth_radius(target_f_low)
     derived = DerivedGeometry(
         target_f_low=target_f_low,
@@ -195,6 +195,9 @@ def generate_auto_candidates(
         length_range=length_range,
         sim_freq_range=sim_range,
         candidate_count=len(candidates),
+        status="candidates_generated" if candidates else "no_feasible_design",
+        reason=(None if candidates else "size_constraints_exclude_search_range"
+                if not mouth_radii or not lengths else "no_mouth_larger_than_throat"),
     )
 
     return candidates, derived
@@ -358,11 +361,13 @@ def main():
         "target_f_low": derived.target_f_low,
         "target_f_high": derived.target_f_high,
         "ideal_mouth_radius": derived.ideal_mouth_radius,
-        "throat_radius_range": [min(c.throat_radius for c in candidates), max(c.throat_radius for c in candidates)],
+        "throat_radius_range": [min(c.throat_radius for c in candidates), max(c.throat_radius for c in candidates)] if candidates else [],
         "mouth_radius_range": list(derived.mouth_radius_range),
         "length_range": list(derived.length_range),
         "sim_freq_range": list(derived.sim_freq_range),
         "candidate_count": derived.candidate_count,
+        "status": derived.status,
+        "reason": derived.reason,
     }
     Path(args.design_json).write_text(json.dumps(design, indent=2))
     print(f"Design summary -> {args.design_json}")

@@ -83,6 +83,12 @@ def prescreen_drivers(
     Returns:
         PrescreenResult with filtered drivers and representative throat radius.
     """
+    if config.throat_fractions is not None and (
+        not config.throat_fractions or any(not math.isfinite(f) or not 0 < f <= 1 for f in config.throat_fractions)
+    ):
+        raise ValueError("Throat fractions must be finite and within (0, 1]")
+    if not math.isfinite(config.ka_max) or config.ka_max <= 0:
+        raise ValueError("Throat ka cap must be positive and finite")
     candidates = []
 
     # Max driver radius: driver must fit inside the horn mouth
@@ -141,7 +147,7 @@ def prescreen_drivers(
     direct_radii = [r for r in driver_radii if r <= a_acoustic_max]
 
     all_radii = sorted(set(
-        round(r, 6) for r in acoustic_radii + direct_radii
+        min(round(r, 6), a_acoustic_max) for r in acoustic_radii + direct_radii
     ))
 
     # Keep at most 5 to limit combinatorial explosion
