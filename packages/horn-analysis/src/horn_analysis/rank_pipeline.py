@@ -61,7 +61,8 @@ def rank_horn_drivers(
         coupled_spl, area, metric = coupled_output(df, drv, target, throat_radius)
         from horn_analysis.transfer_function import compute_driver_operating_point
         point = compute_driver_operating_point(drv,df.frequency.to_numpy(),df.z_real.to_numpy(),df.z_imag.to_numpy(),area,target.voltage_rms)
-        assessment = evaluate_response(df.frequency.to_numpy(), coupled_spl, target, drv, area, operating_point=point)
+        mouth_radius = float(np.sqrt(df.mouth_area_m2.iloc[0] / np.pi)) if "mouth_area_m2" in df else None
+        assessment = evaluate_response(df.frequency.to_numpy(), coupled_spl, target, drv, area, mouth_radius=mouth_radius, operating_point=point)
         kpi = extract_kpis_from_arrays(df.frequency.to_numpy(), coupled_spl)
         results.append({
             **assessment, "driver_id": drv.driver_id, "horn_label": horn_label,

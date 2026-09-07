@@ -18,7 +18,6 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 from scipy.optimize import brentq
-from scipy.signal import savgol_filter
 
 
 @dataclass
@@ -83,19 +82,12 @@ def extract_kpis_from_arrays(freq: np.ndarray, spl: np.ndarray) -> HornKPI:
         bandwidth_hz = f3_high - f3_low
         bandwidth_octaves = np.log2(f3_high / f3_low) if f3_low > 0 else None
 
-        # Passband: resample onto uniform log grid and smooth to remove
-        # band-stitching artifacts before computing ripple/sensitivity
-        n_passband = max(200, len(freq) * 2)
-        freq_uniform = np.geomspace(f3_low, f3_high, n_passband)
-        spl_passband = np.array([float(spl_interp(f)) for f in freq_uniform])
-
-        # Light Savitzky-Golay smoothing to suppress band-boundary glitches
-        # Window must be odd and < n_passband; 11 points is ~5% of 200
-        sg_window = min(11, n_passband if n_passband % 2 == 1 else n_passband - 1)
-        if sg_window >= 5:
-            spl_passband = savgol_filter(spl_passband, sg_window, polyorder=3)
-
-        passband_ripple = float(np.max(spl_passband) - np.min(spl_passband))
+        # Keep original knots and interpolated edges for exact linear extrema.
+        # Uniform resampling alone can miss narrow resonances or notches.
+        knots = np.r_[f3_low, freq[(freq > f3_low) & (freq < f3_high)], f3_high]
+        passband_ripple = float(np.ptp(spl_interp(knots)))
+        freq_uniform = np.geomspace(f3_low, f3_high, max(200, len(freq) * 2))
+        spl_passband = spl_interp(freq_uniform)
         avg_sensitivity = float(np.mean(spl_passband))
 
     return HornKPI(

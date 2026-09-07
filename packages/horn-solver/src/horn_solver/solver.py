@@ -65,17 +65,15 @@ def _compute_neumann_velocity(
 
     # Mechanical impedance of the driver suspension
     rms = driver.rms_kg_per_s if driver.rms_kg_per_s is not None else 0.0
-    z_mech_driver = rms + 1j * omega * driver.mms_kg + 1.0 / (1j * omega * driver.cms_m_per_n)
+    z_mech_driver = rms + 1j * omega * driver.coupled_moving_mass_kg + 1.0 / (1j * omega * driver.cms_m_per_n)
 
     # Horn throat impedance (specific acoustic → mechanical)
     z_horn = z_horn_real + 1j * z_horn_imag
     z_mech_load = z_horn * (driver.sd_m2 ** 2) / throat_area
 
     z_mech_total = z_mech_driver + z_mech_load
-    z_mot = (driver.bl_tm ** 2) / z_mech_total
-
-    current = v_g / (z_e + z_mot)
-    velocity = driver.bl_tm * current / z_mech_total
+    # Solve the motor balance directly, including zero mechanical impedance.
+    velocity = driver.bl_tm * v_g / (z_e * z_mech_total + driver.bl_tm ** 2)
 
     # Volume velocity at throat = v_diaphragm * Sd, normal velocity = U / S_throat
     v_n = velocity * driver.sd_m2 / throat_area

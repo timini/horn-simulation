@@ -78,7 +78,10 @@ def test_annular_inlet_area_and_velocity_coupling(tmp_path):
     np.testing.assert_allclose(a.inlet_area_m2,area,rtol=1e-8)
     np.testing.assert_allclose(a.mouth_area_m2,area,rtol=1e-8)
     np.testing.assert_allclose(a.z_real+1j*a.z_imag,RHO0*C0,rtol=.08)
-    driver=DriverParameters('fixture','Test','Motor',200,6,5,.001,.004,.0001,qms=5,qes=.4)
+    # Characterized moving mass differs from free-air Mms: both coupling paths
+    # must use diaphragm + rear load for the same driven response.
+    driver=DriverParameters('fixture','Test','Motor',200,6,5,.001,.004,.0001,qms=5,qes=.4,
+                            mmd_kg=.002, rear_load_mass_kg=.0005)
     pressure=compute_driver_response(driver,f,a.z_real.to_numpy(),a.z_imag.to_numpy(),area)
     run_simulation_from_step(str(step),(200,400),3,{'length':length},str(tmp_path/'b.csv'),400,mesh_size=.006,radiation_model='plane_wave',bc_mode='neumann',driver=driver,throat_area=area,z_horn_initial={'frequencies':f,'z_real':a.z_real.to_numpy(),'z_imag':a.z_imag.to_numpy()})
     b=pd.read_csv(tmp_path/'b.csv')

@@ -81,6 +81,8 @@ flowchart TB
 
 Simulate one horn with explicit geometry parameters and get a frequency response plot.
 
+For imported geometry, supply both `--step_file path/to/horn.step` and `--length` in metres. The supported orientation has the inlet at z = 0 and the outlet at z = length; imported files do not inherit the parametric 0.5 m default.
+
 ```bash
 nextflow run main.nf -profile docker \
     --throat_radius 0.05 --mouth_radius 0.2 --length 0.5

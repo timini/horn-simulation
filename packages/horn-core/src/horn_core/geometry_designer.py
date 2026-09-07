@@ -102,6 +102,7 @@ def generate_auto_candidates(
     min_length: Optional[float] = None,
     max_mouth_radius: Optional[float] = None,
     min_mouth_radius: Optional[float] = None,
+    ka_max: float = 2 * math.pi,
 ) -> tuple:
     """Generate geometry candidates for unified auto mode.
 
@@ -127,6 +128,11 @@ def generate_auto_candidates(
         raise ValueError("Geometry grid sizes must be positive")
     if not throat_radii or any(not np.isfinite(r) or r <= 0 for r in throat_radii):
         raise ValueError("No usable throat radii: no feasible drivers or invalid radii")
+    if not np.isfinite(ka_max) or ka_max <= 0:
+        raise ValueError("Throat ka cap must be finite and positive")
+    acoustic_cap = C0 * ka_max / (2 * math.pi * target_f_high)
+    if any(r > acoustic_cap * (1 + 1e-12) for r in throat_radii):
+        raise ValueError("Throat radius exceeds the acoustic ka cap at target high frequency")
     if profiles is None:
         profiles = DEFAULT_PROFILES
 
@@ -210,6 +216,7 @@ def generate_fullauto_candidates(
     num_mouth_radii: int = 3,
     num_lengths: int = 3,
     profiles: Optional[List[str]] = None,
+    ka_max: float = 2 * math.pi,
 ) -> tuple:
     """Generate geometry candidates from frequency band specification.
 
@@ -233,6 +240,11 @@ def generate_fullauto_candidates(
         raise ValueError("Geometry grid sizes must be positive")
     if not throat_radii or any(not np.isfinite(r) or r <= 0 for r in throat_radii):
         raise ValueError("No usable throat radii: no feasible drivers or invalid radii")
+    if not np.isfinite(ka_max) or ka_max <= 0:
+        raise ValueError("Throat ka cap must be finite and positive")
+    acoustic_cap = C0 * ka_max / (2 * math.pi * target_f_high)
+    if any(r > acoustic_cap * (1 + 1e-12) for r in throat_radii):
+        raise ValueError("Throat radius exceeds the acoustic ka cap at target high frequency")
     if profiles is None:
         profiles = DEFAULT_PROFILES
 
@@ -352,6 +364,7 @@ def main():
         min_length=args.min_length,
         max_mouth_radius=args.max_mouth_radius,
         min_mouth_radius=args.min_mouth_radius,
+        ka_max=prescreen.get("ka_max", 2 * math.pi),
     )
 
     write_candidates_csv(candidates, args.output)

@@ -351,3 +351,14 @@ def test_fixed_dimensions_are_not_rounded_outside_exact_bounds():
         min_mouth_radius=.0700004,max_mouth_radius=.0700004,min_length=.1000004,max_length=.1000004)
     assert candidates
     assert all(c.mouth_radius==.0700004 and c.length==.1000004 for c in candidates)
+def test_fixed_throat_obeys_high_frequency_acoustic_cap():
+    import math
+    import pytest
+    from horn_core.geometry_designer import generate_auto_candidates
+    with pytest.raises(ValueError, match="acoustic ka cap"):
+        generate_auto_candidates(1000, 4000, [.2], mouth_radius=.3)
+    cap = 343. / 4000
+    candidates, _ = generate_auto_candidates(1000, 4000, [cap], mouth_radius=.3)
+    assert candidates and all(c.throat_radius <= cap for c in candidates)
+    with pytest.raises(ValueError, match="acoustic ka cap"):
+        generate_auto_candidates(1000, 4000, [cap], mouth_radius=.3, ka_max=math.pi)

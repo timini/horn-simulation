@@ -25,7 +25,7 @@ def refine(seed, evaluate, bounds, budget=6, relative_step=.1, min_improvement=.
                 value=getattr(best,field)*(1+sign*step)
                 lo,hi=bounds[field]
                 if not lo<=value<=hi: continue
-                trial=replace(best,**{field:round(value,8)},candidate_id=f'refine_{len(history):04d}')
+                trial=replace(best,**{field:round(value,8)},candidate_id=f'refine_{best.profile}_{len(history):04d}')
                 if trial.throat_radius>=trial.mouth_radius or geometry_key(trial) in seen: continue
                 seen.add(geometry_key(trial));score=float(evaluate(trial))
                 if not math.isfinite(score): raise ValueError("Non-finite refinement score")

@@ -77,3 +77,10 @@ def test_each_known_driver_band_edge_is_enforced(low, high, target, feasible):
     assert result['model_feasible'] is feasible
     assert ('outside_driver_usable_band' in result['rejection_reasons']) is not feasible
     assert 'driver_usable_band_unknown' in result['evidence_gaps']
+def test_driver_fit_is_assessed_for_each_candidate_mouth():
+    d = DriverParameters('fit', 'Test', 'Motor', 200., 6., 5., .01, .004, .0001, qms=5., qes=.4)
+    f = np.array([500., 1000., 2000.])
+    for mouth, fits in [(.05, False), (.06, True)]:
+        result = evaluate_response(f, np.full(3, 90.), TargetSpec(500, 2000), d, .002, mouth_radius=mouth)
+        assert result['model_feasible'] == fits
+        assert ('driver_larger_than_mouth' in result['rejection_reasons']) == (not fits)

@@ -64,6 +64,8 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
     if driver is not None:
         if throat_area is None or throat_area <= 0:
             raise ValueError("Driver assessment requires positive throat area")
+        if mouth_radius is not None and driver.sd_m2 > np.pi * mouth_radius**2 * (1 + 1e-12):
+            reasons.append("driver_larger_than_mouth")
         if driver.sd_m2 / throat_area > target.max_compression_ratio:
             reasons.append("compression_ratio_exceeded")
         if driver.usable_f_low_hz is None or driver.usable_f_high_hz is None:

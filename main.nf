@@ -829,6 +829,9 @@ generate_auto_report(
 // ========================================================================
 
 workflow single {
+    if (params.step_file && (params.length == null || !Double.isFinite(params.length as double) || (params.length as double) <= 0)) {
+        error "Imported STEP geometry requires an explicit positive --length matching its outlet coordinate"
+    }
     // Apply defaults for single mode when params are null
     def throat_r = params.throat_radius ?: 0.05
     def mouth_r = params.mouth_radius ?: 0.2

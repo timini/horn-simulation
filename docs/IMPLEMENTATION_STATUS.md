@@ -21,9 +21,9 @@ Updated 7 September 2026. Band-to-driver-and-horn search, bounded refinement, CA
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Clean-checkout local packages before review | 309 passed | `/tmp/horn-clean-local.xml` |
-| Local packages after review fixes | 333 passed | `results/validation-81/review-local.xml` |
-| Complete Nextflow suite after review fixes | All twelve tests passed in one run, including loss/refinement and missing-band rejection | `results/validation-81/review-nextflow.xml` |
-| Expanded finite-grid search | Four bands, 20 geometries × three manufacturer motors; 36/59/52/37 feasible pairs; 100% top-ten recall and zero regret in all cases | `data/validation/search_benchmark_summary.json` |
+| Local packages after both review passes | 338 passed | `results/validation-81/review2-local.xml` |
+| Complete Nextflow suite after review fixes | All fourteen tests passed in one run, including loss/refinement, imported STEP length and missing-band rejection | `results/validation-81/review2-nextflow-final.xml` |
+| Expanded finite-grid search | Four bands, 20 geometries × three manufacturer motors; 32/40/38/28 feasible pairs after the per-mouth fit correction; 100% top-ten recall and zero regret in all cases | `data/validation/search_benchmark_summary.json` |
 | Full solver suite after wall-loss/residual changes | 48 passed, one optional straight-tube regime skipped | `results/validation-81/loss-physics/all-solver-tests.xml` |
 | Three-mesh production wall-loss case | Complex impedance, finest-mesh output convergence, passivity and RMS energy balance pass | `packages/horn-solver/tests/validation/test_wall_losses.py` |
 | Independent published numerical impedances | All four comparisons pass; p95 magnitude error <0.010 dB | `data/validation/loss_physics_validation.json` |
@@ -59,3 +59,5 @@ just run-auto --target_f_low 1000 --target_f_high 1200
 Use `--drivers_db data/drivers-curated` for traceable manufacturer inputs. Losses are opt-in with `--loss_model boundary_layer --minimum_wall_scale 0.01 --element_degree 2` only where that scale is conservative for the actual geometry. See [the acoustic contract](ACOUSTIC_CONTRACT.md) and [loss validation](LOSS_PHYSICS_VALIDATION.md).
 
 The launcher selects an available compatible Java without changing global settings. The checked-in validation scripts emit protocols, complete comparisons and hashes. Large third-party archives are downloaded locally from pinned sources rather than vendored without reuse permission.
+
+The second review adds a fixed-radius acoustic cap, per-mouth driver fit in screening and ranking, unsmoothed ripple extrema, explicit imported STEP length, profile-preserving refinement IDs and shared moving-mass selection for Neumann/pressure coupling. All four search bands were reassessed against the frozen FEM responses with the updated eligibility rules; the final summary retains response/code hashes and separates original simulation runtime from reassessment.

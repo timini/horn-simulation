@@ -65,9 +65,7 @@ def compute_driver_operating_point(
         raise ValueError("Positive finite frequencies and matching finite impedance arrays required")
     # Keep legacy Mms estimates explicitly provisional. When known, use Mmd
     # plus separately specified rear air load; never subtract an invented mass.
-    moving_mass = driver.mms_kg
-    if driver.mmd_kg is not None and driver.rear_load_mass_kg is not None:
-        moving_mass = driver.mmd_kg + driver.rear_load_mass_kg
+    moving_mass = driver.coupled_moving_mass_kg
     if moving_mass <= 0 or driver.cms_m_per_n <= 0:
         raise ValueError("Invalid driver mass or compliance")
     omega = 2.0 * np.pi * frequencies

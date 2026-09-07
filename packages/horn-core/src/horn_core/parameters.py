@@ -75,6 +75,13 @@ class DriverParameters:
     rear_load_mass_kg: Optional[float] = None
 
     @property
+    def coupled_moving_mass_kg(self) -> float:
+        """Characterized diaphragm plus rear air load, or disclosed Mms fallback."""
+        if self.mmd_kg is not None and self.rear_load_mass_kg is not None:
+            return self.mmd_kg + self.rear_load_mass_kg
+        return self.mms_kg
+
+    @property
     def effective_throat_area(self) -> float:
         """Return the effective throat area: exit_area_m2 if set, else sd_m2."""
         return self.exit_area_m2 if self.exit_area_m2 is not None else self.sd_m2

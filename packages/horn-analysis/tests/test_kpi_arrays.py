@@ -84,37 +84,10 @@ class TestExtractKpisFromArrays:
         assert result.f3_low_hz == pytest.approx(100.0)
         assert result.f3_high_hz == pytest.approx(10000.0)
 
-    def test_band_boundary_artifacts_suppressed(self):
-        """Band-stitching glitches should not inflate ripple measurement.
-
-        Simulates 8-band FEM output with 1 dB discontinuities at each
-        band boundary. The true response is flat at 90 dB, so the
-        measured ripple should be well below the raw artifact magnitude.
-        """
-        num_bands = 8
-        points_per_band = 13
-        f_min, f_max = 500.0, 8000.0
-        bands = np.geomspace(f_min, f_max, num_bands + 1)
-
-        freq_all = []
-        spl_all = []
-        for i in range(num_bands):
-            band_freq = np.geomspace(bands[i], bands[i + 1], points_per_band)
-            band_spl = np.full_like(band_freq, 90.0)
-            # Inject a 1 dB glitch at the start of each band (except first)
-            if i > 0:
-                band_spl[0] -= 1.0
-            freq_all.append(band_freq)
-            spl_all.append(band_spl)
-
-        freq = np.concatenate(freq_all)
-        spl = np.concatenate(spl_all)
-        # Sort (like the merge process does)
-        order = np.argsort(freq)
-        freq, spl = freq[order], spl[order]
-
-        result = extract_kpis_from_arrays(freq, spl)
-        # Without smoothing, ripple would be ~1.0 dB (the injected glitch).
-        # With smoothing, it should be well under 0.5 dB.
-        assert result.passband_ripple_db < 0.5
-        assert result.average_sensitivity_db == pytest.approx(90.0, abs=0.2)
+@pytest.mark.parametrize("offset", [-2.8, 2.8])
+def test_reported_ripple_preserves_one_sample_extremum(offset):
+    freq = np.geomspace(100, 10000, 101)
+    levels = np.full(101, 90.)
+    levels[43] += offset
+    result = extract_kpis_from_arrays(freq, levels)
+    assert result.passband_ripple_db == pytest.approx(abs(offset))

@@ -41,3 +41,11 @@ def test_shortlist_preserves_winner_and_explores_near_ties_with_fixed_budget():
     assert shortlist_geometries(list(reversed(rows)),5) == selected
     rows[-1]['model_feasible'] = False
     assert '11' not in shortlist_geometries(rows,5)
+def test_refined_curve_ids_preserve_profile_grouping():
+    from horn_analysis.html_report import _pick_representative_per_profile
+    seed = CandidateGeometry('auto_exp_0001', 'exponential', .02, .10, .20)
+    _, audit = refine(seed, lambda c: 1., {'throat_radius': (.02, .02),
+                       'mouth_radius': (.08, .15), 'length': (.1, .3)}, budget=2)
+    curves = {'auto_exp_0001': 'original.csv',
+              **{row['candidate_id']: row['candidate_id'] + '.csv' for row in audit['history']}}
+    assert list(_pick_representative_per_profile(curves)) == ['exponential']

@@ -212,7 +212,7 @@ def main():
 
     result = prescreen_drivers(drivers, config)
 
-    output = json.dumps(result.to_dict(), indent=2)
+    output = json.dumps({**result.to_dict(), "ka_max": config.ka_max}, indent=2)
     Path(args.output).write_text(output)
     print(f"Pre-screening complete: {result.count} drivers passed")
     print(f"Representative throat radius: {result.throat_radius_m:.4f} m")
