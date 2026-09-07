@@ -273,6 +273,7 @@ def _render_rankings_rows(
         geom_cols = ""
         if show_geometry:
             geom_cols = (
+                f"<td>{_fmt(r.get('throat_radius'), '.4f')}</td>"
                 f"<td>{_fmt(r.get('mouth_radius'), '.4f')}</td>"
                 f"<td>{_fmt(r.get('length'), '.4f')}</td>"
             )
@@ -383,7 +384,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
 {evidence_summary}</div>
 <p class="subtitle">
   Target: {target_low:.0f} Hz — {target_high:.0f} Hz &nbsp;|&nbsp;
-  Throat: {throat_radius:.4f} m &nbsp;|&nbsp;
+  Throat radius: {throat_display} &nbsp;|&nbsp;
   Mouth: {mouth_radius} &nbsp;|&nbsp;
   Length: {horn_length} &nbsp;|&nbsp;
   Profiles: {profiles} &nbsp;|&nbsp;
@@ -459,6 +460,8 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
 
 def _render_design_summary(derived_geometry: dict) -> str:
     """Render the Design Summary section with optimization parameters."""
+    tr = derived_geometry.get("throat_radius_range", [])
+    throat_desc = " — ".join(_fmt(v, ".4f") for v in tr) + " m" if tr else "Unknown"
     mr = derived_geometry.get("mouth_radius_range", [])
     lr = derived_geometry.get("length_range", [])
     sr = derived_geometry.get("sim_freq_range", [])
@@ -490,6 +493,7 @@ def _render_design_summary(derived_geometry: dict) -> str:
         '<div class="design-summary"><dl>'
         f'<dt>Target frequency band</dt><dd>{_fmt(derived_geometry.get("target_f_low"), ".0f")} — '
         f'{_fmt(derived_geometry.get("target_f_high"), ".0f")} Hz</dd>'
+        f'<dt>Throat radius range</dt><dd>{throat_desc}</dd>'
         f'<dt>Mouth radius</dt><dd>{mouth_desc}</dd>'
         f'<dt>Length</dt><dd>{length_desc}</dd>'
         f'<dt>Ideal mouth radius</dt><dd>{_fmt(derived_geometry.get("ideal_mouth_radius"), ".4f")} m '
@@ -554,7 +558,7 @@ def generate_html_report(
 
     # Generate 3D horn geometry renders from top-ranked candidates
     geometry_html = ""
-    if mouth_radius is not None and length is not None:
+    if mouth_radius is not None and length is not None and not show_geometry:
         # Fixed geometry: render each profile
         geom_imgs = []
         for profile in sorted(solver_csvs.keys()):
@@ -631,7 +635,14 @@ def generate_html_report(
             f'<dt>Candidates passed to FEM</dt><dd>{lem_passed}</dd>'
             '</dl></div>'
         )
-    geometry_header_cols = '<th>Mouth R (m)</th><th>Length (m)</th>' if show_geometry else ""
+    geometry_header_cols = '<th>Throat R (m)</th><th>Mouth R (m)</th><th>Length (m)</th>' if show_geometry else ""
+
+    radii = (derived_geometry or {}).get("throat_radius_range") or [r["throat_radius"] for r in all_ranked if r.get("throat_radius") is not None]
+    if radii:
+        throat_display = (f"{min(radii):.4f} — {max(radii):.4f} m (search range)"
+                          if min(radii) != max(radii) else f"{radii[0]:.4f} m")
+    else:
+        throat_display = "not available" if show_geometry else f"{throat_radius:.4f} m"
 
     # Mouth/Length display: for fullauto show "varies", for auto show fixed value
     if show_geometry:
@@ -666,7 +677,7 @@ def generate_html_report(
         "evidence_summary": _render_evidence_summary(top_results),
         "target_low": target.f_low_hz,
         "target_high": target.f_high_hz,
-        "throat_radius": throat_radius,
+        "throat_display": throat_display,
         "mouth_radius": mouth_display,
         "horn_length": length_display,
         "profiles": ", ".join(sorted(solver_csvs.keys())),

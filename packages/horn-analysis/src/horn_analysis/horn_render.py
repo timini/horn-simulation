@@ -300,9 +300,18 @@ def main():
                         help="Horn flare profile (default: conical)")
     parser.add_argument("--no-profile-panel", action="store_true",
                         help="Omit the 2D cross-section panel")
+    parser.add_argument("--imported-geometry", action="store_true", help="Show a placeholder instead of inventing a parametric shape")
     args = parser.parse_args()
 
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+
+    if args.imported_geometry:
+        fig, ax = plt.subplots(figsize=(8, 3))
+        ax.axis("off")
+        ax.text(.5, .5, "Imported STEP geometry\nParametric render unavailable", ha="center", va="center", fontsize=16)
+        fig.savefig(args.output, dpi=150, bbox_inches="tight")
+        plt.close(fig)
+        return
 
     render_horn_3d(
         throat_radius=args.throat_radius,

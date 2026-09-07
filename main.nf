@@ -263,7 +263,7 @@ process render_horn_3d {
 
     script:
     """
-    python3 -m horn_analysis.horn_render \
+    python3 -m horn_analysis.horn_render ${params.step_file ? "--imported-geometry" : ""} \
         horn_3d.png \
         --throat-radius ${throat_radius} \
         --mouth-radius ${mouth_radius} \
@@ -354,7 +354,7 @@ process generate_single_report {
     def mouth_r = params.mouth_radius ?: 0.2
     def horn_len = params.length ?: 0.5
     """
-    horn-single-report \
+    horn-single-report ${params.step_file ? "--imported-geometry" : ""} \
         --kpis ${kpis_json} \
         --final-csv ${final_csv} \
         --throat-radius ${throat_r} \
@@ -392,7 +392,7 @@ process generate_single_report_with_driver {
     def mouth_r = params.mouth_radius ?: 0.2
     def horn_len = params.length ?: 0.5
     """
-    horn-single-report \
+    horn-single-report ${params.step_file ? "--imported-geometry" : ""} \
         --kpis ${kpis_json} \
         --final-csv ${final_csv} \
         --throat-radius ${throat_r} \
@@ -434,7 +434,7 @@ process generate_single_report_with_directivity {
     def mouth_r = params.mouth_radius ?: 0.2
     def horn_len = params.length ?: 0.5
     """
-    horn-single-report \
+    horn-single-report ${params.step_file ? "--imported-geometry" : ""} \
         --kpis ${kpis_json} \
         --final-csv ${final_csv} \
         --throat-radius ${throat_r} \
@@ -882,7 +882,7 @@ workflow single {
         couple_outputs = couple_with_driver(
             ch_merged_results,
             throat_r,
-            params.profile,
+            params.step_file ? "imported_STEP" : params.profile,
             file(params.drivers_db),
         )
         ch_coupled_png  = couple_outputs[1]

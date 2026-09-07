@@ -64,6 +64,21 @@ def java_environment():
     return environment  # Nextflow reports its normal diagnostic if unavailable.
 
 
+def nextflow_identity(environment):
+    """Identify both the launcher and the engine it actually selects."""
+    executable = shutil.which("nextflow", path=environment.get("PATH"))
+    if not executable:
+        raise ValueError("Nextflow executable unavailable")
+    executable = Path(executable).resolve()
+    output = subprocess.check_output([str(executable), "-version"], env=environment,
+                                     text=True, stderr=subprocess.STDOUT)
+    match = re.search(r"version\s+([\w.+-]+)\s+build\s+(\d+)", output)
+    if not match:
+        raise ValueError("Cannot identify the Nextflow engine version/build")
+    return {"executable": str(executable), "launcher_sha256": digest(executable),
+            "version": match[1], "build": match[2]}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--run-dir", type=Path)
@@ -79,10 +94,15 @@ def main():
         parser.error("The launcher owns work, log and container configuration paths")
     images, hashes = inspect_images(), source_hashes(run_dir)
     run_environment = java_environment()
+    engine = nextflow_identity(run_environment)
+    # Freeze the engine selected by a mutable Nextflow launcher for this run.
+    run_environment["NXF_VER"] = engine["version"]
     previous = None
     resume_tokens = []
     if resume:
         previous = json.loads(manifest_path.read_text())
+        if previous.get("nextflow_engine") != engine:
+            parser.error("Nextflow engine or launcher changed or was not recorded; start a new run")
         if previous["source_sha256"] != hashes or previous["containers"] != images:
             parser.error("Source/data or container images changed; start a new run")
         old_args = previous["arguments"]
@@ -117,12 +137,13 @@ def main():
         "horn-analysis": "merge_results|extract_kpis|generate_plots|generate_impedance_plot|generate_phase_plot|generate_dashboard|couple_with_driver|render_horn_3d|merge_directivity_results|generate_directivity_plots|generate_single_report.*|prescreen_drivers|report_no_drivers|derive_auto_geometry|lem_prescreen|merge_candidate_results|score_and_rank|generate_auto_report",
     }
     config.write_text("process {\n"+"\n".join(f"  withName: /{pattern}/ {{ container = '{images[name]['id']}' }}" for name,pattern in mappings.items())+"\n}\n")
-    command = ["nextflow", "-log", str(run_dir/"nextflow.log"), "run", str(ROOT/"main.nf"), "-profile", "docker", "-c", str(config), "-work-dir", str(run_dir/"work"), *forwarded, *resume_tokens, "--outdir", str(run_dir/"outputs")]
+    command = [engine["executable"], "-log", str(run_dir/"nextflow.log"), "run", str(ROOT/"main.nf"), "-profile", "docker", "-c", str(config), "-work-dir", str(run_dir/"work"), *forwarded, *resume_tokens, "--outdir", str(run_dir/"outputs")]
     manifest = {
         "schema_version": 1, "started_at": datetime.now(timezone.utc).isoformat(),
         "source_revision": subprocess.check_output(["git", "rev-parse", "HEAD"],cwd=ROOT,text=True).strip(),
         "source_sha256": hashes, "input_sha256": input_hashes, "containers": images, "arguments": forwarded,
         "command": command, "status": "running",
+        "nextflow_engine": engine,
         "nextflow_java_home": run_environment.get("NXF_JAVA_HOME"), "validation_status": "experimental",
         "previous_attempt": previous.get("started_at") if previous else None,
     }

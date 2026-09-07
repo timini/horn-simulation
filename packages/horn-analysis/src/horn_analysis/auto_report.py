@@ -118,7 +118,7 @@ def generate_auto_report(
         "Scores within 0.02 are near-ties for comparison; physical uncertainty is not quantified.",
         "=" * 40,
         f"Target: {target.f_low_hz:.0f} Hz - {target.f_high_hz:.0f} Hz",
-        f"Throat radius: {throat_radius:.4f} m",
+        "Throat radii: see each candidate below" if derived_geometry else f"Throat radius: {throat_radius:.4f} m",
         f"Profiles evaluated: {', '.join(solver_csvs.keys())}",
         f"Total candidates scored: {scored_display}",
     ]
@@ -147,6 +147,8 @@ def generate_auto_report(
                       f"BW coverage: {result['bandwidth_coverage']:.1%}  "
                       f"Ripple: {result['passband_ripple_db']:.1f} dB  "
                       f"Mean output level: {result['avg_sensitivity_db']:.1f} dB")
+        if all(result.get(key) is not None for key in ("throat_radius", "mouth_radius", "length")):
+            lines.append(f"     Throat radius: {result['throat_radius']:.6f} m; mouth radius: {result['mouth_radius']:.6f} m; length: {result['length']:.6f} m")
         if "kpi" in result:
             kpi = result["kpi"]
             f3l = f"{kpi['f3_low_hz']:.0f}" if kpi.get("f3_low_hz") else "N/A"

@@ -49,6 +49,9 @@ def test_validation_cannot_hide_notch_between_reference_samples():
     assert not compare_curves(ref, shifted, 100, 1000)['level_gate_passed']
     relative = compare_curves(ref, shifted, 100, 1000, relative=True)
     assert not relative['physical_validation_passed']
+    assert not relative['level_gate_passed']
+    assert relative['shape_gate_passed']
+    assert relative['mode'] == 'relative_shape'
 
 
 def test_pipe_import_preserves_measurement_units_and_extensionless_exports(tmp_path):

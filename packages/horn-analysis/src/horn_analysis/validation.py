@@ -25,7 +25,8 @@ def compare_curves(reference, prediction, low, high, *, relative=False):
     return {"mode": "relative_shape" if relative else "absolute_level",
             "median_absolute_error_db":median, "p95_absolute_error_db":p95,
             "max_absolute_error_db":float(error.max()), "samples":len(grid),
-            "comparison_band_hz":[low,high], "level_gate_passed": median<=2 and p95<=4,
+            "comparison_band_hz":[low,high], "level_gate_passed": not relative and median<=2 and p95<=4,
+            "shape_gate_passed": (median<=2 and p95<=4) if relative else None,
             "physical_validation_passed": False,
             "note":"Curve agreement alone does not validate geometry, driver, calibration or ranking."}
 
@@ -48,7 +49,9 @@ def main():
     result['reference_metadata']=meta
     result['sha256']={key:hashlib.sha256(Path(path).read_bytes()).hexdigest() for key,path in [('reference',a.reference),('prediction',a.prediction)]}
     Path(a.output).write_text(json.dumps(result,indent=2))
-    return 0 if result['level_gate_passed'] else 1
+    # In --relative mode success means shape agreement only.
+    gate = 'shape_gate_passed' if a.relative else 'level_gate_passed'
+    return 0 if result[gate] else 1
 
 
 if __name__=='__main__':

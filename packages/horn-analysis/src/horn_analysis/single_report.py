@@ -110,8 +110,7 @@ _HTML_TEMPLATE = """\
 <h1>Horn Simulation Report</h1>
 <p class="subtitle">
   {profile_badge} &nbsp;|&nbsp;
-  Throat: {throat_mm:.1f} mm &nbsp;|&nbsp;
-  Mouth: {mouth_mm:.1f} mm &nbsp;|&nbsp;
+  {geometry_subtitle}
   Length: {length_mm:.1f} mm &nbsp;|&nbsp;
   {freq_range}
   Generated: {timestamp}
@@ -134,11 +133,7 @@ _HTML_TEMPLATE = """\
   <div class="design-summary">
     <dl>
       <dt>Profile</dt><dd>{profile_badge_dd}</dd>
-      <dt>Throat radius</dt><dd>{throat_radius_m:.4f} m</dd>
-      <dt>Mouth radius</dt><dd>{mouth_radius_m:.4f} m</dd>
-      <dt>Horn length</dt><dd>{length_m:.3f} m</dd>
-      <dt>Throat diameter</dt><dd>{throat_mm:.1f} mm</dd>
-      <dt>Mouth diameter</dt><dd>{mouth_mm:.1f} mm</dd>
+      {geometry_details}
     </dl>
   </div>
 </div>
@@ -185,6 +180,7 @@ def generate_single_report(
     directivity_index_png: Optional[str] = None,
     coupled_png: Optional[str] = None,
     coupled_kpis: Optional[dict] = None,
+    imported_geometry: bool = False,
 ) -> str:
     """Generate a self-contained HTML report string for a single-mode run.
 
@@ -260,7 +256,33 @@ will roll off according to the driver's diaphragm physics.</p>
     mouth_mm = mouth_radius * 2 * 1000
     length_mm = length * 1000
 
+    geometry_subtitle = f"Throat: {throat_mm:.1f} mm &nbsp;|&nbsp; Mouth: {mouth_mm:.1f} mm &nbsp;|&nbsp;"
+    geometry_details = (f"<dt>Throat radius</dt><dd>{throat_radius:.4f} m</dd>"
+                        f"<dt>Mouth radius</dt><dd>{mouth_radius:.4f} m</dd>"
+                        f"<dt>Horn length</dt><dd>{length:.3f} m</dd>"
+                        f"<dt>Throat diameter</dt><dd>{throat_mm:.1f} mm</dd>"
+                        f"<dt>Mouth diameter</dt><dd>{mouth_mm:.1f} mm</dd>")
+    if imported_geometry:
+        import pandas as pd
+        import numpy as np
+        if not final_csv:
+            raise ValueError("Imported geometry reporting requires solver areas")
+        areas = pd.read_csv(final_csv)
+        for name in ("inlet_area_m2", "mouth_area_m2"):
+            values = areas[name].to_numpy()
+            if not len(values) or not np.isfinite(values).all() or np.any(values <= 0) or not np.allclose(values, values[0], rtol=1e-6):
+                raise ValueError("Imported geometry requires consistent positive CAD areas")
+        inlet, mouth = float(areas.inlet_area_m2.iloc[0]), float(areas.mouth_area_m2.iloc[0])
+        profile = "imported STEP"
+        geometry_subtitle = "Actual CAD boundary areas reported below &nbsp;|&nbsp;"
+        geometry_details = (f"<dt>Inlet area (CAD)</dt><dd>{inlet:.8g} m²</dd>"
+                            f"<dt>Mouth area (CAD)</dt><dd>{mouth:.8g} m²</dd>"
+                            f"<dt>Axial length supplied</dt><dd>{length:.3f} m</dd>"
+                            "<dt>Cross-section shape</dt><dd>Imported; circular radii and diameters are not inferred</dd>")
+
     return _HTML_TEMPLATE.format_map({
+        "geometry_subtitle": geometry_subtitle,
+        "geometry_details": geometry_details,
         "profile_badge": _profile_badge(profile),
         "profile_badge_dd": _profile_badge(profile),
         "throat_radius_m": throat_radius,
@@ -314,6 +336,7 @@ def main():
     parser.add_argument("--coupled-kpis", default=None,
                         help="Path to driver_horn_kpis.json from couple_single (optional).")
     parser.add_argument("--output", required=True, help="Output HTML path")
+    parser.add_argument("--imported-geometry", action="store_true")
     args = parser.parse_args()
 
     kpis = json.loads(Path(args.kpis).read_text())
@@ -339,6 +362,7 @@ def main():
         directivity_index_png=args.di_png,
         coupled_png=args.coupled_png,
         coupled_kpis=coupled_kpis,
+        imported_geometry=args.imported_geometry,
     )
 
     out = Path(args.output)

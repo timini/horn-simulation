@@ -17,7 +17,7 @@ Use `just run-auto --target_f_low 500 --target_f_high 4000` for an isolated run.
 
 Optional thermoviscous losses and finite-flange pipe radiation now have independent impedance checks; see [the measured results and remaining failures](docs/LOSS_PHYSICS_VALIDATION.md). Legacy FEM–BEM horn coupling and directivity are disabled pending a correct exterior model.
 
-See [acoustic assumptions](docs/ACOUSTIC_CONTRACT.md), [existing measurement sources and importer](docs/VALIDATION_DATA.md), and [implementation/validation status](docs/IMPLEMENTATION_STATUS.md). Resume only an unchanged source/data/container snapshot with `python scripts/run_pipeline.py --run-dir results/<run-id> -resume`.
+See [acoustic assumptions](docs/ACOUSTIC_CONTRACT.md), [existing measurement sources and importer](docs/VALIDATION_DATA.md), and [implementation/validation status](docs/IMPLEMENTATION_STATUS.md). Resume only an unchanged source/data/container/Nextflow snapshot with `python scripts/run_pipeline.py --run-dir results/<run-id> -resume`.
 
 
 ## Key features
@@ -81,7 +81,7 @@ flowchart TB
 
 Simulate one horn with explicit geometry parameters and get a frequency response plot.
 
-For imported geometry, supply both `--step_file path/to/horn.step` and `--length` in metres. The supported orientation has the inlet at z = 0 and the outlet at z = length; imported files do not inherit the parametric 0.5 m default.
+For imported geometry, supply both `--step_file path/to/horn.step` and `--length` in metres. The supported orientation has the inlet at z = 0 and the outlet at z = length; imported files do not inherit the parametric 0.5 m default. Reports use actual CAD boundary areas and omit inferred circular radii; supply `--horn_3d_png` for your own geometry image, otherwise the report shows an explicit placeholder.
 
 ```bash
 nextflow run main.nf -profile docker \

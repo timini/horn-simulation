@@ -34,6 +34,12 @@ nextflow_pipeline {
         }
         then {
             assert workflow.success
+            def report = new File("${outputDir}/single_report.html").text
+            assert report.contains("Inlet area (CAD)")
+            assert report.contains("Mouth area (CAD)")
+            assert report.contains("Imported step")
+            assert !report.contains("<dt>Throat radius</dt>")
+            assert !report.contains("<dt>Mouth diameter</dt>")
         }
     }
 }
