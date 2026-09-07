@@ -27,4 +27,24 @@ nextflow_process {
             assert process.out[0].size() > 0
         }
     }
+    test("Invalid CAD fails the solver process without a result") {
+        when {
+            params {
+                length = 0.08
+                min_freq = 500
+                max_freq = 1000
+                num_bands = 1
+                num_intervals = 3
+            }
+            process {
+                """
+                input[0] = tuple(file("${projectDir}/tests/data/smoke_drivers.json"), 0)
+                """
+            }
+        }
+        then {
+            assert process.failed
+        }
+    }
+
 }

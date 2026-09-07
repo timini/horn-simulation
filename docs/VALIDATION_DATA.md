@@ -81,3 +81,8 @@ The output includes the acoustic CAD, both raw FEM runs, frequency-transposed no
 6. Use `horn_analysis.validation` for a response comparison. It rejects uncalibrated absolute comparisons, includes prediction samples to expose notches, and never converts a curve-agreement result into a full physical-validation claim.
 
 The existing repository files named `conical_horn_hornresp.csv` and `exponential_horn_ijert.csv` contain internally generated Webster predictions for published geometries. Their headers identify this. They are **not measured curves or an independently executed Hornresp reference** and must not count toward the physical gate.
+
+
+### Additional fully coupled assembly lead
+
+[Sa and Park (2014)](https://doi.org/10.5050/KSNVE.2014.24.7.537) describes two conical assemblies with driver/chamber parameters and measured impedance/sensitivity figures. The source catalog records the known dimensions and author-copy link. Text inspection confirms a richer chamber/rear-volume and frequency-dependent motor model than the current direct-coupling approximation. Curves have not been extracted and absolute normalization still needs verification. This is a documented validation candidate, not an acquired numeric dataset or a passing physical comparison.

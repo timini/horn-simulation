@@ -259,6 +259,33 @@
         "Repeated measurements, duplicate exports and multiple specimens must not be counted as independent assemblies.",
         "Agreement on pipe impedance does not validate driver coupling or horn far-field output."
       ]
+    },
+    {
+      "id": "sa-park-conical-assemblies-2014",
+      "source_url": "https://doi.org/10.5050/KSNVE.2014.24.7.537",
+      "author_copy_url": "https://www.researchgate.net/profile/Seok-Tae-Park/publication/272658964_A_Study_on_the_Acoustic_Modeling_of_Horn_-_Analysis_and_Design_of_Acoustic_Horn_-/links/5d1df03592851cf440642941/A-Study-on-the-Acoustic-Modeling-of-Horn-Analysis-and-Design-of-Acoustic-Horn.pdf",
+      "format": "published_figures_and_parameters",
+      "reference_kind": "physical_horn_driver_assembly_candidate",
+      "description": "Two conical horn assemblies with measured impedance and sensitivity; author-uploaded paper inspected as text.",
+      "known_geometry": {
+        "throat_diameter_m": 0.018,
+        "mouth_diameter_m": 0.08,
+        "lengths_m": [
+          0.535,
+          0.136
+        ],
+        "diaphragm_effective_diameter_m": 0.084,
+        "compression_gap_m": 0.001,
+        "equivalent_phase_plug_channel_length_m": 0.053
+      },
+      "limitations": [
+        "Measured curves have not been extracted; local PDF binary retrieval failed.",
+        "The published model includes chamber/rear-volume and frequency-dependent electrical terms absent from the simple motor coupling.",
+        "Source-reported fitted parameters and correction filters must not be confused with independent validation of this pipeline.",
+        "Absolute drive/observation normalization and digitization uncertainty require verification before comparison."
+      ],
+      "reuse": "Author-uploaded article, copyright retained; do not vendor full paper without permission.",
+      "physical_validation_passed": false
     }
   ]
 }

@@ -34,6 +34,7 @@ nextflow_pipeline {
             assert ranking.refinement.new_evaluations <= 1
             assert ranking.results.every { it.loss_model == "boundary_layer" && it.element_degree == 2 }
             assert ranking.results.every { it.validation_status == "experimental_prediction" }
+            assert ranking.results.every { it.eligibility_status == "insufficient_evidence" }
             assert new File("${outputDir}/auto/report/auto_report.html").length() > 0
         }
     }
@@ -85,4 +86,32 @@ nextflow_pipeline {
             assert new File("${outputDir}/auto/report/auto_report.html").length() > 0
         }
     }
+    test("Wider band with manufacturer parameters and fixed size") {
+        when {
+            params {
+                mode = "auto"
+                target_f_low = 800
+                target_f_high = 1600
+                throat_radius = 0.0225
+                mouth_radius = 0.07
+                length = 0.055
+                drivers_db = "${projectDir}/data/drivers-curated"
+                num_intervals = 30
+                num_bands = 2
+                lem_top_n = 2
+                refinement_budget = 0
+                mesh_size = 0.008
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            def ranking = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/ranked_results.json"))
+            assert ranking.results.size() > 0
+            assert ranking.results.every { it.model_feasible && it.length == 0.055 && it.mouth_radius == 0.07 }
+            assert ranking.results.every { it.eligibility_status == "insufficient_evidence" }
+            assert !new File("${outputDir}/auto/refinement").exists()
+        }
+    }
+
 }

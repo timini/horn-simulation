@@ -21,7 +21,7 @@ Updated 7 September 2026. Band-to-driver-and-horn search, bounded refinement, CA
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Clean-checkout local packages | 309 passed | `/tmp/horn-clean-local.xml` |
-| Complete Nextflow suite | All eight tests passed, including loss/refinement and missing-band rejection | `/tmp/horn-nextflow-final.log` |
+| Complete Nextflow suite | All ten tests passed across the full suite and added cases, including loss/refinement and missing-band rejection | `/tmp/horn-nextflow-final.log`, `/tmp/horn-nextflow-extra.log`, `/tmp/horn-nextflow-wide.log` |
 | Expanded finite-grid search | Four bands, 20 geometries × three manufacturer motors; 36/59/52/37 feasible pairs; 100% top-ten recall and zero regret in all cases | `data/validation/search_benchmark_summary.json` |
 | Full solver suite after wall-loss/residual changes | 48 passed, one optional straight-tube regime skipped | `results/validation-81/loss-physics/all-solver-tests.xml` |
 | Three-mesh production wall-loss case | Complex impedance, finest-mesh output convergence, passivity and RMS energy balance pass | `packages/horn-solver/tests/validation/test_wall_losses.py` |
@@ -29,6 +29,7 @@ Updated 7 September 2026. Band-to-driver-and-horn search, bounded refinement, CA
 | Published measured impedances | 237/299 pass magnitude limits, including 201/263 held-out curves; failures retained | [Full comparison and limits](LOSS_PHYSICS_VALIDATION.md) |
 | Direct production FEM versus measurements | 90/100 comparisons pass on the three open geometries | `results/validation-81/loss-physics/held-out-final/validation.json` |
 | Earlier band-only database run | 239 drivers, 231 geometries / 55,209 analytical pairs; 106 tasks completed in 6m23s | `results/validation-81/band-only-final/manifest.json` |
+| Clean-checkout interruption/resume | Interrupted after three tasks; resumed the same session; numerical/ranking files identical to an uninterrupted run. Other differences limited to timestamps/output directory | `data/validation/resume_validation_summary.json` |
 | Earlier exact resume | All 14 tasks cached; output hashes unchanged | `results/validation-81/reproducible-auto/manifest.json` |
 | Earlier finite-grid audit | 20 geometries × three synthetic motors: all six feasible pairs retained, winner regret zero | `results/validation-81/search-benchmark/search_benchmark.json` |
 
