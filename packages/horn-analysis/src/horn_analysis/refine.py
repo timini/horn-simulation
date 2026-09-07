@@ -17,6 +17,7 @@ def main():
     p.add_argument('--ranked-json',required=True);p.add_argument('--design-json',required=True)
     p.add_argument('--prescreen-json',required=True);p.add_argument('--drivers-db',required=True)
     p.add_argument('--solver-csvs',nargs='+',required=True);p.add_argument('--output-dir',required=True)
+    p.add_argument('--top-n',type=int,default=10)
     p.add_argument('--budget',type=int,default=6);p.add_argument('--num-frequencies',type=int,default=100)
     p.add_argument('--num-bands',type=int,default=8);p.add_argument('--num-sections',type=int,default=20)
     p.add_argument('--mesh-size',type=float,default=.01);p.add_argument('--radiation-model',default='flanged_piston')
@@ -27,7 +28,7 @@ def main():
     p.add_argument("--minimum-wall-scale",type=float)
     p.add_argument("--element-degree",type=int,default=1)
     a=p.parse_args()
-    if a.num_bands < 1 or a.num_frequencies < 2 or a.budget < 0: p.error("Invalid simulation budget/grid")
+    if a.num_bands < 1 or a.num_frequencies < 2 or a.budget < 0 or a.top_n < 1: p.error("Invalid simulation budget/grid")
     out=Path(a.output_dir);out.mkdir(parents=True,exist_ok=True)
     data=json.loads(Path(a.ranked_json).read_text());design=json.loads(Path(a.design_json).read_text())
     for path in a.solver_csvs: shutil.copyfile(path,out/Path(path).name)
@@ -88,7 +89,7 @@ def main():
         data['total_scored']+=audit['fem_evaluations']*len(drivers)
         data['total_candidates']+=audit['fem_evaluations']
     from horn_analysis.search import annotate_comparable_candidates
-    data['results'] = annotate_comparable_candidates(data['results'])
+    data['results'] = annotate_comparable_candidates(sorted(data['results'], key=lambda row: row['composite_score'], reverse=True)[:a.top_n])
     (out/'search_audit.json').write_text(json.dumps(data['refinement'],indent=2))
     (out/'ranked_results.json').write_text(json.dumps(data,indent=2))
 

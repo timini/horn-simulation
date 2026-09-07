@@ -15,6 +15,7 @@ directory or a JSON file.
 """
 
 import json
+import warnings
 from pathlib import Path
 from typing import List, Optional
 
@@ -109,21 +110,27 @@ def load_drivers_raw(db_path: str) -> List[dict]:
 
 
 def load_drivers(db_path: str) -> List[DriverParameters]:
-    """Load all drivers from a database (directory or JSON file).
+    """Load valid drivers, with explicit warnings for rejected database records.
 
     Supports:
       - v3 directory: ``db_path/{Manufacturer}/{driver-id}.json``
       - v2 single file: ``{ "schema_version": 2, "drivers": [...] }``
       - v1 single file: ``{ "driver_id": { ... }, ... }``
     """
-    return [_driver_from_dict(d) for d in load_drivers_raw(db_path)]
+    drivers = []
+    for record in load_drivers_raw(db_path):
+        try:
+            drivers.append(_driver_from_dict(record))
+        except (KeyError, TypeError, ValueError, ZeroDivisionError, OverflowError) as error:
+            warnings.warn(f"Rejected driver {record.get('driver_id', 'unknown')}: {error}", RuntimeWarning, stacklevel=2)
+    return drivers
 
 
 def load_driver(db_path: str, driver_id: str) -> DriverParameters:
-    """Load a single driver by ID from a database."""
-    for driver in load_drivers(db_path):
-        if driver.driver_id == driver_id:
-            return driver
+    """Load a single driver by ID, raising its validation error if invalid."""
+    for record in load_drivers_raw(db_path):
+        if record.get("driver_id") == driver_id:
+            return _driver_from_dict(record)
     raise KeyError(f"Driver '{driver_id}' not found in {db_path}")
 
 

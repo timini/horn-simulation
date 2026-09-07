@@ -83,3 +83,21 @@ class TestQDerivationFromElectricalParams:
         omega_s = 2.0 * np.pi * 500.0
         expected_qes = (omega_s * 0.003 * 6.0) / (8.5 ** 2)
         assert d.qes == pytest.approx(expected_qes, rel=1e-9)
+
+
+@pytest.mark.parametrize("field", ["qms", "qes", "qts", "cms_m_per_n", "exit_area_m2", "xmax_m", "nominal_impedance_ohm", "power_w", "peak_power_w", "usable_f_low_hz", "usable_f_high_hz", "mmd_kg", "rms_kg_per_s", "rear_load_mass_kg"])
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), -1.])
+def test_invalid_optional_numbers_are_rejected(field, value):
+    with pytest.raises(ValueError, match=field):
+        DriverParameters("test", "Test", "Motor", 100., 6., 5., .002, .004, .0001, **{field: value})
+
+
+@pytest.mark.parametrize("limits", [{"usable_f_low_hz": 1000., "usable_f_high_hz": 100.}, {"usable_f_low_hz": 100., "usable_f_high_hz": 100.}, {"power_w": 0.}, {"qms": 1., "qts": 1.}, {"qes": 1., "qts": 2.}])
+def test_invalid_limit_order_and_zero_limits_are_rejected(limits):
+    with pytest.raises(ValueError):
+        DriverParameters("test", "Test", "Motor", 100., 6., 5., .002, .004, .0001, **limits)
+
+
+def test_zero_mechanical_loss_and_rear_load_remain_valid_limiting_cases():
+    driver = DriverParameters("test", "Test", "Motor", 100., 6., 5., .002, .004, 0., rms_kg_per_s=0., mmd_kg=.003, rear_load_mass_kg=0.)
+    assert driver.coupled_moving_mass_kg == .003

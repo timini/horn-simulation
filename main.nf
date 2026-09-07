@@ -752,7 +752,7 @@ process refine_ranked_candidates {
     python3 -m horn_analysis.refine \
         --ranked-json ${ranked_json} --solver-csvs ${solver_csvs instanceof List ? solver_csvs.join(' ') : solver_csvs} \
         --drivers-db ${drivers_db} --prescreen-json ${prescreen_json} --design-json ${design_json} \
-        --budget ${params.refinement_budget} --num-frequencies ${params.num_intervals} \
+        --budget ${params.refinement_budget} --top-n ${params.top_n} --num-frequencies ${params.num_intervals} \
         --num-bands ${params.num_bands} --num-sections ${params.num_sections} \
         --mesh-size ${params.mesh_size} --radiation-model ${params.radiation_model} \
         --loss-model ${params.loss_model} --flange-width ${params.flange_width} \

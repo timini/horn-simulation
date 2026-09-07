@@ -135,3 +135,17 @@ class TestRealDatabase:
             assert d.sd_m2 > 0
             assert d.mms_kg > 0
             assert d.cms_m_per_n is not None
+
+
+def test_invalid_optional_limit_is_rejected_without_discarding_valid_drivers(v2_db, tmp_path):
+    from pathlib import Path
+    raw = json.loads(Path(v2_db).read_text())
+    raw['drivers'][0]['parameters']['power_w'] = float('nan')
+    path = tmp_path/'mixed.json'
+    path.write_text(json.dumps(raw))
+    invalid_id = raw['drivers'][0]['driver_id']
+    with pytest.warns(RuntimeWarning, match='Rejected driver '+invalid_id+'.*power_w'):
+        drivers = load_drivers(str(path))
+    assert [driver.driver_id for driver in drivers] == [raw['drivers'][1]['driver_id']]
+    with pytest.raises(ValueError, match='power_w'):
+        load_driver(str(path), invalid_id)

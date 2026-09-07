@@ -19,6 +19,7 @@ nextflow_pipeline {
                 num_intervals = 12
                 num_bands = 2
                 lem_top_n = 2
+                top_n = 1
                 refinement_budget = 1
                 mesh_size = 0.01
                 loss_model = "boundary_layer"
@@ -30,7 +31,8 @@ nextflow_pipeline {
         then {
             assert workflow.success
             def ranking = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/refinement/ranked_results.json"))
-            assert ranking.results.size() > 0
+            assert ranking.results.size() == 1
+            assert ranking.total_scored > ranking.results.size()
             assert ranking.refinement.new_evaluations <= 1
             assert ranking.results.every { it.loss_model == "boundary_layer" && it.element_degree == 2 }
             assert ranking.results.every { it.validation_status == "experimental_prediction" }
