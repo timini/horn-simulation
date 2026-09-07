@@ -36,6 +36,9 @@ nextflow_pipeline {
             assert rank.results.size() > 0
             assert rank.refinement.domain_rejected_candidates.size() == 1
             assert rank.refinement.fem_evaluations == 1
+            assert rank.refinement.new_evaluations == 2
+            assert rank.total_candidates == 2
+            assert rank.total_scored == 2
             assert rank.rejected.any { it.rejection_reasons.contains("radiation_model_out_of_domain") }
             assert new File("${outputDir}/auto/report/auto_report.html").exists()
         }
@@ -61,6 +64,10 @@ nextflow_pipeline {
             def rank = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/ranked_results.json"))
             assert rank.status == "no_feasible_design"
             assert rank.reason == "no_geometry_in_radiation_domain"
+            assert rank.total_candidates == 0
+            assert rank.total_scored == 0
+            assert rank.analytical_candidates_evaluated > 0
+            assert rank.analytical_pairs_evaluated == rank.rejected.size()
             assert rank.rejected.size() > 0
             assert rank.rejected.every { it.rejection_reasons.contains("radiation_model_out_of_domain") }
             assert new File("${outputDir}/auto/report/auto_report.html").text.contains("radiation model domain")

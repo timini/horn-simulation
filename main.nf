@@ -510,8 +510,8 @@ metadata = json.loads(Path("${empty_metadata}").read_text())
 rejected = metadata.get("rankings", [])
 count = metadata.get("total_evaluated", 0)
 scored = metadata.get("total_pairs", 0)
-generate_auto_report([], {}, {}, 0, target, "report", total_candidates=count, total_scored=scored, no_feasible_reason=reasons["${empty_reason}"])
-Path("ranked_results.json").write_text(json.dumps({"status":"no_feasible_design", "reason":"${empty_reason}", "results":[], "rejected":rejected, "total_candidates":count, "total_scored":scored, "validation_status":"independent_validation_pending"}, indent=2))
+generate_auto_report([], {}, {}, 0, target, "report", total_candidates=0, total_scored=0, lem_results=metadata if "rankings" in metadata else None, no_feasible_reason=reasons["${empty_reason}"])
+Path("ranked_results.json").write_text(json.dumps({"status":"no_feasible_design", "reason":"${empty_reason}", "results":[], "rejected":rejected, "total_candidates":0, "total_scored":0, "analytical_candidates_evaluated":count, "analytical_pairs_evaluated":scored, "validation_status":"independent_validation_pending"}, indent=2))
 '
     """
 }

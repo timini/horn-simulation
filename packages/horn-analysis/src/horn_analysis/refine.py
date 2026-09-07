@@ -85,8 +85,8 @@ def main():
         best,audit=refine(seed,evaluate,bounds,budget=a.budget)
         audit.update(domain_rejected_candidates=domain_rejected, fem_evaluations=audit['new_evaluations']-len(domain_rejected))
         data.update(results=sorted(all_rows,key=lambda r:r['composite_score'],reverse=True),rejected=rejected,refinement=audit)
-        data['total_scored']+=audit['new_evaluations']*len(drivers)
-        data['total_candidates']+=audit['new_evaluations']
+        data['total_scored']+=audit['fem_evaluations']*len(drivers)
+        data['total_candidates']+=audit['fem_evaluations']
     from horn_analysis.search import annotate_comparable_candidates
     data['results'] = annotate_comparable_candidates(data['results'])
     (out/'search_audit.json').write_text(json.dumps(data['refinement'],indent=2))

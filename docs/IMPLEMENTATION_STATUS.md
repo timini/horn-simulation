@@ -22,7 +22,7 @@ Updated 7 September 2026. Band-to-driver-and-horn search, bounded refinement, CA
 | --- | --- | --- |
 | Clean-checkout local packages before review | 309 passed | `/tmp/horn-clean-local.xml` |
 | Local packages after review corrections | 346 passed | `results/validation-81/review5-local.xml` |
-| Complete Nextflow suite after review fixes | All seventeen tests passed in one run, including loss/refinement, finite-flange domain rejection, imported STEP coupling, default single-mode provenance and missing-band rejection | `results/validation-81/review5-nextflow.xml` |
+| Complete Nextflow suite after review fixes | All seventeen tests passed in one run, including loss/refinement, finite-flange domain rejection, imported STEP coupling, default single-mode provenance and missing-band rejection | `results/validation-81/review6-nextflow.xml` |
 | Expanded finite-grid search | Four bands, 20 geometries × three manufacturer motors; 32/40/38/28 feasible pairs after the per-mouth fit correction; 100% top-ten recall and zero regret in all cases | `data/validation/search_benchmark_summary.json` |
 | Full solver suite after wall-loss/residual changes | 48 passed, one optional straight-tube regime skipped | `results/validation-81/loss-physics/all-solver-tests.xml` |
 | Three-mesh production wall-loss case | Complex impedance, finest-mesh output convergence, passivity and RMS energy balance pass | `packages/horn-solver/tests/validation/test_wall_losses.py` |
@@ -67,3 +67,5 @@ The third review corrects imported-geometry and variable-throat reporting, separ
 The fourth review removes the last fallback-radius label from imported driver-coupling plots/metadata and records effective default dimensions for generated single-mode runs. Imported runs preserve unknown radii in the resolved specification and use actual inlet area for coupling.
 
 The fifth review makes radiation-domain eligibility a per-geometry check in screening and refinement. Mixed finite-flange grids keep supported designs; all-invalid grids produce an explicit report with retained rejection records. New workflow cases verify both outcomes and distinguish rejected trials from FEM evaluations.
+
+Refinement totals count actual FEM evaluations and coupled driver pairs. Analytically rejected trials remain in the audit but do not inflate those totals; all-invalid reports expose analytical attempt counts separately from zero FEM totals.
