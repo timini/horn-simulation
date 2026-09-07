@@ -17,7 +17,9 @@ jobs:
           java-version: '17'
       - name: Install Nextflow
         run: |
-          NXF_VER=24.10.5 bash <(curl -fsSL https://get.nextflow.io)
+          curl -fL https://github.com/nextflow-io/nextflow/releases/download/v24.10.5/nextflow -o nextflow
+          chmod +x nextflow
+          ./nextflow -version
           sudo mv nextflow /usr/local/bin/
       - name: Install nf-test
         uses: nf-core/setup-nf-test@v1

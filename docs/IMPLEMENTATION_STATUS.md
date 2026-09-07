@@ -20,6 +20,9 @@ Updated 7 September 2026. Band-to-driver-and-horn search, bounded refinement, CA
 
 | Check | Result | Evidence |
 | --- | --- | --- |
+| Clean-checkout local packages | 309 passed | `/tmp/horn-clean-local.xml` |
+| Complete Nextflow suite | All eight tests passed, including loss/refinement and missing-band rejection | `/tmp/horn-nextflow-final.log` |
+| Expanded finite-grid search | Four bands, 20 geometries × three manufacturer motors; 36/59/52/37 feasible pairs; 100% top-ten recall and zero regret in all cases | `data/validation/search_benchmark_summary.json` |
 | Full solver suite after wall-loss/residual changes | 48 passed, one optional straight-tube regime skipped | `results/validation-81/loss-physics/all-solver-tests.xml` |
 | Three-mesh production wall-loss case | Complex impedance, finest-mesh output convergence, passivity and RMS energy balance pass | `packages/horn-solver/tests/validation/test_wall_losses.py` |
 | Independent published numerical impedances | All four comparisons pass; p95 magnitude error <0.010 dB | `data/validation/loss_physics_validation.json` |

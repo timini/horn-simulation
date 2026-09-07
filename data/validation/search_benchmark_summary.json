@@ -1,0 +1,139 @@
+{
+  "benchmark": "finite_grid_manufacturer_motors_v2",
+  "bands": [
+    [
+      800,
+      1600,
+      "development"
+    ],
+    [
+      1000,
+      1200,
+      "held_out"
+    ],
+    [
+      1200,
+      2000,
+      "held_out"
+    ],
+    [
+      600,
+      1000,
+      "held_out"
+    ]
+  ],
+  "geometry_count": 20,
+  "driver_count": 3,
+  "sim_band": [
+    424.2640687119285,
+    2828.42712474619
+  ],
+  "frequencies": 100,
+  "mesh_size": 0.008,
+  "shortlist_budget": 10,
+  "score_regret_limit": 0.02,
+  "top_ten_recall_limit": 0.9,
+  "minimum_feasible_pairs_per_case": 10,
+  "physical_validation_passed": false,
+  "driver_scope": "Manufacturer parameters; interfaces and free-air mass substitution remain experimental",
+  "screening_seconds": 0.5902956259997154,
+  "total_seconds": 347.013159868,
+  "passed": true,
+  "cases": [
+    {
+      "target": {
+        "f_low_hz": 800,
+        "f_high_hz": 1600,
+        "max_length_m": null,
+        "max_mouth_radius_m": null,
+        "voltage_rms": 2.83,
+        "observation_distance_m": 1.0,
+        "max_ripple_db": 6.0,
+        "max_compression_ratio": 10.0,
+        "min_output_db": null
+      },
+      "role": "development",
+      "audit": {
+        "status": "evaluated",
+        "feasible_top_k_recall": 1.0,
+        "score_regret": 0.0,
+        "winner_retained": true,
+        "passed": true,
+        "feasible_pair_count": 36,
+        "sufficient_feasible_pairs": true
+      }
+    },
+    {
+      "target": {
+        "f_low_hz": 1000,
+        "f_high_hz": 1200,
+        "max_length_m": null,
+        "max_mouth_radius_m": null,
+        "voltage_rms": 2.83,
+        "observation_distance_m": 1.0,
+        "max_ripple_db": 6.0,
+        "max_compression_ratio": 10.0,
+        "min_output_db": null
+      },
+      "role": "held_out",
+      "audit": {
+        "status": "evaluated",
+        "feasible_top_k_recall": 1.0,
+        "score_regret": 0.0,
+        "winner_retained": true,
+        "passed": true,
+        "feasible_pair_count": 59,
+        "sufficient_feasible_pairs": true
+      }
+    },
+    {
+      "target": {
+        "f_low_hz": 1200,
+        "f_high_hz": 2000,
+        "max_length_m": null,
+        "max_mouth_radius_m": null,
+        "voltage_rms": 2.83,
+        "observation_distance_m": 1.0,
+        "max_ripple_db": 6.0,
+        "max_compression_ratio": 10.0,
+        "min_output_db": null
+      },
+      "role": "held_out",
+      "audit": {
+        "status": "evaluated",
+        "feasible_top_k_recall": 1.0,
+        "score_regret": 0.0,
+        "winner_retained": true,
+        "passed": true,
+        "feasible_pair_count": 52,
+        "sufficient_feasible_pairs": true
+      }
+    },
+    {
+      "target": {
+        "f_low_hz": 600,
+        "f_high_hz": 1000,
+        "max_length_m": null,
+        "max_mouth_radius_m": null,
+        "voltage_rms": 2.83,
+        "observation_distance_m": 1.0,
+        "max_ripple_db": 6.0,
+        "max_compression_ratio": 10.0,
+        "min_output_db": null
+      },
+      "role": "held_out",
+      "audit": {
+        "status": "evaluated",
+        "feasible_top_k_recall": 1.0,
+        "score_regret": 0.0,
+        "winner_retained": true,
+        "passed": true,
+        "feasible_pair_count": 37,
+        "sufficient_feasible_pairs": true
+      }
+    }
+  ],
+  "complete_result_sha256": "8a60a4340c6f2cc55c11188fb52b65540f8a4673a1f36773d6d7d7ce59a84ae4",
+  "source_revision": "e5ee6f8",
+  "scope": "Finite numerical grid, not physical assembly ranking; no threshold or model fitting from results."
+}
