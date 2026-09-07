@@ -227,7 +227,7 @@ process couple_with_driver {
     path final_csv
     val throat_radius
     val profile
-    path drivers_db
+    path drivers_db, stageAs: 'driver_database'
 
     output:
     path "coupled_spl.csv"
@@ -236,11 +236,12 @@ process couple_with_driver {
 
     script:
     def throat_flag = !params.step_file && throat_radius != null ? "--throat-radius ${throat_radius}" : ""
+    def driver_id_arg = "'" + params.driver_id.toString().replace("'", "'\"'\"'") + "'"
     """
     python3 -m horn_analysis.couple_single ${params.step_file ? "--imported-geometry" : ""} \
         --solver-csv ${final_csv} \
         --drivers-db ${drivers_db} \
-        --driver-id ${params.driver_id} \
+        --driver-id ${driver_id_arg} \
         --voltage ${params.voltage_rms} \
         ${throat_flag} \
         --profile ${profile} \
@@ -465,7 +466,7 @@ process prescreen_drivers {
     input:
     val target_f_low
     val target_f_high
-    path drivers_db
+    path drivers_db, stageAs: 'driver_database'
 
     output:
     path "prescreen_result.json"
@@ -558,7 +559,7 @@ process lem_prescreen {
     input:
     path candidates_csv
     path prescreen_json
-    path drivers_db
+    path drivers_db, stageAs: 'driver_database'
     path design_json
 
     output:
@@ -658,7 +659,7 @@ process score_and_rank {
     input:
     path solver_csvs
     path prescreen_json
-    path drivers_db
+    path drivers_db, stageAs: 'driver_database'
     path candidates_csv
 
     output:
@@ -739,7 +740,7 @@ process refine_ranked_candidates {
     input:
     path ranked_json
     path solver_csvs
-    path drivers_db
+    path drivers_db, stageAs: 'driver_database'
     path prescreen_json
     path design_json
     output:
@@ -769,7 +770,7 @@ process generate_auto_report {
     input:
     path ranked_json
     path solver_csvs
-    path drivers_db
+    path drivers_db, stageAs: 'driver_database'
     path prescreen_json
     path design_json
     path lem_results_json

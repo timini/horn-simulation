@@ -32,21 +32,34 @@ def _driver_from_dict(d: dict) -> DriverParameters:
     params = d.get("parameters", d)
 
     # Unit conversions — source may use convenience units
-    le_h = params.get("le_h") or _mh_to_h(params.get("le_mh"))
-    sd_m2 = params.get("sd_m2") or params.get("sd_sq_meters")
-    xmax_m = params.get("xmax_m") or _mm_to_m(params.get("xmax_mm"))
-    exit_area_m2 = params.get("exit_area_m2") or _cm2_to_m2(params.get("exit_area_cm2"))
+    # Only missing values fall back to aliases. Explicit zero limits must
+    # reach validation, and zero inductance is a valid limiting case.
+    le_h = params.get("le_h")
+    if le_h is None:
+        le_h = _mh_to_h(params.get("le_mh"))
+    sd_m2 = params.get("sd_m2")
+    if sd_m2 is None:
+        sd_m2 = params.get("sd_sq_meters")
+    xmax_m = params.get("xmax_m")
+    if xmax_m is None:
+        xmax_m = _mm_to_m(params.get("xmax_mm"))
+    exit_area_m2 = params.get("exit_area_m2")
+    if exit_area_m2 is None:
+        exit_area_m2 = _cm2_to_m2(params.get("exit_area_cm2"))
+    re_ohm = params.get("re_ohm")
+    if re_ohm is None:
+        re_ohm = params.get("re_ohms", 0.0)
 
     return DriverParameters(
         driver_id=d.get("driver_id", "unknown"),
         manufacturer=d.get("manufacturer", ""),
         model_name=d.get("model_name", ""),
         fs_hz=params["fs_hz"],
-        re_ohm=params.get("re_ohm") or params.get("re_ohms", 0.0),
+        re_ohm=re_ohm,
         bl_tm=params.get("bl_tm", 0.0),
-        sd_m2=sd_m2 or 0.0,
+        sd_m2=sd_m2 if sd_m2 is not None else 0.0,
         mms_kg=params.get("mms_kg", 0.0),
-        le_h=le_h or 0.0,
+        le_h=le_h if le_h is not None else 0.0,
         qms=params.get("qms"),
         qes=params.get("qes"),
         qts=params.get("qts"),

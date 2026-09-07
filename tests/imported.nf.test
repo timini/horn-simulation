@@ -24,8 +24,8 @@ nextflow_pipeline {
                 mode = "single"
                 step_file = "${projectDir}/tests/data/my horn ' geometry.step"
                 length = 0.08
-                driver_id = "synthetic-smoke"
-                drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                driver_id = "synthetic ' smoke"
+                drivers_db = "${projectDir}/tests/data/my drivers ' database.json"
                 horn_3d_png = "${projectDir}/tests/data/my render ' image.png"
                 min_freq = 500
                 max_freq = 1000

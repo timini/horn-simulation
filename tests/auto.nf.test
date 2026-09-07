@@ -15,7 +15,7 @@ nextflow_pipeline {
                 min_length = 0.07
                 max_length = 0.09
                 num_lengths = 2
-                drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                drivers_db = "${projectDir}/tests/data/my drivers ' database.json"
                 num_intervals = 12
                 num_bands = 2
                 lem_top_n = 2

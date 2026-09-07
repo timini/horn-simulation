@@ -21,8 +21,8 @@ Updated 7 September 2026. Band-to-driver-and-horn search, bounded refinement, CA
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Clean-checkout local packages before review | 309 passed | `/tmp/horn-clean-local.xml` |
-| Local packages after review corrections | 398 passed | `results/validation-81/review9-local.xml` |
-| Complete Nextflow suite after review fixes | All eighteen tests passed in one run, including loss/refinement, finite-flange/unflanged domain rejection, custom render paths, imported STEP coupling, default single-mode provenance and missing-band rejection | `results/validation-81/review9-nextflow.xml` |
+| Local packages after review corrections | 407 passed | `results/validation-81/review10-local.xml` |
+| Complete Nextflow suite after review fixes | All eighteen tests passed in one run, including loss/refinement, finite-flange/unflanged domain rejection, custom render paths, imported STEP coupling, default single-mode provenance and missing-band rejection | `results/validation-81/review10-nextflow.xml` |
 | Expanded finite-grid search | Four bands, 20 geometries × three manufacturer motors; 32/40/38/28 feasible pairs after the per-mouth fit correction; 100% top-ten recall and zero regret in all cases | `data/validation/search_benchmark_summary.json` |
 | Full solver suite after wall-loss/residual changes | 48 passed, one optional straight-tube regime skipped | `results/validation-81/loss-physics/all-solver-tests.xml` |
 | Three-mesh production wall-loss case | Complex impedance, finest-mesh output convergence, passivity and RMS energy balance pass | `packages/horn-solver/tests/validation/test_wall_losses.py` |
@@ -75,3 +75,5 @@ The final review corrections preserve the exact Le Cléac’h throat in the shar
 The subsequent packaging review updates the frozen workspace lock for the shared geometry dependency and stages imported STEP inputs under a safe fixed name in each solver process. A clean `uv sync --frozen --package horn-geometry` environment successfully exports the 1 mm Le Cléac’h inlet, and the imported assembly workflow exercises a STEP basename containing spaces and a quote.
 
 The next review validates every supplied numeric driver field (positive physical limits and ordered usable-band bounds; zero mechanical loss/rear air mass remain explicit limiting cases). Invalid or impossible derived parameters reject that database record with a warning; requesting an invalid driver directly raises its diagnostic. Refinement now reapplies the requested `top_n` result limit while preserving complete evaluation totals and the best score. The complete refinement fixture requests one result and verifies only one is returned after multiple evaluations.
+
+The final input review preserves explicitly supplied zero SI values instead of silently replacing them with missing/alternate-unit values. Zero areas, resistance and excursion limits therefore reach validation; zero inductance remains a valid limiting case. All database inputs use a safe staged name and single-driver IDs are shell-quoted. Full auto/imported-driver fixtures exercise a custom database filename and driver ID containing spaces and quotes.
