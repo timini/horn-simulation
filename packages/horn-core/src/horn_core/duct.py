@@ -76,6 +76,10 @@ def _silva_reflection(ka, flanged):
     return modulus, correction
 
 
+class RadiationDomainError(ValueError):
+    """A valid geometry lies outside the selected radiation approximation."""
+
+
 def circular_pipe_radiation(k, radius, flange_width=0.):
     """Normalized specific radiation impedance for a finite circular flange.
 
@@ -87,9 +91,9 @@ def circular_pipe_radiation(k, radius, flange_width=0.):
         raise ValueError('Invalid circular radiation dimensions or wavenumber')
     ka = k*radius
     if np.any(ka >= 1.5):
-        raise ValueError('Circular pipe radiation requires ka < 1.5')
+        raise RadiationDomainError('Circular pipe radiation requires ka < 1.5')
     if flange_width > radius*(1+1e-10):
-        raise ValueError('Finite-flange approximation restricted to width / radius <= 1')
+        raise RadiationDomainError('Finite-flange approximation restricted to width / radius <= 1')
     r0,l0 = _silva_reflection(ka,False)
     if flange_width == 0:
         reflection = -r0*np.exp(-2j*ka*l0)
@@ -105,5 +109,5 @@ def circular_pipe_radiation(k, radius, flange_width=0.):
                        * np.exp(-1j*k*b*(1+ratio*(2.3-ratio-.3*ka**2))))
     z = (1+reflection)/(1-reflection)
     if np.any(z.real < -1e-10):
-        raise ValueError('Radiation approximation left its passive domain')
+        raise RadiationDomainError('Radiation approximation left its passive domain')
     return z

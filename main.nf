@@ -505,9 +505,13 @@ from pathlib import Path
 from horn_analysis.auto_report import generate_auto_report
 from horn_analysis.scoring import TargetSpec
 target = TargetSpec(${params.target_f_low}, ${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio})
-reasons = {"no_drivers_passed_prescreen": "No drivers passed the initial screening for this request.", "size_constraints_exclude_search_range": "No geometry remains within the requested size limits and current search range.", "no_mouth_larger_than_throat": "The searched mouth sizes are no larger than the throat."}
-generate_auto_report([], {}, {}, 0, target, "report", total_candidates=0, total_scored=0, no_feasible_reason=reasons["${empty_reason}"])
-Path("ranked_results.json").write_text(json.dumps({"status":"no_feasible_design", "reason":"${empty_reason}", "results":[], "rejected":[], "total_candidates":0, "total_scored":0, "validation_status":"independent_validation_pending"}, indent=2))
+reasons = {"no_drivers_passed_prescreen": "No drivers passed the initial screening for this request.", "size_constraints_exclude_search_range": "No geometry remains within the requested size limits and current search range.", "no_mouth_larger_than_throat": "The searched mouth sizes are no larger than the throat.", "no_geometry_in_radiation_domain": "No searched geometry lies within the selected radiation model domain."}
+metadata = json.loads(Path("${empty_metadata}").read_text())
+rejected = metadata.get("rankings", [])
+count = metadata.get("total_evaluated", 0)
+scored = metadata.get("total_pairs", 0)
+generate_auto_report([], {}, {}, 0, target, "report", total_candidates=count, total_scored=scored, no_feasible_reason=reasons["${empty_reason}"])
+Path("ranked_results.json").write_text(json.dumps({"status":"no_feasible_design", "reason":"${empty_reason}", "results":[], "rejected":rejected, "total_candidates":count, "total_scored":scored, "validation_status":"independent_validation_pending"}, indent=2))
 '
     """
 }
@@ -966,7 +970,6 @@ workflow auto {
         def data = new groovy.json.JsonSlurper().parse(json)
         tuple(data.reason, json)
     }
-    report_no_drivers(ch_empty_drivers.mix(ch_empty_geometry))
     ch_candidates_csv = ch_geometry_branches.eligible.map { csv, json -> csv }
     ch_design_json = ch_geometry_branches.eligible.map { csv, json -> json }
 
@@ -978,8 +981,14 @@ workflow auto {
         ch_drivers_db,
         ch_design_json,
     )
-    ch_lem_results = ch_lem.map { json, csv -> json }
-    ch_filtered_csv = ch_lem.map { json, csv -> csv }
+    ch_lem_branches = ch_lem.branch { json, csv ->
+        eligible: new groovy.json.JsonSlurper().parse(json).filtered_candidate_ids.size() > 0
+        empty: true
+    }
+    ch_empty_lem = ch_lem_branches.empty.map { json, csv -> tuple('no_geometry_in_radiation_domain', json) }
+    report_no_drivers(ch_empty_drivers.mix(ch_empty_geometry).mix(ch_empty_lem))
+    ch_lem_results = ch_lem_branches.eligible.map { json, csv -> json }
+    ch_filtered_csv = ch_lem_branches.eligible.map { json, csv -> csv }
 
     // 4. Parse filtered candidates CSV into channel of tuples
     ch_candidates = ch_filtered_csv

@@ -244,3 +244,33 @@ class TestCsvIO:
         assert len(loaded) == 2
         ids = {c.candidate_id for c in loaded}
         assert ids == {"c1", "c3"}
+
+
+def test_finite_flange_screen_rejects_domain_failures_per_geometry():
+    candidates = [_make_candidate('too_small', throat=.01, mouth=.025, length=.08),
+                  _make_candidate('valid', throat=.01, mouth=.04, length=.08),
+                  _make_candidate('too_large', throat=.01, mouth=.07, length=.08)]
+    result = lem_prescreen_candidates(candidates, [_make_driver()], 1000, 1100,
+                                     (1000/2**.5,1100*2**.5), top_n=10,
+                                     radiation_model='finite_flange', flange_width=.03)
+    assert result['filtered_candidate_ids'] == ['valid']
+    rejected = {r['candidate_id']:r for r in result['rankings'] if not r.get('simulation_eligible', True)}
+    assert set(rejected) == {'too_small','too_large'}
+    assert 'width / radius' in rejected['too_small']['rejection_detail']
+    assert 'ka < 1.5' in rejected['too_large']['rejection_detail']
+    assert all(not r['model_feasible'] and r['composite_score'] == 0 for r in rejected.values())
+
+
+def test_all_out_of_domain_geometries_produce_an_empty_shortlist():
+    result = lem_prescreen_candidates([_make_candidate('large', throat=.01, mouth=.07, length=.08)],
+                                     [_make_driver()], 1000,1100, (700,1600),
+                                     radiation_model='finite_flange', flange_width=.03)
+    assert result['filtered_candidate_ids'] == []
+    assert result['rankings'][0]['rejection_reasons'] == ['radiation_model_out_of_domain']
+
+
+def test_invalid_radiation_input_is_not_hidden_as_a_candidate_rejection():
+    with pytest.raises(ValueError, match='Invalid circular radiation'):
+        lem_prescreen_candidates([_make_candidate('valid', throat=.01, mouth=.04, length=.08)],
+                                 [_make_driver()],1000,1100,(700,1600),
+                                 radiation_model='finite_flange',flange_width=-1.)

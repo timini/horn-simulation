@@ -62,6 +62,7 @@ def shortlist_geometries(rows, budget=10, score_margin=.02):
     """
     if budget < 1 or score_margin < 0:
         raise ValueError("Invalid shortlist controls")
+    rows = [r for r in rows if r.get("simulation_eligible", True)]
     best = {}
     for row in sorted(rows, key=lambda r: (-r['composite_score'], r['candidate_id'], r['driver_id'])):
         best.setdefault(row['candidate_id'], row)

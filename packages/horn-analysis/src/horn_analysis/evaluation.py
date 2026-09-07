@@ -107,3 +107,21 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
         "target_min_level_db": float(y.min()),
         "target_max_level_db": float(y.max()),
     }
+
+
+def radiation_domain_rejection(frequencies, mouth_radius, radiation_model, flange_width=0.):
+    """Reject unsupported geometries without masking invalid inputs/solver errors."""
+    if radiation_model != "finite_flange":
+        return None
+    from horn_core.duct import DEFAULT_AIR, RadiationDomainError, circular_pipe_radiation
+    try:
+        circular_pipe_radiation(2*np.pi*np.asarray(frequencies)/DEFAULT_AIR.c, mouth_radius, flange_width)
+    except RadiationDomainError as error:
+        return {"model_feasible": False, "simulation_eligible": False,
+                "eligibility_status": "infeasible", "composite_score": 0.,
+                "rejection_reasons": ["radiation_model_out_of_domain"],
+                "rejection_detail": str(error), "evidence_gaps": [],
+                "validation_status": "outside_supported_model_domain",
+                "bandwidth_coverage": 0., "passband_ripple_db": None,
+                "avg_sensitivity_db": None}
+    return None

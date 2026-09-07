@@ -44,16 +44,29 @@ def main():
         seed=CandidateGeometry(candidate_id=r['horn_label'],profile=r['profile'],throat_radius=r['throat_radius'],mouth_radius=r['mouth_radius'],length=r['length'])
         cache={geometry_key(seed):r['composite_score']}
         all_rows=list(data['results']); rejected=list(data.get('rejected',[]))
+        from horn_analysis.evaluation import radiation_domain_rejection
+        low, high = design['sim_freq_range']; width = (high-low)/a.num_bands
+        points = max(2, int(np.ceil(a.num_frequencies/a.num_bands)))
+        simulation_frequencies = np.concatenate([np.geomspace(low+i*width, low+(i+1)*width, points) for i in range(a.num_bands)])
+        domain_rejected = []
         def evaluate(c):
             key=geometry_key(c)
             if key in cache:return cache[key]
+            rejection = radiation_domain_rejection(simulation_frequencies, c.mouth_radius, a.radiation_model, a.flange_width)
+            if rejection:
+                domain_rejected.append(c.candidate_id)
+                rejected.extend({"horn_label": c.candidate_id, "driver_id": drv.driver_id,
+                                 "profile": c.profile, "throat_radius": c.throat_radius,
+                                 "mouth_radius": c.mouth_radius, "length": c.length,
+                                 **rejection} for drv in drivers)
+                cache[key] = 0.
+                return 0.
             step=out/f'{c.candidate_id}.step'
             create_horn(c.profile,c.throat_radius,c.mouth_radius,c.length,step,num_sections=a.num_sections)
             csv=out/f'{c.candidate_id}_results.csv'
             from horn_analysis.merge import merge_bands
             band_dir=out/f'{c.candidate_id}_bands';band_dir.mkdir()
-            low,high=design['sim_freq_range'];width=(high-low)/a.num_bands
-            paths=[];points=max(2,int(np.ceil(a.num_frequencies/a.num_bands)))
+            paths=[]
             for index in range(a.num_bands):
                 band_low,band_high=low+index*width,low+(index+1)*width
                 path=band_dir/f'results_{index}.csv'
@@ -70,6 +83,7 @@ def main():
         bounds={'mouth_radius':tuple(design['mouth_radius_range']),'length':tuple(design['length_range']),
                 'throat_radius':tuple(design.get('throat_radius_range', (min(screen['throat_radii_m']),max(screen['throat_radii_m']))))}
         best,audit=refine(seed,evaluate,bounds,budget=a.budget)
+        audit.update(domain_rejected_candidates=domain_rejected, fem_evaluations=audit['new_evaluations']-len(domain_rejected))
         data.update(results=sorted(all_rows,key=lambda r:r['composite_score'],reverse=True),rejected=rejected,refinement=audit)
         data['total_scored']+=audit['new_evaluations']*len(drivers)
         data['total_candidates']+=audit['new_evaluations']

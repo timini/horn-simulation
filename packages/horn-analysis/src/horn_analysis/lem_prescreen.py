@@ -21,7 +21,7 @@ from horn_core.parameters import DriverParameters
 from horn_core.profiles import get_radius_func
 from horn_core.webster import compute_horn_transfer_tmm
 from horn_core.acoustics import baffled_piston_on_axis, pressure_level
-from horn_analysis.evaluation import evaluate_response
+from horn_analysis.evaluation import evaluate_response, radiation_domain_rejection
 from horn_analysis.kpi import extract_kpis_from_arrays
 from horn_analysis.scoring import TargetSpec, compute_selection_score
 from horn_analysis.transfer_function import compute_driver_response, compute_driver_operating_point
@@ -86,6 +86,13 @@ def lem_prescreen_candidates(
     tmm_cache: Dict[str, tuple] = {}
 
     for cand in candidates:
+        rejection = radiation_domain_rejection(frequencies, cand.mouth_radius, radiation_model, flange_width)
+        if rejection:
+            all_scores.extend({"candidate_id": cand.candidate_id, "driver_id": drv.driver_id,
+                               "profile": cand.profile, "throat_radius": cand.throat_radius,
+                               "mouth_radius": cand.mouth_radius, "length": cand.length,
+                               **rejection} for drv in drivers)
+            continue
         cache_key = cand.candidate_id
         if cache_key not in tmm_cache:
             radius_func = get_radius_func(
