@@ -100,7 +100,7 @@ process generate_geometry {
 
 process run_simulation {
     input:
-    tuple path(horn_step), val(band_index)
+    tuple path(horn_step, stageAs: "horn_input.step"), val(band_index)
 
     output:
     path "results_${band_index}.csv"
@@ -275,7 +275,7 @@ process render_horn_3d {
 
 process run_simulation_directivity {
     input:
-    tuple path(horn_step), val(band_index)
+    tuple path(horn_step, stageAs: "horn_input.step"), val(band_index)
 
     output:
     path "directivity_${band_index}.csv"
@@ -606,7 +606,7 @@ process run_candidate_simulation {
     errorStrategy 'terminate'
 
     input:
-    tuple val(candidate_id), val(profile), val(mouth_radius), val(length), path(horn_step), val(band_index), val(sim_min_freq), val(sim_max_freq)
+    tuple val(candidate_id), val(profile), val(mouth_radius), val(length), path(horn_step, stageAs: "horn_input.step"), val(band_index), val(sim_min_freq), val(sim_max_freq)
 
     output:
     tuple val(candidate_id), path("results_${candidate_id}_${band_index}.csv")

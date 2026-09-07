@@ -8,7 +8,7 @@ nextflow_pipeline {
         when {
             params {
                 mode = "single"
-                step_file = "${projectDir}/tests/data/tiny_horn.step"
+                step_file = "${projectDir}/tests/data/my horn ' geometry.step"
                 outdir = "${outputDir}"
             }
         }
@@ -22,7 +22,7 @@ nextflow_pipeline {
         when {
             params {
                 mode = "single"
-                step_file = "${projectDir}/tests/data/tiny_horn.step"
+                step_file = "${projectDir}/tests/data/my horn ' geometry.step"
                 length = 0.08
                 driver_id = "synthetic-smoke"
                 drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
