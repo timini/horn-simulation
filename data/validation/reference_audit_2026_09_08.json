@@ -857,7 +857,7 @@
     "scope": "Review added fail-closed health and mesh guards and catalog authentication; all completed CSVs and the source archive were rechecked using them. Numerical calculations and production physics are unchanged. Original execution hashes remain in protocol.json."
   },
   "focused_tests": {
-    "passed": 65,
+    "passed": 73,
     "failed": 0,
     "scope": "Audit safeguards, reference importer, comparison contract"
   },
@@ -866,5 +866,10 @@
     "archive_sha256": "724b96be96e210e52e939ecceb78d919df46b9001af89defc5912118f8584fcd",
     "verifier_sha256": "9b160013ece09772144e56e9d676ca0e8e33c608739457be1a9fece6ba422983",
     "passed": true
+  },
+  "frequency_grid_guard_recheck": {
+    "checked_files": 15,
+    "passed": true,
+    "guard_source_sha256": "da992a3be9f60287cda1fc06eeffc8f9e3e3abf05b4362cc14332522f3d4eb59"
   }
 }

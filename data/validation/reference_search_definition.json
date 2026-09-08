@@ -1,0 +1,319 @@
+{
+  "scope": "Frozen finite_grid_manufacturer_motors_v2 definition. Full records verified against the curated driver loader and TargetSpec used for the original completed run; new defaults require an explicitly versioned benchmark change.",
+  "protocol": {
+    "benchmark": "finite_grid_manufacturer_motors_v2",
+    "bands": [
+      [
+        800,
+        1600,
+        "development"
+      ],
+      [
+        1000,
+        1200,
+        "held_out"
+      ],
+      [
+        1200,
+        2000,
+        "held_out"
+      ],
+      [
+        600,
+        1000,
+        "held_out"
+      ]
+    ],
+    "geometry_count": 20,
+    "driver_count": 3,
+    "sim_band": [
+      424.2640687119285,
+      2828.42712474619
+    ],
+    "frequencies": 100,
+    "mesh_size": 0.008,
+    "shortlist_budget": 10,
+    "score_regret_limit": 0.02,
+    "top_ten_recall_limit": 0.9,
+    "minimum_feasible_pairs_per_case": 10,
+    "physical_validation_passed": false,
+    "driver_scope": "Manufacturer parameters; interfaces and free-air mass substitution remain experimental"
+  },
+  "drivers": [
+    {
+      "driver_id": "18sound-6nmb420",
+      "manufacturer": "18Sound",
+      "model_name": "6NMB420",
+      "fs_hz": 110.0,
+      "re_ohm": 5.3,
+      "bl_tm": 9.0,
+      "sd_m2": 0.013,
+      "mms_kg": 0.0085,
+      "le_h": 0.0001,
+      "qms": 2.7,
+      "qes": 0.38,
+      "qts": 0.33,
+      "cms_m_per_n": 0.0002462838688437962,
+      "rms_kg_per_s": 2.1758438008195977,
+      "exit_area_m2": null,
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "xmax_m": 0.003,
+      "nominal_impedance_ohm": 8.0,
+      "power_w": 200.0,
+      "peak_power_w": 260.0,
+      "usable_f_low_hz": 200,
+      "usable_f_high_hz": 7000,
+      "parameter_source": "https://www.eighteensound.it/es/products/lf-driver/6-5/8/6NMB420",
+      "interface_model": null,
+      "mmd_kg": null,
+      "rear_load_mass_kg": null
+    },
+    {
+      "driver_id": "celestion-af3010-16",
+      "manufacturer": "Celestion",
+      "model_name": "AF3010 (16 ohm)",
+      "fs_hz": 128.9,
+      "re_ohm": 10.48,
+      "bl_tm": 5.98,
+      "sd_m2": 0.003318,
+      "mms_kg": 0.00355,
+      "le_h": 0.00026,
+      "qms": 6.096,
+      "qes": 0.843,
+      "qts": 0.74,
+      "cms_m_per_n": 0.00043,
+      "rms_kg_per_s": 0.47,
+      "exit_area_m2": null,
+      "driver_type": "cone",
+      "nominal_diameter": "3in",
+      "xmax_m": 0.00275,
+      "nominal_impedance_ohm": 16.0,
+      "power_w": 35.0,
+      "peak_power_w": 70.0,
+      "usable_f_low_hz": 120,
+      "usable_f_high_hz": 18000,
+      "parameter_source": "https://celestion.com/product/af3010-2/",
+      "interface_model": null,
+      "mmd_kg": null,
+      "rear_load_mass_kg": null
+    },
+    {
+      "driver_id": "celestion-tf0512he",
+      "manufacturer": "Celestion",
+      "model_name": "TF0512HE",
+      "fs_hz": 84.7,
+      "re_ohm": 5.42,
+      "bl_tm": 6.71,
+      "sd_m2": 0.007854,
+      "mms_kg": 0.00889,
+      "le_h": 0.00028,
+      "qms": 9.225,
+      "qes": 0.569,
+      "qts": 0.536,
+      "cms_m_per_n": 0.00039,
+      "rms_kg_per_s": 0.51,
+      "exit_area_m2": null,
+      "driver_type": "cone",
+      "nominal_diameter": "5in",
+      "xmax_m": 0.00475,
+      "nominal_impedance_ohm": 8.0,
+      "power_w": 75.0,
+      "peak_power_w": 150.0,
+      "usable_f_low_hz": 55,
+      "usable_f_high_hz": 4000,
+      "parameter_source": "https://celestion.com/product/tf0512he/",
+      "interface_model": null,
+      "mmd_kg": null,
+      "rear_load_mass_kg": null
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_id": "grid_00",
+      "profile": "conical",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.045,
+      "length": 0.04
+    },
+    {
+      "candidate_id": "grid_01",
+      "profile": "conical",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.045,
+      "length": 0.055
+    },
+    {
+      "candidate_id": "grid_02",
+      "profile": "conical",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.045,
+      "length": 0.07
+    },
+    {
+      "candidate_id": "grid_03",
+      "profile": "conical",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.045,
+      "length": 0.085
+    },
+    {
+      "candidate_id": "grid_04",
+      "profile": "conical",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.045,
+      "length": 0.1
+    },
+    {
+      "candidate_id": "grid_05",
+      "profile": "conical",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.07,
+      "length": 0.04
+    },
+    {
+      "candidate_id": "grid_06",
+      "profile": "conical",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.07,
+      "length": 0.055
+    },
+    {
+      "candidate_id": "grid_07",
+      "profile": "conical",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.07,
+      "length": 0.07
+    },
+    {
+      "candidate_id": "grid_08",
+      "profile": "conical",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.07,
+      "length": 0.085
+    },
+    {
+      "candidate_id": "grid_09",
+      "profile": "conical",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.07,
+      "length": 0.1
+    },
+    {
+      "candidate_id": "grid_10",
+      "profile": "exponential",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.045,
+      "length": 0.04
+    },
+    {
+      "candidate_id": "grid_11",
+      "profile": "exponential",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.045,
+      "length": 0.055
+    },
+    {
+      "candidate_id": "grid_12",
+      "profile": "exponential",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.045,
+      "length": 0.07
+    },
+    {
+      "candidate_id": "grid_13",
+      "profile": "exponential",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.045,
+      "length": 0.085
+    },
+    {
+      "candidate_id": "grid_14",
+      "profile": "exponential",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.045,
+      "length": 0.1
+    },
+    {
+      "candidate_id": "grid_15",
+      "profile": "exponential",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.07,
+      "length": 0.04
+    },
+    {
+      "candidate_id": "grid_16",
+      "profile": "exponential",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.07,
+      "length": 0.055
+    },
+    {
+      "candidate_id": "grid_17",
+      "profile": "exponential",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.07,
+      "length": 0.07
+    },
+    {
+      "candidate_id": "grid_18",
+      "profile": "exponential",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.07,
+      "length": 0.085
+    },
+    {
+      "candidate_id": "grid_19",
+      "profile": "exponential",
+      "throat_radius": 0.0225,
+      "mouth_radius": 0.07,
+      "length": 0.1
+    }
+  ],
+  "targets": [
+    {
+      "f_low_hz": 800,
+      "f_high_hz": 1600,
+      "max_length_m": null,
+      "max_mouth_radius_m": null,
+      "voltage_rms": 2.83,
+      "observation_distance_m": 1.0,
+      "max_ripple_db": 6.0,
+      "max_compression_ratio": 10.0,
+      "min_output_db": null
+    },
+    {
+      "f_low_hz": 1000,
+      "f_high_hz": 1200,
+      "max_length_m": null,
+      "max_mouth_radius_m": null,
+      "voltage_rms": 2.83,
+      "observation_distance_m": 1.0,
+      "max_ripple_db": 6.0,
+      "max_compression_ratio": 10.0,
+      "min_output_db": null
+    },
+    {
+      "f_low_hz": 1200,
+      "f_high_hz": 2000,
+      "max_length_m": null,
+      "max_mouth_radius_m": null,
+      "voltage_rms": 2.83,
+      "observation_distance_m": 1.0,
+      "max_ripple_db": 6.0,
+      "max_compression_ratio": 10.0,
+      "min_output_db": null
+    },
+    {
+      "f_low_hz": 600,
+      "f_high_hz": 1000,
+      "max_length_m": null,
+      "max_mouth_radius_m": null,
+      "voltage_rms": 2.83,
+      "observation_distance_m": 1.0,
+      "max_ripple_db": 6.0,
+      "max_compression_ratio": 10.0,
+      "min_output_db": null
+    }
+  ]
+}

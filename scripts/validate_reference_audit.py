@@ -135,6 +135,13 @@ def checked_fem_health(frame, label):
     return result
 
 
+def checked_fem_grid(frame, count, band, label):
+    frequency = frame.frequency.to_numpy()
+    if (len(frequency) != count or not np.isfinite(frequency).all()
+            or not np.allclose(frequency, np.geomspace(*band, count), rtol=1e-12, atol=0)):
+        raise RuntimeError(f"Unexpected FEM frequency grid {label}; excluded from validation")
+
+
 def checked_mesh_convergence(change, limits, label):
     values = [change["max_db"], change["p95_scaled_complex_error"]]
     if (not np.isfinite(values).all() or values[0] > limits["max_impedance_change_db"]
@@ -204,7 +211,6 @@ def main():
         parser.error("workers must be between 1 and 5")
     manifest = json.loads((root/"manifest.json").read_text())
     verify_reference_source(manifest, args.archive)
-    verify_imported_curves(manifest, args.archive, root)
     out.mkdir(parents=True)
     started = time.perf_counter()
     sources = sorted(set(Path("packages").glob("*/src/**/*.py")))
@@ -290,6 +296,8 @@ def main():
     for case, (middle, coarse, fine) in responses:
         fem[case] = middle
         for name, frame in (("middle", middle), ("coarse", coarse), ("fine", fine)):
+            count = protocol["fem_samples"] if name == "middle" else protocol["convergence_samples"]
+            checked_fem_grid(frame, count, protocol["frequency_band_hz"], f"{case}-{name}")
             health[f"{case}-{name}"] = checked_fem_health(frame, f"{case}-{name}")
         subset = middle.iloc[::4]
         np.testing.assert_allclose(subset.frequency, fine.frequency, rtol=1e-12)
@@ -300,6 +308,9 @@ def main():
             "fem_vs_tmm_481": compare(fem_impedance(middle), prediction(middle.frequency.to_numpy(), case))}
     # Freeze every prediction before opening any of the reference curves.
     write_json(out/"prediction_hashes.json", {p.name: sha(p) for p in sorted(out.glob("*.csv"))})
+    # Only now parse reference values to authenticate their import. Frequency
+    # columns used above are metadata; no response values informed predictions.
+    verify_imported_curves(manifest, args.archive, root)
     rows, numerical = [], []
     for curve in manifest["curves"]:
         if curve.get("duplicate_of"):

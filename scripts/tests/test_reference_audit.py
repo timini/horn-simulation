@@ -287,3 +287,40 @@ def test_search_solver_values_must_match_independent_pins(tmp_path, monkeypatch)
     frame.to_csv(csv, index=False)
     with pytest.raises(ValueError, match="independently pinned response hashes"):
         renderer.load_verified_search(result, pins)
+
+
+def frozen_search_fixture():
+    definition = json.loads((SCRIPTS.parent/"data/validation/reference_search_definition.json").read_text())
+    return {"drivers": definition["drivers"], "candidates": definition["candidates"],
+            "cases": [{"target": target} for target in definition["targets"]]}, definition["protocol"]
+
+
+def test_search_driver_parameters_are_frozen_not_just_driver_count():
+    result, protocol = frozen_search_fixture()
+    renderer.validate_frozen_search_definition(result, protocol)
+    result["drivers"][0]["bl_tm"] *= 2
+    with pytest.raises(ValueError, match="Driver records disagree"):
+        renderer.validate_frozen_search_definition(result, protocol)
+
+
+@pytest.mark.parametrize("field,value", [("voltage_rms", 5.66), ("max_ripple_db", 12),
+                                        ("max_compression_ratio", 20), ("observation_distance_m", 2)])
+def test_search_full_target_is_frozen_beyond_band_edges(field, value):
+    result, protocol = frozen_search_fixture()
+    result["cases"][0]["target"][field] = value
+    with pytest.raises(ValueError, match="Target specifications disagree"):
+        renderer.validate_frozen_search_definition(result, protocol)
+
+
+@pytest.mark.parametrize("mode", ["shortened", "wrong_spacing", "nonfinite"])
+def test_fem_grid_must_match_full_frozen_count_and_frequencies(mode):
+    frame = pd.DataFrame({"frequency": np.geomspace(110, 3900, 121)})
+    audit.checked_fem_grid(frame, 121, [110, 3900], "good")
+    if mode == "shortened":
+        frame = frame.iloc[::4]
+    elif mode == "wrong_spacing":
+        frame["frequency"] = np.linspace(110, 3900, 121)
+    else:
+        frame.loc[2, "frequency"] = np.nan
+    with pytest.raises(RuntimeError, match="Unexpected FEM frequency grid"):
+        audit.checked_fem_grid(frame, 121, [110, 3900], "bad")

@@ -96,6 +96,17 @@ def verify_import_inventory(path):
             "diy_curves": diy_curves, "inventory_sha256": file_sha(path)}
 
 
+def validate_frozen_search_definition(result, protocol):
+    definition = json.loads((Path(__file__).resolve().parents[1]/
+        "data/validation/reference_search_definition.json").read_text())
+    if result["drivers"] != definition["drivers"]:
+        raise ValueError("Driver records disagree with frozen benchmark definition")
+    if [c["target"] for c in result["cases"]] != definition["targets"]:
+        raise ValueError("Target specifications disagree with frozen benchmark definition")
+    if protocol != definition["protocol"] or result["candidates"] != definition["candidates"]:
+        raise ValueError("Geometry/protocol disagrees with frozen benchmark definition")
+
+
 def validate_search_configuration(result, protocol):
     bands = [[800, 1600, "development"], [1000, 1200, "held_out"],
              [1200, 2000, "held_out"], [600, 1000, "held_out"]]
@@ -112,6 +123,7 @@ def validate_search_configuration(result, protocol):
     if (len(result["candidates"]) != 20 or len(result["drivers"]) != 3
             or len(result["cases"]) != 4):
         raise ValueError("Search benchmark case/count mismatch")
+    validate_frozen_search_definition(result, protocol)
     expected_geometry = {(p, .0225, m, length) for p in ("conical", "exponential")
                          for m in (.045, .07) for length in (.04, .055, .07, .085, .10)}
     actual_geometry = {(c["profile"], c["throat_radius"], c["mouth_radius"], c["length"])
