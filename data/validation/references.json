@@ -252,10 +252,14 @@
           "url": "https://zenodo.org/records/20024938/files/README.md",
           "sha256": "5c3053259b99f979eb5606abbc8c77e269de2a0a7f3a1f8544581260738d0a6f",
           "purpose": "Units and temperature correction."
+        },
+        {
+          "url": "https://doi.org/10.1051/aacus/2026048",
+          "purpose": "Published benchmark paper, section 5.3 and tables 12\u201313: independent discussion of wooden-pipe and closed-end amplitude discrepancies; not a waiver of our failed comparisons."
         }
       ],
       "limitations": [
-        "Production solver currently has no thermoviscous wall losses, finite-flange radiation or closed-end selection.",
+        "Production solver supports opt-in thin boundary-layer losses, finite flanges and rigid closed outlets; wall roughness, porosity, material compliance and cap losses are not represented.",
         "Repeated measurements, duplicate exports and multiple specimens must not be counted as independent assemblies.",
         "Agreement on pipe impedance does not validate driver coupling or horn far-field output."
       ]
@@ -269,23 +273,35 @@
       "description": "Two conical horn assemblies with measured impedance and sensitivity; author-uploaded paper inspected as text.",
       "known_geometry": {
         "throat_diameter_m": 0.018,
-        "mouth_diameter_m": 0.08,
         "lengths_m": [
           0.535,
           0.136
         ],
         "diaphragm_effective_diameter_m": 0.084,
         "compression_gap_m": 0.001,
-        "equivalent_phase_plug_channel_length_m": 0.053
+        "equivalent_phase_plug_channel_length_m": 0.053,
+        "long_horn_mouth_diameter_m": 0.08,
+        "short_horn_mouth_diameter_candidates_m": [
+          0.09,
+          0.08
+        ]
       },
       "limitations": [
         "Measured curves have not been extracted; local PDF binary retrieval failed.",
         "The published model includes chamber/rear-volume and frequency-dependent electrical terms absent from the simple motor coupling.",
         "Source-reported fitted parameters and correction filters must not be confused with independent validation of this pipeline.",
-        "Absolute drive/observation normalization and digitization uncertainty require verification before comparison."
+        "Absolute drive/observation normalization and digitization uncertainty require verification before comparison.",
+        "Short-horn mouth is 90 mm in body text and Figs. 14/17, but 80 mm in Fig. 18 caption; resolve this discrepancy before any short-horn sensitivity comparison."
       ],
       "reuse": "Author-uploaded article, copyright retained; do not vendor full paper without permission.",
-      "physical_validation_passed": false
+      "physical_validation_passed": false,
+      "numeric_observation": {
+        "quantity": "sixth_input_impedance_resonance_hz",
+        "value": 1712,
+        "assembly": "535 mm long horn, 18 mm throat, 80 mm mouth",
+        "location": "Section 2.2, discussion of Fig. 13, page 545",
+        "scope": "One explicitly reported measured scalar, not a digitized response curve."
+      }
     }
   ]
 }
