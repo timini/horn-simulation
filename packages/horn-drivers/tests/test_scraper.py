@@ -42,7 +42,8 @@ def test_failed_requests_have_finite_attempts(clock, status):
 
 def test_origin_patience_stops_at_deadline(clock):
     session = Session(*[response(522)]*10)
-    assert s.request(session, "url", delay=0, patience_s=3) is None
+    with pytest.raises(s.OriginUnavailable):
+        s.request(session, "url", delay=0, patience_s=3)
     assert clock[0] == 3
     assert len(session.calls) == 2
 
@@ -221,3 +222,52 @@ def test_new_atomic_file_respects_process_umask(tmp_path, mask):
     finally:
         os.umask(old_mask)
     assert stat.S_IMODE(path.stat().st_mode) == (0o666 & ~mask)
+
+
+@pytest.mark.parametrize('refresh', [False, True])
+def test_refresh_preserves_enriched_interface_and_parameters(monkeypatch, tmp_path, refresh):
+    batch(monkeypatch)
+    enriched = dict(driver_id='test-model', manufacturer='Test', driver_type='compression',
+        interface_model='measured_adapter', usable_f_low_hz=500, usable_f_high_hz=6000,
+        notes='Measured by the project owner',
+        parameters={**PARAMS, 'fs_hz': 150, 'exit_area_m2': .0005, 'rear_load_mass_kg': .001,
+                    'power_w': 80})
+    s._save_driver(tmp_path, enriched)
+    assert s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test'], refresh=refresh) == 1
+    record = json.loads((tmp_path/'Test/test-model.json').read_text())
+    assert record['parameters']['fs_hz'] == PARAMS['fs_hz']
+    for field in ('exit_area_m2', 'rear_load_mass_kg', 'power_w'):
+        assert record['parameters'][field] == enriched['parameters'][field]
+    for field in ('interface_model', 'usable_f_low_hz', 'usable_f_high_hz', 'notes'):
+        assert record[field] == enriched[field]
+
+
+def test_origin_outage_aborts_batch_without_restarting_patience(monkeypatch, tmp_path, clock):
+    batch(monkeypatch)
+    entries = [ENTRY, {**ENTRY, 'name': 'Second', 'url': s.BASE_URL+'/Test/Second'},
+               {**ENTRY, 'name': 'Third', 'url': s.BASE_URL+'/Test/Third'}]
+    monkeypatch.setattr(s, 'discover_drivers', lambda *a, **k: entries)
+    session = Session(*[response(522)]*10)
+    visited = []
+    def page(url, unused_session, **kwargs):
+        visited.append(url)
+        if url == ENTRY['url']:
+            return dict(PARAMS)
+        return s.request(session, url, delay=0, patience_s=kwargs['patience_s'])
+    monkeypatch.setattr(s, 'scrape_driver_page', page)
+    state = tmp_path/'state.json'
+    with pytest.raises(s.OriginUnavailable):
+        s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test'], patience_s=3, state_path=state)
+    assert clock[0] == 3
+    assert visited == [entry['url'] for entry in entries[:2]]
+    assert (tmp_path/'Test/test-model.json').exists()
+    assert not (tmp_path/'Test/test-third.json').exists()
+    progress = json.loads(state.read_text())['Test']
+    assert progress['complete'] is False and progress['scraped'] == 1
+
+
+def test_schema_migration_replaces_malformed_parameter_mapping(monkeypatch, tmp_path):
+    batch(monkeypatch)
+    s._save_driver(tmp_path, dict(driver_id='test-model', manufacturer='Test', parameters=None))
+    assert s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test']) == 1
+    assert s._driver_is_current(tmp_path, 'Test', 'test-model')

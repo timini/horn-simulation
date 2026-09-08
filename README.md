@@ -327,7 +327,8 @@ Run `horn-scrape-drivers --db data/drivers --manufacturers Eminence --state resu
 Valid records with the required fields, source provenance and current scraper schema are skipped; use `--refresh` to explicitly refetch them. Older records are refreshed to remove provisional Mms values.
 Writes replace individual files atomically, retaining existing permissions or respecting the process umask for new files, so interrupted or failed refreshes preserve the last good record.
 Discovery failures, incomplete pagination and failed driver retrieval return a failure status; an all-current resume succeeds.
-`--patience-hours` optionally waits through origin outages, while throttling retries remain bounded.
+`--patience-hours` optionally waits through origin outages; exhausting that budget stops the batch instead of restarting the wait for the next driver. Throttling retries remain bounded.
 
 Driver pages must identify the requested URL. Missing Mms is not replaced with dry Mmd, and program power is not converted into an assumed continuous rating. Records lacking essential known parameters are rejected; additional chamber/interface validation is still required before making physical driver recommendations.
 Refreshes preserve known driver categories. New records have an unknown category until supported metadata is available; diaphragm area alone cannot distinguish a compression driver from a small cone driver.
+Manually enriched interface data, usable-frequency bounds and parameters not supplied by the source survive refresh; values actually fetched from the source replace their earlier values.

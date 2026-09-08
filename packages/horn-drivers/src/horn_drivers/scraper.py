@@ -166,7 +166,7 @@ def request(
             return None
 
         if status in ORIGIN_ERROR_CODES and patience_s > 0 and time.monotonic() >= deadline:
-            return None
+            raise OriginUnavailable(f"Origin outage patience exhausted for {url}; stopping the scrape")
         waiting_out_origin = status in ORIGIN_ERROR_CODES and time.monotonic() < deadline
 
         if status in THROTTLE_CODES:
@@ -192,12 +192,16 @@ def request(
 
         time.sleep(max(0.0, wait))
         if waiting_out_origin and time.monotonic() >= deadline:
-            return None
+            raise OriginUnavailable(f"Origin outage patience exhausted for {url}; stopping the scrape")
         backoff = min(backoff * 2, max_backoff)
 
 
 class ScrapeError(RuntimeError):
     """Discovery or driver retrieval did not complete successfully."""
+
+
+class OriginUnavailable(ScrapeError):
+    """An origin outage exhausted its patience budget; do not restart per driver."""
 
 
 class OriginWedged(ScrapeError):
@@ -723,7 +727,14 @@ def scrape_all(
                 params = scrape_driver_page(
                     entry["url"], session, delay=delay, patience_s=patience_s,
                 )
-            except OriginWedged:
+            except ScrapeError as exc:
+                state[mfr_slug] = {
+                    "listed": len(driver_entries), "scraped": mfr_scraped,
+                    "skipped": mfr_skipped, "failed": mfr_failed + 1,
+                    "complete": False, "failure_reason": str(exc),
+                    "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                }
+                _save_state(state_path, state)
                 raise
             except Exception as e:
                 print(f"\n    ERROR: {e}")
@@ -744,6 +755,9 @@ def scrape_all(
 
             sd = params["sd_m2"]
             existing = _existing_driver(db_dir, entry["manufacturer"], driver_id) if db_dir is not None else {}
+            existing_params = existing.get("parameters", {})
+            if not isinstance(existing_params, dict):
+                existing_params = {}
             driver_type = infer_driver_type(sd, existing.get("driver_type"))
             nominal_diameter = (existing.get("nominal_diameter") or infer_nominal_diameter(sd)) if driver_type == "cone" else None
 
@@ -751,11 +765,12 @@ def scrape_all(
             manufacturer = entry["manufacturer"]
 
             driver = {
+                **existing,
                 "driver_id": driver_id,
                 "manufacturer": manufacturer,
                 "model_name": model,
                 "driver_type": driver_type,
-                "parameters": params,
+                "parameters": {**existing_params, **params},
                 "parameter_source": entry["url"],
                 "scraper_schema_version": SCRAPER_SCHEMA_VERSION,
             }
