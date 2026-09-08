@@ -7,8 +7,8 @@ The site embeds driver data in JSON ``data-woofer`` attributes, which we
 extract directly — more reliable than HTML table parsing.
 
 All values are converted to SI on extraction (mH -> H, cm^2 -> m^2,
-mm -> m, g -> kg).  Drivers are classified as "compression" or "cone"
-based on Sd, and nominal diameter is inferred geometrically.
+mm -> m, g -> kg). Existing driver classifications are preserved; Sd alone
+cannot distinguish small cone drivers from compression drivers.
 
 Usage:
     horn-scrape-drivers --db data/drivers
@@ -21,7 +21,8 @@ import json
 import math
 import random
 import os
-import tempfile
+import stat
+import uuid
 from email.utils import parsedate_to_datetime
 import re
 import sys
@@ -71,6 +72,7 @@ DIAMETER_TABLE: List[Tuple[str, float]] = [
 
 # Essential parameters — drivers missing any of these are skipped.
 ESSENTIAL_PARAMS = ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg")
+SCRAPER_SCHEMA_VERSION = 2  # independently supplied Mms, dry Mmd and provenance
 
 
 def slugify(manufacturer: str, model: str) -> str:
@@ -289,9 +291,9 @@ def wait_for_origin(session, patience_s: float, probe_interval: float = 600.0) -
         time.sleep(min(probe_interval, max(1.0, deadline - time.monotonic())))
 
 
-def infer_driver_type(sd_m2: float) -> str:
-    """Classify driver as compression or cone based on Sd."""
-    return "compression" if sd_m2 < 0.001 else "cone"
+def infer_driver_type(sd_m2: float, known_type: Optional[str] = None) -> str:
+    """Preserve a known category; diaphragm area alone is not a category."""
+    return known_type if known_type in ("compression", "cone") else "unknown"
 
 
 def infer_nominal_diameter(sd_m2: float) -> Optional[str]:
@@ -551,6 +553,19 @@ def discover_drivers(
     return drivers
 
 
+def _existing_driver(db_dir: Path, manufacturer: str, driver_id: str) -> dict:
+    """Read only an identity-matching record for resume and metadata retention."""
+    _validate_component(manufacturer)
+    _validate_component(driver_id)
+    try:
+        record = json.loads((db_dir / manufacturer / f"{driver_id}.json").read_text())
+        if isinstance(record, dict) and record.get("driver_id") == driver_id and record.get("manufacturer") == manufacturer:
+            return record
+    except (json.JSONDecodeError, OSError):
+        pass
+    return {}
+
+
 def _driver_is_current(
     db_dir: Path,
     manufacturer: str,
@@ -565,12 +580,11 @@ def _driver_is_current(
     scrape into an idempotent migration: re-run it and only the stale records
     are re-fetched, and an interrupted run resumes exactly where it stopped.
     """
-    _validate_component(manufacturer)
-    _validate_component(driver_id)
-    path = db_dir / manufacturer / f"{driver_id}.json"
     try:
-        record = json.loads(path.read_text())
-        if record.get("driver_id") != driver_id or record.get("manufacturer") != manufacturer:
+        record = _existing_driver(db_dir, manufacturer, driver_id)
+        source = record.get("parameter_source")
+        if (record.get("scraper_schema_version") != SCRAPER_SCHEMA_VERSION
+                or not isinstance(source, str) or not source.startswith(BASE_URL + "/")):
             return False
         params = record.get("parameters", {})
         return all(isinstance(params.get(field), (int, float))
@@ -601,8 +615,16 @@ def _atomic_json(path: Path, value: dict):
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = None
     try:
-        with tempfile.NamedTemporaryFile(mode="w", dir=path.parent, delete=False) as stream:
-            temporary = Path(stream.name)
+        try:
+            existing_mode = stat.S_IMODE(path.stat().st_mode)
+        except FileNotFoundError:
+            existing_mode = None
+        candidate = path.parent / f".{path.name}.{uuid.uuid4().hex}.tmp"
+        fd = os.open(candidate, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o666)
+        temporary = candidate
+        with os.fdopen(fd, "w") as stream:
+            if existing_mode is not None:
+                os.fchmod(stream.fileno(), existing_mode)
             json.dump(value, stream, indent=4, allow_nan=False)
             stream.write("\n")
             stream.flush()
@@ -721,8 +743,9 @@ def scrape_all(
                 continue
 
             sd = params["sd_m2"]
-            driver_type = infer_driver_type(sd)
-            nominal_diameter = infer_nominal_diameter(sd)
+            existing = _existing_driver(db_dir, entry["manufacturer"], driver_id) if db_dir is not None else {}
+            driver_type = infer_driver_type(sd, existing.get("driver_type"))
+            nominal_diameter = (existing.get("nominal_diameter") or infer_nominal_diameter(sd)) if driver_type == "cone" else None
 
             model = entry["name"]
             manufacturer = entry["manufacturer"]
@@ -734,6 +757,7 @@ def scrape_all(
                 "driver_type": driver_type,
                 "parameters": params,
                 "parameter_source": entry["url"],
+                "scraper_schema_version": SCRAPER_SCHEMA_VERSION,
             }
             if nominal_diameter:
                 driver["nominal_diameter"] = nominal_diameter
@@ -787,7 +811,8 @@ def main():
         help="Comma-separated parameter names a stored driver must already "
              "have to be considered current. Records missing any of them are "
              "re-fetched, which makes a parser change an idempotent migration. "
-             "Pass an empty string to skip purely on file existence.",
+             "An empty string still requires valid essential parameters, "
+             "provenance and the current parser schema.",
     )
     parser.add_argument(
         "--refresh", action="store_true",

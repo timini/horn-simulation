@@ -324,9 +324,10 @@ Project code is available under the [MIT licence](LICENSE). External reference d
 
 Install the scraper extras with `pip install -e "packages/horn-drivers[scrape]"`.
 Run `horn-scrape-drivers --db data/drivers --manufacturers Eminence --state results/scrape-state.json`.
-Already valid records with the required fields are skipped; use `--refresh` to explicitly refetch them.
-Writes replace individual files atomically, so interrupted or failed refreshes preserve the last good record.
+Valid records with the required fields, source provenance and current scraper schema are skipped; use `--refresh` to explicitly refetch them. Older records are refreshed to remove provisional Mms values.
+Writes replace individual files atomically, retaining existing permissions or respecting the process umask for new files, so interrupted or failed refreshes preserve the last good record.
 Discovery failures, incomplete pagination and failed driver retrieval return a failure status; an all-current resume succeeds.
 `--patience-hours` optionally waits through origin outages, while throttling retries remain bounded.
 
 Driver pages must identify the requested URL. Missing Mms is not replaced with dry Mmd, and program power is not converted into an assumed continuous rating. Records lacking essential known parameters are rejected; additional chamber/interface validation is still required before making physical driver recommendations.
+Refreshes preserve known driver categories. New records have an unknown category until supported metadata is available; diaphragm area alone cannot distinguish a compression driver from a small cone driver.

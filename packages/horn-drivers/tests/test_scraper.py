@@ -1,5 +1,7 @@
 """Offline regressions for failed sources, resume and non-destructive writes."""
 import json
+import os
+import stat
 from types import SimpleNamespace
 import pytest
 from horn_drivers import scraper as s
@@ -163,3 +165,59 @@ def test_database_paths_cannot_escape_output_directory(tmp_path):
     with pytest.raises(ValueError):
         s._save_driver(tmp_path, {'manufacturer':'..','driver_id':'bad'})
     assert list(tmp_path.iterdir()) == []
+
+
+@pytest.mark.parametrize('sd', [.00126, .0045, .005])
+def test_refresh_preserves_compression_category_without_cone_diameter(monkeypatch, tmp_path, sd):
+    batch(monkeypatch)
+    s._save_driver(tmp_path, dict(driver_id='test-model', manufacturer='Test',
+        driver_type='compression', parameters={**PARAMS, 'sd_m2': sd}))
+    monkeypatch.setattr(s, 'scrape_driver_page', lambda *a, **k: {**PARAMS, 'sd_m2': sd})
+    assert s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test'], refresh=True) == 1
+    record = json.loads((tmp_path/'Test/test-model.json').read_text())
+    assert record['driver_type'] == 'compression'
+    assert 'nominal_diameter' not in record
+
+
+def test_new_ambiguous_driver_has_no_invented_category_or_diameter(monkeypatch, tmp_path):
+    batch(monkeypatch)
+    monkeypatch.setattr(s, 'scrape_driver_page', lambda *a, **k: {**PARAMS, 'sd_m2': .00126})
+    s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test'])
+    record = json.loads((tmp_path/'Test/test-model.json').read_text())
+    assert record['driver_type'] == 'unknown'
+    assert 'nominal_diameter' not in record
+
+
+def test_resume_migrates_provisional_mass_and_missing_provenance(monkeypatch, tmp_path):
+    batch(monkeypatch)
+    s._save_driver(tmp_path, dict(driver_id='test-model', manufacturer='Test',
+        parameters={**PARAMS, 'mms_kg': PARAMS['mmd_kg']}))
+    assert not s._driver_is_current(tmp_path, 'Test', 'test-model', ('mmd_kg',))
+    assert s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test']) == 1
+    path = tmp_path/'Test/test-model.json'
+    record = json.loads(path.read_text())
+    assert record['parameters']['mms_kg'] == .012
+    assert record['parameter_source'] == ENTRY['url']
+    assert s._driver_is_current(tmp_path, 'Test', 'test-model')
+    del record['parameter_source']
+    path.write_text(json.dumps(record))
+    assert not s._driver_is_current(tmp_path, 'Test', 'test-model')
+
+
+def test_atomic_refresh_preserves_destination_permissions(tmp_path):
+    path = tmp_path/'driver.json'
+    path.write_text('{}')
+    path.chmod(0o640)
+    s._atomic_json(path, {'fresh': True})
+    assert stat.S_IMODE(path.stat().st_mode) == 0o640
+
+
+@pytest.mark.parametrize('mask', [0o022, 0o027, 0o077])
+def test_new_atomic_file_respects_process_umask(tmp_path, mask):
+    path = tmp_path/'driver.json'
+    old_mask = os.umask(mask)
+    try:
+        s._atomic_json(path, {'fresh': True})
+    finally:
+        os.umask(old_mask)
+    assert stat.S_IMODE(path.stat().st_mode) == (0o666 & ~mask)
