@@ -178,7 +178,7 @@ def main():
         "magnitude_limits_db": {"median": 2, "p95": 4},
         "mesh_convergence_limits": {"max_impedance_change_db": .5,
                                      "p95_scaled_complex_change": .05},
-        "phase_gate": None, "independent_simulation_scope": "All 40 curves; differing loss and wavefront models are diagnostic comparisons, not identical-model certification.",
+        "phase_gate": None, "independent_simulation_scope": "All 40 curves evaluated only at their supplied frequencies within the fixed band. Differing loss and wavefront models are diagnostic comparisons, not identical-model certification. Sparse references do not support full-band conclusions.",
         "held_out_scope": "Historical split retained; these data were already examined in the previous audit and are not newly unseen validation data.",
         "model_aliases": MODEL_CASE,
         "model_alias_reason": "Identical nominal air-domain geometry and rigid-wall boundary conditions; material compliance is not modeled.",
@@ -189,6 +189,29 @@ def main():
     except (FileNotFoundError, subprocess.CalledProcessError):
         protocol["git_revision"] = None
     write_json(out/"protocol.json", protocol)
+    # Reference frequencies are metadata. Do not invent response values between
+    # sparse numerical samples (the two 3D references have only 3/11 in-band points).
+    numerical_predictions = {}
+    numerical_cache = {}
+    for curve in manifest["curves"]:
+        if curve["reference_kind"] != "independent_simulation":
+            continue
+        path = root/curve["csv"]
+        if sha(path) != curve["csv_sha256"]:
+            raise ValueError("Changed numerical reference")
+        f = pd.read_csv(path, usecols=["frequency"]).frequency.to_numpy()
+        f = f[(f >= 110) & (f <= 3900)]
+        if len(f) < 2:
+            raise ValueError("Numerical reference needs at least two in-band samples")
+        case = NUMERICAL_CASE[curve["configuration"]]
+        key = (case, f.tobytes())
+        if key not in numerical_cache:
+            numerical_cache[key] = prediction(f, case)
+        z = numerical_cache[key]
+        numerical_predictions[curve["csv"]] = (f, z)
+        pd.DataFrame({"frequency": f, "z_real_normalized": z.real,
+                      "z_imag_normalized": z.imag}).to_csv(
+            out/f"numerical-{curve['csv_sha256'][:16]}-prediction.csv", index=False)
     frequency = np.geomspace(110, 3900, 20001)
     predicted, sampled = {}, {}
     segmentation = {}
@@ -209,8 +232,18 @@ def main():
                                   "400_vs_800": compare(z, prediction(frequency, case, 800))}
     fem, convergence, health = {}, {}, {}
     # Spawn, rather than fork, so each dolfinx/MPI/gmsh runtime is independent.
-    with multiprocessing.get_context("spawn").Pool(args.workers) as pool:
+    pool = multiprocessing.get_context("spawn").Pool(args.workers)
+    try:
         responses = pool.map(run_fem_case, [(out, case) for case in UNIQUE_CASES])
+    except BaseException:
+        pool.terminate()
+        raise
+    else:
+        # Pool.__exit__ terminates even successful workers, which triggers
+        # PETSc's SIGTERM/MPI_Abort handler after valid results are returned.
+        pool.close()
+    finally:
+        pool.join()
     for case, (middle, coarse, fine) in responses:
         fem[case] = middle
         for name, frame in (("middle", middle), ("coarse", coarse), ("fine", fine)):
@@ -249,9 +282,16 @@ def main():
             rows.append(row)
         elif curve["reference_kind"] == "independent_simulation":
             case = NUMERICAL_CASE[curve["configuration"]]
-            z = interpolate(frame, frequency, "z_real_pa_s_per_m3", "z_imag_pa_s_per_m3")
+            f, prediction_at_samples = numerical_predictions[curve["csv"]]
+            selected = frame[frame.frequency.between(110, 3900)]
+            np.testing.assert_array_equal(f, selected.frequency.to_numpy())
+            z = selected.z_real_pa_s_per_m3.to_numpy()+1j*selected.z_imag_pa_s_per_m3.to_numpy()
             z *= np.pi*ALL_CASES[case][0]**2/(AIR.rho*AIR.c)
-            row["tmm_dense"] = compare(predicted[case], z)
+            row["sample_count"] = len(f)
+            row["sample_frequency_range_hz"] = [float(f[0]), float(f[-1])]
+            row["maximum_frequency_gap_hz"] = float(np.diff(f).max())
+            row["comparison_scope"] = "Provided reference frequencies only; no full-band certification"
+            row["tmm_at_reference_frequencies"] = compare(prediction_at_samples, z)
             numerical.append(row)
         else:
             raise ValueError(f"Unexpected reference kind: {curve['reference_kind']}")
@@ -272,7 +312,7 @@ def main():
         "totals": {"measured_curves": len(rows), "independent_simulation_curves": len(numerical),
             "tmm_magnitude_passes": sum(r["tmm_dense"]["magnitude_agreement"] for r in rows),
             "fem_sampled_magnitude_passes": sum(r["fem_481"]["magnitude_agreement"] for r in rows),
-            "independent_simulation_magnitude_matches": sum(r["tmm_dense"]["magnitude_agreement"] for r in numerical),
+            "independent_simulation_sampled_magnitude_matches": sum(r["tmm_at_reference_frequencies"]["magnitude_agreement"] for r in numerical),
             "healthy_fem_runs": sum(h["passed"] for h in health.values()),
             "mesh_converged_cases": sum(c["passed"] for c in convergence.values())},
         "physical_horn_driver_assembly_validated": False,

@@ -2,6 +2,8 @@
 import importlib.util
 from pathlib import Path
 import sys
+import json
+import subprocess
 
 import numpy as np
 import pandas as pd
@@ -57,3 +59,29 @@ def test_all_simulation_configurations_have_explicit_normalization_geometry():
         assert audit.ALL_CASES[case][0] > 0
     assert audit.ALL_CASES["Cone_U"][3] == "finite_flange"
     assert audit.ALL_CASES["Cone_U"][2] == 0
+
+
+def test_changed_archive_is_rejected_before_creating_evidence(tmp_path):
+    reference = tmp_path/"reference"
+    reference.mkdir()
+    (reference/"manifest.json").write_text(json.dumps({"reference": {"sha256": "0"*64}}))
+    archive = tmp_path/"reference.zip"
+    archive.write_bytes(b"changed archive")
+    output = tmp_path/"output"
+    result = subprocess.run([sys.executable, str(SCRIPTS/"validate_reference_audit.py"),
+        "--reference-dir", str(reference), "--archive", str(archive), "--output-dir", str(output)],
+        capture_output=True, text=True)
+    assert result.returncode != 0
+    assert "Source archive checksum mismatch" in result.stderr
+    assert not output.exists()
+
+
+def test_existing_evidence_cannot_be_overwritten(tmp_path):
+    marker = tmp_path/"protocol.json"
+    marker.write_bytes(b"preserve existing evidence")
+    result = subprocess.run([sys.executable, str(SCRIPTS/"validate_reference_audit.py"),
+        "--reference-dir", "unused", "--archive", "unused", "--output-dir", str(tmp_path)],
+        capture_output=True, text=True)
+    assert result.returncode != 0
+    assert "new output directory" in result.stderr
+    assert marker.read_bytes() == b"preserve existing evidence"
