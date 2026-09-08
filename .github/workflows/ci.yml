@@ -50,6 +50,18 @@ jobs:
       - name: Run tests
         run: pytest packages/${{ matrix.package }}/tests -v
 
+  test_reference_audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install audit dependencies
+        run: pip install -e packages/horn-core -e packages/horn-drivers -e packages/horn-analysis pytest
+      - name: Check reference-audit evidence safeguards
+        run: pytest scripts/tests/test_reference_audit.py -v
+
   test_packages:
     runs-on: ubuntu-latest
     strategy:
