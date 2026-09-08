@@ -809,7 +809,8 @@ for csv_path in sorted(glob.glob('*_results.csv')):
     solver_csvs[candidate_id] = csv_path
 
 driver_list = load_drivers('${drivers_db}')
-drivers = {d.driver_id: d for d in driver_list}
+driver_ids = set(prescreen['drivers'])
+drivers = {d.driver_id: d for d in driver_list if d.driver_id in driver_ids}
 
 target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio})
 

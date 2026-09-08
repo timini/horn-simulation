@@ -286,7 +286,7 @@ def _render_rankings_rows(
             f"<td>{drv_type}</td>"
             f"<td>{drv_size}</td>"
             f"<td>{drv_power}</td>"
-            f"<td>{_profile_badge(r.get('horn_label', ''))}</td>"
+            f"<td>{_profile_badge(r.get('profile') or r.get('horn_label', ''))}</td>"
             f"{geom_cols}"
             f"<td><strong>{_fmt(r.get('composite_score'), '.3f')}</strong>{' (near tie)' if r.get('comparison_status') == 'near_tie' else ''}</td>"
             f"<td>{_fmt(r.get('bandwidth_coverage'), '.1%')}</td>"
@@ -644,10 +644,19 @@ def generate_html_report(
     else:
         throat_display = "not available" if show_geometry or throat_radius is None else f"{throat_radius:.4f} m"
 
-    # Mouth/Length display: for fullauto show "varies", for auto show fixed value
+    # Equal search endpoints describe a fixed dimension even in unified auto mode.
     if show_geometry:
-        mouth_display = "varies"
-        length_display = "varies"
+        def dimension_display(key, fixed_value, precision):
+            bounds = derived_geometry.get(key)
+            if bounds:
+                lo, hi = min(bounds), max(bounds)
+                if lo == hi:
+                    return f"{lo:.{precision}f} m"
+                return f"{lo:.{precision}f} — {hi:.{precision}f} m (search range)"
+            return f"{fixed_value:.{precision}f} m" if fixed_value is not None else "not available"
+
+        mouth_display = dimension_display("mouth_radius_range", mouth_radius, 4)
+        length_display = dimension_display("length_range", length, 3)
     else:
         mouth_display = f"{mouth_radius:.4f} m" if mouth_radius is not None else "—"
         length_display = f"{length:.3f} m" if length is not None else "—"
