@@ -15,6 +15,21 @@
         "qes": 0.4,
         "qms": 5
       }
+    },
+    {
+      "driver_id": "rejected_high_resonance",
+      "manufacturer": "Test fixture",
+      "model_name": "Rejected high resonance fixture",
+      "parameters": {
+        "fs_hz": 10000,
+        "re_ohm": 6,
+        "bl_tm": 6,
+        "sd_m2": 0.002,
+        "mms_kg": 0.004,
+        "le_h": 5e-05,
+        "qes": 0.4,
+        "qms": 5
+      }
     }
   ]
 }

@@ -45,7 +45,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e packages/horn-core
-          pip install -e packages/horn-drivers
+          pip install -e "packages/horn-drivers[test]"
           pip install pytest
       - name: Run tests
         run: pytest packages/${{ matrix.package }}/tests -v

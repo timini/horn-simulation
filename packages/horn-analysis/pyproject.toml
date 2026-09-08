@@ -1,4 +1,5 @@
 [project]
+license = "MIT"
 name = "horn-analysis"
 version = "0.1.0"
 description = "Analysis and plotting tools for the Horn project."

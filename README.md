@@ -13,6 +13,8 @@ Built for audio engineers, acousticians, DIY speaker builders, and researchers.
 
 **Current status: experimental predictions.** The complete automatic workflow runs, including bounded refinement, failure checks and reports. Its driver/interface and listening-distance output models have not passed independent physical validation. Missing driver evidence is reported as `insufficient_evidence`; an unsuccessful search returns no feasible design. Acoustic STEP exports describe an air volume, not fabrication-ready hardware.
 
+The solver container uses the conservative Nehalem OpenBLAS kernel on x86 to keep the pinned numerical environment consistent across host CPUs. This is a workaround under validation for intermittent CI geometry failures, not a confirmed diagnosis of the upstream cause. Independent basis/area checks and a gross mesh-to-CAD area guard catch corrupt geometry before reporting a response. An explicit `OPENBLAS_CORETYPE` override requires validating that alternative backend.
+
 Use `just run-auto --target_f_low 500 --target_f_high 4000` for an isolated run. The launcher writes a manifest, source snapshot and container hashes under a new `results/<run-id>/` directory. Defaults are 2.83 V RMS, 1 m from the mouth, 6 dB maximum band ripple, a uniform baffled-piston observer, ten screened geometries and six additional refinement evaluations. Override these with `--voltage_rms`, `--observation_distance`, `--max_ripple_db`, `--lem_top_n` and `--refinement_budget`. Fix dimensions or set minimum/maximum search bounds when space is limited.
 
 Optional thermoviscous losses and finite-flange pipe radiation now have independent impedance checks; see [the measured results and remaining failures](docs/LOSS_PHYSICS_VALIDATION.md). Legacy FEM–BEM horn coupling and directivity are disabled pending a correct exterior model.
@@ -317,4 +319,19 @@ Contributions welcome. Please open an issue first to discuss what you'd like to 
 
 ## License
 
-See repository for license details.
+Project code is available under the [MIT licence](LICENSE). External reference datasets retain the source-specific terms recorded in the validation catalog.
+
+
+### Resumable driver imports
+
+Install the scraper extras with `pip install -e "packages/horn-drivers[scrape]"`.
+Run `horn-scrape-drivers --db data/drivers --manufacturers Eminence --state results/scrape-state.json`.
+Valid records with the required fields, source provenance and current scraper schema are skipped; use `--refresh` to explicitly refetch them. Older records are refreshed to remove provisional Mms values.
+Writes replace individual files atomically, retaining existing permissions or respecting the process umask for new files, so interrupted or failed refreshes preserve the last good record.
+Discovery failures, incomplete pagination and failed driver retrieval return a failure status; an all-current resume succeeds.
+`--patience-hours` optionally waits through origin outages; exhausting that budget stops the batch instead of restarting the wait for the next driver. Throttling retries remain bounded.
+
+Driver pages must identify the requested URL. Missing Mms is not replaced with dry Mmd, and program power is not converted into an assumed continuous rating. Records lacking essential known parameters are rejected; additional chamber/interface validation is still required before making physical driver recommendations.
+Refreshes preserve known driver categories. New records have an unknown category until supported metadata is available; diaphragm area alone cannot distinguish a compression driver from a small cone driver.
+Manually enriched interface data, usable-frequency bounds and parameters not supplied by the source survive refresh; values actually fetched from the source replace their earlier values.
+During migration, an existing continuous-power rating must have an independent source in `parameter_sources.power_w`; otherwise it is removed because older scraper versions inferred it from program power. A manufacturer's progress is marked incomplete before discovery, so a failed refresh cannot leave an earlier completion flag in place.

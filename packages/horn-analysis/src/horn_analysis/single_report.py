@@ -154,12 +154,43 @@ _HTML_TEMPLATE = """\
 
 {directivity_section}
 
+{diagnostics_section}
+
 <div class="footer">Horn Simulation Report &mdash; generated {timestamp}</div>
 
 </div>
 </body>
 </html>
 """
+
+
+def _diagnostics_section(df) -> str:
+    """Report incomplete or failed diagnostics without hiding nonfinite values."""
+    import numpy as np
+    import pandas as pd
+
+    heading = '<h2>Solver checks</h2>'
+    column = next((c for c in ("relative_residual", "residual") if c in df), None)
+    if column is None or df.empty:
+        return heading + '<p>Solver diagnostics are not available for this result.</p>'
+    residuals = pd.to_numeric(df[column], errors="coerce").to_numpy(dtype=float)
+    bad = ~np.isfinite(residuals) | (residuals < 0) | (residuals > 1e-8)
+    reason_available = "converged_reason" in df
+    if reason_available:
+        reasons = pd.to_numeric(df.converged_reason, errors="coerce").to_numpy(dtype=float)
+        bad |= ~np.isfinite(reasons) | (reasons <= 0)
+    suspect = int(bad.sum())
+    if suspect:
+        verdict = f"{suspect} of {len(df)} frequencies have failed or missing solver diagnostics; treat them as unreliable."
+    elif not reason_available:
+        verdict = "Residuals meet the limit, but convergence reasons are missing; solver checks are incomplete."
+    else:
+        verdict = "All reported solver checks passed."
+    non_nan = residuals[~np.isnan(residuals)]
+    worst = f"{np.max(non_nan):.2e}" if non_nan.size else "unavailable"
+    return (heading + '<div class="design-summary">'
+            f'<p>{verdict}</p><p>Worst relative residual: {worst}. Limit: 1e-8.</p>'
+            '<p>These numerical checks do not establish physical model accuracy.</p></div>')
 
 
 def generate_single_report(
@@ -190,10 +221,12 @@ def generate_single_report(
 
     # Freq range from CSV if available
     freq_range = ""
+    diagnostics_section = "<h2>Solver checks</h2><p>Solver diagnostics are not available for this result.</p>"
     if final_csv:
         try:
             import pandas as pd
             df = pd.read_csv(final_csv)
+            diagnostics_section = _diagnostics_section(df)
             fmin = df["frequency"].min()
             fmax = df["frequency"].max()
             freq_range = f"{fmin:.0f} \u2014 {fmax:.0f} Hz &nbsp;|&nbsp; "
@@ -311,6 +344,7 @@ will roll off according to the driver's diaphragm physics.</p>
         # Conditional sections
         "coupled_section": coupled_section,
         "directivity_section": directivity_section,
+        "diagnostics_section": diagnostics_section,
     })
 
 

@@ -463,16 +463,20 @@ scrape = [
     { name = "requests" },
 ]
 test = [
+    { name = "beautifulsoup4" },
     { name = "pytest" },
+    { name = "requests" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "beautifulsoup4", marker = "extra == 'scrape'" },
+    { name = "beautifulsoup4", marker = "extra == 'test'" },
     { name = "horn-core", editable = "packages/horn-core" },
     { name = "numpy" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "requests", marker = "extra == 'scrape'" },
+    { name = "requests", marker = "extra == 'test'" },
 ]
 provides-extras = ["test", "scrape"]
 

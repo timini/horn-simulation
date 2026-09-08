@@ -1,4 +1,5 @@
 [project]
+license = "MIT"
 name = "horn-simulation"
 version = "0.1.0"
 description = "Horn loudspeaker simulation pipeline"

@@ -1,4 +1,5 @@
 [project]
+license = "MIT"
 name = "horn-core"
 version = "0.1.0"
 description = "Core data structures for the horn simulation project."
