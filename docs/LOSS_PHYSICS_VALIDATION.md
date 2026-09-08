@@ -1,5 +1,7 @@
 # Duct losses and finite-flange validation
 
+Latest expanded run: [8 September reference validation report](REFERENCE_VALIDATION_REPORT.md).
+
 The earlier lossless brass-pipe diagnostic failed: first impedance peaks were 25–32 dB too high. It is preserved in `data/validation/pipe_diagnostic_baseline.json`. The implementation now includes a published thin-boundary-layer wall condition in the production three-dimensional FEM solver, matched complex propagation in TMM, and finite-flange pipe radiation. No measured curve was fitted.
 
 ## Model and supported domain

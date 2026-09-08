@@ -100,6 +100,13 @@ def fem_health(frame):
     return result
 
 
+def checked_fem_health(frame, label):
+    result = fem_health(frame)
+    if not result["passed"]:
+        raise RuntimeError(f"Unreliable FEM run {label}; excluded from validation: {result}")
+    return result
+
+
 def run_fem(out, case, h, count):
     import gmsh
     from horn_solver.solver import run_simulation_from_step
@@ -247,7 +254,7 @@ def main():
     for case, (middle, coarse, fine) in responses:
         fem[case] = middle
         for name, frame in (("middle", middle), ("coarse", coarse), ("fine", fine)):
-            health[f"{case}-{name}"] = fem_health(frame)
+            health[f"{case}-{name}"] = checked_fem_health(frame, f"{case}-{name}")
         subset = middle.iloc[::4]
         np.testing.assert_allclose(subset.frequency, fine.frequency, rtol=1e-12)
         change = compare(fem_impedance(subset), fem_impedance(fine))

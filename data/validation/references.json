@@ -281,7 +281,10 @@
         "compression_gap_m": 0.001,
         "equivalent_phase_plug_channel_length_m": 0.053,
         "long_horn_mouth_diameter_m": 0.08,
-        "short_horn_mouth_diameter_m": 0.09
+        "short_horn_mouth_diameter_candidates_m": [
+          0.09,
+          0.08
+        ]
       },
       "limitations": [
         "Measured curves have not been extracted; local PDF binary retrieval failed.",
