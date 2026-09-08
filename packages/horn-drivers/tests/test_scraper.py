@@ -229,6 +229,7 @@ def test_refresh_preserves_enriched_interface_and_parameters(monkeypatch, tmp_pa
     batch(monkeypatch)
     enriched = dict(driver_id='test-model', manufacturer='Test', driver_type='compression',
         interface_model='measured_adapter', usable_f_low_hz=500, usable_f_high_hz=6000,
+        parameter_sources={'power_w': 'https://example.org/manufacturer/continuous-power-specification'},
         notes='Measured by the project owner',
         parameters={**PARAMS, 'fs_hz': 150, 'exit_area_m2': .0005, 'rear_load_mass_kg': .001,
                     'power_w': 80})
@@ -271,3 +272,31 @@ def test_schema_migration_replaces_malformed_parameter_mapping(monkeypatch, tmp_
     s._save_driver(tmp_path, dict(driver_id='test-model', manufacturer='Test', parameters=None))
     assert s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test']) == 1
     assert s._driver_is_current(tmp_path, 'Test', 'test-model')
+
+
+@pytest.mark.parametrize('old_version', [None, 2])
+def test_migration_removes_legacy_inferred_power(monkeypatch, tmp_path, old_version):
+    batch(monkeypatch)
+    s._save_driver(tmp_path, dict(driver_id='test-model', manufacturer='Test',
+        scraper_schema_version=old_version,
+        parameters={**PARAMS, 'power_w': 100, 'peak_power_w': 200}))
+    assert s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test']) == 1
+    record = json.loads((tmp_path/'Test/test-model.json').read_text())
+    assert 'power_w' not in record['parameters']
+    assert record['parameters']['peak_power_w'] == 200
+    assert s._driver_is_current(tmp_path, 'Test', 'test-model')
+
+
+def test_failed_discovery_clears_old_complete_progress(monkeypatch, tmp_path):
+    batch(monkeypatch)
+    state = tmp_path/'state.json'
+    state.write_text(json.dumps({'Test': {'complete': True}}))
+    def fail(*args, **kwargs):
+        assert json.loads(state.read_text())['Test']['complete'] is False
+        raise s.ScrapeError('Incomplete pagination')
+    monkeypatch.setattr(s, 'discover_drivers', fail)
+    with pytest.raises(s.ScrapeError, match='pagination'):
+        s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test'], refresh=True, state_path=state)
+    progress = json.loads(state.read_text())['Test']
+    assert progress['complete'] is False
+    assert progress['failure_reason'] == 'Incomplete pagination'

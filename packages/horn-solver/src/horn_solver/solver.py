@@ -328,6 +328,12 @@ def run_simulation(
     # Equivalent circular mouth radius for radiation impedance models
     cad_areas = getattr(domain, "horn_boundary_areas", {})
     physical_mouth_area = cad_areas.get("mouth", outlet_area)
+    if (not np.isfinite(physical_mouth_area) or physical_mouth_area <= 0
+            or not .5 <= outlet_area / physical_mouth_area <= 2.):
+        raise RuntimeError(
+            f"Integrated mesh mouth area {outlet_area:g} m² is inconsistent with "
+            f"CAD area {physical_mouth_area:g} m²; check mesh and numerical backend"
+        )
     a_mouth = np.sqrt(physical_mouth_area / np.pi)
     print(f"Equivalent mouth radius: {a_mouth:.4f} m (radiation_model={radiation_model})")
 

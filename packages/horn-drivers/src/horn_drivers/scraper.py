@@ -72,7 +72,7 @@ DIAMETER_TABLE: List[Tuple[str, float]] = [
 
 # Essential parameters — drivers missing any of these are skipped.
 ESSENTIAL_PARAMS = ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg")
-SCRAPER_SCHEMA_VERSION = 2  # independently supplied Mms, dry Mmd and provenance
+SCRAPER_SCHEMA_VERSION = 3  # independent Mms and removal of legacy inferred power
 
 
 def slugify(manufacturer: str, model: str) -> str:
@@ -704,9 +704,19 @@ def scrape_all(
     for i, mfr_slug in enumerate(manufacturer_slugs):
         print(f"\n[{i + 1}/{len(manufacturer_slugs)}] {mfr_slug}")
 
-        driver_entries = discover_drivers(
-            session, mfr_slug, delay=delay, patience_s=patience_s,
-        )
+        state[mfr_slug] = {
+            "complete": False, "phase": "discovery", "scraped": 0, "skipped": 0,
+            "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        }
+        _save_state(state_path, state)
+        try:
+            driver_entries = discover_drivers(
+                session, mfr_slug, delay=delay, patience_s=patience_s,
+            )
+        except ScrapeError as exc:
+            state[mfr_slug]["failure_reason"] = str(exc)
+            _save_state(state_path, state)
+            raise
         print(f"  Found {len(driver_entries)} drivers")
         if not driver_entries:
             raise ScrapeError(f"No drivers discovered for {mfr_slug}")
@@ -758,6 +768,16 @@ def scrape_all(
             existing_params = existing.get("parameters", {})
             if not isinstance(existing_params, dict):
                 existing_params = {}
+            else:
+                existing_params = dict(existing_params)
+            # Older parsers invented nominal power from program power. Preserve
+            # an enriched rating only with explicit per-field provenance during
+            # migration; schema 3 never creates that inference in the first place.
+            sources = existing.get("parameter_sources", {})
+            power_source = sources.get("power_w") if isinstance(sources, dict) else None
+            if (existing.get("scraper_schema_version") != SCRAPER_SCHEMA_VERSION
+                    and not (isinstance(power_source, str) and power_source.strip())):
+                existing_params.pop("power_w", None)
             driver_type = infer_driver_type(sd, existing.get("driver_type"))
             nominal_diameter = (existing.get("nominal_diameter") or infer_nominal_diameter(sd)) if driver_type == "cone" else None
 
