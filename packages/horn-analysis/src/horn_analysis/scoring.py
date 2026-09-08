@@ -1,7 +1,7 @@
 """Scoring and ranking for driver–horn selection.
 
 Scores each driver–horn combination on bandwidth coverage, passband
-ripple, and average mouth-plane level, then ranks candidates for Phase B
+ripple, and average sensitivity, then ranks candidates for Phase B
 refinement.
 """
 
@@ -23,6 +23,21 @@ class TargetSpec:
     f_high_hz: float
     max_length_m: Optional[float] = None
     max_mouth_radius_m: Optional[float] = None
+    voltage_rms: float = 2.83
+    observation_distance_m: float = 1.0
+    max_ripple_db: float = 6.0
+    max_compression_ratio: float = 10.0
+    min_output_db: Optional[float] = None
+
+    def __post_init__(self):
+        from horn_core.acoustics import validate_band
+        validate_band(self.f_low_hz, self.f_high_hz)
+        for name in ("voltage_rms", "observation_distance_m", "max_ripple_db", "max_compression_ratio", "max_length_m", "max_mouth_radius_m"):
+            value = getattr(self, name)
+            if value is not None and (not np.isfinite(value) or value <= 0):
+                raise ValueError(f"{name} must be finite and positive")
+        if self.min_output_db is not None and not np.isfinite(self.min_output_db):
+            raise ValueError("Minimum output must be finite")
 
 
 @dataclass
@@ -32,7 +47,7 @@ class SelectionScore:
     horn_label: str
     bandwidth_coverage: float       # 0-1: fraction of target range covered
     passband_ripple_db: float       # ripple in dB (lower is better)
-    avg_level_db: float       # mean mouth-plane level in passband
+    avg_sensitivity_db: float       # mean SPL in passband
     composite_score: float          # weighted combination, 0-1
 
     def to_dict(self) -> dict:
@@ -54,13 +69,13 @@ def compute_selection_score(
         driver_id: Identifier for the driver.
         horn_label: Identifier for the horn geometry.
         weights: Optional dict with keys ``bandwidth``, ``ripple``,
-                 ``level``.  Defaults to 0.50/0.25/0.25.
+                 ``sensitivity``.  Defaults to 0.50/0.25/0.25.
 
     Returns:
         SelectionScore with composite score in [0, 1].
     """
     if weights is None:
-        weights = {"bandwidth": 0.50, "ripple": 0.25, "level": 0.25}
+        weights = {"bandwidth": 0.50, "ripple": 0.25, "sensitivity": 0.25}
 
     target_width = target.f_high_hz - target.f_low_hz
 
@@ -79,15 +94,15 @@ def compute_selection_score(
     ripple_db = kpi.passband_ripple_db if kpi.passband_ripple_db is not None else 6.0
     ripple_score = max(0.0, 1.0 - ripple_db / 6.0)
 
-    # --- Level score ---
-    avg_level = kpi.average_level_db if kpi.average_level_db is not None else 80.0
-    level_score = np.clip((avg_level - 80.0) / 40.0, 0.0, 1.0)
+    # --- Sensitivity score ---
+    avg_sens = kpi.average_sensitivity_db if kpi.average_sensitivity_db is not None else 80.0
+    sensitivity_score = np.clip((avg_sens - 80.0) / 40.0, 0.0, 1.0)
 
     # --- Composite ---
     composite = (
         weights["bandwidth"] * bandwidth_coverage
         + weights["ripple"] * ripple_score
-        + weights["level"] * float(level_score)
+        + weights["sensitivity"] * float(sensitivity_score)
     )
 
     # --- Bandwidth floor: non-functional combos score zero ---
@@ -99,7 +114,7 @@ def compute_selection_score(
         horn_label=horn_label,
         bandwidth_coverage=bandwidth_coverage,
         passband_ripple_db=ripple_db,
-        avg_level_db=avg_level,
+        avg_sensitivity_db=avg_sens,
         composite_score=composite,
     )
 

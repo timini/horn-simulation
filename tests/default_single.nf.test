@@ -1,0 +1,35 @@
+nextflow_pipeline {
+    name "Default single-mode specification"
+    script "../main.nf"
+    config "nextflow.config"
+    profile "docker"
+
+    test("Generated single mode records its effective default dimensions") {
+        when {
+            params {
+                mode = "single"
+                horn_3d_png = "${projectDir}/tests/data/my render ' image.png"
+                min_freq = 200
+                max_freq = 400
+                num_bands = 1
+                num_intervals = 2
+                mesh_size = 0.08
+                num_sections = 8
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            assert new File("${outputDir}/single_report.html").text.contains("iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB")
+            def spec = new groovy.json.JsonSlurper().parse(new File("${outputDir}/resolved_specification.json"))
+            assert spec.parameters.throat_radius == 0.05
+            assert spec.parameters.mouth_radius == 0.2
+            assert spec.parameters.length == 0.5
+            def lines = new File("${outputDir}/final_results.csv").text.readLines()
+            def columns = lines[0].split(',').toList()
+            def values = lines[1].split(',')
+            assert Math.abs(values[columns.indexOf('inlet_area_m2')].toDouble() - Math.PI * 0.05**2) < 0.000001
+            assert Math.abs(values[columns.indexOf('mouth_area_m2')].toDouble() - Math.PI * 0.2**2) < 0.000001
+        }
+    }
+}

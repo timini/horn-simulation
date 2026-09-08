@@ -1,0 +1,56 @@
+{
+  "driver_id": "18sound-6nmb420",
+  "manufacturer": "18Sound",
+  "model_name": "6NMB420",
+  "nominal_diameter": "6.5in",
+  "driver_type": "cone",
+  "parameters": {
+    "fs_hz": 110.0,
+    "re_ohm": 5.3,
+    "bl_tm": 9.0,
+    "sd_m2": 0.013,
+    "mms_kg": 0.0085,
+    "le_h": 0.0001,
+    "qms": 2.7,
+    "qes": 0.38,
+    "qts": 0.33,
+    "xmax_m": 0.003,
+    "power_w": 200.0,
+    "peak_power_w": 260.0,
+    "nominal_impedance_ohm": 8.0
+  },
+  "usable_f_low_hz": 200,
+  "usable_f_high_hz": 7000,
+  "parameter_source": "https://www.eighteensound.it/es/products/lf-driver/6-5/8/6NMB420",
+  "interface_model": null,
+  "provenance": {
+    "retrieved_on": "2026-09-07",
+    "capture_method": "Transcribed from retrieved manufacturer page. Raw source HTML is not archived.",
+    "supplied_fields": [
+      "fs_hz",
+      "re_ohm",
+      "bl_tm",
+      "sd_m2",
+      "mms_kg",
+      "le_h",
+      "qms",
+      "qes",
+      "qts",
+      "xmax_m",
+      "power_w",
+      "peak_power_w",
+      "nominal_impedance_ohm"
+    ],
+    "derived_fields": [
+      "cms_m_per_n",
+      "rms_kg_per_s"
+    ],
+    "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band.",
+    "power_definition": "power_w is nominal/AES rating. peak_power_w is manufacturer program/continuous marketing rating, not instantaneous peak.",
+    "unresolved": [
+      "Throat chamber/adapter not validated",
+      "Mmd and rear acoustic load unidentified",
+      "Linear excursion and input-power checks are not a validated maximum-output model"
+    ]
+  }
+}

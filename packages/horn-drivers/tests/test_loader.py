@@ -135,3 +135,38 @@ class TestRealDatabase:
             assert d.sd_m2 > 0
             assert d.mms_kg > 0
             assert d.cms_m_per_n is not None
+
+
+def test_invalid_optional_limit_is_rejected_without_discarding_valid_drivers(v2_db, tmp_path):
+    from pathlib import Path
+    raw = json.loads(Path(v2_db).read_text())
+    raw['drivers'][0]['parameters']['power_w'] = float('nan')
+    path = tmp_path/'mixed.json'
+    path.write_text(json.dumps(raw))
+    invalid_id = raw['drivers'][0]['driver_id']
+    with pytest.warns(RuntimeWarning, match='Rejected driver '+invalid_id+'.*power_w'):
+        drivers = load_drivers(str(path))
+    assert [driver.driver_id for driver in drivers] == [raw['drivers'][1]['driver_id']]
+    with pytest.raises(ValueError, match='power_w'):
+        load_driver(str(path), invalid_id)
+
+
+@pytest.mark.parametrize("primary,alternate", [("exit_area_m2", "exit_area_cm2"), ("xmax_m", "xmax_mm"), ("sd_m2", "sd_sq_meters"), ("re_ohm", "re_ohms")])
+@pytest.mark.parametrize("has_alternate", [False, True])
+def test_explicit_zero_is_not_replaced_by_missing_or_alternate_units(v2_db, primary, alternate, has_alternate):
+    from pathlib import Path
+    from horn_drivers.loader import _driver_from_dict
+    raw = json.loads(Path(v2_db).read_text())['drivers'][0]
+    raw['parameters'][primary] = 0.
+    if has_alternate:
+        raw['parameters'][alternate] = 1.
+    with pytest.raises(ValueError, match=primary):
+        _driver_from_dict(raw)
+
+
+def test_explicit_zero_inductance_takes_precedence_over_alternate_units(v2_db):
+    from pathlib import Path
+    from horn_drivers.loader import _driver_from_dict
+    raw = json.loads(Path(v2_db).read_text())['drivers'][0]
+    raw['parameters'].update(le_h=0., le_mh=5.)
+    assert _driver_from_dict(raw).le_h == 0.

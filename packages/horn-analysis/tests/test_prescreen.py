@@ -431,3 +431,18 @@ class TestParseDiameterInches:
 
     def test_no_match(self):
         assert _parse_diameter_inches("abc") is None
+
+
+@pytest.mark.parametrize('fractions', [[1.1],[0.],[-.1],[float('nan')],[float('inf')],[]])
+def test_invalid_throat_fraction_cannot_escape_acoustic_domain(fractions):
+    with pytest.raises(ValueError,match='Throat fractions'):
+        prescreen_drivers([],PrescreenConfig(500,2000,throat_fractions=fractions))
+
+
+def test_rounded_throat_radii_remain_within_absolute_ka_cap():
+    import math
+    cfg=PrescreenConfig(500,1234,throat_fractions=[.3,1.])
+    result=prescreen_drivers([_make_driver('small',fs_hz=200,qes=.4,sd_m2=.002)],cfg)
+    cap=343*cfg.ka_max/(2*math.pi*cfg.target_f_high_hz)
+    assert result.count == 1
+    assert max(result.throat_radii_m) <= cap

@@ -35,7 +35,7 @@ class TestExtractKpisFromArrays:
     def test_matches_csv_version(self, bandpass_data, bandpass_csv):
         """Array version should produce similar results to CSV version.
 
-        Note: passband_ripple and avg level may differ slightly due to
+        Note: passband_ripple and avg_sensitivity may differ slightly due to
         resampling onto a uniform log grid + Savgol smoothing.
         """
         freq, spl = bandpass_data
@@ -61,12 +61,12 @@ class TestExtractKpisFromArrays:
         if from_csv.bandwidth_octaves is not None:
             assert from_arrays.bandwidth_octaves == pytest.approx(from_csv.bandwidth_octaves, rel=1e-6)
 
-        # Ripple and level use resampled+smoothed data, so allow wider tolerance
+        # Ripple and sensitivity use resampled+smoothed data, so allow wider tolerance
         if from_csv.passband_ripple_db is not None:
             assert from_arrays.passband_ripple_db == pytest.approx(from_csv.passband_ripple_db, abs=0.5)
 
-        if from_csv.average_level_db is not None:
-            assert from_arrays.average_level_db == pytest.approx(from_csv.average_level_db, abs=0.3)
+        if from_csv.average_sensitivity_db is not None:
+            assert from_arrays.average_sensitivity_db == pytest.approx(from_csv.average_sensitivity_db, abs=0.3)
 
     def test_peak_detection(self, bandpass_data):
         """Should detect the peak correctly."""
@@ -84,37 +84,10 @@ class TestExtractKpisFromArrays:
         assert result.f3_low_hz == pytest.approx(100.0)
         assert result.f3_high_hz == pytest.approx(10000.0)
 
-    def test_band_boundary_artifacts_suppressed(self):
-        """Band-stitching glitches should not inflate ripple measurement.
-
-        Simulates 8-band FEM output with 1 dB discontinuities at each
-        band boundary. The true response is flat at 90 dB, so the
-        measured ripple should be well below the raw artifact magnitude.
-        """
-        num_bands = 8
-        points_per_band = 13
-        f_min, f_max = 500.0, 8000.0
-        bands = np.geomspace(f_min, f_max, num_bands + 1)
-
-        freq_all = []
-        spl_all = []
-        for i in range(num_bands):
-            band_freq = np.geomspace(bands[i], bands[i + 1], points_per_band)
-            band_spl = np.full_like(band_freq, 90.0)
-            # Inject a 1 dB glitch at the start of each band (except first)
-            if i > 0:
-                band_spl[0] -= 1.0
-            freq_all.append(band_freq)
-            spl_all.append(band_spl)
-
-        freq = np.concatenate(freq_all)
-        spl = np.concatenate(spl_all)
-        # Sort (like the merge process does)
-        order = np.argsort(freq)
-        freq, spl = freq[order], spl[order]
-
-        result = extract_kpis_from_arrays(freq, spl)
-        # Without smoothing, ripple would be ~1.0 dB (the injected glitch).
-        # With smoothing, it should be well under 0.5 dB.
-        assert result.passband_ripple_db < 0.5
-        assert result.average_level_db == pytest.approx(90.0, abs=0.2)
+@pytest.mark.parametrize("offset", [-2.8, 2.8])
+def test_reported_ripple_preserves_one_sample_extremum(offset):
+    freq = np.geomspace(100, 10000, 101)
+    levels = np.full(101, 90.)
+    levels[43] += offset
+    result = extract_kpis_from_arrays(freq, levels)
+    assert result.passband_ripple_db == pytest.approx(abs(offset))

@@ -1,0 +1,158 @@
+{
+  "source_revision": "6592f8f803be2d734bcb4ab1d6b864e57b867e5c",
+  "status": "completed",
+  "started_at": "2026-09-07T10:00:33.511098+00:00",
+  "finished_at": "2026-09-07T10:07:03.246861+00:00",
+  "nextflow_session_id": "e7b5d4ff-4e94-4752-9b40-7a1d57130e09",
+  "arguments": [
+    "--mode",
+    "auto",
+    "--target_f_low",
+    "1000",
+    "--target_f_high",
+    "1200"
+  ],
+  "containers": {
+    "horn-solver": {
+      "id": "sha256:c19e19432a8b5e12653312d5978715560cd098ce53647dc9a80af3e947c48f66",
+      "repo_digests": []
+    },
+    "horn-analysis": {
+      "id": "sha256:616fb69f6bfdf896cd2dac3c972b333d754ecfa20971a0b9e8e7d434874353c6",
+      "repo_digests": []
+    },
+    "horn-geometry": {
+      "id": "sha256:7349d1b5cae89dca13d3cb76ffcfa1625443de3ae608ada41903d41e24ef1f93",
+      "repo_digests": []
+    }
+  },
+  "prescreen_driver_count": 235,
+  "geometry_candidate_count": 231,
+  "fem_shortlist_count": 10,
+  "succeeded_tasks": 106,
+  "wall_time_seconds": 388,
+  "best_candidate": {
+    "max_displacement_peak_m": 1.738935888536392e-05,
+    "max_input_power_w": 1.2485539982054183,
+    "operating_limit_scope": "Linear model at requested voltage; not a validated maximum-output or thermal prediction",
+    "bandwidth_coverage": 1.0,
+    "passband_ripple_db": 0.21136084664998123,
+    "avg_sensitivity_db": 104.66173805682435,
+    "composite_score": 0.9272838732930189,
+    "model_feasible": true,
+    "eligibility_status": "insufficient_evidence",
+    "rejection_reasons": [],
+    "evidence_gaps": [
+      "driver_usable_band_unknown",
+      "driver_parameter_provenance_missing",
+      "driver_interface_unverified",
+      "moving_mass_and_rear_load_not_separated",
+      "maximum_output_limits_unknown"
+    ],
+    "validation_status": "experimental_prediction",
+    "target_min_level_db": 104.5586162279764,
+    "target_max_level_db": 104.76997707462638,
+    "driver_id": "beyma-3fr30nd",
+    "horn_label": "auto_hyp_0074",
+    "kpi": {
+      "peak_spl_db": 105.95502986825593,
+      "peak_frequency_hz": 1510.1738310538958,
+      "f3_low_hz": 906.7602358520969,
+      "f3_high_hz": 1697.056274847714,
+      "bandwidth_hz": 790.296038995617,
+      "bandwidth_octaves": 0.9042413747470399,
+      "passband_ripple_db": 2.9996996002763012,
+      "average_sensitivity_db": 104.98589573011174
+    },
+    "manufacturer": "Beyma",
+    "model_name": "3FR30Nd",
+    "output_metric": "uniform_baffled_piston_on_axis",
+    "observation_distance_m": 1.0,
+    "drive_voltage_rms": 2.83,
+    "inlet_area_m2": 0.0003100261211698,
+    "loss_model": "lossless",
+    "radiation_model": "flanged_piston",
+    "element_degree": 1,
+    "mouth_radius": 0.070967,
+    "length": 0.1715,
+    "throat_radius": 0.009934,
+    "profile": "hyperbolic",
+    "score_gap_from_best": 0.0,
+    "comparison_status": "near_tie",
+    "comparison_scope": "0.02 score comparison margin; physical uncertainty unquantified"
+  },
+  "refinement": {
+    "best_score": 0.9272838732930189,
+    "new_evaluations": 6,
+    "budget": 6,
+    "budget_exhausted": true,
+    "at_bounds": [
+      "length",
+      "throat_radius"
+    ],
+    "history": [
+      {
+        "candidate_id": "refine_0000",
+        "score": 0.9038911006543957,
+        "geometry": [
+          "hyperbolic",
+          0.009934,
+          0.0638703,
+          0.1715
+        ]
+      },
+      {
+        "candidate_id": "refine_0001",
+        "score": 0.9169896458360866,
+        "geometry": [
+          "hyperbolic",
+          0.009934,
+          0.070967,
+          0.15435
+        ]
+      },
+      {
+        "candidate_id": "refine_0002",
+        "score": 0.9146615594965845,
+        "geometry": [
+          "hyperbolic",
+          0.0109274,
+          0.070967,
+          0.1715
+        ]
+      },
+      {
+        "candidate_id": "refine_0003",
+        "score": 0.9093495367932032,
+        "geometry": [
+          "hyperbolic",
+          0.009934,
+          0.06741865,
+          0.1715
+        ]
+      },
+      {
+        "candidate_id": "refine_0004",
+        "score": 0.9265824279477322,
+        "geometry": [
+          "hyperbolic",
+          0.009934,
+          0.070967,
+          0.162925
+        ]
+      },
+      {
+        "candidate_id": "refine_0005",
+        "score": 0.9205749420731948,
+        "geometry": [
+          "hyperbolic",
+          0.0104307,
+          0.070967,
+          0.1715
+        ]
+      }
+    ]
+  },
+  "review_stricter_complex_join_recheck": "All 80 original bands across ten shortlisted geometries pass",
+  "scope": "Clean-checkout band-only software execution. Physical assembly validation remains outstanding."
+}

@@ -325,3 +325,40 @@ class TestGenerateAutoCandidates:
         )
         assert derived.sim_freq_range[0] < 500
         assert derived.sim_freq_range[1] > 4000
+
+
+@pytest.mark.parametrize('kwargs', [{'max_length':.1},{'max_mouth_radius':.02}])
+def test_valid_size_cap_below_heuristic_range_returns_empty_design(kwargs):
+    candidates,design=generate_auto_candidates(500,2000,[.01],**kwargs)
+    assert candidates == []
+    assert design.candidate_count == 0
+    assert design.status == 'no_feasible_design'
+    assert design.reason == 'size_constraints_exclude_search_range'
+
+
+def test_mouth_not_larger_than_throat_is_an_empty_search():
+    candidates,design=generate_auto_candidates(500,2000,[.05],mouth_radius=.04,length=.1)
+    assert candidates == [] and design.reason == 'no_mouth_larger_than_throat'
+
+
+@pytest.mark.parametrize('kwargs',[{'max_length':-1},{'min_length':.2,'max_length':.1},{'max_mouth_radius':float('nan')}])
+def test_invalid_explicit_geometry_constraints_still_raise(kwargs):
+    with pytest.raises(ValueError):generate_auto_candidates(500,2000,[.01],**kwargs)
+
+
+def test_fixed_dimensions_are_not_rounded_outside_exact_bounds():
+    candidates,_=generate_auto_candidates(500,2000,[.01],mouth_radius=.0700004,length=.1000004,
+        min_mouth_radius=.0700004,max_mouth_radius=.0700004,min_length=.1000004,max_length=.1000004)
+    assert candidates
+    assert all(c.mouth_radius==.0700004 and c.length==.1000004 for c in candidates)
+def test_fixed_throat_obeys_high_frequency_acoustic_cap():
+    import math
+    import pytest
+    from horn_core.geometry_designer import generate_auto_candidates
+    with pytest.raises(ValueError, match="acoustic ka cap"):
+        generate_auto_candidates(1000, 4000, [.2], mouth_radius=.3)
+    cap = 343. / 4000
+    candidates, _ = generate_auto_candidates(1000, 4000, [cap], mouth_radius=.3)
+    assert candidates and all(c.throat_radius <= cap for c in candidates)
+    with pytest.raises(ValueError, match="acoustic ka cap"):
+        generate_auto_candidates(1000, 4000, [cap], mouth_radius=.3, ka_max=math.pi)

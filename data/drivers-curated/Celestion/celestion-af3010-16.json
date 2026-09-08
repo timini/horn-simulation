@@ -1,0 +1,57 @@
+{
+  "driver_id": "celestion-af3010-16",
+  "manufacturer": "Celestion",
+  "model_name": "AF3010 (16 ohm)",
+  "nominal_diameter": "3in",
+  "driver_type": "cone",
+  "parameters": {
+    "fs_hz": 128.9,
+    "re_ohm": 10.48,
+    "bl_tm": 5.98,
+    "sd_m2": 0.003318,
+    "mms_kg": 0.00355,
+    "le_h": 0.00026,
+    "qms": 6.096,
+    "qes": 0.843,
+    "qts": 0.74,
+    "cms_m_per_n": 0.00043,
+    "rms_kg_per_s": 0.47,
+    "xmax_m": 0.00275,
+    "power_w": 35.0,
+    "peak_power_w": 70.0,
+    "nominal_impedance_ohm": 16.0
+  },
+  "usable_f_low_hz": 120,
+  "usable_f_high_hz": 18000,
+  "parameter_source": "https://celestion.com/product/af3010-2/",
+  "interface_model": null,
+  "provenance": {
+    "retrieved_on": "2026-09-07",
+    "capture_method": "Transcribed from retrieved manufacturer page. Raw source HTML is not archived.",
+    "supplied_fields": [
+      "fs_hz",
+      "re_ohm",
+      "bl_tm",
+      "sd_m2",
+      "mms_kg",
+      "le_h",
+      "qms",
+      "qes",
+      "qts",
+      "cms_m_per_n",
+      "rms_kg_per_s",
+      "xmax_m",
+      "power_w",
+      "peak_power_w",
+      "nominal_impedance_ohm"
+    ],
+    "derived_fields": [],
+    "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band.",
+    "power_definition": "power_w is nominal/AES rating. peak_power_w is manufacturer program/continuous marketing rating, not instantaneous peak.",
+    "unresolved": [
+      "Throat chamber/adapter not validated",
+      "Mmd and rear acoustic load unidentified",
+      "Linear excursion and input-power checks are not a validated maximum-output model"
+    ]
+  }
+}

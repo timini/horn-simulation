@@ -1,0 +1,57 @@
+{
+  "driver_id": "celestion-tf0512he",
+  "manufacturer": "Celestion",
+  "model_name": "TF0512HE",
+  "nominal_diameter": "5in",
+  "driver_type": "cone",
+  "parameters": {
+    "fs_hz": 84.7,
+    "re_ohm": 5.42,
+    "bl_tm": 6.71,
+    "sd_m2": 0.007854,
+    "mms_kg": 0.00889,
+    "le_h": 0.00028,
+    "qms": 9.225,
+    "qes": 0.569,
+    "qts": 0.536,
+    "cms_m_per_n": 0.00039,
+    "rms_kg_per_s": 0.51,
+    "xmax_m": 0.00475,
+    "power_w": 75.0,
+    "peak_power_w": 150.0,
+    "nominal_impedance_ohm": 8.0
+  },
+  "usable_f_low_hz": 55,
+  "usable_f_high_hz": 4000,
+  "parameter_source": "https://celestion.com/product/tf0512he/",
+  "interface_model": null,
+  "provenance": {
+    "retrieved_on": "2026-09-07",
+    "capture_method": "Transcribed from retrieved manufacturer page. Raw source HTML is not archived.",
+    "supplied_fields": [
+      "fs_hz",
+      "re_ohm",
+      "bl_tm",
+      "sd_m2",
+      "mms_kg",
+      "le_h",
+      "qms",
+      "qes",
+      "qts",
+      "cms_m_per_n",
+      "rms_kg_per_s",
+      "xmax_m",
+      "power_w",
+      "peak_power_w",
+      "nominal_impedance_ohm"
+    ],
+    "derived_fields": [],
+    "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band.",
+    "power_definition": "power_w is nominal/AES rating. peak_power_w is manufacturer program/continuous marketing rating, not instantaneous peak.",
+    "unresolved": [
+      "Throat chamber/adapter not validated",
+      "Mmd and rear acoustic load unidentified",
+      "Linear excursion and input-power checks are not a validated maximum-output model"
+    ]
+  }
+}

@@ -40,6 +40,8 @@ class DerivedGeometry:
     length_range: tuple  # (min, max)
     sim_freq_range: tuple  # (min, max) extended for rolloff
     candidate_count: int
+    status: str = "candidates_generated"
+    reason: Optional[str] = None
 
 
 def derive_mouth_radius(f_low: float) -> float:
@@ -96,6 +98,11 @@ def generate_auto_candidates(
     num_mouth_radii: int = 3,
     num_lengths: int = 3,
     profiles: Optional[List[str]] = None,
+    max_length: Optional[float] = None,
+    min_length: Optional[float] = None,
+    max_mouth_radius: Optional[float] = None,
+    min_mouth_radius: Optional[float] = None,
+    ka_max: float = 2 * math.pi,
 ) -> tuple:
     """Generate geometry candidates for unified auto mode.
 
@@ -115,24 +122,53 @@ def generate_auto_candidates(
     Returns:
         Tuple of (candidates, derived_geometry).
     """
+    from horn_core.acoustics import validate_band
+    validate_band(target_f_low, target_f_high)
+    if num_mouth_radii < 1 or num_lengths < 1:
+        raise ValueError("Geometry grid sizes must be positive")
+    if not throat_radii or any(not np.isfinite(r) or r <= 0 for r in throat_radii):
+        raise ValueError("No usable throat radii: no feasible drivers or invalid radii")
+    if not np.isfinite(ka_max) or ka_max <= 0:
+        raise ValueError("Throat ka cap must be finite and positive")
+    acoustic_cap = C0 * ka_max / (2 * math.pi * target_f_high)
+    if any(r > acoustic_cap * (1 + 1e-12) for r in throat_radii):
+        raise ValueError("Throat radius exceeds the acoustic ka cap at target high frequency")
     if profiles is None:
         profiles = DEFAULT_PROFILES
+
+    for name, value, lower, upper in (("mouth radius", mouth_radius, min_mouth_radius, max_mouth_radius), ("length", length, min_length, max_length)):
+        if any(bound is not None and (not np.isfinite(bound) or bound <= 0) for bound in (lower, upper)):
+            raise ValueError(f"Invalid {name} bounds")
+        if lower is not None and upper is not None and lower > upper:
+            raise ValueError(f"Invalid {name} bounds: minimum exceeds maximum")
+        if value is not None and (not np.isfinite(value) or value <= 0 or (lower is not None and value < lower) or (upper is not None and value > upper)):
+            raise ValueError(f"Fixed {name} conflicts with valid dimensions or requested bounds")
 
     # Mouth radius: fixed or derived
     if mouth_radius is not None:
         mouth_range = (mouth_radius, mouth_radius)
         mouth_radii = [mouth_radius]
     else:
-        mouth_range = derive_mouth_radius_range(target_f_low)
-        mouth_radii = np.linspace(mouth_range[0], mouth_range[1], num_mouth_radii).tolist()
+        lo, hi = derive_mouth_radius_range(target_f_low)
+        if min_mouth_radius is not None:
+            lo = min_mouth_radius
+        if max_mouth_radius is not None:
+            hi = max_mouth_radius
+        mouth_range = (lo, hi)
+        mouth_radii = np.linspace(lo, hi, num_mouth_radii).tolist() if lo <= hi else []
 
     # Length: fixed or derived
     if length is not None:
         length_range = (length, length)
         lengths = [length]
     else:
-        length_range = derive_length_range(target_f_low)
-        lengths = np.linspace(length_range[0], length_range[1], num_lengths).tolist()
+        lo, hi = derive_length_range(target_f_low)
+        if min_length is not None:
+            lo = min_length
+        if max_length is not None:
+            hi = max_length
+        length_range = (lo, hi)
+        lengths = np.linspace(lo, hi, num_lengths).tolist() if lo <= hi else []
 
     sim_range = derive_simulation_freq_range(target_f_low, target_f_high)
 
@@ -150,8 +186,8 @@ def generate_auto_candidates(
                             candidate_id=candidate_id,
                             profile=profile,
                             throat_radius=r_throat,
-                            mouth_radius=round(r_mouth, 6),
-                            length=round(horn_length, 6),
+                            mouth_radius=float(r_mouth),
+                            length=float(horn_length),
                         )
                     )
                     idx += 1
@@ -165,6 +201,9 @@ def generate_auto_candidates(
         length_range=length_range,
         sim_freq_range=sim_range,
         candidate_count=len(candidates),
+        status="candidates_generated" if candidates else "no_feasible_design",
+        reason=(None if candidates else "size_constraints_exclude_search_range"
+                if not mouth_radii or not lengths else "no_mouth_larger_than_throat"),
     )
 
     return candidates, derived
@@ -177,6 +216,7 @@ def generate_fullauto_candidates(
     num_mouth_radii: int = 3,
     num_lengths: int = 3,
     profiles: Optional[List[str]] = None,
+    ka_max: float = 2 * math.pi,
 ) -> tuple:
     """Generate geometry candidates from frequency band specification.
 
@@ -194,6 +234,17 @@ def generate_fullauto_candidates(
     Returns:
         Tuple of (candidates, derived_geometry).
     """
+    from horn_core.acoustics import validate_band
+    validate_band(target_f_low, target_f_high)
+    if num_mouth_radii < 1 or num_lengths < 1:
+        raise ValueError("Geometry grid sizes must be positive")
+    if not throat_radii or any(not np.isfinite(r) or r <= 0 for r in throat_radii):
+        raise ValueError("No usable throat radii: no feasible drivers or invalid radii")
+    if not np.isfinite(ka_max) or ka_max <= 0:
+        raise ValueError("Throat ka cap must be finite and positive")
+    acoustic_cap = C0 * ka_max / (2 * math.pi * target_f_high)
+    if any(r > acoustic_cap * (1 + 1e-12) for r in throat_radii):
+        raise ValueError("Throat radius exceeds the acoustic ka cap at target high frequency")
     if profiles is None:
         profiles = DEFAULT_PROFILES
 
@@ -271,6 +322,22 @@ def main():
         "--num-lengths", type=int, default=3, help="Length grid points."
     )
     parser.add_argument(
+        "--max-length", type=float, default=None,
+        help="Cap (or extend) the upper bound of the derived length range (m).",
+    )
+    parser.add_argument(
+        "--min-length", type=float, default=None,
+        help="Override lower bound of the derived length range (m).",
+    )
+    parser.add_argument(
+        "--max-mouth-radius", type=float, default=None,
+        help="Cap (or extend) upper bound of derived mouth radius range (m).",
+    )
+    parser.add_argument(
+        "--min-mouth-radius", type=float, default=None,
+        help="Override lower bound of derived mouth radius range (m).",
+    )
+    parser.add_argument(
         "--output", type=str, default="candidates.csv", help="Output CSV path."
     )
     parser.add_argument(
@@ -279,6 +346,7 @@ def main():
         default="design.json",
         help="Output design summary JSON.",
     )
+    parser.add_argument("--throat-radius", type=float, default=None, help="Fix throat radius")
     args = parser.parse_args()
 
     prescreen = json.loads(Path(args.prescreen_json).read_text())
@@ -287,11 +355,16 @@ def main():
     candidates, derived = generate_auto_candidates(
         target_f_low=args.target_f_low,
         target_f_high=args.target_f_high,
-        throat_radii=throat_radii,
+        throat_radii=[args.throat_radius] if args.throat_radius is not None else throat_radii,
         mouth_radius=args.mouth_radius,
         length=args.length,
         num_mouth_radii=args.num_mouth_radii,
         num_lengths=args.num_lengths,
+        max_length=args.max_length,
+        min_length=args.min_length,
+        max_mouth_radius=args.max_mouth_radius,
+        min_mouth_radius=args.min_mouth_radius,
+        ka_max=prescreen.get("ka_max", 2 * math.pi),
     )
 
     write_candidates_csv(candidates, args.output)
@@ -301,10 +374,13 @@ def main():
         "target_f_low": derived.target_f_low,
         "target_f_high": derived.target_f_high,
         "ideal_mouth_radius": derived.ideal_mouth_radius,
+        "throat_radius_range": [min(c.throat_radius for c in candidates), max(c.throat_radius for c in candidates)] if candidates else [],
         "mouth_radius_range": list(derived.mouth_radius_range),
         "length_range": list(derived.length_range),
         "sim_freq_range": list(derived.sim_freq_range),
         "candidate_count": derived.candidate_count,
+        "status": derived.status,
+        "reason": derived.reason,
     }
     Path(args.design_json).write_text(json.dumps(design, indent=2))
     print(f"Design summary -> {args.design_json}")

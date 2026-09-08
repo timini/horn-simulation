@@ -10,7 +10,7 @@ build:
     #!/usr/bin/env bash
     set -euo pipefail
     for pkg in {{docker_packages}}; do
-        docker build --platform linux/amd64 -t "$pkg:latest" --target production -f "./packages/$pkg/Dockerfile" .
+        docker build -t "$pkg:latest" --target production -f "./packages/$pkg/Dockerfile" .
     done
 
 # Run all package tests in Docker (build then test)
@@ -18,7 +18,7 @@ test:
     #!/usr/bin/env bash
     set -euo pipefail
     for pkg in {{docker_packages}}; do
-        docker build --platform linux/amd64 -t "$pkg:test" --target test -f "./packages/$pkg/Dockerfile" .
+        docker build -t "$pkg:test" --target test -f "./packages/$pkg/Dockerfile" .
     done
     for pkg in {{docker_packages}}; do
         echo "Running tests for $pkg..."
@@ -27,33 +27,35 @@ test:
 
 # Build and test a single package in Docker: just test-package horn-solver
 test-package pkg:
-    docker build --platform linux/amd64 -t "{{pkg}}:test" --target test -f "./packages/{{pkg}}/Dockerfile" .
-    docker run --platform linux/amd64 --rm "{{pkg}}:test" pytest "/app/packages/{{pkg}}/tests" -v
+    docker build -t "{{pkg}}:test" --target test -f "./packages/{{pkg}}/Dockerfile" .
+    docker run --rm "{{pkg}}:test" pytest "/app/packages/{{pkg}}/tests" -v
 
 # Run tests locally (no Docker — works for horn-core, horn-geometry, horn-analysis)
 test-local:
     #!/usr/bin/env bash
     set -euo pipefail
+    echo "Running horn-drivers tests..."
+    .venv/bin/python -m pytest packages/horn-drivers/tests/ -v
     echo "Running horn-core tests..."
-    python -m pytest packages/horn-core/tests/ -v
+    .venv/bin/python -m pytest packages/horn-core/tests/ -v
     echo "Running horn-analysis tests..."
-    python -m pytest packages/horn-analysis/tests/ -v
+    .venv/bin/python -m pytest packages/horn-analysis/tests/ -v
     echo "Running horn-geometry tests..."
-    cd packages/horn-geometry && python -m pytest tests/ -v
+    .venv/bin/python -m pytest packages/horn-geometry/tests/ -v
 
 # Run the Nextflow pipeline (single mode, default params)
 run *ARGS:
-    nextflow run main.nf -profile docker {{ARGS}}
+    python3 scripts/run_pipeline.py {{ARGS}}
 
 # Run auto mode (unified optimizer): just run-auto --target_f_low 250 --target_f_high 6500
 # Fixed geometry: --mouth_radius 0.15 --length 0.3 (only varies profile)
 # Free geometry: omit mouth_radius/length to derive from frequency band
 run-auto *ARGS:
-    nextflow run main.nf -profile docker --mode auto {{ARGS}}
+    python3 scripts/run_pipeline.py --mode auto {{ARGS}}
 
 # Alias for auto mode with all geometry derived (backward compat)
 run-fullauto *ARGS:
-    nextflow run main.nf -profile docker --mode auto {{ARGS}}
+    python3 scripts/run_pipeline.py --mode auto {{ARGS}}
 
 # Run Nextflow tests
 test-nextflow:

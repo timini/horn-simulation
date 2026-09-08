@@ -11,15 +11,18 @@ mm -> m, g -> kg).  Drivers are classified as "compression" or "cone"
 based on Sd, and nominal diameter is inferred geometrically.
 
 Usage:
-    horn-scrape-drivers --db data/drivers.json
-    horn-scrape-drivers --db data/drivers.json --manufacturers Eminence,BC
-    horn-scrape-drivers --db data/drivers.json --dry-run
+    horn-scrape-drivers --db data/drivers
+    horn-scrape-drivers --db data/drivers --manufacturers Eminence,BC
+    horn-scrape-drivers --db data/drivers --dry-run
 """
 
 import argparse
 import json
 import math
 import random
+import os
+import tempfile
+from email.utils import parsedate_to_datetime
 import re
 import sys
 import time
@@ -39,7 +42,7 @@ DEFAULT_HEADERS = {
     "User-Agent": USER_AGENT,
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-GB,en;q=0.9",
-    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Encoding": "gzip, deflate",
     "Connection": "keep-alive",
     "Upgrade-Insecure-Requests": "1",
 }
@@ -108,7 +111,10 @@ def _retry_after_seconds(resp, fallback: float) -> float:
     raw = resp.headers.get("Retry-After", "").strip()
     if raw.isdigit():
         return float(raw)
-    return fallback
+    try:
+        return max(0.0, parsedate_to_datetime(raw).timestamp() - time.time())
+    except (TypeError, ValueError, OverflowError):
+        return fallback
 
 
 def request(
@@ -131,6 +137,9 @@ def request(
     is pointless and rude, but an overnight run should survive an outage
     rather than abandoning the whole scrape. Set it to 0 to fail fast.
     """
+    if (max_attempts < 1 or not all(math.isfinite(v) for v in (delay, patience_s, timeout, max_backoff))
+            or min(delay, patience_s) < 0 or max_backoff <= 0 or timeout <= 0):
+        raise ValueError("Invalid request retry limits")
     deadline = time.monotonic() + patience_s
     backoff = max(delay, 2.0)
     attempt = 0
@@ -154,13 +163,21 @@ def request(
             print(f"    {reason} for {url} (not retrying)")
             return None
 
+        if status in ORIGIN_ERROR_CODES and patience_s > 0 and time.monotonic() >= deadline:
+            return None
         waiting_out_origin = status in ORIGIN_ERROR_CODES and time.monotonic() < deadline
 
         if status in THROTTLE_CODES:
-            wait = _retry_after_seconds(resp, backoff)
+            if attempt >= max_attempts:
+                print(f"    {reason}: giving up after {attempt} attempts")
+                return None
+            wait = _retry_after_seconds(resp, min(backoff, max_backoff))
+            if not math.isfinite(wait) or wait > max_backoff:
+                print(f"    {reason}: requested retry delay exceeds this run's limit")
+                return None
             print(f"    {reason}: throttled, waiting {wait:.0f}s")
         elif waiting_out_origin:
-            wait = min(backoff, max_backoff)
+            wait = min(backoff, max_backoff, deadline - time.monotonic())
             remaining = (deadline - time.monotonic()) / 60.0
             print(f"    {reason}: origin down, waiting {wait:.0f}s "
                   f"({remaining:.0f} min patience left)")
@@ -171,11 +188,17 @@ def request(
             print(f"    {reason}: giving up on {url} after {attempt} attempts")
             return None
 
-        time.sleep(wait)
+        time.sleep(max(0.0, wait))
+        if waiting_out_origin and time.monotonic() >= deadline:
+            return None
         backoff = min(backoff * 2, max_backoff)
 
 
-class OriginWedged(RuntimeError):
+class ScrapeError(RuntimeError):
+    """Discovery or driver retrieval did not complete successfully."""
+
+
+class OriginWedged(ScrapeError):
     """The site answers 200 but serves the wrong page for the URL requested.
 
     Seen for real: after an outage the origin came back returning one
@@ -197,9 +220,9 @@ def page_identity(soup) -> Optional[str]:
 
 
 def _paths_match(requested_url: str, claimed_path: Optional[str]) -> bool:
-    """True unless the page positively identifies itself as somewhere else."""
+    """Require the page to identify itself as the requested driver."""
     if claimed_path is None:
-        return True  # nothing to check against
+        return False  # an unidentified page cannot safely replace a driver record
     requested = requested_url[len(BASE_URL):] if requested_url.startswith(BASE_URL) else requested_url
     return requested.rstrip("/").lower() == claimed_path.rstrip("/").lower()
 
@@ -249,7 +272,7 @@ def origin_is_healthy(session, delay: float = 0.0) -> bool:
         print(f"  origin answers 200 for a nonexistent path and calls it "
               f"{claimed}; routing is broken, treating as down")
         return False
-    return True
+    return False  # a nonexistent route must be rejected, even without og:url
 
 
 def wait_for_origin(session, patience_s: float, probe_interval: float = 600.0) -> bool:
@@ -306,6 +329,9 @@ def _parse_data_woofer(json_str: str) -> Optional[dict]:
     except (json.JSONDecodeError, TypeError):
         return None
 
+    if not isinstance(raw, dict):
+        return None
+
     fs = raw.get("fs")
     re_ohm = raw.get("re")
     bl = raw.get("bl")
@@ -313,7 +339,8 @@ def _parse_data_woofer(json_str: str) -> Optional[dict]:
     mmd_g = raw.get("mmd")
     le_mh = raw.get("le")
 
-    if not all(v is not None and v > 0 for v in [fs, re_ohm, bl, sd_cm2, mmd_g]):
+    if not all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) and v > 0
+               for v in [fs, re_ohm, bl, sd_cm2, mmd_g]):
         return None
 
     si: Dict[str, float] = {
@@ -325,7 +352,6 @@ def _parse_data_woofer(json_str: str) -> Optional[dict]:
         # driver model needs mmd, because the air load is supplied by the
         # horn impedance and must not also be baked into the mass term.
         "mmd_kg": float(mmd_g) * 1e-3,        # g -> kg, dry moving mass
-        "mms_kg": float(mmd_g) * 1e-3,        # provisional; HTML Mms overrides
     }
 
     if le_mh is not None and le_mh > 0:
@@ -340,7 +366,6 @@ def _parse_data_woofer(json_str: str) -> Optional[dict]:
     if raw.get("pmax") is not None and raw["pmax"] > 0:
         pmax = float(raw["pmax"])
         si["peak_power_w"] = pmax             # pmax is program power
-        si["power_w"] = pmax / 2.0            # RMS ≈ program / 2
 
     return si
 
@@ -425,8 +450,7 @@ def discover_manufacturers(
 
     resp = request(session, BASE_URL, delay=delay, patience_s=patience_s)
     if resp is None:
-        print("ERROR: could not fetch the homepage")
-        return []
+        raise ScrapeError("Could not fetch the manufacturer index")
 
     soup = BeautifulSoup(resp.text, "html.parser")
     manufacturers = set()
@@ -444,6 +468,8 @@ def discover_manufacturers(
                 ):
                     manufacturers.add(mfr)
 
+    if not manufacturers:
+        raise ScrapeError("Manufacturer discovery returned no entries")
     return sorted(manufacturers)
 
 
@@ -487,17 +513,18 @@ def discover_drivers(
     url = f"{BASE_URL}/{manufacturer_slug}"
     resp = request(session, url, delay=delay, patience_s=patience_s)
     if resp is None:
-        print(f"  ERROR: could not fetch {url}")
-        return []
+        raise ScrapeError(f"Could not fetch manufacturer {manufacturer_slug}")
 
     soup = BeautifulSoup(resp.text, "html.parser")
 
     # Extract total result count from the page
     total_count = PAGE_SIZE  # fallback: assume single page
+    count_known = False
     count_el = soup.find("script", class_="count")
     if count_el:
         try:
             total_count = int(count_el.get_text(strip=True))
+            count_known = True
         except (ValueError, TypeError):
             pass
 
@@ -513,13 +540,14 @@ def discover_drivers(
             )
             resp = request(session, page_url, delay=delay, patience_s=patience_s)
             if resp is None:
-                print(f"  WARN: pagination failed at offset={offset}")
-                continue
+                raise ScrapeError(f"Incomplete pagination for {manufacturer_slug} at offset {offset}")
             page_soup = BeautifulSoup(resp.text, "html.parser")
             drivers.extend(
                 _extract_driver_links(page_soup, manufacturer_slug, seen_urls)
             )
 
+    if not drivers or (count_known and len(drivers) != total_count):
+        raise ScrapeError(f"Incomplete driver discovery for {manufacturer_slug}")
     return drivers
 
 
@@ -537,16 +565,20 @@ def _driver_is_current(
     scrape into an idempotent migration: re-run it and only the stale records
     are re-fetched, and an interrupted run resumes exactly where it stopped.
     """
+    _validate_component(manufacturer)
+    _validate_component(driver_id)
     path = db_dir / manufacturer / f"{driver_id}.json"
-    if not path.exists():
-        return False
-    if not required_fields:
-        return True
     try:
-        params = json.loads(path.read_text()).get("parameters", {})
-    except (json.JSONDecodeError, OSError):
+        record = json.loads(path.read_text())
+        if record.get("driver_id") != driver_id or record.get("manufacturer") != manufacturer:
+            return False
+        params = record.get("parameters", {})
+        return all(isinstance(params.get(field), (int, float))
+                   and not isinstance(params[field], bool)
+                   and math.isfinite(params[field]) and params[field] > 0
+                   for field in set(ESSENTIAL_PARAMS) | set(required_fields))
+    except (json.JSONDecodeError, OSError, AttributeError, TypeError):
         return False
-    return all(field in params for field in required_fields)
 
 
 def _load_state(state_path: Optional[Path]) -> dict:
@@ -554,26 +586,43 @@ def _load_state(state_path: Optional[Path]) -> dict:
     if state_path is None or not state_path.exists():
         return {}
     try:
-        return json.loads(state_path.read_text())
+        state = json.loads(state_path.read_text())
+        return state if isinstance(state, dict) else {}
     except (json.JSONDecodeError, OSError):
         return {}
 
 
+def _validate_component(value):
+    if not value or value in (".", "..") or "/" in value or "\\" in value:
+        raise ValueError("Invalid database path component")
+
+
+def _atomic_json(path: Path, value: dict):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", dir=path.parent, delete=False) as stream:
+            temporary = Path(stream.name)
+            json.dump(value, stream, indent=4, allow_nan=False)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
 def _save_state(state_path: Optional[Path], state: dict) -> None:
-    if state_path is None:
-        return
-    state_path.parent.mkdir(parents=True, exist_ok=True)
-    state_path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n")
+    if state_path is not None:
+        _atomic_json(state_path, state)
 
 
 def _save_driver(db_dir: Path, driver: dict) -> None:
-    """Write a single driver dict to its JSON file."""
-    manufacturer = driver.get("manufacturer", "unknown")
-    driver_id = driver["driver_id"]
-    mfr_dir = db_dir / manufacturer
-    mfr_dir.mkdir(parents=True, exist_ok=True)
-    driver_file = mfr_dir / f"{driver_id}.json"
-    driver_file.write_text(json.dumps(driver, indent=4) + "\n")
+    manufacturer, driver_id = driver["manufacturer"], driver["driver_id"]
+    _validate_component(manufacturer)
+    _validate_component(driver_id)
+    _atomic_json(db_dir/manufacturer/f"{driver_id}.json", driver)
 
 
 def scrape_all(
@@ -621,7 +670,10 @@ def scrape_all(
     if max_manufacturers:
         manufacturer_slugs = manufacturer_slugs[:max_manufacturers]
 
+    if not manufacturer_slugs:
+        raise ScrapeError("No manufacturers to scrape")
     total_scraped = 0
+    total_failed = 0
 
     for i, mfr_slug in enumerate(manufacturer_slugs):
         print(f"\n[{i + 1}/{len(manufacturer_slugs)}] {mfr_slug}")
@@ -631,11 +683,11 @@ def scrape_all(
         )
         print(f"  Found {len(driver_entries)} drivers")
         if not driver_entries:
-            print(f"  {mfr_slug}: no drivers discovered, leaving for a later run")
-            continue
+            raise ScrapeError(f"No drivers discovered for {mfr_slug}")
 
         mfr_scraped = 0
         mfr_skipped = 0
+        mfr_failed = 0
         for entry in driver_entries:
             driver_id = slugify(entry["manufacturer"], entry["name"])
             if (not refresh) and db_dir is not None and _driver_is_current(
@@ -657,12 +709,15 @@ def scrape_all(
 
             if params is None:
                 print(" -> SKIP (no params)")
+                mfr_failed += 1
                 continue
 
             # Check essential params
-            missing = [p for p in ESSENTIAL_PARAMS if p not in params]
+            missing = [p for p in ESSENTIAL_PARAMS if not isinstance(params.get(p), (int, float))
+                       or isinstance(params[p], bool) or not math.isfinite(params[p]) or params[p] <= 0]
             if missing:
-                print(f" -> SKIP (missing {', '.join(missing)})")
+                print(f" -> SKIP (missing or invalid {', '.join(missing)})")
+                mfr_failed += 1
                 continue
 
             sd = params["sd_m2"]
@@ -678,6 +733,7 @@ def scrape_all(
                 "model_name": model,
                 "driver_type": driver_type,
                 "parameters": params,
+                "parameter_source": entry["url"],
             }
             if nominal_diameter:
                 driver["nominal_diameter"] = nominal_diameter
@@ -697,10 +753,15 @@ def scrape_all(
             "listed": len(driver_entries),
             "scraped": mfr_scraped,
             "skipped": mfr_skipped,
-            "completed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "failed": mfr_failed,
+            "complete": mfr_failed == 0,
+            "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         }
         _save_state(state_path, state)
+        total_failed += mfr_failed
 
+    if total_failed:
+        raise ScrapeError(f"{total_failed} drivers failed; {total_scraped} successful records were retained for resume")
     return total_scraped
 
 
@@ -755,6 +816,9 @@ def main():
         help="Comma-separated manufacturer slugs as on the site (e.g. Eminence,BC,Oberton)",
     )
     args = parser.parse_args()
+    if (not all(math.isfinite(v) and v >= 0 for v in (args.delay, args.patience_hours))
+            or (args.max_manufacturers is not None and args.max_manufacturers <= 0)):
+        parser.error("Delays and patience must be finite and nonnegative; manufacturer limit must be positive")
 
     mfr_filter = None
     if args.manufacturers:
@@ -788,10 +852,12 @@ def main():
         print("The site is answering but serving the wrong pages. Nothing was "
               "written from this point on; re-run when it recovers.")
         return 2
+    except ScrapeError as exc:
+        print(f"\nFAILED: {exc}")
+        return 1
     print(f"\nScraped {count} drivers total.")
     if count == 0:
-        print("Nothing was scraped. Treating this as a failed run so a retry "
-              "does not mistake it for a completed database.")
+        print("All discovered drivers were already current; resume completed successfully.")
     if db_dir:
         total = sum(1 for _ in db_dir.rglob("*.json"))
         print(f"Database: {db_dir} ({total} drivers)")

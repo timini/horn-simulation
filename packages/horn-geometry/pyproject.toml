@@ -1,10 +1,11 @@
 [project]
+license = "MIT"
 name = "horn-geometry"
 version = "0.1.0"
 description = "Procedural geometry generation for the Horn project."
-license = "MIT"
 dependencies = [
     "numpy",
+    "horn-core",
     "gmsh"
 ]
 

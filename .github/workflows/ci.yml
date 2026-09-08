@@ -8,27 +8,23 @@ on:
 jobs:
   test_nextflow:
     runs-on: ubuntu-latest
-    env:
-      # Pin the toolchain. The installer takes the latest release, so CI
-      # silently changed under us: Nextflow's strict syntax parser became the
-      # default and rejects the Groovy spread operator that nf-test emits in
-      # its generated process harness ("Unexpected input: '*'" on
-      # `run_simulation(*input)`). Nothing in this repo changed. NXF_VER is
-      # read by both the installer and the launcher, so it is set job-wide.
-      NXF_VER: '24.10.5'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
       - name: Install Nextflow
         run: |
-          wget -qO- get.nextflow.io | bash
+          curl -fL https://github.com/nextflow-io/nextflow/releases/download/v24.10.5/nextflow -o nextflow
+          chmod +x nextflow
+          ./nextflow -version
           sudo mv nextflow /usr/local/bin/
       - name: Install nf-test
         uses: nf-core/setup-nf-test@v1
+        with:
+          version: 0.9.5
       - name: Install just
         uses: extractions/setup-just@v2
       - name: Build Docker images
@@ -42,17 +38,29 @@ jobs:
       matrix:
         package: [horn-core, horn-drivers]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install dependencies
         run: |
           pip install -e packages/horn-core
-          pip install -e packages/horn-drivers
+          pip install -e "packages/horn-drivers[test]"
           pip install pytest
       - name: Run tests
         run: pytest packages/${{ matrix.package }}/tests -v
+
+  test_reference_audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install audit dependencies
+        run: pip install -e packages/horn-core -e packages/horn-drivers -e packages/horn-analysis pytest
+      - name: Check reference-audit evidence safeguards
+        run: pytest scripts/tests/test_reference_audit.py -v
 
   test_packages:
     runs-on: ubuntu-latest
@@ -60,15 +68,15 @@ jobs:
       matrix:
         package: [horn-geometry, horn-solver, horn-analysis]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build test image
         run: docker build -t ${{ matrix.package }}:test --target test -f ./packages/${{ matrix.package }}/Dockerfile .
       - name: Run tests (skip validation on PRs)
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            docker run --rm ${{ matrix.package }}:test pytest packages/${{ matrix.package }}/tests -v -m "not validation"
+            docker run --rm ${{ matrix.package }}:test pytest /app/packages/${{ matrix.package }}/tests -v -m "not validation"
           else
-            docker run --rm ${{ matrix.package }}:test pytest packages/${{ matrix.package }}/tests -v
+            docker run --rm ${{ matrix.package }}:test pytest /app/packages/${{ matrix.package }}/tests -v
           fi
       - name: Login to Docker Hub
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'

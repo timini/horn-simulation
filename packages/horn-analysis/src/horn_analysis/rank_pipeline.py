@@ -3,6 +3,7 @@
 Takes a solver CSV, pre-screened drivers, and a target spec, then scores
 and ranks all combinations using coupled SPL from the transfer function.
 """
+from horn_core.acoustics import inlet_area_from_frame
 
 import argparse
 import json
@@ -25,7 +26,7 @@ def rank_horn_drivers(
     drivers: List[DriverParameters],
     target: TargetSpec,
     top_n: int = 10,
-    v_g: float = 2.83,
+    v_g: float = None,
 ) -> List[dict]:
     """Score all drivers against one horn geometry using coupled SPL.
 
@@ -48,48 +49,31 @@ def rank_horn_drivers(
         List of dicts with score + KPI info for top N drivers, sorted by
         composite_score descending.
     """
+    from horn_analysis.evaluation import coupled_output, evaluate_response
+    if top_n < 1:
+        raise ValueError("top_n must be positive")
+    if v_g is not None:
+        from dataclasses import replace
+        target = replace(target, voltage_rms=v_g)
     df = pd.read_csv(solver_csv)
-    freq = df["frequency"].values
-    solver_spl = df["spl"].values
-    z_real = df["z_real"].values
-    z_imag = df["z_imag"].values
-    throat_area = np.pi * throat_radius ** 2
-
-    scores: List[SelectionScore] = []
-
-    for drv in drivers:
-        p_throat = compute_driver_response(
-            drv, freq, z_real, z_imag, throat_area, v_g,
-        )
-        coupled_spl = scale_solver_spl(solver_spl, p_throat)
-        kpi = extract_kpis_from_arrays(freq, coupled_spl)
-        score = compute_selection_score(
-            kpi, target,
-            driver_id=drv.driver_id,
-            horn_label=horn_label,
-        )
-        scores.append(score)
-
-    ranked = rank_candidates(scores, top_n=top_n)
-
     results = []
-    for s in ranked:
-        # Re-compute KPI for the result dict
-        drv = next(d for d in drivers if d.driver_id == s.driver_id)
-        p_throat = compute_driver_response(
-            drv, freq, z_real, z_imag, throat_area, v_g,
-        )
-        coupled_spl = scale_solver_spl(solver_spl, p_throat)
-        kpi = extract_kpis_from_arrays(freq, coupled_spl)
-
+    for drv in drivers:
+        coupled_spl, area, metric = coupled_output(df, drv, target, throat_radius)
+        from horn_analysis.transfer_function import compute_driver_operating_point
+        point = compute_driver_operating_point(drv,df.frequency.to_numpy(),df.z_real.to_numpy(),df.z_imag.to_numpy(),area,target.voltage_rms)
+        mouth_radius = float(np.sqrt(df.mouth_area_m2.iloc[0] / np.pi)) if "mouth_area_m2" in df else None
+        assessment = evaluate_response(df.frequency.to_numpy(), coupled_spl, target, drv, area, mouth_radius=mouth_radius, operating_point=point)
+        kpi = extract_kpis_from_arrays(df.frequency.to_numpy(), coupled_spl)
         results.append({
-            **s.to_dict(),
-            "kpi": kpi.to_dict(),
-            "manufacturer": drv.manufacturer,
-            "model_name": drv.model_name,
+            **assessment, "driver_id": drv.driver_id, "horn_label": horn_label,
+            "kpi": kpi.to_dict(), "manufacturer": drv.manufacturer, "model_name": drv.model_name,
+            "output_metric": metric, "observation_distance_m": target.observation_distance_m,
+            "drive_voltage_rms": target.voltage_rms, "inlet_area_m2": area,
+            "loss_model": str(df.loss_model.iloc[0]) if "loss_model" in df else "lossless",
+            "radiation_model": str(df.radiation_model.iloc[0]) if "radiation_model" in df else "legacy_unknown",
+            "element_degree": int(df.element_degree.iloc[0]) if "element_degree" in df else 1,
         })
-
-    return results
+    return sorted(results, key=lambda r: (-r["composite_score"], r["driver_id"]))[:top_n]
 
 
 def main():

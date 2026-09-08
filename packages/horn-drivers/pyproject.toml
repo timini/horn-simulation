@@ -1,8 +1,8 @@
 [project]
+license = "MIT"
 name = "horn-drivers"
 version = "0.1.0"
 description = "Driver database, loader, scraper and validation for the Horn project."
-license = "MIT"
 dependencies = [
     "numpy",
     "horn-core",
@@ -13,7 +13,7 @@ horn-scrape-drivers = "horn_drivers.scraper:main"
 horn-validate-drivers = "horn_drivers.validator:main"
 
 [project.optional-dependencies]
-test = ["pytest"]
+test = ["pytest", "requests", "beautifulsoup4"]
 scrape = ["requests", "beautifulsoup4"]
 
 [build-system]

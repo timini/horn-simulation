@@ -134,4 +134,5 @@ report.html
 dag.dot
 dag.png
 results/
-nf-test 
+nf-test
+.nf-test/

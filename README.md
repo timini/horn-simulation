@@ -11,9 +11,18 @@ An open-source tool for acoustic horn design. Give it a target frequency band an
 
 Built for audio engineers, acousticians, DIY speaker builders, and researchers.
 
+**Current status: experimental predictions.** The complete automatic workflow runs, including bounded refinement, failure checks and reports. Its driver/interface and listening-distance output models have not passed independent physical validation. Missing driver evidence is reported as `insufficient_evidence`; an unsuccessful search returns no feasible design. Acoustic STEP exports describe an air volume, not fabrication-ready hardware.
+
+Use `just run-auto --target_f_low 500 --target_f_high 4000` for an isolated run. The launcher writes a manifest, source snapshot and container hashes under a new `results/<run-id>/` directory. Defaults are 2.83 V RMS, 1 m from the mouth, 6 dB maximum band ripple, a uniform baffled-piston observer, ten screened geometries and six additional refinement evaluations. Override these with `--voltage_rms`, `--observation_distance`, `--max_ripple_db`, `--lem_top_n` and `--refinement_budget`. Fix dimensions or set minimum/maximum search bounds when space is limited.
+
+Optional thermoviscous losses and finite-flange pipe radiation now have independent impedance checks; see [the measured results and remaining failures](docs/LOSS_PHYSICS_VALIDATION.md). Legacy FEM–BEM horn coupling and directivity are disabled pending a correct exterior model.
+
+See [acoustic assumptions](docs/ACOUSTIC_CONTRACT.md), [existing measurement sources and importer](docs/VALIDATION_DATA.md), and [implementation/validation status](docs/IMPLEMENTATION_STATUS.md). Resume only an unchanged source/data/container/Nextflow snapshot with `python scripts/run_pipeline.py --run-dir results/<run-id> -resume`.
+
+
 ## Key features
 
-- **3 horn profiles** — conical, exponential, hyperbolic
+- **7 horn profiles** — conical, exponential, hyperbolic, tractrix, oblate spheroid, Le Cléac’h, and constant directivity
 - **FEM Helmholtz solver** — FEniCSx/dolfinx with adaptive meshing and radiation BC
 - **Driver database** with Thiele-Small parameter coupling
 - **3 operating modes** — single simulation, auto comparison, full-auto design exploration
@@ -72,6 +81,8 @@ flowchart TB
 
 Simulate one horn with explicit geometry parameters and get a frequency response plot.
 
+For imported geometry, supply both `--step_file path/to/horn.step` and `--length` in metres. The supported orientation has the inlet at z = 0 and the outlet at z = length; imported files do not inherit the parametric 0.5 m default. Reports use actual CAD boundary areas and omit inferred circular radii; supply `--horn_3d_png` for your own geometry image, otherwise the report shows an explicit placeholder.
+
 ```bash
 nextflow run main.nf -profile docker \
     --throat_radius 0.05 --mouth_radius 0.2 --length 0.5
@@ -79,7 +90,7 @@ nextflow run main.nf -profile docker \
 
 ### Auto mode
 
-Fix the geometry, simulate all 3 profiles (conical, exponential, hyperbolic), couple every pre-screened driver, and rank the combinations. Only 3 FEM simulations — driver coupling is pure Python via the transfer function.
+Fix any dimensions you know, derive the others from the band, screen seven profile families, evaluate a shortlist with FEM, and refine within a fixed budget. Ranking uses the requested band and records infeasible combinations and missing evidence.
 
 ```bash
 nextflow run main.nf -profile docker --mode auto \
@@ -89,7 +100,7 @@ nextflow run main.nf -profile docker --mode auto \
 
 ### Fullauto mode
 
-Specify **only** a target frequency band. The system derives horn geometry analytically (mouth radius from cutoff frequency, length from quarter-wave to half-wave), generates a grid of 3 profiles x N mouth radii x N lengths, runs FEM on all candidates, couples with pre-screened drivers, and ranks everything.
+Specify **only** a target frequency band. The system derives horn geometry analytically (mouth radius from cutoff frequency, length from quarter-wave to half-wave), generates a grid of seven profiles and candidate dimensions, screens it analytically, runs FEM on a shortlist, and refines promising dimensions. Reports describe the best evaluated candidates, not a proven global optimum.
 
 ```bash
 nextflow run main.nf -profile docker --mode fullauto \
@@ -121,7 +132,7 @@ nextflow run main.nf -profile docker --mode fullauto \
 Open the report:
 
 ```bash
-open results/fullauto/report/auto_report.html
+# Open the auto/report/auto_report.html path under the run directory printed by the launcher.
 ```
 
 ### Test
@@ -236,28 +247,15 @@ For example, at `f_max = 8000 Hz`: λ_min = 43 mm, so h_adaptive = 7.1 mm.
 
 ### SPL calculation
 
-The primary level reported by the solver is the **mouth-plane SPL**: the RMS pressure
-averaged over the outlet surface (the horn mouth), referenced to 20 µPa.
+Sound Pressure Level is computed from the RMS pressure integrated over the **outlet surface** (horn mouth), giving a physically meaningful metric independent of mesh refinement or horn volume:
 
 ```
 p_rms = √( ∫_outlet |p|² ds  /  A_outlet )
 
-mouth-plane SPL = 20 × log₁₀(p_rms / p_ref)
+SPL = 20 × log₁₀(p_rms / p_ref)
 ```
 
-where `p_ref = 20 µPa`. The outlet area `A_outlet` is computed once before the
-frequency loop since the mesh is static.
-
-**This is not a 1 W / 1 m sensitivity.** It is the pressure on the mouth aperture
-itself, at zero distance, averaged over an aperture that may be tens of centimetres
-across. It is self-consistent, so it ranks candidate geometries correctly, but it is
-not directly comparable with a manufacturer sensitivity figure, a Hornresp or AKABAK
-result, or a measurement.
-
-For a figure that is comparable, the pipeline also reports an **estimated on-axis SPL
-at 1 m**, derived from the mouth volume velocity with an analytical radiator model.
-That estimate carries its own assumptions and accuracy limits, both documented in
-[docs/model-assumptions.md](docs/model-assumptions.md).
+where `p_ref = 20 µPa` is the standard acoustic reference pressure. The outlet area `A_outlet` is computed once before the frequency loop since the mesh is static.
 
 ### Frequency sweep
 
@@ -319,4 +317,16 @@ Contributions welcome. Please open an issue first to discuss what you'd like to 
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Project code is available under the [MIT licence](LICENSE). External reference datasets retain the source-specific terms recorded in the validation catalog.
+
+
+### Resumable driver imports
+
+Install the scraper extras with `pip install -e "packages/horn-drivers[scrape]"`.
+Run `horn-scrape-drivers --db data/drivers --manufacturers Eminence --state results/scrape-state.json`.
+Already valid records with the required fields are skipped; use `--refresh` to explicitly refetch them.
+Writes replace individual files atomically, so interrupted or failed refreshes preserve the last good record.
+Discovery failures, incomplete pagination and failed driver retrieval return a failure status; an all-current resume succeeds.
+`--patience-hours` optionally waits through origin outages, while throttling retries remain bounded.
+
+Driver pages must identify the requested URL. Missing Mms is not replaced with dry Mmd, and program power is not converted into an assumed continuous rating. Records lacking essential known parameters are rejected; additional chamber/interface validation is still required before making physical driver recommendations.

@@ -430,6 +430,8 @@ source = { editable = "packages/horn-core" }
 dependencies = [
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
 
 [package.optional-dependencies]
@@ -441,6 +443,7 @@ test = [
 requires-dist = [
     { name = "numpy" },
     { name = "pytest", marker = "extra == 'test'" },
+    { name = "scipy" },
 ]
 provides-extras = ["test"]
 
@@ -460,16 +463,20 @@ scrape = [
     { name = "requests" },
 ]
 test = [
+    { name = "beautifulsoup4" },
     { name = "pytest" },
+    { name = "requests" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "beautifulsoup4", marker = "extra == 'scrape'" },
+    { name = "beautifulsoup4", marker = "extra == 'test'" },
     { name = "horn-core", editable = "packages/horn-core" },
     { name = "numpy" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "requests", marker = "extra == 'scrape'" },
+    { name = "requests", marker = "extra == 'test'" },
 ]
 provides-extras = ["test", "scrape"]
 
@@ -479,6 +486,7 @@ version = "0.1.0"
 source = { editable = "packages/horn-geometry" }
 dependencies = [
     { name = "gmsh" },
+    { name = "horn-core" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
@@ -491,6 +499,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "gmsh" },
+    { name = "horn-core", editable = "packages/horn-core" },
     { name = "numpy" },
     { name = "pytest", marker = "extra == 'test'" },
 ]

@@ -78,7 +78,7 @@ def report_inputs(tmp_path):
                 "composite_score": 0.85 - i * 0.05 - list(solver_csvs).index(profile) * 0.02,
                 "bandwidth_coverage": 0.90 - i * 0.1,
                 "passband_ripple_db": 2.5 + i * 0.5,
-                "avg_level_db": 92.0 - i * 2.0,
+                "avg_sensitivity_db": 92.0 - i * 2.0,
                 "kpi": {
                     "f3_low_hz": 520.0,
                     "f3_high_hz": 3800.0,
@@ -136,3 +136,36 @@ class TestHtmlReport:
         out_file = tmp_path / "report.html"
         out_file.write_text(result)
         assert out_file.stat().st_size > 50_000
+
+
+def test_variable_throats_appear_in_table_summary_and_candidate_renders(report_inputs, monkeypatch):
+    import horn_analysis.html_report as report
+    radii = [.012, .018, .024]
+    for i, row in enumerate(report_inputs['all_ranked']):
+        row.update(throat_radius=radii[i % 3], mouth_radius=.1, length=.2, profile=row['horn_label'])
+    rendered = []
+    monkeypatch.setattr(report, 'fig_to_b64_3d', lambda **kw: rendered.append(kw['throat_radius']) or 'data:image/png;base64,')
+    text = generate_html_report(**report_inputs, mouth_radius=.1, length=.2,
+                               derived_geometry={'throat_radius_range':[.012,.024],
+                                                 'mouth_radius_range':[.1,.1], 'length_range':[.2,.2]})
+    assert 'Throat radius: 0.0120 — 0.0240 m (search range)' in text
+    assert '<th>Throat R (m)</th>' in text
+    assert '<td>0.0120</td>' in text and '<td>0.0180</td>' in text
+    assert '<dt>Throat radius range</dt><dd>0.0120 — 0.0240 m</dd>' in text
+    assert set(rendered) == set(radii)
+
+
+def test_imported_report_uses_cad_areas_without_parametric_dimensions(tmp_path):
+    from horn_analysis.single_report import generate_single_report
+    import base64
+    png = tmp_path/'image.png'
+    png.write_bytes(base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aGUcAAAAASUVORK5CYII='))
+    csv = tmp_path/'results.csv'
+    pd.DataFrame({'frequency':[100,200], 'inlet_area_m2':[.001,.001], 'mouth_area_m2':[.008,.008]}).to_csv(csv,index=False)
+    text = generate_single_report(.05,.2,.08,'conical',{},*[str(png)]*5,
+                                  final_csv=str(csv),imported_geometry=True)
+    assert 'Inlet area (CAD)</dt><dd>0.001 m²' in text
+    assert '<dt>Throat radius</dt>' not in text
+    assert '<dt>Mouth diameter</dt>' not in text
+    assert 'Throat: 100.0 mm' not in text
+    assert 'Imported step' in text

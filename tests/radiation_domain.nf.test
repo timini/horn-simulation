@@ -1,0 +1,109 @@
+nextflow_pipeline {
+    name "Finite-flange search domain"
+    script "../main.nf"
+    config "nextflow.config"
+    profile "docker"
+
+    test("Mixed flange candidates and invalid refinement trials keep valid designs") {
+        when {
+            params {
+                mode = "auto"
+                target_f_low = 1000
+                target_f_high = 1100
+                drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                throat_radius = 0.01
+                min_mouth_radius = 0.029
+                max_mouth_radius = 0.033
+                num_mouth_radii = 2
+                length = 0.08
+                radiation_model = "finite_flange"
+                flange_width = 0.03
+                max_ripple_db = 100
+                lem_top_n = 1
+                refinement_budget = 2
+                num_bands = 2
+                num_intervals = 6
+                mesh_size = 0.01
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            def lem = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/lem_results.json"))
+            assert lem.filtered_candidate_ids.size() == 1
+            assert lem.rankings.any { it.simulation_eligible == false }
+            def rank = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/refinement/ranked_results.json"))
+            assert rank.results.size() > 0
+            assert rank.refinement.domain_rejected_candidates.size() == 1
+            assert rank.refinement.fem_evaluations == 1
+            assert rank.refinement.new_evaluations == 2
+            assert rank.total_candidates == 2
+            assert rank.total_scored == 2
+            assert rank.rejected.any { it.rejection_reasons.contains("radiation_model_out_of_domain") }
+            assert new File("${outputDir}/auto/report/auto_report.html").exists()
+        }
+    }
+
+    test("All out-of-domain geometries produce an explicit empty report") {
+        when {
+            params {
+                mode = "auto"
+                target_f_low = 1000
+                target_f_high = 1100
+                drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                throat_radius = 0.01
+                mouth_radius = 0.07
+                length = 0.08
+                radiation_model = "finite_flange"
+                flange_width = 0.03
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            def rank = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/ranked_results.json"))
+            assert !new File("${outputDir}/auto/report/auto_report.html").text.contains("Throat radius: 0.0000")
+            assert new File("${outputDir}/auto/report/auto_summary.txt").text.contains("Throat radius: not available")
+            assert rank.status == "no_feasible_design"
+            assert rank.reason == "no_geometry_in_radiation_domain"
+            assert rank.total_candidates == 0
+            assert rank.total_scored == 0
+            assert rank.analytical_candidates_evaluated > 0
+            assert rank.analytical_pairs_evaluated == rank.rejected.size()
+            assert rank.rejected.size() > 0
+            assert rank.rejected.every { it.rejection_reasons.contains("radiation_model_out_of_domain") }
+            assert new File("${outputDir}/auto/report/auto_report.html").text.contains("radiation model domain")
+        }
+    }
+    test("Mixed unflanged candidates keep valid designs") {
+        when {
+            params {
+                mode = "auto"
+                target_f_low = 1000
+                target_f_high = 1100
+                drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                throat_radius = 0.01
+                min_mouth_radius = 0.03
+                max_mouth_radius = 0.07
+                num_mouth_radii = 2
+                length = 0.08
+                radiation_model = "unflanged_piston"
+                flange_width = 0.03
+                max_ripple_db = 100
+                lem_top_n = 1
+                refinement_budget = 0
+                num_bands = 2
+                num_intervals = 6
+                mesh_size = 0.01
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            def lem = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/lem_results.json"))
+            assert lem.filtered_candidate_ids.size() == 1
+            assert lem.rankings.any { it.simulation_eligible == false }
+            assert new File("${outputDir}/auto/report/auto_report.html").exists()
+        }
+    }
+}

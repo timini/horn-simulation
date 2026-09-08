@@ -1,0 +1,63 @@
+{
+  "interrupted_status": "completed",
+  "uninterrupted_status": "completed",
+  "resumed_session_id": "65060236-8753-4e5f-8605-7d3efcbcefd8",
+  "uninterrupted_session_id": "bcec6072-47c9-46f1-a122-3a6461d5d50f",
+  "file_count": 24,
+  "different_files": [
+    "auto/refinement/refine_0000.step",
+    "resolved_specification.json",
+    "auto/report/auto_report.html",
+    "auto/geometry/horn_auto_exp_0002.step",
+    "auto/geometry/horn_auto_cd_0012.step"
+  ],
+  "numerical_and_ranking_files_byte_identical": true,
+  "metadata_only_differences": [
+    "auto/refinement/refine_0000.step",
+    "resolved_specification.json",
+    "auto/report/auto_report.html",
+    "auto/geometry/horn_auto_exp_0002.step",
+    "auto/geometry/horn_auto_cd_0012.step"
+  ],
+  "semantic_comparison_passed": true,
+  "source_revision": "a7340a1",
+  "interruption": {
+    "interrupted_after_completed_tasks": true,
+    "initial_exit_code": -2,
+    "completed_task_count_at_interrupt": 3,
+    "arguments": [
+      "python3",
+      "scripts/run_pipeline.py",
+      "--run-dir",
+      "/tmp/horn-81-release-evidence/interrupted",
+      "--mode",
+      "auto",
+      "--target_f_low",
+      "1000",
+      "--target_f_high",
+      "1200",
+      "--throat_radius",
+      "0.025",
+      "--mouth_radius",
+      "0.05",
+      "--min_length",
+      "0.07",
+      "--max_length",
+      "0.09",
+      "--num_lengths",
+      "2",
+      "--drivers_db",
+      "tests/data/smoke_drivers.json",
+      "--num_intervals",
+      "12",
+      "--num_bands",
+      "2",
+      "--lem_top_n",
+      "2",
+      "--refinement_budget",
+      "1",
+      "--mesh_size",
+      "0.01"
+    ]
+  }
+}

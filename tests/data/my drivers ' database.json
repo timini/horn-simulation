@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "drivers": [
+    {
+      "driver_id": "synthetic ' smoke",
+      "manufacturer": "Test fixture",
+      "model_name": "Synthetic motor (not a product)",
+      "parameters": {
+        "fs_hz": 200,
+        "re_ohm": 6,
+        "bl_tm": 6,
+        "sd_m2": 0.002,
+        "mms_kg": 0.004,
+        "le_h": 5e-05,
+        "qes": 0.4,
+        "qms": 5
+      }
+    }
+  ]
+}
