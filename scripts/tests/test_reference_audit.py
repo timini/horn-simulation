@@ -240,3 +240,50 @@ def test_replaced_archive_and_manifest_cannot_replace_catalog_identity(tmp_path)
     reference["sha256"] = audit.sha(archive)
     with pytest.raises(ValueError, match="pinned catalog"):
         audit.verify_reference_source({"reference": reference}, archive)
+
+
+def test_imports_are_reconstructed_from_archive_before_trusting_csvs(tmp_path):
+    from io import BytesIO
+    from zipfile import ZipFile
+    from horn_analysis.reference_data import import_pipe_archive
+    data = BytesIO()
+    with ZipFile(data, "w") as archive:
+        archive.writestr("Raw_data/Measured_Impedance/A/Brass_O/measurement.txt", "100 1 0\n200 2 0\n")
+    path = tmp_path/"reference.zip"
+    path.write_bytes(data.getvalue())
+    manifest = import_pipe_archive(data.getvalue(), {"id": "test", "sha256": audit.sha(path)}, tmp_path/"curves")
+    audit.verify_imported_curves(manifest, path, tmp_path/"curves")
+    curve = manifest["curves"][0]
+    csv = tmp_path/"curves"/curve["csv"]
+    csv.write_text(csv.read_text().replace("2.0", "20.0"))
+    with pytest.raises(ValueError, match="values disagree with source archive"):
+        audit.verify_imported_curves(manifest, path, tmp_path/"curves")
+    curve["csv_sha256"] = audit.sha(csv)
+    with pytest.raises(ValueError, match="manifest disagrees with source archive"):
+        audit.verify_imported_curves(manifest, path, tmp_path/"curves")
+
+
+def test_report_date_comes_from_authenticated_run():
+    assert renderer.audited_date({"created_utc": "2026-10-12T12:00:00+00:00"}, {"audit_date": "2026-10-12"}) == "12 October 2026"
+    with pytest.raises(ValueError, match="date disagrees"):
+        renderer.audited_date({"created_utc": "2026-10-12T12:00:00+00:00"}, {"audit_date": "2026-09-08"})
+
+
+def test_search_solver_values_must_match_independent_pins(tmp_path, monkeypatch):
+    protocol = {"sim_band": [100., 200.]}
+    candidate = {"candidate_id": "test", "throat_radius": .01, "mouth_radius": .02}
+    (tmp_path/"protocol.json").write_text(json.dumps(protocol))
+    result = tmp_path/"result.json"
+    result.write_text(json.dumps({"candidates": [candidate]}))
+    monkeypatch.setattr(renderer, "validate_search_configuration", lambda *args: None)
+    frame = pd.DataFrame({"frequency": np.geomspace(100, 200, 100), "inlet_area_m2": np.pi*.01**2,
+        "mouth_area_m2": np.pi*.02**2, "spl": np.zeros(100)})
+    csv = tmp_path/"test_results.csv"
+    frame.to_csv(csv, index=False)
+    (tmp_path/"test.step").write_text("geometry")
+    pins = {p.name: renderer.file_sha(p) for p in [csv, tmp_path/"test.step", tmp_path/"protocol.json"]}
+    renderer.load_verified_search(result, pins)
+    frame["spl"] += 10
+    frame.to_csv(csv, index=False)
+    with pytest.raises(ValueError, match="independently pinned response hashes"):
+        renderer.load_verified_search(result, pins)

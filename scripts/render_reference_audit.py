@@ -3,6 +3,7 @@
 import argparse
 import base64
 import hashlib
+from datetime import date, datetime, timezone
 from html import escape
 import json
 from pathlib import Path
@@ -136,7 +137,7 @@ def validate_search_configuration(result, protocol):
         raise ValueError("Inconsistent search verdict")
 
 
-def load_verified_search(path):
+def load_verified_search(path, expected_hashes):
     result = json.loads(path.read_text())
     protocol_path = path.parent/"protocol.json"
     protocol = json.loads(protocol_path.read_text())
@@ -156,6 +157,8 @@ def load_verified_search(path):
                 raise ValueError("Search response area disagrees with geometry")
         for artifact in (csv, path.parent/f"{name}.step"):
             hashes[artifact.name] = file_sha(artifact)
+    if hashes != expected_hashes:
+        raise ValueError("Search artifacts disagree with independently pinned response hashes")
     return result, hashes
 
 
@@ -198,6 +201,16 @@ def load_verified_resonance(path):
     return result, file_sha(protocol_path)
 
 
+def audited_date(protocol, evidence):
+    created = datetime.fromisoformat(protocol["created_utc"])
+    if created.tzinfo is None:
+        raise ValueError("Audit timestamp needs an explicit timezone")
+    day = created.astimezone(timezone.utc).date()
+    if day != date.fromisoformat(evidence["audit_date"]):
+        raise ValueError("Evidence date disagrees with authenticated protocol")
+    return f"{day.day} {day.strftime('%B %Y')}"
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--audit-dir", type=Path, required=True)
@@ -212,12 +225,13 @@ def main():
     args = parser.parse_args()
     root, out = args.audit_dir, args.output_dir
     out.mkdir(parents=True, exist_ok=True)
-    pins = json.loads(args.evidence_manifest.read_text())["sha256"]
+    evidence = json.loads(args.evidence_manifest.read_text())
+    pins = evidence["sha256"]
     audit = load_pinned_json(root/"audit.json", pins["audit"])
     for name, path in (("search", args.search_json), ("resonance", args.resonance_json),
                        ("inventory", args.inventory_json)):
         load_pinned_json(path, pins[name])
-    search, search_artifact_hashes = load_verified_search(args.search_json)
+    search, search_artifact_hashes = load_verified_search(args.search_json, evidence["search_artifact_sha256"])
     resonance, resonance_protocol_sha256 = load_verified_resonance(args.resonance_json)
     manifest = json.loads((args.reference_dir/"manifest.json").read_text())
     protocol = json.loads((root/"protocol.json").read_text())
@@ -225,6 +239,7 @@ def main():
     verify_prediction_hashes(root, audit)
     if hashlib.sha256((root/"protocol.json").read_bytes()).hexdigest() != audit["protocol_sha256"]:
         raise ValueError("Changed protocol")
+    report_date = audited_date(protocol, evidence)
     if hashlib.sha256((args.reference_dir/"manifest.json").read_bytes()).hexdigest() != protocol["manifest_sha256"]:
         raise ValueError("Changed manifest")
     plt.rcParams.update({"font.size": 9, "axes.spines.top": False, "axes.spines.right": False})
@@ -300,9 +315,9 @@ def main():
     picture = base64.b64encode((out/"reference-comparison.png").read_bytes()).decode()
     search_heading = "The search passed its benchmark." if search["passed"] else "The search audit failed."
     html = f"""<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Horn reference validation — 8 September 2026</title><style>
+<title>Horn reference validation — {report_date}</title><style>
 body{{font:16px/1.55 system-ui,sans-serif;color:#213142;background:#f4f6f8;margin:0}}main{{max-width:1200px;margin:auto;padding:36px}}h1{{font-size:36px;line-height:1.15}}h2{{margin-top:36px}}p{{max-width:1000px}}.verdict{{background:#fff2d9;border-left:5px solid #bc7310;padding:18px 22px}}.cards{{display:flex;flex-wrap:wrap;gap:16px;margin:24px 0}}.card{{background:white;padding:20px;flex:1;min-width:170px;border-radius:8px}}.card b{{font-size:30px;display:block}}table{{border-collapse:collapse;width:100%;font-size:13px;background:white;margin:15px 0}}th,td{{text-align:left;padding:9px;border-bottom:1px solid #dce2e7;overflow-wrap:anywhere}}th{{background:#e7eef3}}.scroll{{overflow:auto}}img{{width:100%;height:auto}}summary{{cursor:pointer;font-weight:650;padding:12px 0}}a{{color:#006979}}code{{overflow-wrap:anywhere}}small{{color:#586b7b}}
-</style><main><small>REFERENCE AUDIT · 8 SEPTEMBER 2026</small><h1>{search_heading}<br>The acoustic model is only partly validated.</h1>
+</style><main><small>REFERENCE AUDIT · {report_date.upper()}</small><h1>{search_heading}<br>The acoustic model is only partly validated.</h1>
 <div class="verdict">This fresh audit checks every acquired pipe reference and repeats the finite-grid optimiser benchmark. It does <strong>not</strong> certify complete horn-and-driver response, absolute SPL, off-axis behaviour or physical recommendation ordering. Failed comparisons remain failures.</div>
 <div class="cards"><div class="card"><b>{totals['tmm_magnitude_passes']}/299</b>measured curves within dense TMM magnitude limits</div><div class="card"><b>{totals['fem_sampled_magnitude_passes']}/299</b>within production FEM sampled magnitude limits</div><div class="card"><b>{totals['independent_simulation_sampled_magnitude_matches']}/40</b>independent simulations matching at supplied frequencies</div><div class="card"><b>{sum(c['audit']['passed'] for c in search['cases'])}/4</b>optimiser audit bands passed</div></div>
 <h2>What was compared</h2><p><a href="https://zenodo.org/records/20024938">Ernoult and colleagues’ reference archive</a> provides 299 measured and 40 independently simulated impedance curves. Eight measured configurations reduce to five distinct nominal rigid-wall air-domain models; ABS and wood compliance are not modeled. All original curve hashes were checked. The verified import inventory contains {imports['curves']} curves ({imports['unique_curve_files']} unique files) from {imports['archives']} checksum-verified archives. Its {imports['diy_curves']} DIY response/electrical-impedance curves remain unmatched to a fully specified supported assembly.</p>

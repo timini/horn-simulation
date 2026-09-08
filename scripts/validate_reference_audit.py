@@ -14,6 +14,7 @@ import multiprocessing
 from pathlib import Path
 import subprocess
 import time
+from tempfile import TemporaryDirectory
 
 import numpy as np
 import pandas as pd
@@ -49,6 +50,21 @@ def verify_reference_source(manifest, archive, catalog_path=None):
         raise ValueError("Reference identity disagrees with pinned catalog")
     if sha(archive) != expected["sha256"]:
         raise ValueError("Source archive checksum mismatch")
+
+
+def verify_imported_curves(manifest, archive, root):
+    from horn_analysis.reference_data import import_pipe_archive
+    # Rebuild from the already authenticated archive: manifest-supplied hashes
+    # alone cannot authenticate imported values or prove that no curve is missing.
+    with TemporaryDirectory(prefix="horn-reference-check-") as temporary:
+        expected = import_pipe_archive(Path(archive).read_bytes(), manifest["reference"], temporary)
+        supplied = [{k: v for k, v in c.items() if k != "duplicate_of"}
+                    for c in manifest["curves"]]
+        if supplied != expected["curves"]:
+            raise ValueError("Imported curve manifest disagrees with source archive")
+        for curve in expected["curves"]:
+            if sha(Path(root)/curve["csv"]) != curve["csv_sha256"]:
+                raise ValueError("Imported curve values disagree with source archive")
 
 
 def write_json(path, value):
@@ -188,6 +204,7 @@ def main():
         parser.error("workers must be between 1 and 5")
     manifest = json.loads((root/"manifest.json").read_text())
     verify_reference_source(manifest, args.archive)
+    verify_imported_curves(manifest, args.archive, root)
     out.mkdir(parents=True)
     started = time.perf_counter()
     sources = sorted(set(Path("packages").glob("*/src/**/*.py")))
