@@ -14,7 +14,7 @@ The fresh audit supports the numerical solver and the finite-grid search, but th
 | Mesh convergence | **5/5** geometries pass | Largest 4 mm → 3 mm impedance change: **0.0174 dB**, at 121 common frequencies |
 | Exhaustive search audit | **4/4** bands pass | All feasible top-ten results and winners retained; zero score regret |
 | Published conical-horn scalar | Measured **1712 Hz**, predicted **1712.6 Hz** | One resonance-frequency check, with unverified air/lip conditions |
-| Focused safeguards/import/comparison tests | **44 passed** | Invalid evidence is rejected; phase and magnitude remain distinct |
+| Focused safeguards/import/comparison tests | **51 passed** | Invalid evidence is rejected; phase and magnitude remain distinct |
 
 The full pipe audit took **9 minutes 10 seconds**, including 3,615 production FEM frequency solves, dense analytical predictions, comparisons and convergence checks. The separate search benchmark took **6 minutes 29 seconds**. The machine-readable summary is [reference_audit_2026_09_08.json](../data/validation/reference_audit_2026_09_08.json).
 
@@ -63,7 +63,7 @@ The measured pipe results apply to **opt-in boundary-layer losses and matched pi
 
 Local complete evidence is under `results/reference-validation-2026-09-08/`: `final/audit.json`, the frozen protocol/prediction hashes, all raw solver and analytical predictions, `search/search_benchmark.json`, `sa-park/comparison.json`, verified reimported archives and the standalone `report/reference-report.html`.
 
-The final run uses the unchanged merged production physics. Its original execution hashes are retained. Review subsequently added a fail-closed health guard; all 15 final CSVs were rechecked through that guard and passed (`final/final-health-guard-recheck.json`). The final successful run shuts worker processes down gracefully and has no PETSc/MPI abort messages. Tests cover rejecting bad health, changed archives, overwritten evidence, mixed prediction manifests, missing/changed imports and mismatched frozen air constants.
+The final run uses the unchanged merged production physics. Its original execution hashes are retained. Review subsequently added fail-closed health and mesh guards; all 15 final CSVs and five mesh comparisons were rechecked through those guards and passed (`final/final-health-guard-recheck.json`). The final successful run shuts worker processes down gracefully and has no PETSc/MPI abort messages. Tests cover rejecting bad health, changed archives, overwritten evidence, mixed prediction manifests, missing/changed imports mismatched frozen air constants, failed mesh convergence, stale search configurations and changed resonance evidence. The rendered report verifies the separate search and resonance protocols and their raw artifacts.
 
 After building the solver image and importing the pinned archives, run from the repository root with a new output directory:
 

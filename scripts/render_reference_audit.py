@@ -12,6 +12,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from scipy.signal import find_peaks
+from horn_analysis.search import screening_audit
 
 from validate_reference_audit import interpolate
 
@@ -74,6 +76,101 @@ def verify_import_inventory(path):
             "diy_curves": diy_curves, "inventory_sha256": file_sha(path)}
 
 
+def validate_search_configuration(result, protocol):
+    bands = [[800, 1600, "development"], [1000, 1200, "held_out"],
+             [1200, 2000, "held_out"], [600, 1000, "held_out"]]
+    expected = {"benchmark": "finite_grid_manufacturer_motors_v2", "bands": bands,
+                "geometry_count": 20, "driver_count": 3, "frequencies": 100,
+                "mesh_size": .008, "shortlist_budget": 10, "score_regret_limit": .02,
+                "top_ten_recall_limit": .9, "minimum_feasible_pairs_per_case": 10,
+                "physical_validation_passed": False,
+                "sim_band": [600/2**.5, 2000*2**.5]}
+    if any(protocol.get(k) != v for k, v in expected.items()):
+        raise ValueError("Unexpected search benchmark configuration")
+    if any(result.get(k) != v for k, v in protocol.items()):
+        raise ValueError("Search result disagrees with frozen protocol")
+    if (len(result["candidates"]) != 20 or len(result["drivers"]) != 3
+            or len(result["cases"]) != 4):
+        raise ValueError("Search benchmark case/count mismatch")
+    expected_geometry = {(p, .0225, m, length) for p in ("conical", "exponential")
+                         for m in (.045, .07) for length in (.04, .055, .07, .085, .10)}
+    actual_geometry = {(c["profile"], c["throat_radius"], c["mouth_radius"], c["length"])
+                       for c in result["candidates"]}
+    if actual_geometry != expected_geometry or len({c["candidate_id"] for c in result["candidates"]}) != 20:
+        raise ValueError("Unexpected search geometry grid")
+    if len({d["driver_id"] for d in result["drivers"]}) != 3:
+        raise ValueError("Duplicate search driver")
+    for case, (low, high, role) in zip(result["cases"], bands):
+        if (case["target"]["f_low_hz"], case["target"]["f_high_hz"], case["role"]) != (low, high, role):
+            raise ValueError("Unexpected search target band")
+        if len(case["exhaustive"]) != 60:
+            raise ValueError("Incomplete exhaustive search")
+        check = screening_audit(case["exhaustive"], case["screening"]["filtered_candidate_ids"])
+        check["feasible_pair_count"] = sum(r["model_feasible"] for r in case["exhaustive"])
+        check["sufficient_feasible_pairs"] = check["feasible_pair_count"] >= 10
+        check["passed"] = check["passed"] and check["sufficient_feasible_pairs"]
+        if check != case["audit"]:
+            raise ValueError("Search audit disagrees with exhaustive rows")
+    if result["passed"] != all(c["audit"]["passed"] for c in result["cases"]):
+        raise ValueError("Inconsistent search verdict")
+
+
+def load_verified_search(path):
+    result = json.loads(path.read_text())
+    protocol_path = path.parent/"protocol.json"
+    protocol = json.loads(protocol_path.read_text())
+    validate_search_configuration(result, protocol)
+    hashes = {"protocol.json": file_sha(protocol_path)}
+    for candidate in result["candidates"]:
+        name = candidate["candidate_id"]
+        csv = path.parent/f"{name}_results.csv"
+        frame = pd.read_csv(csv)
+        if len(frame) != 100 or not np.allclose(frame.frequency, np.geomspace(*protocol["sim_band"], 100), rtol=1e-12, atol=0):
+            raise ValueError("Search response frequency grid disagrees with protocol")
+        for column, radius in (("inlet_area_m2", candidate["throat_radius"]),
+                               ("mouth_area_m2", candidate["mouth_radius"])):
+            # Allow one part per million for CAD surface integration. This is
+            # an artifact-consistency check, not a measurement error tolerance.
+            if not np.allclose(frame[column], np.pi*radius**2, rtol=1e-6, atol=0):
+                raise ValueError("Search response area disagrees with geometry")
+        for artifact in (csv, path.parent/f"{name}.step"):
+            hashes[artifact.name] = file_sha(artifact)
+    return result, hashes
+
+
+def load_verified_resonance(path):
+    result = json.loads(path.read_text())
+    protocol_path = path.parent/"protocol.json"
+    protocol = json.loads(protocol_path.read_text())
+    if any(result.get(k) != v for k, v in protocol.items()):
+        raise ValueError("Resonance result disagrees with frozen protocol")
+    if (protocol.get("geometry") != {"length_m": .535, "throat_diameter_m": .018, "mouth_diameter_m": .08}
+            or protocol.get("measured_sixth_resonance_hz") != 1712.
+            or protocol.get("source_url") != "https://doi.org/10.5050/KSNVE.2014.24.7.537"
+            or protocol.get("fitted_parameters") != []
+            or protocol.get("physical_assembly_validated") is not False):
+        raise ValueError("Unexpected published resonance protocol")
+    if set(result["predictions"]) != {"400", "800"}:
+        raise ValueError("Missing resonance segmentation comparison")
+    for count, values in result["predictions"].items():
+        csv = path.parent/f"prediction-{count}.csv"
+        if file_sha(csv) != values["prediction_sha256"]:
+            raise ValueError("Changed resonance prediction")
+        frame = pd.read_csv(csv)
+        if len(frame) != 18901 or not np.allclose(frame.frequency, np.linspace(110, 2000, 18901), rtol=1e-12, atol=0):
+            raise ValueError("Unexpected resonance frequency grid")
+        impedance = frame.specific_z_real.to_numpy()+1j*frame.specific_z_imag.to_numpy()
+        if not np.isfinite(impedance).all():
+            raise ValueError("Nonfinite resonance prediction")
+        peaks = find_peaks(np.abs(impedance))[0]
+        if len(peaks) != 6 or not np.allclose(frame.frequency.iloc[peaks], values["resonances_hz"], rtol=1e-12, atol=0):
+            raise ValueError("Reported resonance peaks disagree with prediction")
+        error = float(frame.frequency.iloc[peaks[5]])-1712.
+        if not np.allclose([error, 100*error/1712.], [values["sixth_resonance_error_hz"], values["sixth_resonance_error_percent"]], rtol=1e-10, atol=1e-12):
+            raise ValueError("Reported resonance error disagrees with prediction")
+    return result, file_sha(protocol_path)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--audit-dir", type=Path, required=True)
@@ -86,8 +183,8 @@ def main():
     root, out = args.audit_dir, args.output_dir
     out.mkdir(parents=True, exist_ok=True)
     audit = json.loads((root/"audit.json").read_text())
-    search = json.loads(args.search_json.read_text())
-    resonance = json.loads(args.resonance_json.read_text())
+    search, search_artifact_hashes = load_verified_search(args.search_json)
+    resonance, resonance_protocol_sha256 = load_verified_resonance(args.resonance_json)
     manifest = json.loads((args.reference_dir/"manifest.json").read_text())
     protocol = json.loads((root/"protocol.json").read_text())
     imports = verify_import_inventory(args.inventory_json)
@@ -196,6 +293,8 @@ body{{font:16px/1.55 system-ui,sans-serif;color:#213142;background:#f4f6f8;margi
                    max(r["tmm_at_reference_frequencies"]["p95_db"] for r in audit["independent_simulations"])],
         "max_db": max(r["tmm_at_reference_frequencies"]["max_db"] for r in audit["independent_simulations"])}
     compact["verified_import_inventory"] = imports
+    compact["verified_search_artifact_sha256"] = search_artifact_hashes
+    compact["verified_resonance_protocol_sha256"] = resonance_protocol_sha256
     compact["search"] = {"passed": search["passed"], "total_seconds": search["total_seconds"], "cases": searches}
     compact["published_horn_scalar"] = resonance
     compact["artifact_sha256"] = {str(p): hashlib.sha256(p.read_bytes()).hexdigest()

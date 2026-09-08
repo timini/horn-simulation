@@ -132,3 +132,57 @@ def test_import_coverage_is_verified_from_files(tmp_path):
     csv.write_bytes(b"changed")
     with pytest.raises(ValueError, match="Changed imported curve"):
         renderer.verify_import_inventory(path)
+
+
+@pytest.mark.parametrize("change", [{"max_db": .6, "p95_scaled_complex_error": .01},
+    {"max_db": .1, "p95_scaled_complex_error": .06},
+    {"max_db": np.nan, "p95_scaled_complex_error": .01}])
+def test_unconverged_mesh_cannot_contribute_to_validation(change):
+    limits = {"max_impedance_change_db": .5, "p95_scaled_complex_change": .05}
+    assert audit.checked_mesh_convergence({"max_db": .1, "p95_scaled_complex_error": .01}, limits, "good")
+    with pytest.raises(RuntimeError, match="excluded from validation"):
+        audit.checked_mesh_convergence(change, limits, "bad")
+
+
+def test_old_search_configuration_cannot_be_presented_as_current_benchmark():
+    with pytest.raises(ValueError, match="Unexpected search benchmark configuration"):
+        renderer.validate_search_configuration({}, {"geometry_count": 12, "driver_count": 2})
+
+
+def test_search_case_count_must_match_frozen_configuration():
+    protocol = {"benchmark": "finite_grid_manufacturer_motors_v2",
+        "bands": [[800, 1600, "development"], [1000, 1200, "held_out"],
+                  [1200, 2000, "held_out"], [600, 1000, "held_out"]],
+        "geometry_count": 20, "driver_count": 3, "frequencies": 100, "mesh_size": .008,
+        "shortlist_budget": 10, "score_regret_limit": .02, "top_ten_recall_limit": .9,
+        "minimum_feasible_pairs_per_case": 10, "physical_validation_passed": False,
+        "sim_band": [600/2**.5, 2000*2**.5]}
+    result = {**protocol, "candidates": [{}]*20, "drivers": [{}]*3, "cases": [{}]*3}
+    with pytest.raises(ValueError, match="case/count mismatch"):
+        renderer.validate_search_configuration(result, protocol)
+
+
+def resonance_protocol():
+    return {"geometry": {"length_m": .535, "throat_diameter_m": .018, "mouth_diameter_m": .08},
+        "measured_sixth_resonance_hz": 1712.,
+        "source_url": "https://doi.org/10.5050/KSNVE.2014.24.7.537",
+        "fitted_parameters": [], "physical_assembly_validated": False}
+
+
+def test_different_horn_cannot_use_the_published_resonance_label(tmp_path):
+    protocol = resonance_protocol()
+    protocol["geometry"]["length_m"] = .136
+    (tmp_path/"protocol.json").write_text(json.dumps(protocol))
+    (tmp_path/"comparison.json").write_text(json.dumps(protocol))
+    with pytest.raises(ValueError, match="Unexpected published resonance protocol"):
+        renderer.load_verified_resonance(tmp_path/"comparison.json")
+
+
+def test_changed_auxiliary_resonance_prediction_is_rejected(tmp_path):
+    protocol = resonance_protocol()
+    result = {**protocol, "predictions": {"400": {"prediction_sha256": "0"*64}, "800": {}}}
+    (tmp_path/"protocol.json").write_text(json.dumps(protocol))
+    (tmp_path/"comparison.json").write_text(json.dumps(result))
+    (tmp_path/"prediction-400.csv").write_bytes(b"different prediction")
+    with pytest.raises(ValueError, match="Changed resonance prediction"):
+        renderer.load_verified_resonance(tmp_path/"comparison.json")

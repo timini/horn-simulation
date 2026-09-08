@@ -107,6 +107,14 @@ def checked_fem_health(frame, label):
     return result
 
 
+def checked_mesh_convergence(change, limits, label):
+    values = [change["max_db"], change["p95_scaled_complex_error"]]
+    if (not np.isfinite(values).all() or values[0] > limits["max_impedance_change_db"]
+            or values[1] > limits["p95_scaled_complex_change"]):
+        raise RuntimeError(f"Unconverged FEM mesh {label}; excluded from validation: {change}")
+    return True
+
+
 def run_fem(out, case, h, count):
     import gmsh
     from horn_solver.solver import run_simulation_from_step
@@ -260,7 +268,7 @@ def main():
         change = compare(fem_impedance(subset), fem_impedance(fine))
         convergence[case] = {"coarse_vs_fine": compare(fem_impedance(coarse), fem_impedance(fine)),
             "middle_vs_fine": change,
-            "passed": change["max_db"] <= .5 and change["p95_scaled_complex_error"] <= .05,
+            "passed": checked_mesh_convergence(change, protocol["mesh_convergence_limits"], case),
             "fem_vs_tmm_481": compare(fem_impedance(middle), prediction(middle.frequency.to_numpy(), case))}
     # Freeze every prediction before opening any of the reference curves.
     write_json(out/"prediction_hashes.json", {p.name: sha(p) for p in sorted(out.glob("*.csv"))})
