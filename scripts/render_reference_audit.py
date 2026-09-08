@@ -31,6 +31,25 @@ def file_sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def load_pinned_json(path, expected_digest):
+    # The expected digest comes from a separately reviewed, versioned manifest,
+    # never from the artifact being authenticated or a newly generated hash.
+    if file_sha(path) != expected_digest:
+        raise ValueError(f"Evidence disagrees with independent pinned digest: {path}")
+    return json.loads(path.read_text())
+
+
+def validate_search_pairs(case, candidate_ids, driver_ids, budget):
+    expected = {(c, d) for c in candidate_ids for d in driver_ids}
+    pairs = [(r["horn_label"], r["driver_id"]) for r in case["exhaustive"]]
+    if len(pairs) != len(expected) or set(pairs) != expected:
+        raise ValueError("Incomplete geometry-driver Cartesian product")
+    shortlist = case["screening"]["filtered_candidate_ids"]
+    if (not shortlist or len(shortlist) > budget or len(set(shortlist)) != len(shortlist)
+            or not set(shortlist) <= candidate_ids):
+        raise ValueError("Invalid or over-budget shortlist")
+
+
 def verify_prediction_hashes(root, audit):
     if file_sha(root/"prediction_hashes.json") != audit["prediction_hashes_sha256"]:
         raise ValueError("Changed prediction hash manifest")
@@ -105,6 +124,8 @@ def validate_search_configuration(result, protocol):
             raise ValueError("Unexpected search target band")
         if len(case["exhaustive"]) != 60:
             raise ValueError("Incomplete exhaustive search")
+        validate_search_pairs(case, {c["candidate_id"] for c in result["candidates"]},
+                              {d["driver_id"] for d in result["drivers"]}, protocol["shortlist_budget"])
         check = screening_audit(case["exhaustive"], case["screening"]["filtered_candidate_ids"])
         check["feasible_pair_count"] = sum(r["model_feasible"] for r in case["exhaustive"])
         check["sufficient_feasible_pairs"] = check["feasible_pair_count"] >= 10
@@ -147,6 +168,12 @@ def load_verified_resonance(path):
     if (protocol.get("geometry") != {"length_m": .535, "throat_diameter_m": .018, "mouth_diameter_m": .08}
             or protocol.get("measured_sixth_resonance_hz") != 1712.
             or protocol.get("source_url") != "https://doi.org/10.5050/KSNVE.2014.24.7.537"
+            or protocol.get("assumed_air") != {"c": 343., "rho": 1.225, "gamma": 1.4,
+                "viscosity": 1.81e-5, "conductivity": .0257, "heat_capacity": 1006.}
+            or protocol.get("loss_model") != "boundary_layer"
+            or protocol.get("radiation_model") != "finite_flange"
+            or protocol.get("assumed_flange_width_m") != 0.
+            or protocol.get("frequency_step_hz") != .1
             or protocol.get("fitted_parameters") != []
             or protocol.get("physical_assembly_validated") is not False):
         raise ValueError("Unexpected published resonance protocol")
@@ -174,6 +201,9 @@ def load_verified_resonance(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--audit-dir", type=Path, required=True)
+    parser.add_argument("--evidence-manifest", type=Path,
+                        default=Path(__file__).resolve().parents[1]/"data/validation/reference_audit_evidence.json",
+                        help="Separately reviewed digest manifest; a new run requires new independently recorded pins")
     parser.add_argument("--reference-dir", type=Path, required=True)
     parser.add_argument("--inventory-json", type=Path, required=True)
     parser.add_argument("--search-json", type=Path, required=True)
@@ -182,7 +212,11 @@ def main():
     args = parser.parse_args()
     root, out = args.audit_dir, args.output_dir
     out.mkdir(parents=True, exist_ok=True)
-    audit = json.loads((root/"audit.json").read_text())
+    pins = json.loads(args.evidence_manifest.read_text())["sha256"]
+    audit = load_pinned_json(root/"audit.json", pins["audit"])
+    for name, path in (("search", args.search_json), ("resonance", args.resonance_json),
+                       ("inventory", args.inventory_json)):
+        load_pinned_json(path, pins[name])
     search, search_artifact_hashes = load_verified_search(args.search_json)
     resonance, resonance_protocol_sha256 = load_verified_resonance(args.resonance_json)
     manifest = json.loads((args.reference_dir/"manifest.json").read_text())

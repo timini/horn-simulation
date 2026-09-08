@@ -69,7 +69,9 @@ def test_all_simulation_configurations_have_explicit_normalization_geometry():
 def test_changed_archive_is_rejected_before_creating_evidence(tmp_path):
     reference = tmp_path/"reference"
     reference.mkdir()
-    (reference/"manifest.json").write_text(json.dumps({"reference": {"sha256": "0"*64}}))
+    catalog = json.loads((SCRIPTS.parent/"data/validation/references.json").read_text())
+    pinned = next(r for r in catalog["references"] if r["id"] == "ernoult-pipe-impedance-v2")
+    (reference/"manifest.json").write_text(json.dumps({"reference": pinned}))
     archive = tmp_path/"reference.zip"
     archive.write_bytes(b"changed archive")
     output = tmp_path/"output"
@@ -165,6 +167,9 @@ def test_search_case_count_must_match_frozen_configuration():
 def resonance_protocol():
     return {"geometry": {"length_m": .535, "throat_diameter_m": .018, "mouth_diameter_m": .08},
         "measured_sixth_resonance_hz": 1712.,
+        "assumed_air": {"c": 343., "rho": 1.225, "gamma": 1.4, "viscosity": 1.81e-5, "conductivity": .0257, "heat_capacity": 1006.},
+        "loss_model": "boundary_layer", "radiation_model": "finite_flange",
+        "assumed_flange_width_m": 0., "frequency_step_hz": .1,
         "source_url": "https://doi.org/10.5050/KSNVE.2014.24.7.537",
         "fitted_parameters": [], "physical_assembly_validated": False}
 
@@ -186,3 +191,52 @@ def test_changed_auxiliary_resonance_prediction_is_rejected(tmp_path):
     (tmp_path/"prediction-400.csv").write_bytes(b"different prediction")
     with pytest.raises(ValueError, match="Changed resonance prediction"):
         renderer.load_verified_resonance(tmp_path/"comparison.json")
+
+
+def test_modified_aggregate_cannot_override_independently_pinned_digest(tmp_path):
+    path = tmp_path/"audit.json"
+    path.write_text(json.dumps({"measured_passes": 237}))
+    pinned = renderer.file_sha(path)
+    assert renderer.load_pinned_json(path, pinned)["measured_passes"] == 237
+    path.write_text(json.dumps({"measured_passes": 299}))
+    with pytest.raises(ValueError, match="independent pinned digest"):
+        renderer.load_pinned_json(path, pinned)
+
+
+def test_exhaustive_search_cannot_duplicate_a_pair_to_hide_an_omission():
+    rows = [{"horn_label": c, "driver_id": d} for c in ("a", "b") for d in ("x", "y")]
+    case = {"exhaustive": rows, "screening": {"filtered_candidate_ids": ["a"]}}
+    renderer.validate_search_pairs(case, {"a", "b"}, {"x", "y"}, 1)
+    rows[-1] = rows[0]
+    with pytest.raises(ValueError, match="Cartesian product"):
+        renderer.validate_search_pairs(case, {"a", "b"}, {"x", "y"}, 1)
+
+
+@pytest.mark.parametrize("shortlist", [["a", "b"], ["a", "a"], ["unknown"], []])
+def test_search_rejects_overbudget_duplicate_unknown_or_empty_shortlist(shortlist):
+    case = {"exhaustive": [{"horn_label": c, "driver_id": "x"} for c in ("a", "b")],
+            "screening": {"filtered_candidate_ids": shortlist}}
+    with pytest.raises(ValueError, match="shortlist"):
+        renderer.validate_search_pairs(case, {"a", "b"}, {"x"}, 1)
+
+
+@pytest.mark.parametrize("key,value", [("assumed_air", {"c": 350.}),
+    ("loss_model", "lossless"), ("radiation_model", "flanged_piston"),
+    ("assumed_flange_width_m", .01)])
+def test_resonance_requires_frozen_physical_model(tmp_path, key, value):
+    protocol = resonance_protocol()
+    protocol[key] = value
+    (tmp_path/"protocol.json").write_text(json.dumps(protocol))
+    (tmp_path/"comparison.json").write_text(json.dumps(protocol))
+    with pytest.raises(ValueError, match="Unexpected published resonance protocol"):
+        renderer.load_verified_resonance(tmp_path/"comparison.json")
+
+
+def test_replaced_archive_and_manifest_cannot_replace_catalog_identity(tmp_path):
+    catalog = json.loads((Path(__file__).resolve().parents[2]/"data/validation/references.json").read_text())
+    reference = next(r for r in catalog["references"] if r["id"] == "ernoult-pipe-impedance-v2")
+    archive = tmp_path/"replacement.zip"
+    archive.write_bytes(b"replacement")
+    reference["sha256"] = audit.sha(archive)
+    with pytest.raises(ValueError, match="pinned catalog"):
+        audit.verify_reference_source({"reference": reference}, archive)

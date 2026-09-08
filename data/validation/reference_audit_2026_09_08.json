@@ -853,11 +853,11 @@
   "final_health_guard_recheck": {
     "all_15_fem_runs_pass_final_fail_closed_guard": true,
     "all_5_meshes_pass_final_fail_closed_guard": true,
-    "guard_source_sha256": "57c4060b80acf09c49f82f740f219069d420701513c58a1357dfef14135bc56d",
-    "scope": "Review added fail-closed health and mesh guards; all completed CSVs were rechecked using them. Numerical calculations and production physics are unchanged. Original execution hashes remain in protocol.json."
+    "guard_source_sha256": "d02920f297178e37cc22f346887beb6298dc0f35d9eafd6b41e890bcfde5c5f2",
+    "scope": "Review added fail-closed health and mesh guards and catalog authentication; all completed CSVs and the source archive were rechecked using them. Numerical calculations and production physics are unchanged. Original execution hashes remain in protocol.json."
   },
   "focused_tests": {
-    "passed": 51,
+    "passed": 62,
     "failed": 0,
     "scope": "Audit safeguards, reference importer, comparison contract"
   }

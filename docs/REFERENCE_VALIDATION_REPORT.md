@@ -14,7 +14,7 @@ The fresh audit supports the numerical solver and the finite-grid search, but th
 | Mesh convergence | **5/5** geometries pass | Largest 4 mm → 3 mm impedance change: **0.0174 dB**, at 121 common frequencies |
 | Exhaustive search audit | **4/4** bands pass | All feasible top-ten results and winners retained; zero score regret |
 | Published conical-horn scalar | Measured **1712 Hz**, predicted **1712.6 Hz** | One resonance-frequency check, with unverified air/lip conditions |
-| Focused safeguards/import/comparison tests | **51 passed** | Invalid evidence is rejected; phase and magnitude remain distinct |
+| Focused safeguards/import/comparison tests | **62 passed** | Invalid evidence is rejected; phase and magnitude remain distinct |
 
 The full pipe audit took **9 minutes 10 seconds**, including 3,615 production FEM frequency solves, dense analytical predictions, comparisons and convergence checks. The separate search benchmark took **6 minutes 29 seconds**. The machine-readable summary is [reference_audit_2026_09_08.json](../data/validation/reference_audit_2026_09_08.json).
 
@@ -63,7 +63,7 @@ The measured pipe results apply to **opt-in boundary-layer losses and matched pi
 
 Local complete evidence is under `results/reference-validation-2026-09-08/`: `final/audit.json`, the frozen protocol/prediction hashes, all raw solver and analytical predictions, `search/search_benchmark.json`, `sa-park/comparison.json`, verified reimported archives and the standalone `report/reference-report.html`.
 
-The final run uses the unchanged merged production physics. Its original execution hashes are retained. Review subsequently added fail-closed health and mesh guards; all 15 final CSVs and five mesh comparisons were rechecked through those guards and passed (`final/final-health-guard-recheck.json`). The final successful run shuts worker processes down gracefully and has no PETSc/MPI abort messages. Tests cover rejecting bad health, changed archives, overwritten evidence, mixed prediction manifests, missing/changed imports mismatched frozen air constants, failed mesh convergence, stale search configurations and changed resonance evidence. The rendered report verifies the separate search and resonance protocols and their raw artifacts.
+The final run uses the unchanged merged production physics. Its original execution hashes are retained. Review subsequently added fail-closed health and mesh guards; all 15 final CSVs and five mesh comparisons were rechecked through those guards and passed (`final/final-health-guard-recheck.json`). The final successful run shuts worker processes down gracefully and has no PETSc/MPI abort messages. Tests cover rejecting bad health, changed archives, overwritten evidence, mixed prediction manifests, missing/changed imports, mismatched frozen air constants, failed mesh convergence, stale search configurations and changed resonance evidence. The rendered report verifies the separate search and resonance protocols and their raw artifacts.
 
 After building the solver image and importing the pinned archives, run from the repository root with a new output directory:
 
@@ -77,4 +77,4 @@ docker run --rm -v "$PWD:/workspace" -w /workspace \
   --output-dir results/reference-reproduction
 ```
 
-`--workers 1` uses less CPU. `scripts/benchmark_search.py` reproduces the search audit; `scripts/validate_published_horn_resonance.py` reproduces the single published horn datum. `scripts/render_reference_audit.py --help` lists the required frozen audit, full import inventory, search and resonance inputs for the self-contained report. It verifies their relevant provenance before drawing plots and uses the archived air constants.
+`--workers 1` uses less CPU. `scripts/benchmark_search.py` reproduces the search audit; `scripts/validate_published_horn_resonance.py` reproduces the single published horn datum. `scripts/render_reference_audit.py --help` lists the required frozen audit, full import inventory, search and resonance inputs for the self-contained report. It verifies their relevant provenance before drawing plots and uses the archived air constants. The separate versioned `data/validation/reference_audit_evidence.json` pins the completed audit, search, resonance and inventory digests independently of those inputs. A different run requires a separately reviewed digest manifest supplied with `--evidence-manifest`; do not regenerate expected hashes from potentially changed inputs just to make rendering pass. Search checks require every geometry–driver pair and enforce the shortlist budget. Archive identity is authenticated against the reference catalog; resonance air, loss and radiation settings must match the stated protocol.

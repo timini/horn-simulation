@@ -39,6 +39,18 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def verify_reference_source(manifest, archive, catalog_path=None):
+    catalog_path = catalog_path or Path(__file__).resolve().parents[1]/"data/validation/references.json"
+    catalog = json.loads(Path(catalog_path).read_text())
+    expected = next(r for r in catalog["references"] if r["id"] == "ernoult-pipe-impedance-v2")
+    reference = manifest["reference"]
+    fields = ("id", "sha256", "source_url", "download_url", "archive_name", "format", "conditions")
+    if any(reference.get(k) != expected[k] for k in fields):
+        raise ValueError("Reference identity disagrees with pinned catalog")
+    if sha(archive) != expected["sha256"]:
+        raise ValueError("Source archive checksum mismatch")
+
+
 def write_json(path, value):
     Path(path).write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
 
@@ -175,8 +187,7 @@ def main():
     if not 1 <= args.workers <= 5:
         parser.error("workers must be between 1 and 5")
     manifest = json.loads((root/"manifest.json").read_text())
-    if sha(args.archive) != manifest["reference"]["sha256"]:
-        raise ValueError("Source archive checksum mismatch")
+    verify_reference_source(manifest, args.archive)
     out.mkdir(parents=True)
     started = time.perf_counter()
     sources = sorted(set(Path("packages").glob("*/src/**/*.py")))

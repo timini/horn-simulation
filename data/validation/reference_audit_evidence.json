@@ -1,0 +1,10 @@
+{
+  "audit_date": "2026-09-08",
+  "scope": "Independently versioned pins copied from the completed scientific evidence before report hardening. Review new pins before rendering a different run; never derive expected digests from the untrusted input at render time.",
+  "sha256": {
+    "audit": "b4db03f8c8f9c797e92c06eddb605c43b4fa3a484de93c75bc2d76ff26723445",
+    "search": "5171d0361980f9c7dc6dad569e444da3059e7cff889ff3cc7c6e55d681b7d4cd",
+    "resonance": "154844d838be5e4eca8875e0b3c9ed0ebb280498c9bf7920e3bff35cb4b65a2d",
+    "inventory": "8b4942d83e917da878c8e571bfc74f74ea3df028cee7628296ce345d807f1b1b"
+  }
+}
