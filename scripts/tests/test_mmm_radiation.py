@@ -35,3 +35,16 @@ def test_fixed_specification_cannot_change_after_preparation(tmp_path,monkeypatc
     (out/'protocol.json').write_text(json.dumps(protocol))
     with pytest.raises(ValueError,match='physical specification'):
         v.verify(out)
+
+
+def test_frequency_grid_accepts_only_float_roundoff_between_runtimes(tmp_path,monkeypatch):
+    import json
+    monkeypatch.setattr(v,'clean_revision',lambda:'test')
+    out=tmp_path/'study';v.prepare(out)
+    path=out/'protocol.json';p=json.loads(path.read_text())
+    p['frequencies_hz'][5]=np.nextafter(p['frequencies_hz'][5],np.inf)
+    path.write_text(json.dumps(p));v.verify(out)
+    p['frequencies_hz'][5]*=1.001
+    path.write_text(json.dumps(p))
+    with pytest.raises(ValueError,match='physical specification'):
+        v.verify(out)

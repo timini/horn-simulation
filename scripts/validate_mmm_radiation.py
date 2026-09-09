@@ -79,7 +79,7 @@ def verify(out):
     p=json.loads((out/'protocol.json').read_text())
     if {f.name for f in out.glob('*.m')}!={'reference.m','contains.m'}:
         raise ValueError('Unexpected executable input in reference directory')
-    if p['geometry']!=GEOMETRY or p['frequencies_hz']!=FREQUENCIES or p['air']!=dict(rho=1.225,c=343.) or p['observer_distance_m']!=1.:
+    if p['geometry']!=GEOMETRY or (np.shape(p['frequencies_hz'])!=(33,) or not np.allclose(p['frequencies_hz'],FREQUENCIES,rtol=1e-14,atol=0)) or p['air']!=dict(rho=1.225,c=343.) or p['observer_distance_m']!=1.:
         raise ValueError('Fixed physical specification changed')
     if p['source']!=source() or p['cases']!=CASES or p['limits']!=LIMITS or p['upstream_revision']!=REVISION:
         raise ValueError('Source or protocol changed; prepare a new study')
