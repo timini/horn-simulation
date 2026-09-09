@@ -274,3 +274,13 @@ def test_invalid_radiation_input_is_not_hidden_as_a_candidate_rejection():
         lem_prescreen_candidates([_make_candidate('valid', throat=.01, mouth=.04, length=.08)],
                                  [_make_driver()],1000,1100,(700,1600),
                                  radiation_model='finite_flange',flange_width=-1.)
+
+
+def test_modal_out_of_domain_candidates_never_enter_the_fem_shortlist():
+    result=lem_prescreen_candidates([_make_candidate('outside',throat=.01,mouth=2.,length=.08)],
+                                   [_make_driver()],1000,1100,(700,1600),radiation_model='modal_baffled')
+    assert result['filtered_candidate_ids']==[]
+    row=result['rankings'][0]
+    assert row['simulation_eligible'] is False
+    assert row['eligibility_status']=='infeasible'
+    assert row['validation_status']=='outside_supported_model_domain'

@@ -124,7 +124,12 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
 def radiation_domain_rejection(frequencies, mouth_radius, radiation_model, flange_width=0.):
     """Reject unsupported geometries without masking invalid inputs/solver errors."""
     if radiation_model=='modal_baffled' and np.max(2*np.pi*np.asarray(frequencies)*mouth_radius/343.)>30:
-        return {"model_feasible":False,"composite_score":0.,"rejection_reasons":["radiation_model_out_of_domain"]}
+        return {"model_feasible":False,"simulation_eligible":False,
+                "eligibility_status":"infeasible","composite_score":0.,
+                "rejection_reasons":["radiation_model_out_of_domain"],
+                "rejection_detail":"Modal aperture quadrature requires ka <= 30",
+                "evidence_gaps":[],"validation_status":"outside_supported_model_domain",
+                "bandwidth_coverage":0.,"passband_ripple_db":None,"avg_sensitivity_db":None}
     if radiation_model not in {"finite_flange", "unflanged", "unflanged_piston"}:
         return None
     from horn_core.duct import DEFAULT_AIR, RadiationDomainError, circular_pipe_radiation

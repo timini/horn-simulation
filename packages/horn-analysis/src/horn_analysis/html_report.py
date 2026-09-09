@@ -378,7 +378,7 @@ _HTML_TEMPLATE = """\
 <div class="design-summary"><strong>{assessment_status}</strong>
 {no_feasible_reason}
 <p>Predictions are experimental. Driver suitability and the exterior model require independent validation.
-The observer estimate assumes a uniformly moving circular aperture in an infinite baffle.
+{observer_summary}
 Raw horn plots show mouth-plane pressure. Legacy inputs contain mouth-plane levels only.</p>
 <p>Drive: {drive_voltage} V RMS. Observer: {observer_distance} m on axis from mouth plane.
 Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume, not manufacturing walls.</p>
@@ -681,6 +681,9 @@ def generate_html_report(
     return _HTML_TEMPLATE.format_map({
         "no_feasible_reason": "<p>"+html.escape(no_feasible_reason)+"</p>" if no_feasible_reason and not top_results else "",
         "assessment_status": "Experimental candidates — not validated recommendations" if top_results else "No feasible design in the evaluated set",
+        "observer_summary": ("The observer integrates the nonuniform axisymmetric aperture velocity in an infinite baffle."
+                             if top_results and all(r.get("output_metric")=="modal_baffled_on_axis" for r in top_results)
+                             else "The observer estimate assumes a uniformly moving circular aperture in an infinite baffle."),
         "physics_summary": html.escape(", ".join(sorted({str(r.get("loss_model", "lossless"))+" / "+str(r.get("radiation_model", "legacy unknown")) for r in top_results})) or "No candidates"),
         "drive_voltage": target.voltage_rms,
         "observer_distance": target.observation_distance_m,
