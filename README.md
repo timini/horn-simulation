@@ -17,6 +17,8 @@ The solver container uses the conservative Nehalem OpenBLAS kernel on x86 to kee
 
 Use `just run-auto --target_f_low 500 --target_f_high 4000` for an isolated run. The launcher writes a manifest, source snapshot and container hashes under a new `results/<run-id>/` directory. Defaults are 2.83 V RMS, 1 m from the mouth, 6 dB maximum band ripple, a uniform baffled-piston observer, ten screened geometries and six additional refinement evaluations. Override these with `--voltage_rms`, `--observation_distance`, `--max_ripple_db`, `--lem_top_n` and `--refinement_budget`. Fix dimensions or set minimum/maximum search bounds when space is limited.
 
+The [measured exponential-horn comparison](docs/POST_HIXSON_VALIDATION.md) passes its fixed input-impedance limits over `1 ≤ ka ≤ 5` (approximately 201–1,007 Hz at the simulated sound speed). This validates a bounded horn-loading comparison; complete driver/assembly qualification remains outstanding.
+
 Optional thermoviscous losses and finite-flange pipe radiation now have independent impedance checks; see [the measured results and remaining failures](docs/LOSS_PHYSICS_VALIDATION.md). Legacy FEM–BEM horn coupling and directivity are disabled pending a correct exterior model.
 
 See [acoustic assumptions](docs/ACOUSTIC_CONTRACT.md), [existing measurement sources and importer](docs/VALIDATION_DATA.md), and [implementation/validation status](docs/IMPLEMENTATION_STATUS.md). Resume only an unchanged source/data/container/Nextflow snapshot with `python scripts/run_pipeline.py --run-dir results/<run-id> -resume`.
