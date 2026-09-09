@@ -12,6 +12,8 @@ end-to-end driver+horn frequency response without going through auto mode.
 """
 from horn_core.acoustics import inlet_area_from_frame
 
+from horn_analysis.kpi import format_kpi
+
 import argparse
 import json
 import math
@@ -92,9 +94,9 @@ def couple(
                 linewidth=1.0, color="#888888", linestyle="--")
 
     # Mark KPI points
-    if kpi.f3_low_hz:
+    if kpi.f3_low_hz and not kpi.f3_low_is_bound:
         ax.axvline(kpi.f3_low_hz, color="green", alpha=0.4, linestyle=":", label=f"f3 low {kpi.f3_low_hz:.0f} Hz")
-    if kpi.f3_high_hz:
+    if kpi.f3_high_hz and not kpi.f3_high_is_bound:
         ax.axvline(kpi.f3_high_hz, color="red", alpha=0.4, linestyle=":", label=f"f3 high {kpi.f3_high_hz:.0f} Hz")
 
     ax.set_xlabel("Frequency (Hz)")
@@ -112,8 +114,8 @@ def couple(
     plt.savefig(output_png, dpi=120)
     plt.close()
 
-    f3lo = f"{kpi.f3_low_hz:.0f}" if kpi.f3_low_hz else "n/a"
-    f3hi = f"{kpi.f3_high_hz:.0f}" if kpi.f3_high_hz else "n/a"
+    f3lo = format_kpi(kpi, "f3_low_hz")
+    f3hi = format_kpi(kpi, "f3_high_hz")
     rip = f"{kpi.passband_ripple_db:.2f}" if kpi.passband_ripple_db else "n/a"
     print(f"Wrote {output_csv}, {output_png}, {output_kpis}")
     print(f"Driver: {drv.manufacturer} {drv.model_name}  Fs={drv.fs_hz} Hz  Le={drv.le_h*1000:.2f} mH  Bl={drv.bl_tm}")

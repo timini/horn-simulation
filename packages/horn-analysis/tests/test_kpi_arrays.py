@@ -91,3 +91,32 @@ def test_reported_ripple_preserves_one_sample_extremum(offset):
     levels[43] += offset
     result = extract_kpis_from_arrays(freq, levels)
     assert result.passband_ripple_db == pytest.approx(abs(offset))
+
+
+def test_sweep_edges_are_bounds_instead_of_observed_cutoffs():
+    from horn_analysis.kpi import format_kpi
+    result = extract_kpis_from_arrays(np.array([800., 1200., 1600.]), np.array([90., 91., 90.]))
+    assert result.f3_low_is_bound and result.f3_high_is_bound
+    assert result.bandwidth_is_lower_bound
+    assert format_kpi(result, 'f3_low_hz') == '≤800'
+    assert format_kpi(result, 'f3_high_hz') == '≥1600'
+    assert format_kpi(result, 'bandwidth_octaves', '.1f') == '≥1.0'
+
+
+def test_cutoffs_follow_contiguous_peak_lobe_and_retain_narrow_notch():
+    # The old 200-point resampling skipped this narrow dip and joined lobes.
+    freq = np.array([100., 999., 1000., 1001., 2000., 10000.])
+    levels = np.array([80., 90., 70., 90., 92., 80.])
+    result = extract_kpis_from_arrays(freq, levels)
+    assert result.f3_low_hz == pytest.approx(1000.95)
+    assert result.f3_high_hz == pytest.approx(4000.)
+    assert not result.f3_low_is_bound and not result.f3_high_is_bound
+    assert not result.bandwidth_is_lower_bound
+    assert result.passband_ripple_db == pytest.approx(3.)
+
+
+@pytest.mark.parametrize('freq,levels', [([1.,1.],[0.,0.]), ([2.,1.],[0.,0.]),
+                                       ([1.,2.],[0.,np.nan]), ([],[])])
+def test_invalid_kpi_input_is_rejected(freq,levels):
+    with pytest.raises(ValueError):
+        extract_kpis_from_arrays(np.array(freq),np.array(levels))
