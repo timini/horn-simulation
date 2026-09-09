@@ -4,7 +4,7 @@
 
 ## Why this model exists
 
-The [matched independent reference](EXTERIOR_RADIATION_VALIDATION.md) found that the local boundary's throat impedance missed the frozen 0.5 dB / 5 degree comparison limits, despite on-axis pressure agreeing within 0.40 dB. Those failed results remain in the repository. The new operator is being qualified against the same converged reference, with additional mode and mesh refinements; it does not inherit a pass merely because the equations differ.
+The [matched independent reference](EXTERIOR_RADIATION_VALIDATION.md) found that the local boundary's throat impedance missed the frozen 0.5 dB / 5 degree comparison limits, despite on-axis pressure agreeing within 0.40 dB. Those failed results remain in the repository. The new operator [passes the same reference](MODAL_APERTURE_VALIDATION.md): maximum differences are 0.017 dB for throat impedance and 0.013 dB for on-axis pressure, with phase errors below 0.19 degrees. Separate mode and mesh refinements also pass. This establishes one ideal geometry and band.
 
 ## Supported implementation and limits
 
@@ -12,7 +12,7 @@ The [matched independent reference](EXTERIOR_RADIATION_VALIDATION.md) found that
 - CAD checks sample the port boundaries and compare the complete volume with two rotated copies. STEP spline uncertainty is allowed at 0.1 micrometre radial tolerance, with a corresponding thin-shell volume tolerance. Annular ports, offset ports, rectangular ports and non-axisymmetric internal cuts are rejected.
 - Lossless air, P1 elements and a single MPI rank. Infinite baffle only. Finite-baffle diffraction, non-axisymmetric modes, directivity, wall losses and fabrication detail are outside this implementation.
 - The quadrature accepts mouth ka up to 30; this is a numerical domain limit, **not an experimentally validated bandwidth**. Every new horn/band needs mode, mesh and frequency convergence checks. Sixteen modes do not guarantee convergence for arbitrary dimensions.
-- The final auto-ranking uses the full modal on-axis pressure. Webster screening remains a plane-mode approximation and is labelled accordingly; search recall must be rechecked before claiming a qualified optimiser using this mode.
+- The final auto-ranking uses the full modal on-axis pressure. Webster screening remains a plane-mode approximation and is labelled accordingly. The [finite-grid search audit](MODAL_SEARCH_VALIDATION.md) retains all exhaustive top-ten results and winners in four bands; this does not establish a global optimum or performance outside that grid.
 - Driver and interface evidence rules remain in force. Numerical radiation agreement does not characterize a cone-to-throat chamber, phase plug, rear load or moving-mass convention. Results remain experimental predictions.
 
 ## Running it
@@ -28,6 +28,14 @@ just run-auto --target_f_low 800 --target_f_high 1600 \
 ```
 
 This command generates an experimental candidate, not a qualified physical assembly. Single-mode mouth-pressure diagnostics retain their existing meaning; an on-axis auto report uses the nonuniform aperture observer.
+
+## Executed automatic design
+
+A fresh 800–1600 Hz search completed all 18 processes using this model; a subsequent resume reused all 18 from cache. The leading candidate is an 18Sound 6NMB420 with a hyperbolic air passage: throat diameter 64.996 mm, mouth diameter 177.418 mm and length 117.906 mm. Its predicted target-band ripple is **1.485 dB**, with mean output **104.882 dB SPL at 1 m and 2.83 V RMS**. The report retains a near tie and insufficient-evidence status because the physical driver interface and moving-mass/rear-load separation are unverified.
+
+The [worked-example archive](../data/validation/worked_example_modal_800_1600.tar.gz) contains the self-contained report, STEP geometry, rankings, raw and coupled curves, resolved specification, sealed manifest and fresh/resume logs. The [identity manifest](../data/validation/worked_example_modal_800_1600_manifest.json) names the executed revision. The selected STEP is `outputs/auto/refinement/refine_hyperbolic_0001.step`; it represents the acoustic air volume, with no wall or mounting design.
+
+A second [archived workflow](../data/validation/modal_empty_workflow.tar.gz) requests a 2 m mouth radius outside this model's ka domain. It completes with an empty ranking and no FEM tasks, explaining the rejection instead of failing inside the solver. The older default-model [worked example](WORKED_EXAMPLE.md) remains separate: changing the radiation assumption changes its predicted ripple from about 0.99 dB to 1.48 dB even though the winning dimensions remain the same.
 
 ## Mathematical and numerical checks
 

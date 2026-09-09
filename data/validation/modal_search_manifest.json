@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "finite_grid_search_not_physical_validation",
+  "reproduction_source_commit": "b761a9c1c620d931e00a699b5b6a2f286db10cbe",
+  "solver_image_id": "sha256:85e29e6bdf17cd96b9bd0a2df402894175e278662e056ac940e13688b1654f78",
+  "files": {
+    "modal_search_artifacts.tar.gz": "34c26c87225cf475bd7c574ce0be6daf98d1b61375dbbf050c9136e3e42067cb",
+    "modal_search_reference.json": "d02d2b7c3edb5b32774eaa20b5b9a59b37ad74fb96f681ac71fc0e7bf52ec5f1"
+  },
+  "excluded_attempts": [
+    {
+      "study": "v1",
+      "reason": "Host diagnostic requested a runtime helper absent at that revision; exited before any benchmark solve. Superseded by this clean complete v2 execution."
+    }
+  ]
+}
