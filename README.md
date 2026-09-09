@@ -327,3 +327,5 @@ During migration, an existing continuous-power rating must have an independent s
 
 See the [independent solver protocol](docs/INDEPENDENT_SOLVER_VALIDATION.md) and [physical assembly reference audit](docs/PHYSICAL_REFERENCE_AUDIT.md) for the current qualification work.
 See [run locations, latest-run lookup, resume and cleanup](docs/RUN_MANAGEMENT.md).
+
+Start with the [reproducible 800–1600 Hz worked example](docs/WORKED_EXAMPLE.md), then check a candidate using the [mesh, frequency and loft resolution procedure](docs/CANDIDATE_RESOLUTION.md). Read [cutoff and sweep-bound metric definitions](docs/REPORT_METRICS.md) when interpreting the report.

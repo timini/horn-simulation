@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "kind": "numerical_resolution_not_physical_validation",
+  "reproduction_source_commit": "dece5c15e4f7129b336b260221ffb974fece448c",
+  "files": {
+    "candidate_resolution_artifacts.tar.gz": "6a53608d22cf4c996ae0cd345bbfe4a8508e424bbf7537cf324d0aee94e5ac6a",
+    "candidate_resolution_reference.json": "6af184cb9969e0e5fa3d731dc93da5cc58af8461ebf3b0b1ab4dfa999397547a"
+  },
+  "execution": "Host launched the originating immutable solver image; all six cases and workers completed normally; parent exit code 0.",
+  "excluded_attempts": [
+    {
+      "study": "v1/v2",
+      "reason": "Superseded by review safeguards and original-run binding"
+    },
+    {
+      "study": "v3",
+      "reason": "Superseded; did not seal originating outputs or bind originating package source"
+    },
+    {
+      "study": "v4",
+      "reason": "All numerical comparisons passed after an explicit forced worker cleanup; replaced with this fresh clean execution"
+    },
+    {
+      "study": "v5",
+      "reason": "Clean numerical pass superseded by actual host/image/runtime binding, logarithmic comparison interpolation and stricter original-grid frequency/ripple gates."
+    }
+  ],
+  "solver_image_id": "sha256:1cc8ddf6ded3c1b29ae5a51d13b8ee0af67cb4fd643971303d123d2f7ade8ff9",
+  "analysis_revision": "7c6882566c654d1045b58ac708ba1eea1ec42748",
+  "comparison_grid": "union_log_frequency",
+  "analysis_note": "Original v6 solves and comparison are preserved. Sealed raw results were reassessed on the union of both grids; only comparator source changed. All six comparisons still pass with unchanged reported maxima."
+}

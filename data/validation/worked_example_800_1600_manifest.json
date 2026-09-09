@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "kind": "experimental_workflow_not_physical_validation",
+  "reproduction_source_commit": "15d87e7f899e0710df15cc581193a7614a4b6808",
+  "status": "completed",
+  "resume": "completed_all_processes_cached",
+  "files": {
+    "worked_example_800_1600.tar.gz": "9d0e17e21a4422de417821becbfbe92654bee135872ce4df0a0e5ea03109ccf2"
+  },
+  "excluded_attempts": [
+    {
+      "reason": "Docker absent from manually constrained PATH; launcher failed before creating a run"
+    },
+    {
+      "reason": "Nextflow parsed .01 as a string; failed run preserved locally; successful command uses 0.01"
+    },
+    {
+      "reason": "Initial v3 launcher inherited an incompatible JAVA_CMD and failed before creating a run. Successful retry sets Java 21 explicitly."
+    }
+  ],
+  "completion_output_seal": true
+}
