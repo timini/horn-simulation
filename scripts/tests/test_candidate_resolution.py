@@ -19,7 +19,7 @@ def test_extra_fine_grid_peak_cannot_disappear_through_downsampling():
     assert change['spl_db']==4.
     assert change['phase_deg']==90.
     assert change['impedance_db']==pytest.approx(20*np.log10(2))
-    assert v.ripple(fine,[1.5,2.5])==2.
+    assert v.ripple(fine,[1.5,2.5])==pytest.approx(4*np.log(2.5/2)/np.log(3/2))
 
 
 def test_partial_band_and_zero_impedance_cannot_pass():
@@ -52,7 +52,8 @@ def test_failed_health_or_changed_contract_cannot_pass(column,value):
         v.check_frame(good,[1.,2.],2)
 
 
-def test_preparation_freezes_candidate_driver_source_and_limits(tmp_path):
+def test_preparation_freezes_candidate_driver_source_and_limits(tmp_path, monkeypatch):
+    monkeypatch.setattr(v, 'clean_source_revision', lambda: 'test-revision')
     candidate=dict(driver_id='test',loss_model='lossless',radiation_model='flanged_piston',
         element_degree=1,throat_radius=.01,mouth_radius=.03,length=.1,
         drive_voltage_rms=2.83,observation_distance_m=1.,profile='conical')
@@ -84,3 +85,43 @@ def test_archived_workflow_and_resolution_evidence_have_recorded_identity():
     assert result['passed'] and len(result['health'])==6
     assert len(result['comparisons'])==5 and all(row['passed'] for row in result['comparisons'])
     assert result['physical_validation_status']=='experimental_prediction'
+
+
+def test_wavelength_cap_cannot_collapse_refinement():
+    assert v.check_mesh_schedule(1600.) == [.01, .006, .004]
+    for high in (7000., 12000.):
+        with pytest.raises(ValueError, match='collapses'):
+            v.check_mesh_schedule(high)
+
+
+def test_ripple_uses_production_logarithmic_band_edges():
+    curve = dict(frequency=np.array([100., 1000., 10000.]), spl=np.array([0., 10., 0.]))
+    assert v.ripple(curve, [np.sqrt(100*1000), np.sqrt(1000*10000)]) == pytest.approx(5.)
+
+
+@pytest.mark.parametrize('change', ['modified', 'staged', 'untracked', 'ignored'])
+def test_dirty_source_cannot_be_advertised_as_a_reproducible_commit(tmp_path, monkeypatch, change):
+    import subprocess
+    def git(*args):
+        subprocess.run(['git', '-C', str(tmp_path), *args], check=True, capture_output=True)
+    git('init')
+    git('config', 'user.name', 'Test')
+    git('config', 'user.email', 'test@example.invalid')
+    source = tmp_path/'packages/horn-core/src/horn_core'
+    source.mkdir(parents=True)
+    module = source/'example.py'
+    module.write_text('original = True')
+    (tmp_path/'.gitignore').write_text('ignored.py\n')
+    git('add', '.')
+    git('commit', '-m', 'Initial')
+    monkeypatch.setattr(v, 'ROOT', tmp_path)
+    monkeypatch.setattr(v, 'source_identity', lambda: {str(p.relative_to(tmp_path)): v.sha(p) for p in source.glob('*.py')})
+    assert len(v.clean_source_revision()) == 40
+    if change in ('modified', 'staged'):
+        module.write_text('original = False')
+        if change == 'staged':
+            git('add', '.')
+    else:
+        (source/f'{change}.py').write_text('extra = True')
+    with pytest.raises(ValueError, match='clean|Ignored'):
+        v.clean_source_revision()

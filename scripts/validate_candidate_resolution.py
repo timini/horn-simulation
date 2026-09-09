@@ -44,6 +44,27 @@ def source_identity():
     return {str(p.relative_to(ROOT)): sha(p) for p in sorted(paths)}
 
 
+def clean_source_revision():
+    """Host-side provenance check; container solves verify the frozen bytes."""
+    def git(*args):
+        return subprocess.check_output(['git', '-C', str(ROOT), *args], text=True)
+    if git('status', '--porcelain', '--untracked-files=all'):
+        raise ValueError('A clean tracked checkout with no untracked files is required')
+    tracked = set(git('ls-files').splitlines())
+    if set(source_identity()) - tracked:
+        raise ValueError('Ignored or untracked Python source cannot identify a revision')
+    return git('rev-parse', 'HEAD').strip()
+
+
+def check_mesh_schedule(high):
+    # The production solver uses c/(6*f_max); preserve all three refinements.
+    cap = 343.0 / (6.0 * high * np.sqrt(2))
+    effective = [min(CASES[name]['mesh_size'], cap) for name in ('mesh_10', 'mesh_6', 'mesh_4')]
+    if not effective[0] > effective[1] > effective[2]:
+        raise ValueError('Wavelength cap collapses the mesh refinement schedule')
+    return effective
+
+
 def bind_source():
     roots = {p.name.replace('-', '_'): p/'src' for p in (ROOT/'packages').glob('horn-*')}
     for name, module in tuple(sys.modules.items()):
@@ -75,12 +96,14 @@ def prepare(out, ranking, driver, low, high, index):
     for key in ('throat_radius', 'mouth_radius', 'length', 'drive_voltage_rms', 'observation_distance_m'):
         if not np.isfinite(candidate[key]) or candidate[key] <= 0:
             raise ValueError(f'Invalid candidate {key}')
+    check_mesh_schedule(high)
+    revision = clean_source_revision()
     out.mkdir(parents=True, exist_ok=False)
     shutil.copyfile(ranking, out/'ranking.json')
     shutil.copyfile(driver, out/'driver.json')
     write_json(out/'protocol.json', dict(schema_version=1,
         prepared_at=datetime.now(timezone.utc).isoformat(),
-        source_revision=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True).strip(),
+        source_revision=revision,
         source=source_identity(), inputs={p:sha(out/p) for p in ('ranking.json','driver.json')},
         candidate_index=index, candidate=candidate, target_band_hz=[low,high],
         simulation_band_hz=[low/np.sqrt(2),high*np.sqrt(2)], cases=CASES, limits=LIMITS,
@@ -163,10 +186,11 @@ def ripple(curve, band):
     if f[0]>band[0] or f[-1]<band[1]:
         raise ValueError('Target band not covered')
     points=np.r_[band[0],f[(f>band[0]) & (f<band[1])],band[1]]
-    return float(np.ptp(np.interp(points,f,curve['spl'])))
+    return float(np.ptp(np.interp(np.log(points),np.log(f),curve['spl'])))
 
 
 def compare(out):
+    clean_source_revision()
     bind_source()
     import pandas as pd
     from horn_drivers.loader import _driver_from_dict
@@ -188,6 +212,10 @@ def compare(out):
         levels,_,_=coupled_output(frame,driver,target)
         curves[name]=dict(frequency=frame.frequency.to_numpy(),spl=levels,
                          z=frame.z_real.to_numpy()+1j*frame.z_imag.to_numpy())
+    check_mesh_schedule(p['target_band_hz'][1])
+    counts = [health[name]['mesh_cells'] for name in ('mesh_10', 'mesh_6', 'mesh_4')]
+    if not counts[0] < counts[1] < counts[2]:
+        raise ValueError('Mesh cases did not produce strictly increasing cell counts')
     results=[]
     for kind,a,b in [('mesh','mesh_10','mesh_6'),('mesh','mesh_6','mesh_4'),
                       ('loft','mesh_4','loft_40'),('loft','loft_40','loft_80'),
@@ -198,6 +226,7 @@ def compare(out):
         passed=all(np.isfinite(value) and value<=LIMITS[f'{kind}_{key}'] for key,value in change.items())
         results.append(dict(kind=kind,coarse=a,fine=b,changes=change,passed=bool(passed)))
     verify(out)
+    clean_source_revision()
     if any(sha(out/name)!=digest for name,digest in evidence['files'].items()):
         raise ValueError('Solve evidence changed during comparison')
     destination=out/'comparison.json'
