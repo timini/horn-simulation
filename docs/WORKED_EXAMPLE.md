@@ -57,6 +57,6 @@ The remaining step to a dependable physical recommendation is the [reference/int
 
 ## Archived workflow evidence
 
-The [2.6 MB worked-example archive](../data/validation/worked_example_800_1600.tar.gz) includes the corrected self-contained HTML report, acoustic STEP files, raw and coupled responses, search audit, full rankings, resolved specification, source/input/container manifest and launch/resume logs. Its [identity manifest](../data/validation/worked_example_800_1600_manifest.json) records the exact source revision. The fresh run completed all 18 processes; its subsequent resume reused every process from cache. Two earlier invocation failures are explicitly excluded from this pass.
+The [2.6 MB worked-example archive](../data/validation/worked_example_800_1600.tar.gz) includes the corrected self-contained HTML report, acoustic STEP files, raw and coupled responses, search audit, full rankings, resolved specification, source/input/container manifest and launch/resume logs. Its [identity manifest](../data/validation/worked_example_800_1600_manifest.json) records the exact source revision. The fresh run completed all 18 processes; its subsequent resume reused every process from cache. Earlier invocation failures are explicitly excluded from this pass.
 
-The separate [resolution archive](CANDIDATE_RESOLUTION.md#executed-8001600-hz-example) passes all five fixed comparisons. Neither archive contains a measured physical horn/driver assembly or a manufacturing specification.
+The separate [resolution archive](CANDIDATE_RESOLUTION.md#executed-8001600-hz-example) passes all six fixed comparisons. Neither archive contains a measured physical horn/driver assembly or a manufacturing specification.

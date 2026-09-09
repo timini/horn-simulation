@@ -83,8 +83,8 @@ def test_archived_workflow_and_resolution_evidence_have_recorded_identity():
         for filename,digest in manifest['files'].items():
             assert hashlib.sha256((directory/filename).read_bytes()).hexdigest()==digest
     result=json.loads((directory/'candidate_resolution_reference.json').read_text())
-    assert result['passed'] and len(result['health']) in (6,7)
-    assert len(result['comparisons']) in (5,6) and all(row['passed'] for row in result['comparisons'])
+    assert result['passed'] and len(result['health']) == 7
+    assert len(result['comparisons']) == 6 and all(row['passed'] for row in result['comparisons'])
     assert result['physical_validation_status']=='experimental_prediction'
 
 

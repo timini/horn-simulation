@@ -1,9 +1,24 @@
 {
   "schema_version": 1,
   "kind": "numerical_resolution_not_physical_validation",
-  "reproduction_source_commit": "0185ec83f03d429278f5471da8bba1a148f954d7",
+  "reproduction_source_commit": "f4ed2626e4ac8c4d6053cac826c285a2b04032f2",
   "files": {
-    "candidate_resolution_artifacts.tar.gz": "81ce23db4df456fd6bb4eff7970e35ee6c37eedb9c62696b53285e1d6b174e84",
-    "candidate_resolution_reference.json": "885716b877c5b57c8d5441c897508f25ff1637c2146a06c3ee044216c9bca06c"
-  }
+    "candidate_resolution_artifacts.tar.gz": "8c94cd471ba84d894cf55a1700ecf103be76aebbabd2be513dd63e585cbc55dc",
+    "candidate_resolution_reference.json": "f382b805bf24d74787cf3fb784603eeca09591dcbe98ae135ef6ec6157659962"
+  },
+  "execution": "All six cases completed; all workers exited normally; parent exit code 0.",
+  "excluded_attempts": [
+    {
+      "study": "v1/v2",
+      "reason": "Superseded by review safeguards and original-run binding"
+    },
+    {
+      "study": "v3",
+      "reason": "Superseded; did not seal originating outputs or bind originating package source"
+    },
+    {
+      "study": "v4",
+      "reason": "All numerical comparisons passed after an explicit forced worker cleanup; replaced with this fresh clean execution"
+    }
+  ]
 }
