@@ -49,7 +49,7 @@
     },
     "scope": "Identical P1 meshes; uniform rigid piston at the inlet, zero rear load, rigid walls and plane-wave mouth. No commercial driver, chamber, exterior field or physical measurement qualification."
   },
-  "protocol_sha256": "189943d92edf8fbb02d926874cd7a12321485957fa8506fb5ffb4b67b291651a",
+  "protocol_sha256": "3f5c1ed6872934233b62a0111612aeb36a00c14bc9e71f75b6b9e69528dab50c",
   "source": {
     "data/validation/boundary_lab_protocol.json": "28724f5b69bb02df683222204e96e8dc8b1e782255c35be89e833b08138a52b3",
     "packages/horn-analysis/src/horn_analysis/auto_report.py": "b97df8d4ef6133813855d0de55e29e70a105623825dd28d8a547f001e4bc749b",
@@ -96,10 +96,10 @@
     "packages/horn-solver/src/horn_solver/radiation.py": "58ac3c7af3cb53425054fe45e9b0d9f88d92163f8664dcca5db7c5fe03b3c97a",
     "packages/horn-solver/src/horn_solver/solver.py": "5d17e3232df54bc3498e75150ad593058fcbf1f22d7b8932db642b7cca8a993d",
     "scripts/boundary_lab_fixture.py": "8734a375abb48313e3d110c92c1ffb179c4ef77e3a15292760286df7d7e703f4",
-    "scripts/validate_boundary_lab.py": "14bd83593faee435b9b7feca50856f2e138d608dc783b47d3e799a7c85305b54"
+    "scripts/validate_boundary_lab.py": "e8189283a9ee989d4e7ec8e56375b97dd4678b4f9378b369dbdef5120af1749a"
   },
-  "horn_evidence_sha256": "c9704a6076712e8bbb4d4ca63eece84f944f98ebed16213652585d8f2b7dafad",
-  "reference_evidence_sha256": "ad91f103687b6b5eff80902b83f50d371ab0574984b81347f11594bc117ae7fb",
+  "horn_evidence_sha256": "95a0cc0b492628d92feaf264caf973b490d9ebe13ddbd949f78df56a0b020be6",
+  "reference_evidence_sha256": "3c47b74d8ac7b5894e996dcd7285475686d7869a71e9f882d61d6721e5314b6f",
   "runtime": {
     "revision": "8cb166226e412877d3f71f2845918e479b97aa85",
     "python": [
@@ -107,7 +107,12 @@
       11
     ],
     "julia": "julia version 1.12.6",
-    "packages": "bempp-cl==0.4.2\n-e git+https://github.com/JWSound/boundary-lab.git@8cb166226e412877d3f71f2845918e479b97aa85#egg=boundary_lab\ncontourpy==1.3.3\ncycler==0.12.1\nfonttools==4.64.0\ngmsh==4.15.2\nkiwisolver==1.5.1\nllvmlite==0.49.0\nmarkdown-it-py==4.2.0\nmatplotlib==3.11.1\nmdurl==0.1.2\nmeshio==5.3.5\nnumba==0.67.0\nnumpy==2.4.6\npackaging==26.3\npillow==12.3.0\nplatformdirs==4.11.7\nPygments==2.21.0\npyopencl==2026.1.4\npyparsing==3.3.2\npython-dateutil==2.9.0.post0\npytools==2026.1.1\nrich==15.0.0\nscipy==1.17.1\nsiphash24==1.8\nsix==1.17.0\ntyping_extensions==4.16.0\n"
+    "packages": "bempp-cl==0.4.2\n-e git+https://github.com/JWSound/boundary-lab.git@8cb166226e412877d3f71f2845918e479b97aa85#egg=boundary_lab\ncontourpy==1.3.3\ncycler==0.12.1\nfonttools==4.64.0\ngmsh==4.15.2\nkiwisolver==1.5.1\nllvmlite==0.49.0\nmarkdown-it-py==4.2.0\nmatplotlib==3.11.1\nmdurl==0.1.2\nmeshio==5.3.5\nnumba==0.67.0\nnumpy==2.4.6\npackaging==26.3\npillow==12.3.0\nplatformdirs==4.11.7\nPygments==2.21.0\npyopencl==2026.1.4\npyparsing==3.3.2\npython-dateutil==2.9.0.post0\npytools==2026.1.1\nrich==15.0.0\nscipy==1.17.1\nsiphash24==1.8\nsix==1.17.0\ntyping_extensions==4.16.0\n",
+    "imported_module": "/private/tmp/horn-boundary-lab-pinned/src/blab/__init__.py",
+    "python_flags": [
+      "-I",
+      "-B"
+    ]
   },
   "cases": [
     {

@@ -27,7 +27,7 @@ All **6/6 cases, 13 frequencies each**, pass. The largest complex relative discr
 
 The [numeric reference](../data/validation/boundary_lab_reference.json), [complete 2 MB artifact archive](../data/validation/boundary_lab_reference_artifacts.tar.gz) and [identity manifest](../data/validation/boundary_lab_reference_manifest.json) retain original meshes, STEP geometry, both solver outputs, logs, input/source hashes and independent runtime details. The manifest records the exact source commit used for reproduction. Six offline regression tests use the independent complex loads and motor results in ordinary analysis CI.
 
-The earlier Gmsh 2.2 pilot failed the independent reader; a later attempt timed out under shared host load and exposed worker cleanup. Neither counts as a pass. The accepted run starts fresh, uses 4.1 input and the corrected process-group cleanup, and completes every case. Local failed-attempt logs are retained; the checked-in archive contains the accepted complete run.
+The earlier Gmsh 2.2 pilot failed the independent reader; a later attempt timed out under shared host load and exposed worker cleanup. Neither counts as a pass. The accepted v7 run starts fresh, uses 4.1 input, isolated Python, pristine tracked upstream source and the corrected process-group cleanup, and completes every case. Two intervening runs were rejected during Darwin process-group cleanup; they are not passes. The runner now confirms that no live group members remain before tolerating Darwin’s teardown permission error. The initial v4 pass is superseded by this rerun with all review hardening in place. Local failed-attempt logs are retained; the checked-in archive contains the accepted complete run.
 
 ## Reproduction
 
