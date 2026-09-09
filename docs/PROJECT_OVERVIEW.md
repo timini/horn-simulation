@@ -58,4 +58,4 @@ The pipeline consists of the following four stages:
 
 ## 4. Orchestration
 
-The pipeline is orchestrated using Nextflow (`main.nf`). Run with `nextflow run main.nf -profile docker`.
+The pipeline is orchestrated using Nextflow (`main.nf`). Run with `just run` (single horn) or `just run-auto --target_f_low 500 --target_f_high 4000` (band-driven search). The launcher creates an isolated output directory; see [run management](RUN_MANAGEMENT.md).
