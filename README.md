@@ -22,6 +22,12 @@ Optional thermoviscous losses and finite-flange pipe radiation now have independ
 See [acoustic assumptions](docs/ACOUSTIC_CONTRACT.md), [existing measurement sources and importer](docs/VALIDATION_DATA.md), and [implementation/validation status](docs/IMPLEMENTATION_STATUS.md). Resume only an unchanged source/data/container/Nextflow snapshot with `python scripts/run_pipeline.py --run-dir results/<run-id> -resume`.
 
 
+## Scope and sister project
+
+This project focuses on selecting a driver and sizing a conventional single-driver horn for a target frequency band, initially using rigid, axisymmetric, front-loaded horns with characterized driver-to-throat interfaces.
+
+**Multiple-entry horn (MEH) design and simulation are outside this project's scope.** Work on multiple drivers feeding a shared horn through separate entries, their acoustic interaction, and crossover optimization belongs in the sister project: [MEH Design Studio](https://github.com/timini/meh-design-studio).
+
 ## Key features
 
 - **7 horn profiles** — conical, exponential, hyperbolic, tractrix, oblate spheroid, Le Cléac’h, and constant directivity
@@ -273,10 +279,12 @@ Frequencies are logarithmically spaced using `np.geomspace`, providing finer res
 
 ### Limitations
 
-- **First-order radiation BC**: The outlet uses a first-order Sommerfeld (Robin) condition, which is accurate for ka < ~3 but increasingly reflective at higher frequencies/larger apertures.
-- **Sound-hard walls**: No absorption or damping. Walls are perfectly rigid.
-- **Constant air properties**: Temperature and humidity dependence not modelled.
-- **Three profiles**: Supports conical, exponential, and hyperbolic. Tractrix profile is not yet available.
+- **Experimental driver recommendations**: driver/interface coupling and absolute listening-distance output still need matched assembly validation. Missing evidence is disclosed in reports.
+- **Restricted radiation models**: local mouth terminations and the uniform baffled-piston observer apply only within their declared assumptions. Arbitrary exterior diffraction and directivity are not validated; legacy FEM–BEM horn coupling is disabled.
+- **Rigid structure**: optional boundary-layer losses cover a restricted pipe regime, not flexible walls, porous materials or general damping. Measured-reference failures remain visible.
+- **Air and driver assumptions**: reference runs record air properties; direct motor coupling requires the default air properties. Nonlinear distortion and broadband thermal performance are not predicted.
+- **Profile qualification**: seven profiles are implemented, but validation of simple pipes and conical/exponential search grids does not qualify every profile or frequency band.
+- **Acoustic CAD only**: exported STEP files describe the air volume. Walls, mounting and the actual driver interface require mechanical design before fabrication.
 
 ## Architecture
 
@@ -286,32 +294,17 @@ The pipeline is orchestrated by Nextflow (`main.nf`), which maps each process to
 
 ## Roadmap
 
-Prioritised capabilities for reaching feature parity with tools like AKABAK. See linked GitHub issues for details.
+The goal is a dependable **target band → driver and horn dimensions** workflow for conventional single-driver horns. [Issue #81](https://github.com/timini/horn-simulation/issues/81) tracks completion; [the current status and delivery roadmap](docs/SINGLE_HORN_ROADMAP.md) records the evidence, remaining issues and acceptance gates. MEH development belongs in [MEH Design Studio](https://github.com/timini/meh-design-studio).
 
-### Priority 1 — Near-term
+The automated search, bounded refinement, seven profiles, axial STEP import, isolated runs and reports already work. Predictions remain experimental until the following steps pass:
 
-- Interior field visualisation (VTK/ParaView export from dolfinx) — [#45](https://github.com/timini/horn-simulation/issues/45)
-- Arbitrary STEP file import workflow (user-supplied geometry) — [#47](https://github.com/timini/horn-simulation/issues/47)
+1. Qualify a small driver/interface set and two sufficiently documented reference assemblies; correct known catalogue errors (#73, #74).
+2. Independently verify driver coupling and run a matched Boundary Lab comparison (#78).
+3. Establish radiation/output accuracy and mesh, frequency-grid and profile convergence within a declared supported domain (#81).
+4. Compare frozen predictions and design ordering with measured assemblies, then repeat the complete band-to-design acceptance workflow (#81).
+5. Document a reproducible reference design and its mechanical interface so the acoustic result can be turned into a build (#81).
 
-### Priority 2 — Medium-term
-
-- Exterior radiation / directivity (Kirchhoff-Helmholtz integral post-processing) — [#48](https://github.com/timini/horn-simulation/issues/48)
-- Flexible boundary tagging (replace z-coordinate heuristic with surface naming) — [#49](https://github.com/timini/horn-simulation/issues/49)
-
-### Priority 3 — Longer-term
-
-- Complex geometry support (folded horns, phase plugs, back-loaded horns) — [#51](https://github.com/timini/horn-simulation/issues/51)
-- Tractrix horn profile
-- Wall absorption / damping materials
-- Second-order radiation BC for large ka
-
-### Completed
-
-- Fullauto mode: derive horn geometry grid from a target frequency band
-- HTML report for auto-mode: single self-contained `auto_report.html` with rankings table, 4 embedded plots (coupled SPL, raw profile SPL, impedance, phase/group delay), driver T-S parameter table, and summary cards
-- Driver coupling with T-S parameters (transfer function + auto-select pipeline) — [#50](https://github.com/timini/horn-simulation/issues/50)
-- Analysis features: impedance plots, scoring, driver DB — [#35](https://github.com/timini/horn-simulation/issues/35)
-- Profile diversity: conical, exponential, hyperbolic
+Output-directory polish (#75) is separate from acoustic qualification. Interior field export (#45), flexible boundary tagging (#49), and folded/back-loaded or automatic phase-plug design (#51) remain later extensions unless a selected reference case requires them. Historical closure of exterior-solver issues does not certify the disabled legacy coupling.
 
 ## Contributing
 
