@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tarfile
 import re
+import os
 from types import SimpleNamespace
 
 import numpy as np
@@ -39,6 +40,14 @@ def sha(path):
 
 def write_json(path, value):
     Path(path).write_text(json.dumps(value, indent=2, allow_nan=False)+'\n')
+
+
+def inspect_image(image_id):
+    if not re.fullmatch(r'sha256:[0-9a-f]{64}',image_id):
+        raise ValueError('An immutable solver image ID is required')
+    image=json.loads(subprocess.check_output(['docker','image','inspect',image_id],text=True))[0]
+    if image['Id']!=image_id:raise ValueError('Solver image identity changed')
+    return image
 
 
 def source_identity():
@@ -168,6 +177,10 @@ def prepare(out, ranking, driver, low, high, index, run_dir=None):
     origin=origin_files(run_dir,ranking,driver,candidate,low,high)
     check_mesh_schedule(high)
     revision = clean_source_revision()
+    solver_image=json.loads(origin['origin_manifest'].read_text())['containers']['horn-solver']['id']
+    inspected=inspect_image(solver_image)
+    if inspected['Id']!=solver_image:
+        raise ValueError('Originating solver image is unavailable')
     out.mkdir(parents=True, exist_ok=False)
     shutil.copyfile(ranking, out/'ranking.json')
     shutil.copyfile(driver, out/'driver.json')
@@ -176,6 +189,7 @@ def prepare(out, ranking, driver, low, high, index, run_dir=None):
     write_json(out/'protocol.json', dict(schema_version=1,
         prepared_at=datetime.now(timezone.utc).isoformat(),
         source_revision=revision,
+        solver_image_id=solver_image,
         source=source_identity(), inputs={p:sha(out/p) for p in ('ranking.json','driver.json',*origin)},
         candidate_index=index, candidate=candidate, target_band_hz=[low,high],
         simulation_band_hz=[low/np.sqrt(2),high*np.sqrt(2)], cases=CASES, limits=LIMITS,
@@ -188,6 +202,9 @@ def verify(out):
         raise ValueError('Source or fixed protocol changed; prepare a fresh study')
     if any(sha(out/name) != digest for name,digest in p['inputs'].items()):
         raise ValueError('Frozen input changed')
+    origin=json.loads((out/'origin_manifest').read_text())
+    if p['solver_image_id']!=origin['containers']['horn-solver']['id']:
+        raise ValueError('Solver image differs from the originating execution')
     ranking=json.loads((out/'ranking.json').read_text())
     if isinstance(ranking,dict):
         ranking=ranking['results']
@@ -202,6 +219,8 @@ def solve_case(arguments):
     from horn_geometry.generator import create_horn
     from horn_solver.solver import run_simulation_from_step
     p=verify(out);c=p['candidate'];case=CASES[name]
+    runtime=runtime_identity()
+    if runtime['petsc_scalar']!='complex128':raise ValueError('Complex double PETSc is required')
     directory=out/name
     directory.mkdir(exist_ok=False)
     step=directory/'horn.step'
@@ -215,15 +234,61 @@ def solve_case(arguments):
         mesh_size=case['mesh_size'],element_degree=1,radiation_model='flanged_piston',loss_model='lossless')
     verify(out)
     print('Completed resolution case:',name,flush=True)
+    return runtime
 
 
-def solve(out, jobs=1):
+def runtime_identity():
+    import platform, io, contextlib
+    import scipy, pandas, dolfinx, gmsh, mpi4py
+    from mpi4py import MPI
+    from petsc4py import PETSc
+    stream=io.StringIO()
+    with contextlib.redirect_stdout(stream):np.show_config()
+    return dict(python=sys.version,architecture=platform.machine(),numpy=np.__version__,
+                scipy=scipy.__version__,pandas=pandas.__version__,dolfinx=dolfinx.__version__,
+                gmsh=gmsh.__version__,mpi4py=mpi4py.__version__,mpi_library=MPI.Get_library_version(),
+                petsc=list(PETSc.Sys.getVersion()),petsc_scalar=str(np.dtype(PETSc.ScalarType)),
+                numpy_configuration=stream.getvalue(),
+                openblas_threads=os.environ.get('OPENBLAS_NUM_THREADS'),omp_threads=os.environ.get('OMP_NUM_THREADS'))
+
+
+def solve(out,jobs=1):
+    """Host-owned execution pins the actual image, not a caller-supplied label."""
+    clean_source_revision();p=verify(out)
+    image=inspect_image(p['solver_image_id'])
+    if image['Id']!=p['solver_image_id']:raise ValueError('Solver image identity changed')
+    if (out/'host-execution.json').exists() or (out/'solve-evidence.json').exists():
+        raise FileExistsError('Study execution already exists')
+    name='horn-resolution-'+sha(out/'protocol.json')[:12]
+    command=['docker','run','--rm','--name',name,
+             '-e','OPENBLAS_NUM_THREADS=1','-e','OMP_NUM_THREADS=1','-e','PYTHONPATH=/usr/local/lib',
+             '-e','HORN_STUDY_IMAGE_ID='+image['Id'],
+             '-v',f'{ROOT}:/workspace:ro','-v',f'{out}:/study','-w','/workspace',image['Id'],
+             'python3','scripts/validate_candidate_resolution.py','_solve','/study','--jobs',str(jobs)]
+    code=None
+    try:
+        code=subprocess.run(command,timeout=7200).returncode
+        if code!=0:raise RuntimeError(f'Solver container exited {code}')
+        verify(out);clean_source_revision()
+        evidence=json.loads((out/'solve-evidence.json').read_text())
+        if evidence['solver_image_id']!=image['Id']:raise ValueError('Solver evidence image differs')
+    finally:
+        subprocess.run(['docker','rm','-f',name],capture_output=True)
+        write_json(out/'host-execution.json',dict(command=command,image_id=image['Id'],
+            image_architecture=image['Architecture'],image_os=image['Os'],exit_code=code,
+            protocol_sha256=sha(out/'protocol.json'),
+            solve_evidence_sha256=sha(out/'solve-evidence.json') if code==0 and (out/'solve-evidence.json').exists() else None))
+
+
+def solve_in_container(out, jobs=1):
     if not isinstance(jobs,int) or not 1<=jobs<=len(CASES):
         raise ValueError('Jobs must be between one and the number of cases')
-    verify(out)
+    p=verify(out)
+    if os.environ.get('HORN_STUDY_IMAGE_ID')!=p['solver_image_id']:
+        raise ValueError('Use the host solve command to enforce the frozen image')
     arguments=[(out,name) for name in CASES]
     if jobs==1:
-        for argument in arguments:solve_case(argument)
+        runtimes=[solve_case(argument) for argument in arguments]
     else:
         # Fresh processes isolate Gmsh, MPI/PETSc and source imports per worker.
         from multiprocessing import get_context
@@ -232,10 +297,13 @@ def solve(out, jobs=1):
         # SIGTERM and can hang in MPI_Abort; orderly executor shutdown lets
         # each completed worker finalize MPI normally. Crashes break the pool.
         with ProcessPoolExecutor(max_workers=jobs,mp_context=get_context('spawn')) as pool:
-            list(pool.map(solve_case,arguments))
+            runtimes=list(pool.map(solve_case,arguments))
+    runtime=runtimes[0]
+    if any(item!=runtime for item in runtimes):raise ValueError('Runtime changed between solver cases')
     verify(out)
     files=list(out.glob('*/horn.step'))+list(out.glob('*/response.csv'))
     write_json(out/'solve-evidence.json',dict(protocol_sha256=sha(out/'protocol.json'),jobs=jobs,
+        solver_image_id=p['solver_image_id'],runtime=runtime,
         files={str(f.relative_to(out)):sha(f) for f in sorted(files)}))
 
 
@@ -264,9 +332,9 @@ def curve_change(coarse, fine):
     f=fine['frequency']
     if coarse['frequency'][0]>f[0] or coarse['frequency'][-1]<f[-1]:
         raise ValueError('Comparison grids do not cover the same band')
-    level=np.interp(f,coarse['frequency'],coarse['spl'])
-    z=(np.interp(f,coarse['frequency'],coarse['z'].real)
-       +1j*np.interp(f,coarse['frequency'],coarse['z'].imag))
+    level=np.interp(np.log(f),np.log(coarse['frequency']),coarse['spl'])
+    z=(np.interp(np.log(f),np.log(coarse['frequency']),coarse['z'].real)
+       +1j*np.interp(np.log(f),np.log(coarse['frequency']),coarse['z'].imag))
     if np.any(np.abs(z)<=0) or np.any(np.abs(fine['z'])<=0):
         raise ValueError('Zero impedance cannot support a magnitude/phase comparison')
     return dict(spl_db=float(np.max(np.abs(level-fine['spl']))),
@@ -291,6 +359,13 @@ def compare(out):
     from horn_analysis.scoring import TargetSpec
     p=verify(out)
     evidence=json.loads((out/'solve-evidence.json').read_text())
+    execution=json.loads((out/'host-execution.json').read_text())
+    if (execution['exit_code']!=0 or execution['image_id']!=p['solver_image_id']
+            or execution['protocol_sha256']!=sha(out/'protocol.json')
+            or execution['solve_evidence_sha256']!=sha(out/'solve-evidence.json')
+            or evidence.get('solver_image_id')!=p['solver_image_id']
+            or evidence.get('runtime',{}).get('petsc_scalar')!='complex128'):
+        raise ValueError('Missing or changed solver runtime/execution identity')
     expected={f'{name}/{file}' for name in CASES for file in ('horn.step','response.csv')}
     if (set(evidence['files'])!=expected or evidence['protocol_sha256']!=sha(out/'protocol.json')
             or any(sha(out/name)!=digest for name,digest in evidence['files'].items())):
@@ -323,7 +398,7 @@ def compare(out):
     if not counts[0] < counts[1] < counts[2]:
         raise ValueError('Mesh cases did not produce strictly increasing cell counts')
     results=[]
-    for kind,a,b in [('mesh','original_ranking','mesh_10'),('mesh','mesh_10','mesh_6'),('mesh','mesh_6','mesh_4'),
+    for kind,a,b in [('frequency','original_ranking','mesh_10'),('mesh','mesh_10','mesh_6'),('mesh','mesh_6','mesh_4'),
                       ('loft','mesh_4','loft_40'),('loft','loft_40','loft_80'),
                       ('frequency','frequency_101','loft_80')]:
         change=curve_change(curves[a],curves[b])
@@ -340,6 +415,7 @@ def compare(out):
         raise FileExistsError(destination)
     result=dict(scope=p['scope'],protocol_sha256=sha(out/'protocol.json'),
         solve_evidence_sha256=sha(out/'solve-evidence.json'),candidate=candidate,
+        host_execution_sha256=sha(out/'host-execution.json'),solver_image_id=p['solver_image_id'],
         limits=LIMITS,health=health,comparisons=results,passed=all(r['passed'] for r in results),
         physical_validation_status='experimental_prediction')
     write_json(destination,result)
@@ -350,7 +426,7 @@ def compare(out):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('stage',choices=['prepare','solve','compare'])
+    parser.add_argument('stage',choices=['prepare','solve','_solve','compare'])
     parser.add_argument('output',type=Path)
     parser.add_argument('--ranking',type=Path)
     parser.add_argument('--run-dir',type=Path)
@@ -367,6 +443,8 @@ def main():
         prepare(out,args.ranking,args.driver,args.f_low,args.f_high,args.candidate_index,args.run_dir)
     elif args.stage=='solve':
         solve(out,args.jobs)
+    elif args.stage=='_solve':
+        solve_in_container(out,args.jobs)
     else:
         compare(out)
 

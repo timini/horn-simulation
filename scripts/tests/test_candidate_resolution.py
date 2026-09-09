@@ -54,7 +54,10 @@ def test_failed_health_or_changed_contract_cannot_pass(column,value):
 
 def test_preparation_freezes_candidate_driver_source_and_limits(tmp_path, monkeypatch):
     monkeypatch.setattr(v, 'clean_source_revision', lambda: 'test-revision')
-    monkeypatch.setattr(v, 'origin_files', lambda *args: {})
+    origin=tmp_path/'origin.json'
+    origin.write_text(json.dumps({'containers':{'horn-solver':{'id':'sha256:'+'0'*64}}}))
+    monkeypatch.setattr(v, 'origin_files', lambda *args: {'origin_manifest':origin})
+    monkeypatch.setattr(v, 'inspect_image', lambda value: {'Id':value})
     candidate=dict(driver_id='test',loss_model='lossless',radiation_model='flanged_piston',
         element_degree=1,throat_radius=.01,mouth_radius=.03,length=.1,
         drive_voltage_rms=2.83,observation_distance_m=1.,profile='conical')
@@ -83,8 +86,8 @@ def test_archived_workflow_and_resolution_evidence_have_recorded_identity():
         for filename,digest in manifest['files'].items():
             assert hashlib.sha256((directory/filename).read_bytes()).hexdigest()==digest
     result=json.loads((directory/'candidate_resolution_reference.json').read_text())
-    assert result['passed'] and len(result['health']) in (6,7)
-    assert len(result['comparisons']) in (5,6) and all(row['passed'] for row in result['comparisons'])
+    assert result['passed'] and len(result['health']) == 7
+    assert len(result['comparisons']) == 6 and all(row['passed'] for row in result['comparisons'])
     assert result['physical_validation_status']=='experimental_prediction'
 
 
@@ -195,3 +198,36 @@ def test_originating_band_grid_can_differ_from_global_geometric_grid():
     assert v.check_frame(good,[1.,4.],len(grid),expected=grid)['mesh_cells']==100
     with pytest.raises(ValueError,match='frequency grid'):
         v.check_frame(good,[1.,4.],len(grid))
+
+
+def test_refinement_uses_logarithmic_frequency_interpolation():
+    coarse=dict(frequency=np.array([1.,4.]),spl=np.array([0.,2.]),z=np.array([1.+0j,3.+0j]))
+    fine=dict(frequency=np.array([1.,2.,4.]),spl=np.array([0.,1.,2.]),z=np.array([1.+0j,2.+0j,3.+0j]))
+    assert all(value==pytest.approx(0.) for value in v.curve_change(coarse,fine).values())
+
+
+@pytest.mark.parametrize('image',['horn-solver:latest','--format','sha256:bad'])
+def test_mutable_or_invalid_image_identifiers_are_rejected_before_docker(image):
+    with pytest.raises(ValueError,match='immutable'):
+        v.inspect_image(image)
+
+
+def test_host_executes_frozen_image_and_preserves_failure_without_a_success_seal(tmp_path,monkeypatch):
+    from types import SimpleNamespace
+    image_id='sha256:'+'1'*64
+    (tmp_path/'protocol.json').write_text('{}')
+    monkeypatch.setattr(v,'clean_source_revision',lambda:'source')
+    monkeypatch.setattr(v,'verify',lambda out:{'solver_image_id':image_id})
+    monkeypatch.setattr(v,'inspect_image',lambda image:{'Id':image,'Architecture':'amd64','Os':'linux'})
+    commands=[]
+    def execute(command,**kwargs):
+        commands.append(command)
+        return SimpleNamespace(returncode=7 if command[:2]==['docker','run'] else 0)
+    monkeypatch.setattr(v.subprocess,'run',execute)
+    with pytest.raises(RuntimeError,match='exited 7'):
+        v.solve(tmp_path,jobs=3)
+    assert image_id in commands[0] and not any('latest' in part for part in commands[0])
+    assert commands[-1][:3]==['docker','rm','-f']
+    evidence=json.loads((tmp_path/'host-execution.json').read_text())
+    assert evidence['image_id']==image_id and evidence['exit_code']==7
+    assert evidence['solve_evidence_sha256'] is None

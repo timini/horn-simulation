@@ -1,7 +1,7 @@
 {
   "scope": "Numerical resolution of this fixed ideal candidate; no physical qualification",
-  "protocol_sha256": "d2c092e3960c469181fb59cd1e596bf4c280dfd6527fe0da5b7e6b0b58db2d0f",
-  "solve_evidence_sha256": "337f530a8e66ca9008b18110679ac1725fc8e8da8ea958d7390d4ebed1ca9f64",
+  "protocol_sha256": "cb166554f87bd17b38bca1eb6735d08e8396be79eb81820f207caf664ef09f6d",
+  "solve_evidence_sha256": "6bc270e8b3a4cba8a582f11753ad08c29e719202ea5d6f452ae5e3fc8534e3d9",
   "candidate": {
     "max_displacement_peak_m": 1.620887672241789e-05,
     "max_input_power_w": 1.4340570975292857,
@@ -65,14 +65,19 @@
     "frequency_ripple_db": 0.2
   },
   "health": {
+    "original_ranking": {
+      "mesh_cells": 5333,
+      "max_residual": 8.170288540089391e-17,
+      "max_relative_power_balance_error": 2.9166099462073125e-15
+    },
     "mesh_10": {
       "mesh_cells": 5333,
-      "max_residual": 7.833050717647518e-17,
+      "max_residual": 8.552569256451129e-17,
       "max_relative_power_balance_error": 3.2453617147970383e-15
     },
     "mesh_6": {
       "mesh_cells": 22809,
-      "max_residual": 9.561249618039267e-17,
+      "max_residual": 9.6469954970968e-17,
       "max_relative_power_balance_error": 6.874466634265426e-15
     },
     "mesh_4": {
@@ -83,26 +88,37 @@
     "loft_40": {
       "mesh_cells": 74334,
       "max_residual": 9.952499047854816e-17,
-      "max_relative_power_balance_error": 7.562540473800468e-15
+      "max_relative_power_balance_error": 7.951131599985941e-15
     },
     "loft_80": {
       "mesh_cells": 74329,
-      "max_residual": 9.859733644428631e-17,
+      "max_residual": 9.909745474130443e-17,
       "max_relative_power_balance_error": 7.218133969854256e-15
     },
-    "frequency_201": {
+    "frequency_101": {
       "mesh_cells": 74329,
-      "max_residual": 9.909745474130443e-17,
+      "max_residual": 9.859733644428631e-17,
       "max_relative_power_balance_error": 7.218133969854256e-15
     }
   },
   "comparisons": [
     {
       "kind": "mesh",
+      "coarse": "original_ranking",
+      "fine": "mesh_10",
+      "changes": {
+        "spl_db": 0.004454982345109215,
+        "impedance_db": 0.014792539746250544,
+        "phase_deg": 0.08262926576227769
+      },
+      "passed": true
+    },
+    {
+      "kind": "mesh",
       "coarse": "mesh_10",
       "fine": "mesh_6",
       "changes": {
-        "spl_db": 0.0396368739051951,
+        "spl_db": 0.039687355571516036,
         "impedance_db": 0.11676510318810956,
         "phase_deg": 0.525359570377989
       },
@@ -113,7 +129,7 @@
       "coarse": "mesh_6",
       "fine": "mesh_4",
       "changes": {
-        "spl_db": 0.012976310607456298,
+        "spl_db": 0.012986324805495997,
         "impedance_db": 0.03756638644143253,
         "phase_deg": 0.16793954249315723
       },
@@ -125,7 +141,7 @@
       "fine": "loft_40",
       "changes": {
         "spl_db": 0.0006691314388831415,
-        "impedance_db": 0.0011962429403148704,
+        "impedance_db": 0.0011966682491956625,
         "phase_deg": 0.005444133142932835
       },
       "passed": true
@@ -135,7 +151,7 @@
       "coarse": "loft_40",
       "fine": "loft_80",
       "changes": {
-        "spl_db": 1.8586739756187853e-05,
+        "spl_db": 1.8624715195869612e-05,
         "impedance_db": 1.895949933540565e-05,
         "phase_deg": 0.0007731894484533423
       },
@@ -143,8 +159,8 @@
     },
     {
       "kind": "frequency",
-      "coarse": "loft_80",
-      "fine": "frequency_201",
+      "coarse": "frequency_101",
+      "fine": "loft_80",
       "changes": {
         "spl_db": 0.0026451784138146195,
         "impedance_db": 0.008820822211026634,
