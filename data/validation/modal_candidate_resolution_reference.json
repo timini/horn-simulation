@@ -1,0 +1,234 @@
+{
+  "scope": "Numerical resolution of this fixed ideal candidate; no physical qualification",
+  "protocol_sha256": "b3628540e01e7362f1ec3b27c1f436994a9abb0e66176e1a55475819ce20eb16",
+  "solve_evidence_sha256": "55912d90053045455c77cb46e7f626cdd96ab37ad6d1a04c8fc5b89f82cc4ea3",
+  "candidate": {
+    "max_displacement_peak_m": 1.671105988890086e-05,
+    "max_input_power_w": 1.428303088531487,
+    "operating_limit_scope": "Linear model at requested voltage; not a validated maximum-output or thermal prediction",
+    "bandwidth_coverage": 1.0,
+    "passband_ripple_db": 1.4847110595181192,
+    "avg_sensitivity_db": 104.88239417071243,
+    "composite_score": 0.8751470148980469,
+    "model_feasible": true,
+    "eligibility_status": "insufficient_evidence",
+    "rejection_reasons": [],
+    "evidence_gaps": [
+      "driver_interface_unverified",
+      "moving_mass_and_rear_load_not_separated"
+    ],
+    "validation_status": "experimental_prediction",
+    "target_min_level_db": 104.25131018722371,
+    "target_max_level_db": 105.73602124674183,
+    "driver_id": "18sound-6nmb420",
+    "horn_label": "refine_hyperbolic_0001",
+    "kpi": {
+      "peak_spl_db": 105.73602124674183,
+      "peak_frequency_hz": 894.4271909999161,
+      "f3_low_hz": 698.7844883710695,
+      "f3_high_hz": 2262.741699796952,
+      "bandwidth_hz": 1563.9572114258826,
+      "bandwidth_octaves": 1.6951524163568215,
+      "passband_ripple_db": 3.0,
+      "average_sensitivity_db": 104.5916219948864,
+      "f3_low_is_bound": false,
+      "f3_high_is_bound": true,
+      "bandwidth_is_lower_bound": true
+    },
+    "manufacturer": "18Sound",
+    "model_name": "6NMB420",
+    "output_metric": "modal_baffled_on_axis",
+    "observation_distance_m": 1.0,
+    "drive_voltage_rms": 2.83,
+    "inlet_area_m2": 0.0033178996307172,
+    "loss_model": "lossless",
+    "radiation_model": "modal_baffled",
+    "element_degree": 1,
+    "profile": "hyperbolic",
+    "throat_radius": 0.032498,
+    "mouth_radius": 0.08870898640584517,
+    "length": 0.11790625,
+    "score_gap_from_best": 0.0,
+    "comparison_status": "near_tie",
+    "comparison_scope": "0.02 score comparison margin; physical uncertainty unquantified"
+  },
+  "host_execution_sha256": "ec8072489325a5b9bb185f1a9d7b2bb3f13dfb24507ce1f1cbd68f207bd086fb",
+  "solver_image_id": "sha256:85e29e6bdf17cd96b9bd0a2df402894175e278662e056ac940e13688b1654f78",
+  "analysis_revision": "42706e145e81d9226e4154ae225bbf83dc80dde3",
+  "analysis_source": {
+    "packages/horn-analysis/src/horn_analysis/auto_report.py": "531a678413b85236286b455315f2939f09e3d5dfcecd22cba067a769f5d35e9d",
+    "packages/horn-analysis/src/horn_analysis/compare.py": "bfd3fa74d6621f7387927c0104989b0665cd65eec3b950036b86a5abd947873d",
+    "packages/horn-analysis/src/horn_analysis/compare_horns.py": "3cce611e52ac45107646f80b59254088488f9f662daf5e153aa6ab92a4eb0ff7",
+    "packages/horn-analysis/src/horn_analysis/couple_single.py": "2a7b460ba94054822b8374837b922dd45d5a74dbaf7ffb8eea39b6eff36df141",
+    "packages/horn-analysis/src/horn_analysis/dashboard.py": "33d73ec8076f2f06370fcfc141fed3f08fe179bda7ad905e0dc5fc7140c061a0",
+    "packages/horn-analysis/src/horn_analysis/directivity_plot.py": "a55be2a708332a28e7009afc3628d7ad2288a450270e74a8b19860b164af7c79",
+    "packages/horn-analysis/src/horn_analysis/evaluation.py": "71906611e50f831d8aa193958f87670a1795a439eea8519e94aad1d2e327c631",
+    "packages/horn-analysis/src/horn_analysis/horn_render.py": "1f3628367ef75957ca59b8328d6b8a1f27654fdda5d4a285f00d2262d678e720",
+    "packages/horn-analysis/src/horn_analysis/html_report.py": "c776bda7e4eb69cc236511b069037d6b4fe310d6455d541f7ea94acb6ed128fd",
+    "packages/horn-analysis/src/horn_analysis/impedance_plot.py": "d9da271ffd7744951aa37c399ac34ec25d6279d68d9d6812640be78f1dd0d055",
+    "packages/horn-analysis/src/horn_analysis/kpi.py": "1fe259c0d0d3d1b35d550215fc51315262ef46cc60dc6ff37a0792fb03432e10",
+    "packages/horn-analysis/src/horn_analysis/lem_prescreen.py": "86befade0ae4e15ed949e9220761aa66c249aaa22891828fce317255049f8b5e",
+    "packages/horn-analysis/src/horn_analysis/merge.py": "5e698506deabe2df2a87a56557dd9063fa55b87c2269b18d27af9da632d2af9f",
+    "packages/horn-analysis/src/horn_analysis/phase_plot.py": "35e67b3e4aeeec98ca36395de9bed1a37177179c36c952c31a6f99faf67ceecc",
+    "packages/horn-analysis/src/horn_analysis/plot_theme.py": "4ea10c9c1b6da24d9a1d246fec277bedab1c8bd67c39309454fece681383365f",
+    "packages/horn-analysis/src/horn_analysis/plotter.py": "ff30926187e7d18d925e76b5773de77775a946a6ac34d4a47bd3b294978555b7",
+    "packages/horn-analysis/src/horn_analysis/prescreen.py": "6aceaad03cef0cee95dad56fd171e5d0d3396ffd0f841ef278ed0220f95e824a",
+    "packages/horn-analysis/src/horn_analysis/rank_pipeline.py": "2c16f8f8fbabbed7ecba81f30790a7f9ff4cb8d8d09c4a9d0c490defb0782bcc",
+    "packages/horn-analysis/src/horn_analysis/reference_data.py": "541d531ae8e22e3f052da67b5a3c17ce58b344e38185c6b49882294804d8cd7c",
+    "packages/horn-analysis/src/horn_analysis/refine.py": "b0544c58c5db112aa8496a22012ae0b0184976fc70378778f2673fd0d9b297e1",
+    "packages/horn-analysis/src/horn_analysis/scoring.py": "fba9fd34a248d14cdec54f6c1d535f5480955bc3ff0e2cde9bb081c8bed57bdf",
+    "packages/horn-analysis/src/horn_analysis/search.py": "fa1f5e4a2c7018c63e8a31ae1af91ce8a613a0cee93fdaf73dc7f2ef07272c60",
+    "packages/horn-analysis/src/horn_analysis/single_report.py": "ba94ab1adb30d17514cb6e87b2369a32853e0a07a61748ec30bf1e4a3f84ee36",
+    "packages/horn-analysis/src/horn_analysis/transfer_function.py": "b310f0dac060ec5fd41a40026eac9b1e822d46e0ea0260be491b9400f909c769",
+    "packages/horn-analysis/src/horn_analysis/validation.py": "bd4df6e44f25ac39837bb5b7f1ccfe992c657963c758a9c91946dd4d0b565dcb",
+    "packages/horn-core/src/horn_core/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "packages/horn-core/src/horn_core/acoustics.py": "1de5378973e8e30ba1d9776f18460fe99b5a93a5c57c71f67c1e9b53108cc48b",
+    "packages/horn-core/src/horn_core/candidates.py": "9079f4528de99b4df34d53c7f2aed0e58c6bbf08ca0758ddc41521a7f02cd2d5",
+    "packages/horn-core/src/horn_core/drivers.py": "fed3f3745ec966ab37a13bffcbccca3f596004ad1bcb1501f273ee0fee249116",
+    "packages/horn-core/src/horn_core/duct.py": "acef8a720d9bd66f998c0b54aef8ca5dfb3cdf7fce4231205f8c2787dcd3a943",
+    "packages/horn-core/src/horn_core/geometry_designer.py": "0f9ec61c9221149844c690224c4f9832c0c59e71da56610b300f8ba38564768d",
+    "packages/horn-core/src/horn_core/modal_radiation.py": "2c0c96a5821f221362d138e5d1dd3f7047b3338167f32dfb5d0d98249409de90",
+    "packages/horn-core/src/horn_core/parameters.py": "e372008dbdf0d13f8f6c95303183b513351eb47046fc0ae70a5ad0d207202e9e",
+    "packages/horn-core/src/horn_core/profiles.py": "6f1b67ab9f22c5a5ed61d43794ac00a124b4ff70211211bcf552c3ad0dbfe906",
+    "packages/horn-core/src/horn_core/webster.py": "ba6b85ba538431ecbe95ca4d0a0e5e5ab1c07ce0c0f8817e38bc3bd03c992f40",
+    "packages/horn-drivers/src/horn_drivers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "packages/horn-drivers/src/horn_drivers/loader.py": "7b4f6554e327c27a797fc95d42f71275fdecb3d63af3ee09528adc891a374c90",
+    "packages/horn-drivers/src/horn_drivers/scraper.py": "902b3633c5b60760aa651be240d988b6174600e453d412d0df5e9181084aa0a3",
+    "packages/horn-drivers/src/horn_drivers/validator.py": "e29281e52b29d6a41ac9df30d3f0a74c3a2240d9e0fecc59df1c2274f1a5cac8",
+    "packages/horn-geometry/src/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "packages/horn-geometry/src/horn_geometry/__init__.py": "6a3cf5192354f71615ac51034b3e97c20eda99643fcaf5bbe6d41ad59bd12167",
+    "packages/horn-geometry/src/horn_geometry/generator.py": "88c99232b08b7e3a8912c44032e96419218c5754eed7bbfb745d2454a6e09319",
+    "packages/horn-solver/src/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "packages/horn-solver/src/horn_solver/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "packages/horn-solver/src/horn_solver/bem_coupling.py": "58f6afb794687663a8d0020fe2e86eeb5268cd9ff9c2aba0f065d7ee908b64e9",
+    "packages/horn-solver/src/horn_solver/modal_boundary.py": "0c0273d3f2468408d655624f1a7f37474c8d21e4682164f04c8e4b74166f0b34",
+    "packages/horn-solver/src/horn_solver/modal_geometry.py": "0bec12be901c73fb5ed47f52e13c71c44d388100539f402daccdc19825472ec0",
+    "packages/horn-solver/src/horn_solver/radiation.py": "58ac3c7af3cb53425054fe45e9b0d9f88d92163f8664dcca5db7c5fe03b3c97a",
+    "packages/horn-solver/src/horn_solver/solver.py": "001c243ea3e94701152368e146eb9a8215028c36555034a43c436f598982192b",
+    "scripts/validate_candidate_resolution.py": "179fec00669fab26e8e5289dfcfb248bb1922e6c0c5862e950eb0df95e05cee7"
+  },
+  "comparison_grid": "union_log_frequency",
+  "historical_reanalysis": true,
+  "previous_comparison_sha256": "548c3b9ec48c50932551c5118aa817a3b46834fa3291c7960bac68ba43f024f0",
+  "limits": {
+    "mesh_spl_db": 0.5,
+    "mesh_impedance_db": 0.5,
+    "mesh_phase_deg": 5.0,
+    "loft_spl_db": 0.5,
+    "loft_impedance_db": 0.5,
+    "loft_phase_deg": 5.0,
+    "frequency_spl_db": 0.2,
+    "frequency_impedance_db": 0.2,
+    "frequency_phase_deg": 2.0,
+    "frequency_ripple_db": 0.2
+  },
+  "health": {
+    "original_ranking": {
+      "mesh_cells": 5333,
+      "max_residual": 2.397038995941087e-16,
+      "max_relative_power_balance_error": 5.6656256319050704e-15
+    },
+    "mesh_10": {
+      "mesh_cells": 5333,
+      "max_residual": 2.471150254291257e-16,
+      "max_relative_power_balance_error": 5.745826008908954e-15
+    },
+    "mesh_6": {
+      "mesh_cells": 22809,
+      "max_residual": 2.2750751456796443e-16,
+      "max_relative_power_balance_error": 5.194181721598673e-15
+    },
+    "mesh_4": {
+      "mesh_cells": 74130,
+      "max_residual": 2.674307992974065e-16,
+      "max_relative_power_balance_error": 3.6046031383805055e-14
+    },
+    "loft_40": {
+      "mesh_cells": 74334,
+      "max_residual": 3.668913744375991e-16,
+      "max_relative_power_balance_error": 1.8116799588347497e-14
+    },
+    "loft_80": {
+      "mesh_cells": 74329,
+      "max_residual": 2.3013870957912014e-16,
+      "max_relative_power_balance_error": 8.576138465508823e-15
+    },
+    "frequency_101": {
+      "mesh_cells": 74329,
+      "max_residual": 2.1122299747813395e-16,
+      "max_relative_power_balance_error": 7.841796381728134e-15
+    }
+  },
+  "comparisons": [
+    {
+      "kind": "frequency",
+      "coarse": "original_ranking",
+      "fine": "mesh_10",
+      "changes": {
+        "spl_db": 0.004800062342781075,
+        "impedance_db": 0.016740896393877682,
+        "phase_deg": 0.08759643851283061,
+        "ripple_db": 0.002570496132250355
+      },
+      "passed": true
+    },
+    {
+      "kind": "mesh",
+      "coarse": "mesh_10",
+      "fine": "mesh_6",
+      "changes": {
+        "spl_db": 0.062261579539239165,
+        "impedance_db": 0.14550420770675693,
+        "phase_deg": 0.5302378694613425
+      },
+      "passed": true
+    },
+    {
+      "kind": "mesh",
+      "coarse": "mesh_6",
+      "fine": "mesh_4",
+      "changes": {
+        "spl_db": 0.020955732998046983,
+        "impedance_db": 0.04895679193154355,
+        "phase_deg": 0.17420503022361636
+      },
+      "passed": true
+    },
+    {
+      "kind": "loft",
+      "coarse": "mesh_4",
+      "fine": "loft_40",
+      "changes": {
+        "spl_db": 0.0007370560222739186,
+        "impedance_db": 0.0012563856504623045,
+        "phase_deg": 0.0045441209502359425
+      },
+      "passed": true
+    },
+    {
+      "kind": "loft",
+      "coarse": "loft_40",
+      "fine": "loft_80",
+      "changes": {
+        "spl_db": 2.398959416893831e-05,
+        "impedance_db": 2.7381130191262957e-05,
+        "phase_deg": 0.0007770673214153695
+      },
+      "passed": true
+    },
+    {
+      "kind": "frequency",
+      "coarse": "frequency_101",
+      "fine": "loft_80",
+      "changes": {
+        "spl_db": 0.0028335117091415896,
+        "impedance_db": 0.00995143465993992,
+        "phase_deg": 0.05183725722175172,
+        "ripple_db": 0.0016996195338379039
+      },
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "physical_validation_status": "experimental_prediction"
+}

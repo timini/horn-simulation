@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "kind": "numerical_resolution_not_physical_validation",
+  "reproduction_source_commit": "5f77c1920b6a16ed6d99cc4bfe77627803d2fd4a",
+  "analysis_revision": "42706e145e81d9226e4154ae225bbf83dc80dde3",
+  "solver_image_id": "sha256:85e29e6bdf17cd96b9bd0a2df402894175e278662e056ac940e13688b1654f78",
+  "comparison_grid": "union_log_frequency",
+  "files": {
+    "modal_candidate_resolution_artifacts.tar.gz": "75aaf44f50fbabe6e57f961df91656c24f90e9e6537e8989bc38f84b435a7593",
+    "modal_candidate_resolution_reference.json": "e3b6ca31168d40afc57a602a1debca08a9a2d661aa2cb0e99636b318c5a2d9e5"
+  },
+  "execution": "All six cases and workers completed normally; immutable originating image enforced by host; parent exit 0.",
+  "analysis_note": "Original solve/comparison preserved. Comparator-only reassessment uses union of both grids with identical package sources and unchanged limits.",
+  "excluded_attempts": [
+    {
+      "study": "modal-candidate-resolution-v1",
+      "reason": "Partial study using superseded unpinned harness and earlier worked example; stopped and preserved without a full pass. Replaced by clean host-pinned v2."
+    }
+  ]
+}

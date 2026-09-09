@@ -276,7 +276,7 @@ Frequencies are logarithmically spaced using `np.geomspace`, providing finer res
 ### Limitations
 
 - **Experimental driver recommendations**: driver/interface coupling and absolute listening-distance output still need matched assembly validation. Missing evidence is disclosed in reports.
-- **Restricted radiation models**: local mouth terminations and the uniform baffled-piston observer apply only within their declared assumptions. Arbitrary exterior diffraction and directivity are not validated; legacy FEM–BEM horn coupling is disabled.
+- **Restricted radiation models**: the optional [modal aperture model](docs/MODAL_APERTURE.md) accounts for nonuniform axisymmetric mouth velocity and passes an independent infinite-baffle comparison for one worked horn. The default local termination remains an approximation. Arbitrary exterior diffraction and directivity are not validated; legacy FEM–BEM horn coupling is disabled.
 - **Rigid structure**: optional boundary-layer losses cover a restricted pipe regime, not flexible walls, porous materials or general damping. Measured-reference failures remain visible.
 - **Air and driver assumptions**: reference runs record air properties; direct motor coupling requires the default air properties. Nonlinear distortion and broadband thermal performance are not predicted.
 - **Profile qualification**: seven profiles are implemented, but validation of simple pipes and conical/exponential search grids does not qualify every profile or frequency band.
@@ -292,15 +292,14 @@ The pipeline is orchestrated by Nextflow (`main.nf`), which maps each process to
 
 The goal is a dependable **target band → driver and horn dimensions** workflow for conventional single-driver horns. [Issue #81](https://github.com/timini/horn-simulation/issues/81) tracks completion; [the current status and delivery roadmap](docs/SINGLE_HORN_ROADMAP.md) records the evidence, remaining issues and acceptance gates. MEH development belongs in [MEH Design Studio](https://github.com/timini/meh-design-studio).
 
-The automated search, bounded refinement, seven profiles, axial STEP import, isolated runs and reports already work. Predictions remain experimental until the following steps pass:
+The automated search, bounded refinement, seven profiles, axial STEP import, isolated runs and reports work. The independent interior/ideal-motor comparison, cavity test, modal radiation comparison, candidate-resolution studies and four-band search audit now have archived passing evidence. See the [worked default example](docs/WORKED_EXAMPLE.md) and [improved-radiation example](docs/MODAL_APERTURE.md). Predictions remain experimental while the following physical gates are outstanding:
 
-1. Qualify a small driver/interface set and two sufficiently documented reference assemblies; correct known catalogue errors (#73, #74).
-2. Independently verify driver coupling and run a matched Boundary Lab comparison (#78).
-3. Establish radiation/output accuracy and mesh, frequency-grid and profile convergence within a declared supported domain (#81).
-4. Compare frozen predictions and design ordering with measured assemblies, then repeat the complete band-to-design acceptance workflow (#81).
-5. Document a reproducible reference design and its mechanical interface so the acoustic result can be turned into a build (#81).
+1. Obtain complete source/interface and calibration data for two sufficiently documented reference assemblies, and qualify a small driver set (#81). Known FSN classification is corrected; the larger catalogue audit remains #74.
+2. Model and independently check the interfaces/rear loads required by those references, extending the numerical domain only where needed (#81).
+3. Compare frozen absolute response, impedance and ordering with both measured assemblies. Differences smaller than uncertainty remain ties (#81).
+4. Repeat release acceptance with qualified inputs and publish the reference's mechanical/interface drawings alongside acoustic CAD (#81).
 
-Output-directory polish (#75) is separate from acoustic qualification. Interior field export (#45), flexible boundary tagging (#49), and folded/back-loaded or automatic phase-plug design (#51) remain later extensions unless a selected reference case requires them. Historical closure of exterior-solver issues does not certify the disabled legacy coupling.
+Output management (#75) is delivered. Interior field export (#45), flexible boundary tagging (#49), and folded/back-loaded or automatic phase-plug design (#51) remain later extensions unless a selected reference case requires them. Historical closure of exterior-solver issues does not certify the disabled legacy coupling.
 
 ## Contributing
 

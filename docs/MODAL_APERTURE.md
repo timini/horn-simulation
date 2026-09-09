@@ -37,6 +37,8 @@ The [worked-example archive](../data/validation/worked_example_modal_800_1600.ta
 
 A second [archived workflow](../data/validation/modal_empty_workflow.tar.gz) requests a 2 m mouth radius outside this model's ka domain. It completes with an empty ranking and no FEM tasks, explaining the rejection instead of failing inside the solver. The older default-model [worked example](WORKED_EXAMPLE.md) remains separate: changing the radiation assumption changes its predicted ripple from about 0.99 dB to 1.48 dB even though the winning dimensions remain the same.
 
+The actual ranked candidate also passes all six [mesh, loft and frequency comparisons](MODAL_CANDIDATE_RESOLUTION.md). The largest mesh change in coupled output is 0.063 dB. This numerical stability does not resolve the missing physical interface evidence.
+
 ## Mathematical and numerical checks
 
 Modes are `J0(mu_n r/a)/J0(mu_n)`, where `mu_0=0` and subsequent roots satisfy `J1(mu_n)=0`. Each has area norm `S`. The Fourier–Bessel spectrum is integrated over propagating and evanescent plane waves with positive quadrature weights; this preserves reciprocity and nonnegative radiation resistance. The finite evanescent tail is explicit and tested by doubling its range.
