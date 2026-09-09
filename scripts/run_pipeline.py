@@ -24,6 +24,12 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def output_hashes(run_dir):
+    """Seal published artifacts at completion, before a later validation reads them."""
+    return {str(p.relative_to(run_dir)): digest(p)
+            for p in sorted((run_dir/'outputs').rglob('*')) if p.is_file()}
+
+
 def source_hashes(run_dir=None):
     files = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=ROOT).decode().split("\0")
     return {name: digest(ROOT/name) for name in sorted(set(files))
@@ -164,6 +170,7 @@ def main():
         manifest["exit_code"] = code
         manifest["status"] = "completed" if code == 0 else "failed"
         manifest["finished_at"] = datetime.now(timezone.utc).isoformat()
+        manifest["output_sha256"] = output_hashes(run_dir)
         manifest_path.write_text(json.dumps(manifest,indent=2))
     return code
 

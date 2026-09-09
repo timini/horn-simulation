@@ -90,6 +90,13 @@ def origin_files(run_dir, ranking, driver, candidate, low, high):
     parameters=json.loads(resolved_path.read_text())['parameters']
     if manifest.get('status')!='completed' or manifest.get('exit_code')!=0:
         raise ValueError('The originating run did not complete')
+    # Documentation/harness revisions may differ; all executing package bytes
+    # must be identical so this study varies resolution, not implementation.
+    current={name:digest for name,digest in source_identity().items() if name.startswith('packages/')}
+    original={name:digest for name,digest in manifest['source_sha256'].items()
+              if name.startswith('packages/') and '/src/' in name and name.endswith('.py')}
+    if original!=current:
+        raise ValueError('Originating package source differs from the resolution study')
     expected=dict(mesh_size=.01,num_sections=20,num_intervals=101,
                   target_f_low=low,target_f_high=high,element_degree=1,
                   radiation_model='flanged_piston',loss_model='lossless',
@@ -110,6 +117,9 @@ def origin_files(run_dir, ranking, driver, candidate, low, high):
         response=run_dir/f'outputs/auto/{label}_results.csv'
     if not step.is_file() or not response.is_file():
         raise ValueError('Original ranked STEP/response is required')
+    for path in (run_dir/'outputs/auto/report/auto_ranking.json',resolved_path,step,response):
+        if manifest.get('output_sha256',{}).get(str(path.relative_to(run_dir)))!=sha(path):
+            raise ValueError('Originating output has no matching completion-time digest')
     source=run_dir/'source.tar.gz'
     expected_hashes={digest for name,digest in manifest['input_sha256']['--drivers_db'].items() if name.endswith('.json')}
     records={};found=set()
@@ -225,8 +235,8 @@ def solve(out, jobs=1):
         files={str(f.relative_to(out)):sha(f) for f in sorted(files)}))
 
 
-def check_frame(frame, band, count):
-    expected=np.geomspace(*band,count)
+def check_frame(frame, band, count, *, expected=None):
+    expected=np.geomspace(*band,count) if expected is None else np.asarray(expected)
     if (len(frame)!=count or not np.isfinite(frame.select_dtypes(include='number')).all().all()
             or not np.allclose(frame.frequency,expected,rtol=1e-12,atol=0)):
         raise ValueError('Incomplete, nonfinite or incorrect frequency grid')
@@ -287,7 +297,11 @@ def compare(out):
                            observation_distance_m=candidate['observation_distance_m'])
     curves,health={},{}
     original=pd.read_csv(out/'original_response')
-    health['original_ranking']=check_frame(original,p['simulation_band_hz'],len(original))
+    parameters=json.loads((out/'origin_specification').read_text())['parameters']
+    bands=parameters['num_bands'];points=max(2,int(np.ceil(parameters['num_intervals']/bands)))
+    low,high=p['simulation_band_hz'];width=(high-low)/bands
+    original_grid=np.unique(np.concatenate([np.geomspace(low+i*width,low+(i+1)*width,points) for i in range(bands)]))
+    health['original_ranking']=check_frame(original,p['simulation_band_hz'],len(original_grid),expected=original_grid)
     original_levels,_,_=coupled_output(original,driver,target)
     metrics=evaluate_response(original.frequency,original_levels,TargetSpec(*p['target_band_hz']))
     for key in ('passband_ripple_db','avg_sensitivity_db'):
