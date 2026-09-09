@@ -4,6 +4,8 @@ Generalizes compare_horns.py to N files. Accepts labeled file pairs
 via CLI: --files a.csv:Label b.csv:Label ...
 """
 
+from horn_analysis.kpi import format_kpi
+
 import argparse
 from pathlib import Path
 from typing import List, Tuple, Optional
@@ -47,7 +49,8 @@ def plot_multi_comparison(
         df = pd.read_csv(csv_path)
         color = plot_theme.MULTI_COLORS[i % len(plot_theme.MULTI_COLORS)]
         ls = _linestyles[i % len(_linestyles)]
-        ax_plot.plot(df["frequency"], df["spl"], label=label,
+        legend_label = label if label.startswith(f"#{i+1} ") else f"#{i+1} {label}"
+        ax_plot.plot(df["frequency"], df["spl"], label=legend_label,
                      color=color, linestyle=ls, linewidth=1.8)
         all_freq.extend(df["frequency"].values)
         all_spl.extend(df["spl"].values)
@@ -63,15 +66,15 @@ def plot_multi_comparison(
         from horn_analysis.kpi import extract_kpis
 
         rows = []
-        for csv_path, label in file_label_pairs:
+        for rank, (csv_path, label) in enumerate(file_label_pairs, 1):
             kpis = extract_kpis(csv_path)
             rows.append([
-                label,
+                f"#{rank}",
                 f"{kpis.peak_spl_db:.1f}",
                 f"{kpis.peak_frequency_hz:.0f}",
-                f"{kpis.f3_low_hz:.0f}" if kpis.f3_low_hz else "\u2014",
-                f"{kpis.f3_high_hz:.0f}" if kpis.f3_high_hz else "\u2014",
-                f"{kpis.bandwidth_octaves:.1f}" if kpis.bandwidth_octaves else "\u2014",
+                format_kpi(kpis, "f3_low_hz", missing="—"),
+                format_kpi(kpis, "f3_high_hz", missing="—"),
+                format_kpi(kpis, "bandwidth_octaves", ".1f", missing="—"),
                 f"{kpis.passband_ripple_db:.1f}" if kpis.passband_ripple_db is not None else "\u2014",
                 f"{kpis.average_sensitivity_db:.1f}" if kpis.average_sensitivity_db is not None else "\u2014",
             ])
@@ -92,6 +95,8 @@ def plot_multi_comparison(
         table.auto_set_font_size(False)
         table.set_fontsize(9)
         table.scale(1, 1.4)
+        ax_table.text(.5, -.02, "Numbers match the legend. ≤ / ≥ mark sweep bounds; metrics describe the contiguous peak lobe.",
+                      ha="center", va="top", transform=ax_table.transAxes, fontsize=8)
 
     output_path = Path(output_file)
     plot_theme.save_figure(fig, str(output_path))

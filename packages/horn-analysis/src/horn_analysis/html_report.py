@@ -5,6 +5,8 @@ ranking tables, and driver T-S parameter tables. No external
 dependencies beyond matplotlib/numpy/pandas (already required).
 """
 
+from horn_analysis.kpi import format_kpi
+
 import html
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
@@ -263,8 +265,8 @@ def _render_rankings_rows(
     rows = []
     for rank, r in enumerate(ranked_results, 1):
         kpi = r.get("kpi", {})
-        f3l = _fmt(kpi.get("f3_low_hz"), ".0f")
-        f3h = _fmt(kpi.get("f3_high_hz"), ".0f")
+        f3l = format_kpi(kpi, "f3_low_hz")
+        f3h = format_kpi(kpi, "f3_high_hz")
         drv = drivers.get(r.get("driver_id", ""))
         drv_type = html.escape(drv.driver_type or "—") if drv else "—"
         drv_size = html.escape(drv.nominal_diameter or "—") if drv else "—"
@@ -412,7 +414,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
   <th>#</th><th>Manufacturer</th><th>Model</th><th>Type</th><th>Size</th><th>Power (W)</th><th>Profile</th>
   {geometry_header_cols}
   <th>Score</th>
-  <th>BW Cov.</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz)</th><th>Peak (dB)</th>
+  <th>BW Cov.</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz; ≤/≥ = sweep bound)</th><th>Peak (dB)</th>
 </tr>
 </thead>
 <tbody>

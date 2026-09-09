@@ -125,3 +125,23 @@ def test_checkout_imports_reject_already_loaded_stale_module(monkeypatch, tmp_pa
     monkeypatch.setitem(sys.modules, 'horn_core.stale', stale)
     with pytest.raises(ValueError, match='outside the hashed checkout'):
         validation.bind_checkout_imports()
+
+
+def test_untracked_reference_source_is_rejected_before_runtime_probe(tmp_path):
+    import subprocess
+    checkout=tmp_path/'upstream'
+    checkout.mkdir()
+    def git(*args):
+        return subprocess.check_output(['git','-C',str(checkout),*args],text=True).strip()
+    git('init','-q')
+    (checkout/'source.py').write_text('tracked = True')
+    git('add','source.py')
+    git('-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','fixture')
+    protocol=json.loads(validation.PROTOCOL.read_text())
+    protocol['upstream_revision']=git('rev-parse','HEAD')
+    (checkout/'untracked_module.py').write_text('unexpected = True')
+    from unittest.mock import patch
+    with patch.object(validation,'verify_inputs',return_value=(protocol,{})), \
+         patch.object(validation,'verify_source'):
+        with pytest.raises(ValueError,match='clean and pinned'):
+            validation.reference(tmp_path,checkout,tmp_path/'absent-python',tmp_path/'absent-julia')
