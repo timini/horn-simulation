@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "kind": "experimental_workflow_not_physical_validation",
+  "reproduction_source_commit": "bf827b9c30b93a6f3e6c488db2b0ce5817a75c3e",
+  "status": "completed",
+  "resume": "completed_all_processes_cached",
+  "files": {
+    "worked_example_800_1600.tar.gz": "ac5f08110fff9a11079afd6ad8ca57846ded04421bd0cbdb4d9850905373d49c"
+  },
+  "excluded_attempts": [
+    {
+      "reason": "Docker absent from manually constrained PATH; launcher failed before creating a run"
+    },
+    {
+      "reason": "Nextflow parsed .01 as a string; failed run preserved locally; successful command uses 0.01"
+    }
+  ]
+}

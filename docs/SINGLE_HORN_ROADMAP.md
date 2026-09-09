@@ -1,6 +1,6 @@
 # Single-horn status and delivery roadmap
 
-Reviewed 9 September 2026 against main `eacb273`. This is the current delivery sequence; older plans and issue bodies retain historical evidence. [Issue #81](https://github.com/timini/horn-simulation/issues/81) remains the completion tracker.
+Updated 9 September 2026 following the independent solver, run-management and worked-example qualification work. This is the current delivery sequence; older plans and issue bodies retain historical evidence. [Issue #81](https://github.com/timini/horn-simulation/issues/81) remains the completion tracker.
 
 ## Intended result
 
@@ -12,7 +12,7 @@ Multiple-entry horns, interacting sources, entry taps and crossover optimisation
 
 Band-driven geometry generation, analytical screening, production FEM evaluation, driver coupling, ranking, bounded refinement, seven profiles, axial STEP import and HTML reports are implemented. The launcher isolates runs and preserves source, inputs, container identity and resume evidence. Invalid/incomplete frequency sweeps cannot produce a valid recommendation.
 
-The latest reviewed main revision passed [all seven CI jobs](https://github.com/timini/horn-simulation/actions/runs/34235435571) and [17 required production acoustic checks](https://github.com/timini/horn-simulation/actions/runs/34235435608). The numerical environment has a documented x86 OpenBLAS workaround and geometry safeguards; its original intermittent failure's upstream cause remains unconfirmed.
+The independent solver change expands the required production acoustic lane from 17 to 23 cases. Ordinary analysis CI also checks six archived independent motor references, and core CI checks ten independent Rayleigh integrals. Current merge/check links are recorded in [issue #81](https://github.com/timini/horn-simulation/issues/81). The numerical environment has a documented x86 OpenBLAS workaround and geometry safeguards; its original intermittent failure's upstream cause remains unconfirmed.
 
 | Evidence | Result | Limit |
 | --- | --- | --- |
@@ -20,9 +20,12 @@ The latest reviewed main revision passed [all seven CI jobs](https://github.com/
 | Independent numerical references | 40/40 agree at supplied frequencies | Some supplied curves are sparse; no continuous-band conclusion for those cases |
 | Production numerical health / mesh convergence | 15/15 runs and 5/5 geometries pass | Restricted reference geometries and tested quantities |
 | Dense measured pipe impedance | 237/299 curves within frozen magnitude limits | Repeated measurements, not 299 assemblies; failures retained |
+| Matched independent interior FEM and ideal motor | Six tube/cone meshes, 13 frequencies each; maximum complex relative discrepancy below 9e-13 | Shared P1 meshes and plane-wave termination; ideal characterized motor only |
+| Independent cavity modes | Twelve modes converge through three P2 meshes; finest maximum error 0.033% | Production volume operator; rigid box |
+| Uniform baffled-piston radiation equations | Ten independent Rayleigh-integral checks pass | Infinite baffle and uniform piston, not a full exterior horn solve |
 | Complete horn-and-driver validation | Outstanding | Absolute output and recommendation ordering are not established |
 
-See the [reference validation report](REFERENCE_VALIDATION_REPORT.md) and [acoustic contract](ACOUSTIC_CONTRACT.md). The measured pipe evidence applies to the opt-in loss model and matched terminations. The default lossless workflow does not inherit these passes. The three curated manufacturer-parameter motors still lack verified interfaces and separate diaphragm/rear-load data.
+See the [reference validation report](REFERENCE_VALIDATION_REPORT.md), [independent solver evidence](INDEPENDENT_SOLVER_VALIDATION.md), [physical reference audit](PHYSICAL_REFERENCE_AUDIT.md) and [acoustic contract](ACOUSTIC_CONTRACT.md). The measured pipe evidence applies to the opt-in loss model and matched terminations. The default lossless workflow does not inherit these passes. The three curated manufacturer-parameter motors still lack verified interfaces and separate diaphragm/rear-load data.
 
 ## Generate an experimental candidate now
 
@@ -30,25 +33,23 @@ With the documented Docker, Nextflow, Java and `just` prerequisites installed, b
 
 ```sh
 just build
-just run-auto --target_f_low 500 --target_f_high 4000 --drivers_db data/drivers-curated
+just run-auto --target_f_low 800 --target_f_high 1600 --drivers_db data/drivers-curated --lem_top_n 3 --refinement_budget 2 --num_bands 2 --num_intervals 101 --mesh_size 0.01
 ```
 
-This band is an example request, not a promise that the curated motors can satisfy it. Inspect the new `results/<run-id>/` report, resolved assumptions and evidence status. It may report no feasible design or insufficient evidence. Generated dimensions and air-volume CAD are useful for exploration; they are not a physically qualified or manufacturing-ready assembly.
+This band is an example request, not a promise that the curated motors can satisfy it. Use `just latest-run` to locate the completed run, then open `outputs/auto/report/auto_report.html` inside that directory. Inspect the resolved assumptions and evidence status. See the [worked example](WORKED_EXAMPLE.md) and [candidate resolution procedure](CANDIDATE_RESOLUTION.md). It may report no feasible design or insufficient evidence. Generated dimensions and air-volume CAD are useful for exploration; they are not a physically qualified or manufacturing-ready assembly.
 
 ## Remaining issues
 
 | Issue | Current purpose | Release role |
 | --- | --- | --- |
 | [#81](https://github.com/timini/horn-simulation/issues/81) | Complete assembly evidence, driver/interface qualification, radiation, convergence and final acceptance | Main completion gate |
-| [#78](https://github.com/timini/horn-simulation/issues/78) | Execute matched independent solver/coupling comparisons; retain the earlier feature comparison as history | Supports physics qualification |
-| [#73](https://github.com/timini/horn-simulation/issues/73) | Fix LaVoce FSN classification still wrong on reviewed main | Correctness fix for the wider catalogue |
+| [#78](https://github.com/timini/horn-simulation/issues/78) | Complete physical interface and full exterior comparisons beyond the delivered interior-FEM/ideal-motor references | Supports physics qualification |
 | [#74](https://github.com/timini/horn-simulation/issues/74) | Verified LaVoce refresh and provenance/metadata audit | Catalogue maintenance; a small qualified set can ship first |
-| [#75](https://github.com/timini/horn-simulation/issues/75) | Decide safe direct-Nextflow output behavior and finish latest-run convenience | Usability; standard launcher already isolates runs |
 | [#45](https://github.com/timini/horn-simulation/issues/45) | Interior field export for diagnosis | Optional unless needed to investigate a failure |
 | [#49](https://github.com/timini/horn-simulation/issues/49) | Non-axial boundary identification | Deferred unless a chosen reference needs it |
 | [#51](https://github.com/timini/horn-simulation/issues/51) | Conventional complex-geometry extensions | Deferred; MEH is excluded |
 
-Retire #41 in favour of #81, #77 in favour of #78, #47 as delivered within the documented axial STEP conventions, and #79 in favour of the sister project plus the conventional radiation gates in #81. Do not interpret closing these issues as validation of arbitrary geometry or exterior radiation. Historical #34/#48 closures do not qualify the disabled legacy FEM–BEM path.
+Closed/superseded work includes #41 in favour of #81, #77 in favour of #78, #47 for the documented axial STEP conventions, and #79 for the sister project plus the conventional radiation gates in #81. Run-management #75 is delivered in #85. LaVoce classification #73 is corrected in #86; the larger catalogue audit remains #74. Do not interpret closing these issues as validation of arbitrary geometry or exterior radiation. Historical #34/#48 closures do not qualify the disabled legacy FEM–BEM path.
 
 ## Ordered completion work
 
@@ -62,13 +63,13 @@ Search existing published/open DIY data first. For each proposed assembly, inven
 
 Model the chosen chamber/adapter and rear load at the fidelity the reference requires. Independently test voltage scaling, area conversion, impedance signs, energy accounting and limiting cases. Distinguish diaphragm-only mass from mass containing an existing air load; do not invent the missing decomposition. Qualify a small driver set before expanding the scraped catalogue.
 
-**Exit:** an independently implemented circuit/solver reference agrees under matched conventions, and unsupported combinations are rejected or flagged. Correct #73 and audit source records through #74 without treating a database refresh as physical validation.
+**Exit:** an independently implemented circuit/solver reference agrees under matched conventions, and unsupported combinations are rejected or flagged. The FSN classification correction is delivered through #73; continue source audits through #74 without treating a database refresh as physical validation.
 
 ### 3. Establish numerical and radiated-output accuracy
 
-Under #78, run the same simple geometry in this solver and a pinned Boundary Lab installation with matching inlet, termination, air, frequency grid and phasor convention. Compare complex impedance and transfer quantities before adding exterior-model differences. Then compare the supported mouth/observer approximation with an independent exterior solution in its intended regime. The MEH repository's executed Boundary Lab adapter is useful integration evidence, not a completed comparison here.
+Under #78, the matched interior-FEM and ideal-motor comparisons are now executed and archived in this repository. They agree on six shared tube/cone meshes under pinned runtime and acoustic conventions. Next compare a supported complete horn with an independent exterior solution; the separate uniform-piston integral checks do not establish that a horn mouth has uniform velocity.
 
-Add an independent rectangular-cavity assembly check where appropriate. Complete mesh, frequency-grid and loft-section convergence for the profiles admitted to the release. Investigate reference failures or explicitly exclude unsupported materials/terminations; retain frozen tolerances. Absolute on-axis output needs its own evidence. Only claim coverage/directivity after separate validation.
+The independent rectangular-cavity production-operator check is delivered. Use the candidate-resolution harness to check mesh, frequency-grid and loft-section changes for each profile and range admitted to the release; one worked candidate does not qualify all seven profiles. Investigate reference failures or explicitly exclude unsupported materials/terminations; retain frozen tolerances. Absolute on-axis output needs its own evidence. Only claim coverage/directivity after separate validation.
 
 **Exit:** versioned comparison artifacts pass case-specific limits, and the supported geometry, interface, radiation and frequency domain is explicit. Broader exterior BEM implementation is necessary only if the selected release domain cannot be supported by the validated approximation.
 
@@ -80,7 +81,7 @@ Freeze predictions before comparison with qualifying measurements. Check absolut
 
 ### 5. Release a repeatable design workflow
 
-Re-run finite-grid search checks with the qualified metrics and drivers, plus feasible, constrained, impossible, missing-data, failed-band and interrupted/resumed workflows. Publish a clean-checkout example with driver identity, horn dimensions, interface/rear-load specification, raw response evidence, limitations and reproduction commands. Finish #75's remaining output behavior explicitly.
+Re-run finite-grid search checks with the qualified metrics and drivers, plus feasible, constrained, impossible, missing-data, failed-band and interrupted/resumed workflows. Publish a clean-checkout example with driver identity, horn dimensions, interface/rear-load specification, raw response evidence, limitations and reproduction commands. Direct Nextflow requires an explicit output directory; standard launchers isolate output and support completed-run lookup. Run-management #75 is delivered.
 
 For a buildable reference, provide or link verified mechanical drawings for walls, mounting and the characterized interface; keep these distinct from the acoustic air-volume STEP. Automatic manufacturing optimisation is not required for this release.
 

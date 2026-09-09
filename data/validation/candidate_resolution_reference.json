@@ -1,0 +1,156 @@
+{
+  "scope": "Numerical resolution of this fixed ideal candidate; no physical qualification",
+  "protocol_sha256": "b41b2528cc06ea7e7a063a1cddede82283e5fca7e3e0bb90e28a5ae955163104",
+  "solve_evidence_sha256": "fa52f21475bc65148f2e413513b813965eb3308148fe71c4d2228a2b1994aa8c",
+  "candidate": {
+    "max_displacement_peak_m": 1.620887672241789e-05,
+    "max_input_power_w": 1.4340570975292857,
+    "operating_limit_scope": "Linear model at requested voltage; not a validated maximum-output or thermal prediction",
+    "bandwidth_coverage": 1.0,
+    "passband_ripple_db": 0.9907090696842857,
+    "avg_sensitivity_db": 104.94118693281222,
+    "composite_score": 0.8959754009832057,
+    "model_feasible": true,
+    "eligibility_status": "insufficient_evidence",
+    "rejection_reasons": [],
+    "evidence_gaps": [
+      "driver_interface_unverified",
+      "moving_mass_and_rear_load_not_separated"
+    ],
+    "validation_status": "experimental_prediction",
+    "target_min_level_db": 104.56799730969968,
+    "target_max_level_db": 105.55870637938396,
+    "driver_id": "18sound-6nmb420",
+    "horn_label": "refine_hyperbolic_0001",
+    "kpi": {
+      "peak_spl_db": 105.55870637938396,
+      "peak_frequency_hz": 910.9694097736316,
+      "f3_low_hz": 700.17396479534,
+      "f3_high_hz": 2262.741699796952,
+      "bandwidth_hz": 1562.5677350016122,
+      "bandwidth_octaves": 1.6922865822766744,
+      "passband_ripple_db": 3.0,
+      "average_sensitivity_db": 104.68314948330895
+    },
+    "manufacturer": "18Sound",
+    "model_name": "6NMB420",
+    "output_metric": "uniform_baffled_piston_on_axis",
+    "observation_distance_m": 1.0,
+    "drive_voltage_rms": 2.83,
+    "inlet_area_m2": 0.0033178996307172,
+    "loss_model": "lossless",
+    "radiation_model": "flanged_piston",
+    "element_degree": 1,
+    "profile": "hyperbolic",
+    "throat_radius": 0.032498,
+    "mouth_radius": 0.08870898640584517,
+    "length": 0.11790625,
+    "score_gap_from_best": 0.0,
+    "comparison_status": "near_tie",
+    "comparison_scope": "0.02 score comparison margin; physical uncertainty unquantified"
+  },
+  "limits": {
+    "mesh_spl_db": 0.5,
+    "mesh_impedance_db": 0.5,
+    "mesh_phase_deg": 5.0,
+    "loft_spl_db": 0.5,
+    "loft_impedance_db": 0.5,
+    "loft_phase_deg": 5.0,
+    "frequency_spl_db": 0.2,
+    "frequency_impedance_db": 0.2,
+    "frequency_phase_deg": 2.0,
+    "frequency_ripple_db": 0.2
+  },
+  "health": {
+    "mesh_10": {
+      "mesh_cells": 5333,
+      "max_residual": 7.833050717647518e-17,
+      "max_relative_power_balance_error": 3.2453617147970383e-15
+    },
+    "mesh_6": {
+      "mesh_cells": 22809,
+      "max_residual": 9.561249618039267e-17,
+      "max_relative_power_balance_error": 6.874466634265426e-15
+    },
+    "mesh_4": {
+      "mesh_cells": 74130,
+      "max_residual": 9.851368777190121e-17,
+      "max_relative_power_balance_error": 8.900642742581493e-15
+    },
+    "loft_40": {
+      "mesh_cells": 74334,
+      "max_residual": 9.952499047854816e-17,
+      "max_relative_power_balance_error": 7.562540473800468e-15
+    },
+    "loft_80": {
+      "mesh_cells": 74329,
+      "max_residual": 9.859733644428631e-17,
+      "max_relative_power_balance_error": 7.218133969854256e-15
+    },
+    "frequency_201": {
+      "mesh_cells": 74329,
+      "max_residual": 9.909745474130443e-17,
+      "max_relative_power_balance_error": 7.218133969854256e-15
+    }
+  },
+  "comparisons": [
+    {
+      "kind": "mesh",
+      "coarse": "mesh_10",
+      "fine": "mesh_6",
+      "changes": {
+        "spl_db": 0.0396368739051951,
+        "impedance_db": 0.11676510318810956,
+        "phase_deg": 0.525359570377989
+      },
+      "passed": true
+    },
+    {
+      "kind": "mesh",
+      "coarse": "mesh_6",
+      "fine": "mesh_4",
+      "changes": {
+        "spl_db": 0.012976310607456298,
+        "impedance_db": 0.03756638644143253,
+        "phase_deg": 0.16793954249315723
+      },
+      "passed": true
+    },
+    {
+      "kind": "loft",
+      "coarse": "mesh_4",
+      "fine": "loft_40",
+      "changes": {
+        "spl_db": 0.0006691314388831415,
+        "impedance_db": 0.0011962429403148704,
+        "phase_deg": 0.005444133142932835
+      },
+      "passed": true
+    },
+    {
+      "kind": "loft",
+      "coarse": "loft_40",
+      "fine": "loft_80",
+      "changes": {
+        "spl_db": 1.8586739756187853e-05,
+        "impedance_db": 1.895949933540565e-05,
+        "phase_deg": 0.0007731894484533423
+      },
+      "passed": true
+    },
+    {
+      "kind": "frequency",
+      "coarse": "loft_80",
+      "fine": "frequency_201",
+      "changes": {
+        "spl_db": 0.0026451784138146195,
+        "impedance_db": 0.008820822211026634,
+        "phase_deg": 0.04888528806158886,
+        "ripple_db": 0.0015002975787155037
+      },
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "physical_validation_status": "experimental_prediction"
+}

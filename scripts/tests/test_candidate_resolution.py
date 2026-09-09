@@ -71,3 +71,16 @@ def test_preparation_freezes_candidate_driver_source_and_limits(tmp_path):
     driver_copy.write_text('{}')
     with pytest.raises(ValueError,match='Frozen input'):
         v.verify(out)
+
+
+def test_archived_workflow_and_resolution_evidence_have_recorded_identity():
+    import hashlib
+    directory=v.ROOT/'data/validation'
+    for name in ('candidate_resolution_manifest.json','worked_example_800_1600_manifest.json'):
+        manifest=json.loads((directory/name).read_text())
+        for filename,digest in manifest['files'].items():
+            assert hashlib.sha256((directory/filename).read_bytes()).hexdigest()==digest
+    result=json.loads((directory/'candidate_resolution_reference.json').read_text())
+    assert result['passed'] and len(result['health'])==6
+    assert len(result['comparisons'])==5 and all(row['passed'] for row in result['comparisons'])
+    assert result['physical_validation_status']=='experimental_prediction'
