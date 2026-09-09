@@ -157,3 +157,18 @@ def test_reference_import_rejects_wheel_inside_ignored_checkout_venv(tmp_path):
     validation.verify_reference_module(tmp_path,str(entry))
     with pytest.raises(ValueError,match='tracked src/blab'):
         validation.verify_reference_module(tmp_path,str(tmp_path/'.venv/lib/python3.11/site-packages/blab/__init__.py'))
+
+
+@pytest.mark.parametrize('live_group', [False, True])
+def test_darwin_empty_group_permission_error_does_not_hide_live_workers(monkeypatch, live_group):
+    import signal
+    def denied(*args):
+        raise PermissionError('EPERM')
+    monkeypatch.setattr(validation.os,'killpg',denied)
+    monkeypatch.setattr(validation.sys,'platform','darwin')
+    monkeypatch.setattr(validation.subprocess,'check_output',lambda *a,**k: '123\n456\n' if live_group else '456\n')
+    if live_group:
+        with pytest.raises(PermissionError):
+            validation.signal_process_group(123,signal.SIGTERM)
+    else:
+        validation.signal_process_group(123,signal.SIGTERM)

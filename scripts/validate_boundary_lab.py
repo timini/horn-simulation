@@ -116,6 +116,21 @@ def horn(root):
     seal_stage(root, 'horn', files, dict(source=source_identity()))
 
 
+def signal_process_group(group, sig):
+    try:
+        os.killpg(group, sig)
+    except ProcessLookupError:
+        pass
+    except PermissionError:
+        # Darwin can report EPERM after a group has completely disappeared.
+        # Ignore only an independently confirmed empty group, never a live one.
+        if sys.platform == 'darwin':
+            groups = subprocess.check_output(['ps', '-axo', 'pgid='], text=True)
+            if str(group) not in groups.split():
+                return
+        raise
+
+
 def run_logged(command, log, timeout=600):
     """Bound the external solver and clean up its own process group on failure."""
     if os.name != 'posix':
@@ -127,10 +142,7 @@ def run_logged(command, log, timeout=600):
             if code:
                 raise subprocess.CalledProcessError(code, command)
         finally:
-            try:
-                os.killpg(process.pid, signal.SIGTERM)
-            except ProcessLookupError:
-                pass
+            signal_process_group(process.pid, signal.SIGTERM)
             try:
                 process.wait(timeout=10)
             except subprocess.TimeoutExpired:
@@ -138,10 +150,7 @@ def run_logged(command, log, timeout=600):
             finally:
                 # The CLI can exit before its Julia worker. Waiting for the
                 # parent alone does not reap or stop the remaining group.
-                try:
-                    os.killpg(process.pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    pass
+                signal_process_group(process.pid, signal.SIGKILL)
                 process.wait()
 
 
@@ -162,7 +171,7 @@ def reference(root, checkout, python, julia):
     dirty = subprocess.check_output(['git', '-C', str(checkout), 'status', '--porcelain', '--untracked-files=all'], text=True)
     if revision != protocol['upstream_revision'] or dirty:
         raise ValueError('Reference checkout must be clean and pinned')
-    probe = json.loads(subprocess.check_output([str(python), '-c',
+    probe = json.loads(subprocess.check_output([str(python), '-I', '-c',
         'import blab,json,sys; print(json.dumps({"version":list(sys.version_info[:2]),"module":blab.__file__}))'], text=True))
     verify_reference_module(checkout, probe['module'])
     if probe['version'] != protocol['python_minor']:
@@ -170,14 +179,14 @@ def reference(root, checkout, python, julia):
     version = subprocess.check_output([str(julia), '--version'], text=True).strip()
     if version != 'julia version '+protocol['julia_version']:
         raise ValueError('Unexpected Julia version')
-    installed = subprocess.check_output([str(python), '-m', 'pip', 'freeze'], text=True)
+    installed = subprocess.check_output([str(python), '-I', '-m', 'pip', 'freeze'], text=True)
     files = []
     for name, _, _ in case_definitions(protocol):
         directory = root/name
         output = directory/'boundary-lab'
         if output.exists():
             raise FileExistsError(output)
-        run_logged([str(python), '-c', 'import sys; from blab.cli import main; sys.exit(main())', 'project', 'solve',
+        run_logged([str(python), '-I', '-c', 'import sys; from blab.cli import main; sys.exit(main())', 'project', 'solve',
                     str(directory/'project.blab.json'), '--request', str(directory/'request.json'),
                     '--backend', 'beat_cpu', '--output', str(output), '--events', 'ndjson',
                     '--julia-executable', str(julia), '--julia-threads', '1'], directory/'boundary-lab.log')
