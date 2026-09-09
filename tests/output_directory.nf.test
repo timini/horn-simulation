@@ -2,6 +2,17 @@ nextflow_pipeline {
     name "Direct invocation requires an output directory"
     script "../main.nf"
     config "nextflow.config"
+    test("Outdir flag without a path cannot become a directory named true") {
+        when {
+            params {
+                outdir = true
+            }
+        }
+        then {
+            assert workflow.failed
+            assert workflow.stdout.toString().contains("Choose --outdir for direct Nextflow runs")
+        }
+    }
     test("Missing outdir fails before launching any processes") {
         when {
             params {
