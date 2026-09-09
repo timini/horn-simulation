@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "kind": "independent_numerical_modal_aperture_not_physical_validation",
+  "reproduction_source_commit": "b074f5524b6508fa1e2e4358fd74229db9bc4eaf",
+  "files": {
+    "modal_mouth_artifacts.tar.gz": "e801f1eb3d8754166c957b8305ca3cebeb270dd2d80c099445108ae4f01ed16e",
+    "modal_mouth_reference.json": "873b3c0ce8d9c87656d181418fbb8d710238c608782b339c0a0445005afab432"
+  }
+}
