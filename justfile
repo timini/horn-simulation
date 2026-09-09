@@ -71,3 +71,11 @@ clean:
     done
     echo "Cleaning up Nextflow files..."
     rm -rf .nextflow work .nextflow.log* trace.txt timeline.html report.html dag.dot dag.png
+
+# Locate the most recently completed run (override with --status running/failed/any).
+latest-run *args:
+    python3 scripts/runs.py latest {{args}}
+
+# Read-only inventory of completed, failed, running and historical folders.
+runs *args:
+    python3 scripts/runs.py list {{args}}

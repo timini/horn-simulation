@@ -30,7 +30,7 @@ params.element_degree = 1
 
 // Execution Settings
 params.num_bands = 8       // Number of parallel jobs for the solver
-params.outdir = "./results"
+params.outdir = null // direct invocation must choose an output directory
 
 // Directivity (opt-in, single mode only, requires BEM)
 params.directivity = false
@@ -1050,6 +1050,7 @@ workflow auto {
 }
 
 workflow {
+    if (params.outdir == null || params.outdir instanceof Boolean || !(params.outdir as String).trim()) error "Choose --outdir for direct Nextflow runs, or use scripts/run_pipeline.py for isolated outputs and checked resume"
     if (params.radiation_model == 'bem' || params.directivity) error "Legacy FEM-BEM horn coupling and directivity are disabled pending a validated exterior domain"
     if (!(params.loss_model in ['lossless', 'boundary_layer'])) error "Unknown loss model"
     if (!(params.element_degree in [1, 2])) error "Element degree must be 1 or 2"

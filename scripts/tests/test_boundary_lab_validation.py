@@ -104,3 +104,24 @@ def test_committed_reference_archive_and_numeric_fixture_have_recorded_identity(
     result=json.loads((directory/'boundary_lab_reference.json').read_text())
     assert result['passed'] and len(result['cases'])==6
     assert all(case['passed'] and case['frequencies']==13 for case in result['cases'])
+
+
+def test_checkout_imports_override_stale_installed_packages(tmp_path):
+    import subprocess
+    stale = tmp_path/'horn_core'
+    stale.mkdir()
+    (stale/'__init__.py').write_text('raise RuntimeError("stale wheel imported")')
+    code = (f"import sys; sys.path[:0] = [{str(SCRIPTS)!r}, {str(tmp_path)!r}]; "
+            "import validate_boundary_lab as v; v.bind_checkout_imports(); "
+            "import horn_core; print(horn_core.__file__)")
+    output = subprocess.check_output([sys.executable, '-c', code], text=True).strip()
+    assert Path(output).resolve().is_relative_to(validation.ROOT/'packages/horn-core/src')
+
+
+def test_checkout_imports_reject_already_loaded_stale_module(monkeypatch, tmp_path):
+    from types import ModuleType
+    stale = ModuleType('horn_core.stale')
+    stale.__file__ = str(tmp_path/'stale.py')
+    monkeypatch.setitem(sys.modules, 'horn_core.stale', stale)
+    with pytest.raises(ValueError, match='outside the hashed checkout'):
+        validation.bind_checkout_imports()

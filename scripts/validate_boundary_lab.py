@@ -23,6 +23,22 @@ PROTOCOL = ROOT / 'data/validation/boundary_lab_protocol.json'
 INPUT_NAMES = ('horn.step', 'horn.msh', 'project.blab.json', 'request.json', 'definition.json')
 
 
+def bind_checkout_imports():
+    """Use only the implementation covered by the source evidence."""
+    packages = ('horn_core', 'horn_drivers', 'horn_analysis', 'horn_solver')
+    roots = {name: ROOT/'packages'/name.replace('_', '-')/'src' for name in packages}
+    # Fail if a caller has already imported another checkout or installed wheel.
+    # Silently replacing loaded modules can retain stale classes/functions.
+    for name, module in tuple(sys.modules.items()):
+        package = name.split('.')[0]
+        if package in roots:
+            path = getattr(module, '__file__', None)
+            if path is None or not Path(path).resolve().is_relative_to(roots[package].resolve()):
+                raise ValueError(f'{name} was imported outside the hashed checkout')
+    paths = [str(path) for path in roots.values()]
+    sys.path[:] = paths + [path for path in sys.path if path not in paths]
+
+
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -76,6 +92,7 @@ def verify_stage(root, stage):
 
 
 def horn(root):
+    bind_checkout_imports()
     from dolfinx.io import gmshio
     from mpi4py import MPI
     from horn_core.duct import AirProperties
@@ -249,6 +266,7 @@ def read_reference(directory, protocol):
 
 
 def compare(root):
+    bind_checkout_imports()
     import pandas as pd
     from horn_core.parameters import DriverParameters
     from horn_analysis.transfer_function import compute_driver_operating_point

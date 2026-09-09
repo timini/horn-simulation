@@ -92,7 +92,7 @@ Simulate one horn with explicit geometry parameters and get a frequency response
 For imported geometry, supply both `--step_file path/to/horn.step` and `--length` in metres. The supported orientation has the inlet at z = 0 and the outlet at z = length; imported files do not inherit the parametric 0.5 m default. Reports use actual CAD boundary areas and omit inferred circular radii; supply `--horn_3d_png` for your own geometry image, otherwise the report shows an explicit placeholder.
 
 ```bash
-nextflow run main.nf -profile docker \
+just run \
     --throat_radius 0.05 --mouth_radius 0.2 --length 0.5
 ```
 
@@ -101,7 +101,7 @@ nextflow run main.nf -profile docker \
 Fix any dimensions you know, derive the others from the band, screen seven profile families, evaluate a shortlist with FEM, and refine within a fixed budget. Ranking uses the requested band and records infeasible combinations and missing evidence.
 
 ```bash
-nextflow run main.nf -profile docker --mode auto \
+just run-auto \
     --target_f_low 500 --target_f_high 4000 \
     --mouth_radius 0.2 --length 0.5 --top_n 10
 ```
@@ -111,7 +111,7 @@ nextflow run main.nf -profile docker --mode auto \
 Specify **only** a target frequency band. The system derives horn geometry analytically (mouth radius from cutoff frequency, length from quarter-wave to half-wave), generates a grid of seven profiles and candidate dimensions, screens it analytically, runs FEM on a shortlist, and refines promising dimensions. Reports describe the best evaluated candidates, not a proven global optimum.
 
 ```bash
-nextflow run main.nf -profile docker --mode fullauto \
+just run-fullauto \
     --target_f_low 500 --target_f_high 4000
 ```
 
@@ -122,7 +122,7 @@ nextflow run main.nf -profile docker --mode fullauto \
 - [Docker](https://www.docker.com/get-started)
 - [just](https://github.com/casey/just) (task runner)
 - [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html#installation)
-- **Java 11–22** (required by Nextflow; Java 25+ is not supported). On macOS: `brew install openjdk@21`
+- **Java 17–22** (required by Nextflow; Java 25+ is not supported). On macOS: `brew install openjdk@21`
 
 ### Build
 
@@ -133,15 +133,11 @@ just build
 ### Run
 
 ```bash
-nextflow run main.nf -profile docker --mode fullauto \
+just run-fullauto \
     --target_f_low 500 --target_f_high 4000
 ```
 
-Open the report:
-
-```bash
-# Open the auto/report/auto_report.html path under the run directory printed by the launcher.
-```
+Find the latest completed run with `just latest-run`, then open `outputs/auto/report/auto_report.html` beneath that directory.
 
 ### Test
 
@@ -166,7 +162,7 @@ just test-package horn-solver    # single package
 | `num_intervals` | Number of frequency steps | `100` |
 | `mesh_size` | Target mesh element size (m) | `0.01` |
 | `num_bands` | Parallel frequency band jobs | `8` |
-| `outdir` | Output directory | `./results` |
+| `outdir` | Direct Nextflow output directory | Required for direct invocation; launcher chooses an isolated run |
 
 </details>
 
@@ -330,3 +326,4 @@ Manually enriched interface data, usable-frequency bounds and parameters not sup
 During migration, an existing continuous-power rating must have an independent source in `parameter_sources.power_w`; otherwise it is removed because older scraper versions inferred it from program power. A manufacturer's progress is marked incomplete before discovery, so a failed refresh cannot leave an earlier completion flag in place.
 
 See the [independent solver protocol](docs/INDEPENDENT_SOLVER_VALIDATION.md) and [physical assembly reference audit](docs/PHYSICAL_REFERENCE_AUDIT.md) for the current qualification work.
+See [run locations, latest-run lookup, resume and cleanup](docs/RUN_MANAGEMENT.md).

@@ -33,7 +33,7 @@ The earlier Gmsh 2.2 pilot failed the independent reader; a later attempt timed 
 
 Use a clean pinned Boundary Lab checkout with its Python dependencies and Julia project installed according to that checkout's instructions. The runner verifies the imported module comes from that checkout, checks its revision/cleanliness and runtime versions, and records installed Python packages. Do not reuse a mutable checkout being edited by another task.
 
-The preparation/comparison Python environment needs NumPy, pandas, SciPy, Gmsh, meshio and this repository's `horn-core`, `horn-drivers` and `horn-analysis` packages. The production stage uses the repository's solver Docker image. Set `JULIA_DEPOT_PATH` if the independent installation has a dedicated depot.
+The preparation/comparison Python environment needs NumPy, pandas, SciPy, Gmsh, meshio and this repository's `horn-core`, `horn-drivers` and `horn-analysis` packages. The runner loads these packages from the checkout it hashes and rejects already-loaded modules from another installation. The production stage uses the repository's solver Docker image. Set `JULIA_DEPOT_PATH` if the independent installation has a dedicated depot.
 
 ```sh
 python scripts/validate_boundary_lab.py prepare results/qualification/new-comparison

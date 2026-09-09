@@ -6,6 +6,8 @@ from horn_solver.solver import run_simulation, run_simulation_from_step
 from .conftest import _generate_cylinder_step
 
 
+pytestmark = pytest.mark.validation
+
 def test_complex_velocity_travelling_wave_and_power(tmp_path):
     """Check phase, normalization and RMS energy against an exact tube wave."""
     radius, length = .01, .1

@@ -1,5 +1,6 @@
 """Verify the production volume operator independently of horn/TMM references."""
 import itertools
+import pytest
 import numpy as np
 from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import eigsh
@@ -8,6 +9,8 @@ from dolfinx import fem, mesh
 import ufl
 from horn_solver.solver import bulk_helmholtz_form
 
+
+pytestmark = pytest.mark.validation
 
 def matrix(form):
     assembled = fem.petsc.assemble_matrix(fem.form(form))
