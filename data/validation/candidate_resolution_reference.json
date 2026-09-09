@@ -1,7 +1,7 @@
 {
   "scope": "Numerical resolution of this fixed ideal candidate; no physical qualification",
-  "protocol_sha256": "b41b2528cc06ea7e7a063a1cddede82283e5fca7e3e0bb90e28a5ae955163104",
-  "solve_evidence_sha256": "fa52f21475bc65148f2e413513b813965eb3308148fe71c4d2228a2b1994aa8c",
+  "protocol_sha256": "d2c092e3960c469181fb59cd1e596bf4c280dfd6527fe0da5b7e6b0b58db2d0f",
+  "solve_evidence_sha256": "337f530a8e66ca9008b18110679ac1725fc8e8da8ea958d7390d4ebed1ca9f64",
   "candidate": {
     "max_displacement_peak_m": 1.620887672241789e-05,
     "max_input_power_w": 1.4340570975292857,
@@ -25,12 +25,15 @@
     "kpi": {
       "peak_spl_db": 105.55870637938396,
       "peak_frequency_hz": 910.9694097736316,
-      "f3_low_hz": 700.17396479534,
+      "f3_low_hz": 700.1739647953399,
       "f3_high_hz": 2262.741699796952,
       "bandwidth_hz": 1562.5677350016122,
-      "bandwidth_octaves": 1.6922865822766744,
+      "bandwidth_octaves": 1.6922865822766746,
       "passband_ripple_db": 3.0,
-      "average_sensitivity_db": 104.68314948330895
+      "average_sensitivity_db": 104.68314948330895,
+      "f3_low_is_bound": false,
+      "f3_high_is_bound": true,
+      "bandwidth_is_lower_bound": true
     },
     "manufacturer": "18Sound",
     "model_name": "6NMB420",
