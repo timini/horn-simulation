@@ -78,14 +78,17 @@ def test_preparation_freezes_candidate_driver_source_and_limits(tmp_path, monkey
         v.verify(out)
 
 
-def test_archived_workflow_and_resolution_evidence_have_recorded_identity():
+@pytest.mark.parametrize('modal',[False,True])
+def test_archived_workflow_and_resolution_evidence_have_recorded_identity(modal):
     import hashlib
     directory=v.ROOT/'data/validation'
-    for name in ('candidate_resolution_manifest.json','worked_example_800_1600_manifest.json'):
+    prefix='modal_' if modal else ''
+    workflow='worked_example_modal_800_1600_manifest.json' if modal else 'worked_example_800_1600_manifest.json'
+    for name in (prefix+'candidate_resolution_manifest.json',workflow):
         manifest=json.loads((directory/name).read_text())
         for filename,digest in manifest['files'].items():
             assert hashlib.sha256((directory/filename).read_bytes()).hexdigest()==digest
-    result=json.loads((directory/'candidate_resolution_reference.json').read_text())
+    result=json.loads((directory/(prefix+'candidate_resolution_reference.json')).read_text())
     assert result['passed'] and len(result['health']) == 7
     assert len(result['comparisons']) == 6 and all(row['passed'] for row in result['comparisons'])
     assert result['physical_validation_status']=='experimental_prediction'
@@ -93,12 +96,13 @@ def test_archived_workflow_and_resolution_evidence_have_recorded_identity():
     assert result['comparisons'][0]['coarse']=='original_ranking'
     assert 'ripple_db' in result['comparisons'][0]['changes']
     import tarfile
-    with tarfile.open(directory/'candidate_resolution_artifacts.tar.gz') as archive:
-        def read(name):return archive.extractfile('candidate-resolution/'+name).read()
+    with tarfile.open(directory/(prefix+'candidate_resolution_artifacts.tar.gz')) as archive:
+        root='modal-candidate-resolution/' if modal else 'candidate-resolution/'
+        def read(name):return archive.extractfile(root+name).read()
         protocol=json.loads(read('protocol.json'))
         evidence=json.loads(read('solve-evidence.json'))
         execution=json.loads(read('host-execution.json'))
-        identity=json.loads((directory/'candidate_resolution_manifest.json').read_text())
+        identity=json.loads((directory/(prefix+'candidate_resolution_manifest.json')).read_text())
         assert protocol['source_revision']==identity['reproduction_source_commit']
         assert protocol['limits']==v.LIMITS and protocol['cases']==v.CASES
         assert result['protocol_sha256']==evidence['protocol_sha256']==execution['protocol_sha256']==hashlib.sha256(read('protocol.json')).hexdigest()
@@ -164,7 +168,7 @@ def origin_fixture(tmp_path):
     import tarfile,io,hashlib
     run=tmp_path/'run';report=run/'outputs/auto/report';refine=run/'outputs/auto/refinement'
     report.mkdir(parents=True);refine.mkdir()
-    candidate=dict(driver_id='test',horn_label='example',drive_voltage_rms=2.83,observation_distance_m=1.)
+    candidate=dict(driver_id='test',horn_label='example',drive_voltage_rms=2.83,observation_distance_m=1.,radiation_model='flanged_piston')
     ranking=report/'auto_ranking.json';ranking.write_text(json.dumps([candidate]))
     driver=tmp_path/'driver.json';driver.write_text(json.dumps(dict(driver_id='test',parameters={'re_ohm':6.})))
     raw=driver.read_bytes();digest=hashlib.sha256(raw).hexdigest();name='data/drivers/test.json'
@@ -227,6 +231,12 @@ def test_originating_band_grid_can_differ_from_global_geometric_grid():
     assert v.check_frame(good,[1.,4.],len(grid),expected=grid)['mesh_cells']==100
     with pytest.raises(ValueError,match='frequency grid'):
         v.check_frame(good,[1.,4.],len(grid))
+
+
+def test_modal_health_contract_is_not_conflated_with_local_radiation():
+    good=frame();good['radiation_model']='modal_baffled'
+    assert v.check_frame(good,[1.,2.],2,radiation_model='modal_baffled')['mesh_cells']==100
+    with pytest.raises(ValueError,match='radiation_model'):v.check_frame(good,[1.,2.],2)
 
 
 def test_refinement_uses_logarithmic_frequency_interpolation():

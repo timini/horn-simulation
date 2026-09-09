@@ -1059,7 +1059,8 @@ workflow {
     if (params.loss_model != 'lossless' && (params.radiation_model == 'bem' || params.directivity)) error "BEM wall losses are unsupported"
     if (params.mode != 'single' && params.radiation_model == 'closed') error "Closed termination is a single-case impedance validation boundary, not a radiating horn"
     if (params.mode != 'single' && params.radiation_model == 'bem') error "Auto screening currently requires a local radiation model; BEM is experimental single-mode only"
-    if (!(params.radiation_model in ['plane_wave', 'flanged_piston', 'unflanged_piston', 'finite_flange', 'closed', 'bem'])) error "Unknown radiation model"
+    if (!(params.radiation_model in ['plane_wave', 'flanged_piston', 'modal_baffled', 'unflanged_piston', 'finite_flange', 'closed', 'bem'])) error "Unknown radiation model"
+    if (params.radiation_model == 'modal_baffled' && (params.loss_model != 'lossless' || params.element_degree != 1)) error "Experimental modal aperture requires lossless P1"
     if (!(params.mode in ['single', 'auto', 'fullauto'])) error "Unknown mode: ${params.mode}"
     def low = params.mode == 'single' ? params.min_freq : params.target_f_low
     def high = params.mode == 'single' ? params.max_freq : params.target_f_high

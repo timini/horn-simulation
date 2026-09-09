@@ -1,0 +1,77 @@
+{
+  "scope": "Numerical aperture qualification only; infinite baffle, axisymmetric ideal horn",
+  "protocol_sha256": "74e47ae0023777887644ead1c80c8c9e25b7f7e126f7e4f1521a7191cbc16cb9",
+  "solve_evidence_sha256": "b6e6c5634b901ac45f9da1113338994ae68e427d492408a436a4e7965076dcee",
+  "health": {
+    "m8_h4": {
+      "power_balance": 2.1450579096325608e-14,
+      "relative_residual": 7.081324082214821e-13,
+      "interface_relative_error": 6.06173789577138e-15,
+      "mesh_cells": 74329
+    },
+    "m16_h4": {
+      "power_balance": 2.1450590197172086e-14,
+      "relative_residual": 9.26213636782781e-13,
+      "interface_relative_error": 6.6899606258674514e-15,
+      "mesh_cells": 74329
+    },
+    "m16_h3": {
+      "power_balance": 5.77021380500147e-14,
+      "relative_residual": 1.738449888827965e-12,
+      "interface_relative_error": 1.5933805137689964e-14,
+      "mesh_cells": 172448
+    }
+  },
+  "comparisons": [
+    {
+      "kind": "refinement",
+      "coarse": "m8_h4",
+      "fine": "m16_h4",
+      "metrics": {
+        "z": {
+          "level_db": 0.001102972474507924,
+          "phase_deg": 0.008126632483085912
+        },
+        "pressure": {
+          "level_db": 0.0009684407021925864,
+          "phase_deg": 0.004607356153614699
+        }
+      },
+      "passed": true
+    },
+    {
+      "kind": "refinement",
+      "coarse": "m16_h4",
+      "fine": "m16_h3",
+      "metrics": {
+        "z": {
+          "level_db": 0.01134947107322214,
+          "phase_deg": 0.061416452182582425
+        },
+        "pressure": {
+          "level_db": 0.00577460769041392,
+          "phase_deg": 0.11252917713786843
+        }
+      },
+      "passed": true
+    },
+    {
+      "kind": "reference",
+      "coarse": "m16_h3",
+      "fine": "reference",
+      "metrics": {
+        "z": {
+          "level_db": 0.016992572784235972,
+          "phase_deg": 0.15872158722232443
+        },
+        "pressure": {
+          "level_db": 0.012093767710371711,
+          "phase_deg": 0.183388899798446
+        }
+      },
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "physical_validation_status": "experimental_prediction"
+}

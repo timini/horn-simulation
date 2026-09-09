@@ -85,7 +85,7 @@ def _compute_neumann_velocity(
     v_n = velocity * driver.sd_m2 / throat_area
     return v_n
 
-def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float, geometry_order: int = 1) -> Tuple["mesh.Mesh", "mesh.MeshTags"]:
+def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float, geometry_order: int = 1, *, require_axisymmetric_disk=False) -> Tuple["mesh.Mesh", "mesh.MeshTags"]:
     """
     Generates a mesh from a STEP file and tags the boundaries.
     """
@@ -130,6 +130,13 @@ def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float, 
         "inlet": sum(gmsh.model.occ.getMass(2, t) for t in inlet_surfaces),
         "mouth": sum(gmsh.model.occ.getMass(2, t) for t in outlet_surfaces),
     }
+    if require_axisymmetric_disk:
+        from horn_solver.modal_geometry import verify_axisymmetric_disk_horn
+        try:
+            verify_axisymmetric_disk_horn(volumes, inlet_surfaces, outlet_surfaces)
+        except Exception:
+            gmsh.finalize()
+            raise
     gmsh.model.addPhysicalGroup(2, inlet_surfaces, INLET_TAG)
     gmsh.model.setPhysicalName(2, INLET_TAG, "inlet")
     gmsh.model.addPhysicalGroup(2, outlet_surfaces, OUTLET_TAG)
@@ -160,6 +167,7 @@ def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float, 
     gmsh.finalize()
 
     domain.horn_boundary_areas = cad_areas
+    domain.horn_axisymmetric_disk = require_axisymmetric_disk
     return domain, facet_tags
 
 def run_simulation_from_step(
@@ -190,7 +198,8 @@ def run_simulation_from_step(
     print(f"Mesh size: user={mesh_size}, adaptive={adaptive_size:.4f}, using={final_mesh_size:.4f}")
 
     domain, facet_tags = create_mesh_from_step(step_file, final_mesh_size, horn_length,
-                                               geometry_order=kwargs.get("element_degree", 1))
+                                               geometry_order=kwargs.get("element_degree", 1),
+                                               require_axisymmetric_disk=kwargs.get("radiation_model")=="modal_baffled")
     print(f"Successfully loaded mesh: {domain.name} with "
           f"{domain.topology.index_map(domain.topology.dim).size_global} cells.")
 
@@ -255,6 +264,11 @@ def run_simulation(
     """
     if loss_model not in {"lossless", "boundary_layer"}:
         raise ValueError("FEM supports lossless or boundary_layer walls")
+    if radiation_model == "modal_baffled":
+        if loss_model != "lossless" or element_degree != 1 or domain.comm.size != 1:
+            raise ValueError("Experimental modal aperture requires lossless P1 and one MPI rank")
+        if not getattr(domain, "horn_axisymmetric_disk", False):
+            raise ValueError("Modal aperture requires a verified axisymmetric CAD volume with disk ports")
     if radiation_model == "bem":
         raise NotImplementedError("Legacy FEM-BEM horn coupling is disabled: its whole-boundary trace does not represent a mouth-only exterior problem")
     if element_degree not in (1, 2):
@@ -317,7 +331,7 @@ def run_simulation(
         inlet_velocity_rms = complex(inlet_velocity_rms)
         if not np.isfinite(inlet_velocity_rms) or abs(inlet_velocity_rms) <= 1e-30:
             raise ValueError("Prescribed inlet velocity must be finite and nonzero")
-    if radiation_model not in {"plane_wave", "flanged_piston", "unflanged_piston", "finite_flange", "closed", "bem"}:
+    if radiation_model not in {"plane_wave", "flanged_piston", "modal_baffled", "unflanged_piston", "finite_flange", "closed", "bem"}:
         raise ValueError("Unknown radiation model")
     if radiation_model == "bem" and bc_mode == "neumann":
         raise ValueError("BEM Neumann coupling has not been validated")
@@ -348,6 +362,11 @@ def run_simulation(
             f"CAD area {physical_mouth_area:g} m²; check mesh and numerical backend"
         )
     a_mouth = np.sqrt(physical_mouth_area / np.pi)
+    if radiation_model == "modal_baffled":
+        if 2*np.pi*max_freq*a_mouth/air.c > 30:
+            raise ValueError("Modal aperture quadrature requires ka <= 30")
+        from horn_solver.modal_boundary import aperture_projection, solve_modal_aperture
+        modal_projection = aperture_projection(V, ds, OUTLET_TAG, a_mouth, 16)
     print(f"Equivalent mouth radius: {a_mouth:.4f} m (radiation_model={radiation_model})")
 
     if loss_model == "boundary_layer":
@@ -384,7 +403,7 @@ def run_simulation(
                   +(1j-1)*(air.gamma-1)*dt*k**2/2 * ufl.inner(p,q))*ds(WALL_TAG)
 
         # Robin BC at outlet (radiation impedance) — skipped for BEM mode
-        if radiation_model == "bem":
+        if radiation_model in {"bem", "modal_baffled"}:
             # BEM provides the nonlocal radiation condition; no local Robin term
             pass
         elif radiation_model == "closed":
@@ -437,7 +456,13 @@ def run_simulation(
             bcs.append(fem.dirichletbc(inlet_pressure, inlet_dofs))
 
         # --- Solve ---
-        if radiation_model == "bem":
+        if radiation_model == "modal_baffled":
+            p_h, modal_velocity, modal_health = solve_modal_aperture(
+                V, a, L, bcs, modal_projection, a_mouth, k, rho=air.rho, c=air.c)
+            relative_residual = modal_health['relative_residual']
+            # The direct solve has an explicitly checked residual.
+            converged_reason = 4
+        elif radiation_model == "bem":
             solve_result = coupled_solve(
                 A_fem=a,
                 b_fem=L,
@@ -561,6 +586,8 @@ def run_simulation(
             grad_out = fem.assemble_scalar(fem.form(ufl.dot(ufl.grad(p_h), n) * ds(OUTLET_TAG)))
             grad_out = domain.comm.allreduce(grad_out, op=MPI.SUM)
             mouth_u = -grad_out / (1j * omega * air.rho)
+        elif radiation_model == "modal_baffled":
+            mouth_u = physical_mouth_area * modal_velocity[0]
         elif radiation_model == "closed":
             mouth_u = 0j
         else:
@@ -569,7 +596,8 @@ def run_simulation(
                    else v_n*inlet_area_val)
         input_p = 1.0 if bc_mode == "dirichlet" else p_inlet_avg
         input_power = float(np.real(input_p*np.conjugate(input_u)))
-        output_power = (0. if radiation_model in {"closed", "bem"} else
+        output_power = (modal_health['radiated_power_w'] if radiation_model == "modal_baffled" else
+                        0. if radiation_model in {"closed", "bem"} else
                         float(p_outlet_sq*np.real(1/z_specific)/(air.rho*air.c)))
         viscous_power = thermal_power = 0.
         if loss_model == "boundary_layer":
@@ -618,6 +646,12 @@ def run_simulation(
             "phasor_convention": "exp(+iwt)_rms",
             "mesh_cells": domain.topology.index_map(domain.topology.dim).size_global,
         })
+        if radiation_model == "modal_baffled":
+            results[-1]['modal_mode_count'] = len(modal_velocity)
+            results[-1]['modal_interface_relative_error'] = modal_health['interface_relative_error']
+            for index, value in enumerate(modal_velocity):
+                results[-1][f'modal_v_{index}_real'] = float(value.real)
+                results[-1][f'modal_v_{index}_imag'] = float(value.imag)
 
     # --- Output Generation ---
     output_path = Path(output_file)
@@ -662,7 +696,7 @@ def main():
     parser.add_argument("--phase-a-csv", type=str, default=None,
                         help="Phase A solver CSV with Z_horn data (required for neumann mode).")
     parser.add_argument("--radiation-model", type=str, default="plane_wave",
-                        choices=["plane_wave", "flanged_piston", "unflanged_piston", "finite_flange", "closed", "bem"],
+                        choices=["plane_wave", "flanged_piston", "modal_baffled", "unflanged_piston", "finite_flange", "closed", "bem"],
                         help="Radiation impedance model at the outlet (default: plane_wave).")
     parser.add_argument("--compute-directivity", action="store_true",
                         help="Compute far-field directivity (requires --radiation-model bem).")

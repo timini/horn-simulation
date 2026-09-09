@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "kind": "experimental_workflow_not_physical_validation",
+  "reproduction_source_commit": "77d915b15c82d982e605d4b46bbac861db39d164",
+  "status": "completed",
+  "resume": "completed_all_processes_cached",
+  "completion_output_seal": true,
+  "empty_outcome": "completed_with_empty_ranking_and_no_FEM_tasks",
+  "files": {
+    "worked_example_modal_800_1600.tar.gz": "0333a1e0173d79282461f0a6b5db3a04ccdb082bbd1c148272f379741692f0dd",
+    "modal_empty_workflow.tar.gz": "c66215dcbd18e0b7c2ce404078d37c32c8e352f6e04bcc44294e24fd75c83205"
+  },
+  "source_archive": "The complete originating source snapshot is preserved as origin_source in modal_candidate_resolution_artifacts.tar.gz.",
+  "excluded_attempts": [
+    {
+      "study": "worked example v1",
+      "reason": "Successful numerical run, superseded to correct observer description in report; winning raw FEM response is byte-identical to v2."
+    }
+  ]
+}
