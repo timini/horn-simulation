@@ -1,0 +1,416 @@
+{
+  "scope": "Method pilot at three frequencies; finite mounting differs from infinite-baffle approximation",
+  "accuracy_pass": false,
+  "physical_validation_status": "experimental_prediction",
+  "notes": [
+    "No exterior linear-system residual is exported by this pinned backend.",
+    "Excitation and integrated-force closures are consistency checks, not a residual or physical validation.",
+    "Mesh, precision, quadrature and baffle-size changes are retained; no continuous-band bound is claimed."
+  ],
+  "rows": [
+    {
+      "case": "exterior-pilot-v3",
+      "variant": "boundary-lab",
+      "frequency_hz": 800.0,
+      "baffle_radius_m": 0.25,
+      "faces": 1814,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 1.1920928955078125e-07,
+      "force_reduction_relative_error": 3.541176367915229e-07,
+      "reference_pressure_pa": [
+        -13.544590711738234,
+        -17.540693936518164
+      ],
+      "reference_impedance_pa_s_per_m": [
+        969.6470958305458,
+        388.0693094283773
+      ],
+      "output_difference_db": 3.015656515002706,
+      "impedance_difference_db": 0.8998307988337235,
+      "output_phase_difference_deg": -10.401934496493839
+    },
+    {
+      "case": "exterior-pilot-v3",
+      "variant": "boundary-lab",
+      "frequency_hz": 1200.0,
+      "baffle_radius_m": 0.25,
+      "faces": 1814,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 1.1920928955078125e-07,
+      "force_reduction_relative_error": 1.0646816371797052e-07,
+      "reference_pressure_pa": [
+        -1.5540487566503596,
+        9.118240892800213
+      ],
+      "reference_impedance_pa_s_per_m": [
+        491.08492380615735,
+        96.03155926267826
+      ],
+      "output_difference_db": -3.674417975087053,
+      "impedance_difference_db": -0.2519926544739563,
+      "output_phase_difference_deg": -10.766589212271498
+    },
+    {
+      "case": "exterior-pilot-v3",
+      "variant": "boundary-lab",
+      "frequency_hz": 1600.0,
+      "baffle_radius_m": 0.25,
+      "faces": 1814,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 1.1920928955078125e-07,
+      "force_reduction_relative_error": 1.7982711453602866e-07,
+      "reference_pressure_pa": [
+        17.45328059592141,
+        2.4086699294956913
+      ],
+      "reference_impedance_pa_s_per_m": [
+        542.8975675003375,
+        10.56323360866611
+      ],
+      "output_difference_db": 0.3621881530728352,
+      "impedance_difference_db": 0.9066032608563301,
+      "output_phase_difference_deg": 11.015106178882391
+    },
+    {
+      "case": "exterior-pilot-v3",
+      "variant": "fp64-q4",
+      "frequency_hz": 800.0,
+      "baffle_radius_m": 0.25,
+      "faces": 1814,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 1.1102230246251565e-16,
+      "force_reduction_relative_error": 2.611921656645511e-16,
+      "reference_pressure_pa": [
+        -13.550813241097845,
+        -17.555296826896072
+      ],
+      "reference_impedance_pa_s_per_m": [
+        970.1973810797775,
+        388.45733990427345
+      ],
+      "output_difference_db": 3.021675166427222,
+      "impedance_difference_db": 0.9052770342928667,
+      "output_phase_difference_deg": -10.391600542967868
+    },
+    {
+      "case": "exterior-pilot-v3",
+      "variant": "fp64-q4",
+      "frequency_hz": 1200.0,
+      "baffle_radius_m": 0.25,
+      "faces": 1814,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 0.0,
+      "force_reduction_relative_error": 5.549574756035405e-16,
+      "reference_pressure_pa": [
+        -1.5518957206402482,
+        9.118436579067527
+      ],
+      "reference_impedance_pa_s_per_m": [
+        491.1324282271381,
+        96.06176122702765
+      ],
+      "output_difference_db": -3.6745762771075627,
+      "impedance_difference_db": -0.2510828109487442,
+      "output_phase_difference_deg": -10.779940133359588
+    },
+    {
+      "case": "exterior-pilot-v3",
+      "variant": "fp64-q4",
+      "frequency_hz": 1600.0,
+      "baffle_radius_m": 0.25,
+      "faces": 1814,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 1.1102230246251565e-16,
+      "force_reduction_relative_error": 1.2662958637847406e-16,
+      "reference_pressure_pa": [
+        17.45213610380879,
+        2.4141572540438645
+      ],
+      "reference_impedance_pa_s_per_m": [
+        542.995274582304,
+        10.625115422480475
+      ],
+      "output_difference_db": 0.3619994918995701,
+      "impedance_difference_db": 0.9081850630117085,
+      "output_phase_difference_deg": 11.033292554588733
+    },
+    {
+      "case": "exterior-pilot-v3",
+      "variant": "fp64-q6",
+      "frequency_hz": 800.0,
+      "baffle_radius_m": 0.25,
+      "faces": 1814,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 1.1102230246251565e-16,
+      "force_reduction_relative_error": 1.8479672668736094e-16,
+      "reference_pressure_pa": [
+        -13.543143507528534,
+        -17.543185261277902
+      ],
+      "reference_impedance_pa_s_per_m": [
+        969.6543179373962,
+        388.2013156072846
+      ],
+      "output_difference_db": 3.016082747574324,
+      "impedance_difference_db": 0.900294518975334,
+      "output_phase_difference_deg": -10.39503681255136
+    },
+    {
+      "case": "exterior-pilot-v3",
+      "variant": "fp64-q6",
+      "frequency_hz": 1200.0,
+      "baffle_radius_m": 0.25,
+      "faces": 1814,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 0.0,
+      "force_reduction_relative_error": 6.852769702396714e-16,
+      "reference_pressure_pa": [
+        -1.554124958423438,
+        9.118323354825149
+      ],
+      "reference_impedance_pa_s_per_m": [
+        491.0899928606843,
+        96.04650186586662
+      ],
+      "output_difference_db": -3.674329618399115,
+      "impedance_difference_db": -0.2518565186631845,
+      "output_phase_difference_deg": -10.766209726389521
+    },
+    {
+      "case": "exterior-pilot-v3",
+      "variant": "fp64-q6",
+      "frequency_hz": 1600.0,
+      "baffle_radius_m": 0.25,
+      "faces": 1814,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 1.1102230246251565e-16,
+      "force_reduction_relative_error": 7.85446260429985e-18,
+      "reference_pressure_pa": [
+        17.45349538547155,
+        2.4090651175039297
+      ],
+      "reference_impedance_pa_s_per_m": [
+        542.9113179253798,
+        10.57175636400967
+      ],
+      "output_difference_db": 0.3623196840436061,
+      "impedance_difference_db": 0.9068258227211397,
+      "output_phase_difference_deg": 11.016283749142694
+    },
+    {
+      "case": "exterior-pilot-v4",
+      "variant": "fp64-q4",
+      "frequency_hz": 800.0,
+      "baffle_radius_m": 0.25,
+      "faces": 6694,
+      "source_area_m2": 0.003309831961102951,
+      "source_velocity_relative_error": 1.1102230246251565e-16,
+      "force_reduction_relative_error": 1.306155784095193e-16,
+      "reference_pressure_pa": [
+        -13.721421681174107,
+        -17.260338802478987
+      ],
+      "reference_impedance_pa_s_per_m": [
+        958.5180690107127,
+        376.30075691062524
+      ],
+      "output_difference_db": 2.9717953908776042,
+      "impedance_difference_db": 0.7768565117363803,
+      "output_phase_difference_deg": -11.21088181871691
+    },
+    {
+      "case": "exterior-pilot-v4",
+      "variant": "fp64-q4",
+      "frequency_hz": 1200.0,
+      "baffle_radius_m": 0.25,
+      "faces": 6694,
+      "source_area_m2": 0.003309831961102951,
+      "source_velocity_relative_error": 0.0,
+      "force_reduction_relative_error": 1.3523956001048337e-15,
+      "reference_pressure_pa": [
+        -1.7127604926118458,
+        8.917585358578082
+      ],
+      "reference_impedance_pa_s_per_m": [
+        489.62350136706056,
+        100.06918380664243
+      ],
+      "output_difference_db": -3.8347241440426965,
+      "impedance_difference_db": -0.2631328264746321,
+      "output_phase_difference_deg": -9.566597874250082
+    },
+    {
+      "case": "exterior-pilot-v4",
+      "variant": "fp64-q4",
+      "frequency_hz": 1600.0,
+      "baffle_radius_m": 0.25,
+      "faces": 6694,
+      "source_area_m2": 0.003309831961102951,
+      "source_velocity_relative_error": 1.1102230246251565e-16,
+      "force_reduction_relative_error": 1.3681755706104398e-15,
+      "reference_pressure_pa": [
+        17.680775315070395,
+        2.405143050917501
+      ],
+      "reference_impedance_pa_s_per_m": [
+        540.5498878865434,
+        11.97525029934516
+      ],
+      "output_difference_db": 0.4723654374441483,
+      "impedance_difference_db": 0.8694480961030349,
+      "output_phase_difference_deg": 10.90402236623037
+    },
+    {
+      "case": "exterior-pilot-v5",
+      "variant": "fp64-q4",
+      "frequency_hz": 800.0,
+      "baffle_radius_m": 0.5,
+      "faces": 3878,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 1.1102230246251565e-16,
+      "force_reduction_relative_error": 1.9118551406993916e-16,
+      "reference_pressure_pa": [
+        -8.266243487034078,
+        -19.972775783562952
+      ],
+      "reference_impedance_pa_s_per_m": [
+        959.7975306328257,
+        313.0912733464739
+      ],
+      "output_difference_db": 2.7990991373551397,
+      "impedance_difference_db": 0.6050803416750592,
+      "output_phase_difference_deg": 4.7892363272853595
+    },
+    {
+      "case": "exterior-pilot-v5",
+      "variant": "fp64-q4",
+      "frequency_hz": 1200.0,
+      "baffle_radius_m": 0.5,
+      "faces": 3878,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 0.0,
+      "force_reduction_relative_error": 1.7889086193874198e-16,
+      "reference_pressure_pa": [
+        -5.9787685382043945,
+        9.368019957094829
+      ],
+      "reference_impedance_pa_s_per_m": [
+        470.5471016548081,
+        77.19141471823518
+      ],
+      "output_difference_db": -2.0801310049486386,
+      "impedance_difference_db": -0.670710476236152,
+      "output_phase_difference_deg": 12.107703116263602
+    },
+    {
+      "case": "exterior-pilot-v5",
+      "variant": "fp64-q4",
+      "frequency_hz": 1600.0,
+      "baffle_radius_m": 0.5,
+      "faces": 3878,
+      "source_area_m2": 0.003285699532358939,
+      "source_velocity_relative_error": 1.1102230246251565e-16,
+      "force_reduction_relative_error": 1.21657318563999e-16,
+      "reference_pressure_pa": [
+        16.188391088569755,
+        -4.531594223577638
+      ],
+      "reference_impedance_pa_s_per_m": [
+        561.0801227741088,
+        2.3475851580516225
+      ],
+      "output_difference_db": -0.045578905935142223,
+      "impedance_difference_db": 1.1911751984151497,
+      "output_phase_difference_deg": -12.480917075351437
+    }
+  ],
+  "raw_files_sha256": {
+    "exterior-pilot-v3/boundary-lab/compiled-system.json": "1c711dd9abfb62aa5e5ce2ac13c195230d236c3e1d4bd8d0f97046576520ba20",
+    "exterior-pilot-v3/boundary-lab/domains.json": "d98bb6348dbee7675ff5dc5a2b0258d4d470fa0e9c80111a93d0ffe42281a1af",
+    "exterior-pilot-v3/boundary-lab/domains.npz": "11c3919c6255815cb6aeb69298fc6417aae4d3233183c8a0d726c373a144c44f",
+    "exterior-pilot-v3/boundary-lab/frequencies/000000.json": "db8590c197e48a5f4b40df049e36e47cff8771fa2d56740437bb3e1929784317",
+    "exterior-pilot-v3/boundary-lab/frequencies/000000.npz": "04c59b08d6a7d01ae49709b987f2fc20cb7794d12b6be5b30250e665a038273e",
+    "exterior-pilot-v3/boundary-lab/frequencies/000001.json": "dfa1d806fc694e989d41c7588ad3996f1daaf458043a6e6ec452572b951335b3",
+    "exterior-pilot-v3/boundary-lab/frequencies/000001.npz": "d19da69096b07071a6b1e51a7130e00e74a1cef2d1050ca1a9c2f1e2134b7339",
+    "exterior-pilot-v3/boundary-lab/frequencies/000002.json": "00cb14b43f8ae5eb74dbc36cea74c7ba0270a89099d14a34634557e8416c5fa3",
+    "exterior-pilot-v3/boundary-lab/frequencies/000002.npz": "70088d5b1dafc1adc66b1ebbaa88b66642228b149285b25fe855cc86b6d18da7",
+    "exterior-pilot-v3/boundary-lab/manifest.json": "db082a414e6cd437c5f7737c53cdb5cad87424a1558932743f97d667fec4b5b4",
+    "exterior-pilot-v3/boundary-lab/project.snapshot.blab.json": "c4edeb426d753ba199a76cc2b4fab2eec89a6da652e2145233f495e9aa130803",
+    "exterior-pilot-v3/boundary-lab/request.json": "fc70c4977a51458669702a8285a9fe958da0bff629f6d65afee6be3ca600589b",
+    "exterior-pilot-v3/fp64-q4/compiled-system.json": "1c711dd9abfb62aa5e5ce2ac13c195230d236c3e1d4bd8d0f97046576520ba20",
+    "exterior-pilot-v3/fp64-q4/domains.json": "d98bb6348dbee7675ff5dc5a2b0258d4d470fa0e9c80111a93d0ffe42281a1af",
+    "exterior-pilot-v3/fp64-q4/domains.npz": "11c3919c6255815cb6aeb69298fc6417aae4d3233183c8a0d726c373a144c44f",
+    "exterior-pilot-v3/fp64-q4/frequencies/000000.json": "d06caf3f5cf74d821f5b9090d03129b07b116c0908bdc30c48ac76a1e7bbddbd",
+    "exterior-pilot-v3/fp64-q4/frequencies/000000.npz": "346a652f8945537fffdd4de96c2805c286f4784def9b084ecc611cefe799c8e7",
+    "exterior-pilot-v3/fp64-q4/frequencies/000001.json": "9c78e25448197e480ce0e0ff8b6108da9a9bb87c25dbe241aa7e64276afc15e6",
+    "exterior-pilot-v3/fp64-q4/frequencies/000001.npz": "8eff0ee4e51c669eeadc1110ca4b829c716b698a2e627efe0fe0250c93e2a66d",
+    "exterior-pilot-v3/fp64-q4/frequencies/000002.json": "ea6a11865ff245f3cde5053bbbc40e0db776bc72dda9c1b77af4f771aaccd036",
+    "exterior-pilot-v3/fp64-q4/frequencies/000002.npz": "ec9c8f0852cd4fe827699e9c4b583539675633411d836cfbaaaca502aecacdc5",
+    "exterior-pilot-v3/fp64-q4/manifest.json": "ebdfd9b3ed57e3bd217944ea3c6a9230744ced98b42b405e698f74d24ff50d46",
+    "exterior-pilot-v3/fp64-q4/project.snapshot.blab.json": "c4edeb426d753ba199a76cc2b4fab2eec89a6da652e2145233f495e9aa130803",
+    "exterior-pilot-v3/fp64-q4/request.json": "e35b6f1ff3bcd9745115ae697c880b0bfdb4b54dbf1280fc0a7e4a1f95b10d43",
+    "exterior-pilot-v3/fp64-q4.log": "7c50a7a69067c96b0f336417cb87f897499f88dde92f4eb5c981a5bce897f3e3",
+    "exterior-pilot-v3/fp64-q6/compiled-system.json": "1c711dd9abfb62aa5e5ce2ac13c195230d236c3e1d4bd8d0f97046576520ba20",
+    "exterior-pilot-v3/fp64-q6/domains.json": "d98bb6348dbee7675ff5dc5a2b0258d4d470fa0e9c80111a93d0ffe42281a1af",
+    "exterior-pilot-v3/fp64-q6/domains.npz": "11c3919c6255815cb6aeb69298fc6417aae4d3233183c8a0d726c373a144c44f",
+    "exterior-pilot-v3/fp64-q6/frequencies/000000.json": "4d7b46b3edf95ca2de26ebabefdbd81ba16e4f0a652202913a1ecdab69649815",
+    "exterior-pilot-v3/fp64-q6/frequencies/000000.npz": "0d03b8e79740b6910303d8a3950e742a237891db80a1599aa96b59e11d2e232c",
+    "exterior-pilot-v3/fp64-q6/frequencies/000001.json": "5b23abd84a922961c3d696188270952da7d90ce3b1f9b2cb6ee1be6c38125ae5",
+    "exterior-pilot-v3/fp64-q6/frequencies/000001.npz": "2d085cee0797925ab8a1d3c48c77b99c4a18fb7b08fd23c666c0d388e70a5fa4",
+    "exterior-pilot-v3/fp64-q6/frequencies/000002.json": "d000c9ef8fdc2b37f40996dc478f520ec9a38db41a62792a68c3bbd1a1178f61",
+    "exterior-pilot-v3/fp64-q6/frequencies/000002.npz": "eeb3504064ca0bbb0a1f562fd5d54af283294717b6a2e8b93b7d813ebcb6d5f8",
+    "exterior-pilot-v3/fp64-q6/manifest.json": "83cd25bc42d7bea48bc9621d8c0111175d57e8f9920db086d8b9f83e617e0a74",
+    "exterior-pilot-v3/fp64-q6/project.snapshot.blab.json": "c4edeb426d753ba199a76cc2b4fab2eec89a6da652e2145233f495e9aa130803",
+    "exterior-pilot-v3/fp64-q6/request.json": "32360c1fe9db382e013e7fa38b6c3c131430c7ae1a4553cf89a2d9320de37dcb",
+    "exterior-pilot-v3/fp64-q6.log": "dc7985fd1e99d7114db32752e2b0ee81692ac60743658c045f84798e369687a5",
+    "exterior-pilot-v3/horn-air.step": "48b74897a3afe6c679aaab446ce689a5d14b7578ce6eef7b0f08186a1326a40e",
+    "exterior-pilot-v3/pilot-definition.json": "c86ca2fd7f094307430aaf18b17cc65346fea4507770886647255fe7df6b5412",
+    "exterior-pilot-v3/production-1200.csv": "dc9873b9282feed551688c9a99f2beb6f5ed5fc6b2039f4726a527a4f0c78fdc",
+    "exterior-pilot-v3/production-1600.csv": "56bf3158bff4120eff8eb50824d748472b77dbbf3fa9133ade3f9d0c8e586434",
+    "exterior-pilot-v3/production-800.csv": "fa10211ef2e81dbefa47a401e93c265ce66cf7092d7f12a3429fcf52d5f12b42",
+    "exterior-pilot-v3/project.blab.json": "c4edeb426d753ba199a76cc2b4fab2eec89a6da652e2145233f495e9aa130803",
+    "exterior-pilot-v3/reference.log": "873854deeb57213017f74322d5f789ab6cc66291775d3379066ba53a66e2ca5d",
+    "exterior-pilot-v3/request-fp64-q4.json": "d45bce061ead8003d9b5362b0b9cf2b721df3276e567f1807ac736902ccc5bb3",
+    "exterior-pilot-v3/request-fp64-q6.json": "110aa5dda385d3814e36eec562ea7079f0fdd0ea55f3f95ef406dc9928f226a5",
+    "exterior-pilot-v3/request.json": "c6bd23cec282a8c908066611472a7c580a11a9344689ce456fdbf00de2535f0c",
+    "exterior-pilot-v3/surface.msh": "2fdfb96ac3353c1c3417dccd28bc356b77e71ac152a483f878e7607521a4e42c",
+    "exterior-pilot-v4/fp64-q4/compiled-system.json": "55ed5d8ac71db0cef14494b8e3e53eda70aa42f2f3d3afa00d96ff062913ed81",
+    "exterior-pilot-v4/fp64-q4/domains.json": "1b8f8fcc9b90e418fdda36ad40aca8923fdb25dc923ca6a2e5e5a1d9c9ed9265",
+    "exterior-pilot-v4/fp64-q4/domains.npz": "3b2c9dae31b508fcb6459bd597e0d6629e134a40e5ffbfc336b542078dad5720",
+    "exterior-pilot-v4/fp64-q4/frequencies/000000.json": "231fe320d33da761bcc5dd410664c71af14f6633ce166fc7a9d88520fcab8510",
+    "exterior-pilot-v4/fp64-q4/frequencies/000000.npz": "014fe133ad8b6ab025b2f93e6f6c9c46867f50506bc96cddabee528f59d0951b",
+    "exterior-pilot-v4/fp64-q4/frequencies/000001.json": "885b10e5c7653122f2a86f20bf74e978cf8af373004e8514b30c84c6095ffd4e",
+    "exterior-pilot-v4/fp64-q4/frequencies/000001.npz": "d8a021c16e3f0190671bf357e76c4778b04fe6538aeb47041c8161d1fa11d9f9",
+    "exterior-pilot-v4/fp64-q4/frequencies/000002.json": "0af5c4ae092b0cef149e4c2b4c4b56e1ba87fb7553c9c9cfa57409abfd48298e",
+    "exterior-pilot-v4/fp64-q4/frequencies/000002.npz": "954f4491dd5bf19403dc3667c4bc6947ee62cecb9c9faeb24d3122dccdb8915a",
+    "exterior-pilot-v4/fp64-q4/manifest.json": "46113933669e134e84573c162708fef307d73d2f21207e9e8c23de05b9bdd1bd",
+    "exterior-pilot-v4/fp64-q4/project.snapshot.blab.json": "c4edeb426d753ba199a76cc2b4fab2eec89a6da652e2145233f495e9aa130803",
+    "exterior-pilot-v4/fp64-q4/request.json": "e35b6f1ff3bcd9745115ae697c880b0bfdb4b54dbf1280fc0a7e4a1f95b10d43",
+    "exterior-pilot-v4/fp64-q4.log": "675f6a5083476ef66db8327a9ccd2538347b341a1b2229b56bc3aa7f282b8141",
+    "exterior-pilot-v4/horn-air.step": "48b74897a3afe6c679aaab446ce689a5d14b7578ce6eef7b0f08186a1326a40e",
+    "exterior-pilot-v4/pilot-definition.json": "a0469cb18fb9724709520d84e483e93d639bae199d3f916d0f1aba71b22678b3",
+    "exterior-pilot-v4/project.blab.json": "c4edeb426d753ba199a76cc2b4fab2eec89a6da652e2145233f495e9aa130803",
+    "exterior-pilot-v4/request-fp64-q4.json": "d45bce061ead8003d9b5362b0b9cf2b721df3276e567f1807ac736902ccc5bb3",
+    "exterior-pilot-v4/request.json": "c6bd23cec282a8c908066611472a7c580a11a9344689ce456fdbf00de2535f0c",
+    "exterior-pilot-v4/surface.msh": "fd3f0a3838ca534cfcc7f35db39867a618038da298b800fdb341ab8478e75fe5",
+    "exterior-pilot-v5/fp64-q4/compiled-system.json": "ee442895e9f8b734eceaab9c7419d3dd44e1f375e49a65e7dd33a90003669444",
+    "exterior-pilot-v5/fp64-q4/domains.json": "4062aa2d46d3178dea350f0ee7fdf57b99b88db4c0fb855b645f50a376b6e952",
+    "exterior-pilot-v5/fp64-q4/domains.npz": "f06906ba1cbc069ec59874d63fc15b1aa363c6ae3f1e329dffe290713beb608a",
+    "exterior-pilot-v5/fp64-q4/frequencies/000000.json": "468cdb11e9a8211a2ce640a6526371d75c43ce940ba5461f10ff4afcc53f568d",
+    "exterior-pilot-v5/fp64-q4/frequencies/000000.npz": "134f2d424be401e5b196c1d6962a11df79e6e77b7e23aff8e3b9994f25296762",
+    "exterior-pilot-v5/fp64-q4/frequencies/000001.json": "7efdd7d9dcf0b10876011087e848462c051c027cbe53aad141202164f7abe01d",
+    "exterior-pilot-v5/fp64-q4/frequencies/000001.npz": "05653eae60d7fd59d21a65288d619ac003ef633d332496a71662f3a1df3ff1ec",
+    "exterior-pilot-v5/fp64-q4/frequencies/000002.json": "35b26a1c568bc998067b7012bdc972a0f5205f3ba1ad22046301adbb2c452717",
+    "exterior-pilot-v5/fp64-q4/frequencies/000002.npz": "b53f13ce627f3a348ec97401e375ad51683e82363d757b07452502b3b4ccb62c",
+    "exterior-pilot-v5/fp64-q4/manifest.json": "3a3a21445512d19cc4e9f63e5f05547e5474a10f7f040dfdcc6e8cb1eaaa87a7",
+    "exterior-pilot-v5/fp64-q4/project.snapshot.blab.json": "c4edeb426d753ba199a76cc2b4fab2eec89a6da652e2145233f495e9aa130803",
+    "exterior-pilot-v5/fp64-q4/request.json": "e35b6f1ff3bcd9745115ae697c880b0bfdb4b54dbf1280fc0a7e4a1f95b10d43",
+    "exterior-pilot-v5/fp64-q4.log": "cea25075af1144a2c402249cb5e6104b63422c4f5a1d1813fea804dc80de8d12",
+    "exterior-pilot-v5/horn-air.step": "48b74897a3afe6c679aaab446ce689a5d14b7578ce6eef7b0f08186a1326a40e",
+    "exterior-pilot-v5/pilot-definition.json": "b489a435a59b580a83cca63f0645d12f758a9a6e0e777cff7e84e10b0d6a75e4",
+    "exterior-pilot-v5/project.blab.json": "c4edeb426d753ba199a76cc2b4fab2eec89a6da652e2145233f495e9aa130803",
+    "exterior-pilot-v5/request-fp64-q4.json": "d45bce061ead8003d9b5362b0b9cf2b721df3276e567f1807ac736902ccc5bb3",
+    "exterior-pilot-v5/request.json": "c6bd23cec282a8c908066611472a7c580a11a9344689ce456fdbf00de2535f0c",
+    "exterior-pilot-v5/surface.msh": "42985f0ca884a515beab45fcea68aa0dbd9bf71b8d96e6e926ff80e51a70f53f"
+  }
+}
