@@ -102,6 +102,13 @@ def test_archived_workflow_and_resolution_evidence_have_recorded_identity():
         assert protocol['source_revision']==identity['reproduction_source_commit']
         assert protocol['limits']==v.LIMITS and protocol['cases']==v.CASES
         assert result['protocol_sha256']==evidence['protocol_sha256']==execution['protocol_sha256']==hashlib.sha256(read('protocol.json')).hexdigest()
+        assert result['comparison_grid']=='union_log_frequency' and result['historical_reanalysis']
+        assert result['analysis_revision']==identity['analysis_revision']
+        assert result['previous_comparison_sha256']==hashlib.sha256(read('comparison.json')).hexdigest()
+        import io
+        with tarfile.open(fileobj=io.BytesIO(read('analysis_source.tar.gz'))) as source:
+            for name,digest in result['analysis_source'].items():
+                assert hashlib.sha256(source.extractfile(name).read()).hexdigest()==digest
         assert result['solve_evidence_sha256']==execution['solve_evidence_sha256']==hashlib.sha256(read('solve-evidence.json')).hexdigest()
         assert result['host_execution_sha256']==hashlib.sha256(read('host-execution.json')).hexdigest()
         assert execution['exit_code']==0
