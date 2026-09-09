@@ -150,7 +150,7 @@ def reference(root, checkout, python, julia):
     verify_source(frozen)
     checkout, python, julia = checkout.resolve(), python.absolute(), julia.resolve()
     revision = subprocess.check_output(['git', '-C', str(checkout), 'rev-parse', 'HEAD'], text=True).strip()
-    dirty = subprocess.check_output(['git', '-C', str(checkout), 'status', '--porcelain', '--untracked-files=no'], text=True)
+    dirty = subprocess.check_output(['git', '-C', str(checkout), 'status', '--porcelain', '--untracked-files=all'], text=True)
     if revision != protocol['upstream_revision'] or dirty:
         raise ValueError('Reference checkout must be clean and pinned')
     probe = json.loads(subprocess.check_output([str(python), '-c',
@@ -175,7 +175,7 @@ def reference(root, checkout, python, julia):
         print('Completed independent reference:', name, flush=True)
     verify_inputs(root)
     verify_source(frozen)
-    if subprocess.check_output(['git', '-C', str(checkout), 'rev-parse', 'HEAD'], text=True).strip() != revision or subprocess.check_output(['git', '-C', str(checkout), 'diff', 'HEAD'], text=True):
+    if subprocess.check_output(['git', '-C', str(checkout), 'rev-parse', 'HEAD'], text=True).strip() != revision or subprocess.check_output(['git', '-C', str(checkout), 'status', '--porcelain', '--untracked-files=all'], text=True):
         raise ValueError('Upstream source changed during the solve')
     seal_stage(root, 'reference', files, dict(runtime=dict(
         revision=revision, python=probe['version'], julia=version, packages=installed)))
