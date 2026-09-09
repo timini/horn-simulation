@@ -31,7 +31,7 @@ The earlier Gmsh 2.2 pilot failed the independent reader; a later attempt timed 
 
 ## Reproduction
 
-Use a clean pinned Boundary Lab checkout with its Python dependencies and Julia project installed according to that checkout's instructions. The runner verifies the imported module comes from that checkout, checks its revision/cleanliness and runtime versions, and records installed Python packages. Do not reuse a mutable checkout being edited by another task.
+Use a fresh, pristine clone of the pinned Boundary Lab revision and a separate Python dependency environment outside that clone. Install dependencies and the Julia project according to that checkout's instructions. The reference runner rejects tracked changes, untracked files and ignored files before and after solving. It prepends the tracked `src` directory explicitly and uses isolated Python with bytecode writes disabled (`-I -B`), so an installed wheel or inherited `PYTHONPATH` cannot replace the selected package. The runner verifies the imported module comes from that checkout, checks its revision/cleanliness and runtime versions, and records installed Python packages. Do not reuse a mutable checkout being edited by another task.
 
 The preparation/comparison Python environment needs NumPy, pandas, SciPy, Gmsh, meshio and this repository's `horn-core`, `horn-drivers` and `horn-analysis` packages. The runner loads these packages from the checkout it hashes and rejects already-loaded modules from another installation. The production stage uses the repository's solver Docker image. Set `JULIA_DEPOT_PATH` if the independent installation has a dedicated depot.
 

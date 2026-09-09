@@ -166,9 +166,23 @@ def test_darwin_empty_group_permission_error_does_not_hide_live_workers(monkeypa
         raise PermissionError('EPERM')
     monkeypatch.setattr(validation.os,'killpg',denied)
     monkeypatch.setattr(validation.sys,'platform','darwin')
-    monkeypatch.setattr(validation.subprocess,'check_output',lambda *a,**k: '123\n456\n' if live_group else '456\n')
+    monkeypatch.setattr(validation.time,'sleep',lambda delay: None)
+    monkeypatch.setattr(validation.subprocess,'check_output',lambda *a,**k: '123 R\n456 S\n' if live_group else '123 Z\n456 S\n')
     if live_group:
         with pytest.raises(PermissionError):
             validation.signal_process_group(123,signal.SIGTERM)
     else:
         validation.signal_process_group(123,signal.SIGTERM)
+
+
+def test_ignored_reference_source_is_not_clean(tmp_path):
+    import subprocess
+    def git(*args):
+        return subprocess.check_output(['git','-C',str(tmp_path),*args],text=True)
+    git('init','-q')
+    git('-c','user.name=Test','-c','user.email=test@example.invalid','commit','--allow-empty','-qm','fixture')
+    assert validation.reference_checkout_clean(tmp_path)
+    (tmp_path/'.git/info/exclude').write_text('hidden.py\n')
+    (tmp_path/'hidden.py').write_text('unexpected = True')
+    assert not git('status','--porcelain','--untracked-files=all')
+    assert not validation.reference_checkout_clean(tmp_path)

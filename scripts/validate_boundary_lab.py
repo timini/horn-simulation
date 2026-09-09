@@ -14,6 +14,7 @@ from pathlib import Path
 import signal
 import subprocess
 import sys
+import time
 
 import numpy as np
 from boundary_lab_fixture import case_definitions, frequencies, prepare_cases, write_json
@@ -123,11 +124,16 @@ def signal_process_group(group, sig):
         pass
     except PermissionError:
         # Darwin can report EPERM after a group has completely disappeared.
-        # Ignore only an independently confirmed empty group, never a live one.
+        # Ignore only a group with no live members (including reaped zombies).
         if sys.platform == 'darwin':
-            groups = subprocess.check_output(['ps', '-axo', 'pgid='], text=True)
-            if str(group) not in groups.split():
-                return
+            for _ in range(10):
+                rows = subprocess.check_output(['ps', '-axo', 'pgid=,stat='], text=True)
+                live = [fields for row in rows.splitlines()
+                        if len(fields := row.split()) == 2 and fields[0] == str(group)
+                        and not fields[1].startswith('Z')]
+                if not live:
+                    return
+                time.sleep(.05)
         raise
 
 
@@ -154,6 +160,12 @@ def run_logged(command, log, timeout=600):
                 process.wait()
 
 
+def reference_checkout_clean(checkout):
+    status = subprocess.check_output(['git', '-C', str(checkout), 'status', '--porcelain', '--untracked-files=all'], text=True)
+    ignored = subprocess.check_output(['git', '-C', str(checkout), 'ls-files', '--others', '--ignored', '--exclude-standard'], text=True)
+    return not (status or ignored)
+
+
 def verify_reference_module(checkout, module):
     # The pinned project uses src/blab. A wheel in checkout/.venv is not
     # revision-identified source, even though it is beneath the checkout.
@@ -168,11 +180,11 @@ def reference(root, checkout, python, julia):
     verify_source(frozen)
     checkout, python, julia = checkout.resolve(), python.absolute(), julia.resolve()
     revision = subprocess.check_output(['git', '-C', str(checkout), 'rev-parse', 'HEAD'], text=True).strip()
-    dirty = subprocess.check_output(['git', '-C', str(checkout), 'status', '--porcelain', '--untracked-files=all'], text=True)
-    if revision != protocol['upstream_revision'] or dirty:
+    if revision != protocol['upstream_revision'] or not reference_checkout_clean(checkout):
         raise ValueError('Reference checkout must be clean and pinned')
-    probe = json.loads(subprocess.check_output([str(python), '-I', '-c',
-        'import blab,json,sys; print(json.dumps({"version":list(sys.version_info[:2]),"module":blab.__file__}))'], text=True))
+    bootstrap = f'import sys; sys.path.insert(0, {str(checkout/"src")!r}); '
+    probe = json.loads(subprocess.check_output([str(python), '-I', '-B', '-c',
+        bootstrap+'import blab,json,sys; print(json.dumps({"version":list(sys.version_info[:2]),"module":blab.__file__}))'], text=True))
     verify_reference_module(checkout, probe['module'])
     if probe['version'] != protocol['python_minor']:
         raise ValueError('Python must import the pinned checkout with the declared version')
@@ -186,7 +198,7 @@ def reference(root, checkout, python, julia):
         output = directory/'boundary-lab'
         if output.exists():
             raise FileExistsError(output)
-        run_logged([str(python), '-I', '-c', 'import sys; from blab.cli import main; sys.exit(main())', 'project', 'solve',
+        run_logged([str(python), '-I', '-B', '-c', bootstrap+'from blab.cli import main; sys.exit(main())', 'project', 'solve',
                     str(directory/'project.blab.json'), '--request', str(directory/'request.json'),
                     '--backend', 'beat_cpu', '--output', str(output), '--events', 'ndjson',
                     '--julia-executable', str(julia), '--julia-threads', '1'], directory/'boundary-lab.log')
@@ -194,10 +206,11 @@ def reference(root, checkout, python, julia):
         print('Completed independent reference:', name, flush=True)
     verify_inputs(root)
     verify_source(frozen)
-    if subprocess.check_output(['git', '-C', str(checkout), 'rev-parse', 'HEAD'], text=True).strip() != revision or subprocess.check_output(['git', '-C', str(checkout), 'status', '--porcelain', '--untracked-files=all'], text=True):
+    if subprocess.check_output(['git', '-C', str(checkout), 'rev-parse', 'HEAD'], text=True).strip() != revision or not reference_checkout_clean(checkout):
         raise ValueError('Upstream source changed during the solve')
     seal_stage(root, 'reference', files, dict(runtime=dict(
-        revision=revision, python=probe['version'], julia=version, packages=installed)))
+        revision=revision, python=probe['version'], julia=version, packages=installed,
+        imported_module=probe['module'], python_flags=['-I', '-B'])))
 
 
 def require_grid(actual, expected):
