@@ -67,7 +67,7 @@ Model the chosen chamber/adapter and rear load at the fidelity the reference req
 
 ### 3. Establish numerical and radiated-output accuracy
 
-Under #78, the matched interior-FEM and ideal-motor comparisons are now executed and archived in this repository. They agree on six shared tube/cone meshes under pinned runtime and acoustic conventions. Next compare a supported complete horn with an independent exterior solution; the separate uniform-piston integral checks do not establish that a horn mouth has uniform velocity.
+Under #78, the matched interior-FEM and ideal-motor comparisons are now executed and archived in this repository. They agree on six shared tube/cone meshes under pinned runtime and acoustic conventions. The [complete-horn radiation study](EXTERIOR_RADIATION_VALIDATION.md) now retains a matched infinite-baffle comparison and finite-baffle pilots. Its reference refinement checks pass, but the strict throat-impedance comparison fails (up to 1.05 dB / 5.73 degrees); pressure is within 0.40 dB. Investigate the mouth boundary/field approximation before promoting its horn loading. The separate uniform-piston integral checks do not establish a uniform horn-mouth velocity.
 
 The independent rectangular-cavity production-operator check is delivered. Use the candidate-resolution harness to check mesh, frequency-grid and loft-section changes for each profile and range admitted to the release; one worked candidate does not qualify all seven profiles. Investigate reference failures or explicitly exclude unsupported materials/terminations; retain frozen tolerances. Absolute on-axis output needs its own evidence. Only claim coverage/directivity after separate validation.
 

@@ -1,0 +1,10 @@
+{
+  "kind": "diagnostic_pilot_not_accuracy_pass",
+  "upstream_revision": "8cb166226e412877d3f71f2845918e479b97aa85",
+  "production_source_commit": "6d68cc8f979878506930d74d6424d8626ad1cee4",
+  "source_step_origin": "worked_example_800_1600",
+  "files": {
+    "exterior_baffle_pilot_artifacts.tar.gz": "52e7bbd9493e17c2ed17c56d6b02f96af01996c7de117b25a9d4015a7246c03c",
+    "exterior_baffle_pilot_reference.json": "5075f5b57df777b60db5646fbbea8c6e24f7787d75dc8b6f5529160c6fa66b43"
+  }
+}

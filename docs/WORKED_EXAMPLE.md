@@ -53,6 +53,8 @@ python3 scripts/run_pipeline.py --run-dir results/<run-id> -resume
 
 The source, inputs and container identities must still match. Successful completion and a cached resume have been exercised for the original example. Preserve the manifest and all outputs together; do not edit old evidence to match a newer checkout. See [run management](RUN_MANAGEMENT.md) for lookup and archival cleanup.
 
+The [independent complete-horn comparison](EXTERIOR_RADIATION_VALIDATION.md) finds on-axis agreement within 0.40 dB for the ideal infinite-baffle model, but misses the strict throat-impedance targets. A finite baffle produces differences of several decibels at the tested points. These are numerical-model findings, not measurements of this driver assembly.
+
 The remaining step to a dependable physical recommendation is the [reference/interface/radiation sequence](SINGLE_HORN_ROADMAP.md), tracked in [#81](https://github.com/timini/horn-simulation/issues/81). Neither this successful workflow nor its numerical comparisons closes that gate.
 
 ## Archived workflow evidence

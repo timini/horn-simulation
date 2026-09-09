@@ -1,0 +1,77 @@
+{
+  "scope": "Ideal axisymmetric horn in infinite baffle; no physical assembly qualification",
+  "limits": {
+    "reference_level_db": 0.05,
+    "reference_phase_deg": 1.0,
+    "model_level_db": 0.5,
+    "model_impedance_db": 0.5,
+    "model_phase_deg": 5.0
+  },
+  "reference_refinement": [
+    {
+      "coarse": "m16_s250",
+      "fine": "m32_s250",
+      "z": {
+        "level_db": 0.0749718579940972,
+        "phase_deg": 0.6512496212758878
+      },
+      "pressure": {
+        "level_db": 0.04769759211299644,
+        "phase_deg": 0.7147190040614674
+      }
+    },
+    {
+      "coarse": "m32_s250",
+      "fine": "m64_s250",
+      "z": {
+        "level_db": 0.03983817938991699,
+        "phase_deg": 0.3535877586214222
+      },
+      "pressure": {
+        "level_db": 0.02562029245732595,
+        "phase_deg": 0.3890273555947397
+      }
+    },
+    {
+      "coarse": "m64_s250",
+      "fine": "m64_s500",
+      "z": {
+        "level_db": 0.022784057283131452,
+        "phase_deg": 0.2024365197782634
+      },
+      "pressure": {
+        "level_db": 0.014726195265209394,
+        "phase_deg": 0.22286805203530533
+      }
+    },
+    {
+      "coarse": "m64_s500",
+      "fine": "m64_s1000",
+      "z": {
+        "level_db": 0.011143199095822306,
+        "phase_deg": 0.09172515321204852
+      },
+      "pressure": {
+        "level_db": 0.007225804010332834,
+        "phase_deg": 0.1014281696197309
+      }
+    }
+  ],
+  "radial_refinement": {
+    "level_db": 5.371208421760189e-06,
+    "phase_deg": 0.0001842267267490938
+  },
+  "model_changes": {
+    "pressure": {
+      "level_db": 0.3919306040558592,
+      "phase_deg": 3.1724076778256034
+    },
+    "z": {
+      "level_db": 1.049631969373229,
+      "phase_deg": 5.730625103352462
+    }
+  },
+  "reference_converged": true,
+  "passed": false,
+  "physical_validation_status": "experimental_prediction"
+}
