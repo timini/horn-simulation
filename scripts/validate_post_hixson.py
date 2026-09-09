@@ -118,7 +118,7 @@ def verify(out):
 def worker(out, case):
     sys.path[:0] = [str(p/'src') for p in (ROOT/'packages').glob('horn-*')]
     from horn_geometry.generator import create_horn
-    from horn_solver.solver import create_mesh_from_step, run_simulation
+    from horn_solver.solver import run_simulation_from_step
     from validate_candidate_resolution import runtime_identity
     p = verify(out)
     h, sections = CASES[case]
@@ -127,13 +127,11 @@ def worker(out, case):
     if result.exists():
         raise FileExistsError(result)
     create_horn(**GEOMETRY, output_file=step, num_sections=sections)
-    domain, tags = create_mesh_from_step(str(step), h, GEOMETRY['length'])
     frequencies = KA*p['c_m_s']/(2*np.pi*GEOMETRY['mouth_radius'])
-    run_simulation(domain, tags, (frequencies[0], frequencies[-1]), len(KA),
-                   {'length': GEOMETRY['length']}, str(result),
-                   bc_mode='velocity', radiation_model='modal_baffled')
-    write(out/f'{case}_runtime.json', dict(runtime=runtime_identity(),
-          mesh_cells=domain.topology.index_map(domain.topology.dim).size_global))
+    run_simulation_from_step(str(step), (frequencies[0], frequencies[-1]), len(KA),
+                             {'length': GEOMETRY['length']}, str(result), frequencies[-1],
+                             mesh_size=h, bc_mode='velocity', radiation_model='modal_baffled')
+    write(out/f'{case}_runtime.json', dict(runtime=runtime_identity()))
 
 
 def solve(out):
