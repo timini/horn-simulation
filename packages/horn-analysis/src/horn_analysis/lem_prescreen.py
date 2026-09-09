@@ -133,6 +133,7 @@ def lem_prescreen_candidates(
                 "driver_id": drv.driver_id,
                 **assessment,
                 "output_metric": "uniform_baffled_piston_on_axis",
+                "radiation_approximation": "plane_mode_prescreen" if radiation_model == "modal_baffled" else radiation_model,
             })
 
     # Sort by composite score descending

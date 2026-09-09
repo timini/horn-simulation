@@ -105,7 +105,7 @@ def compute_horn_transfer_tmm(
         raise ValueError("Horn dimensions must be finite and positive")
     if n_segments < 2:
         raise ValueError("At least two TMM segments are required")
-    if radiation_model not in {"plane_wave", "flanged_piston", "unflanged", "unflanged_piston", "finite_flange", "closed"}:
+    if radiation_model not in {"plane_wave", "flanged_piston", "modal_baffled", "unflanged", "unflanged_piston", "finite_flange", "closed"}:
         raise ValueError("TMM supports local radiation models only")
     z_mid = (np.arange(n_segments) + 0.5) * length / n_segments
     areas = np.pi * np.array([radius_func(z) for z in z_mid])**2
@@ -119,7 +119,9 @@ def compute_horn_transfer_tmm(
         z_norm = circular_pipe_radiation(k, a_mouth, flange_width)
     elif radiation_model == "plane_wave":
         z_norm = np.ones(len(k), dtype=complex)
-    elif radiation_model == "flanged_piston":
+    elif radiation_model in {"flanged_piston", "modal_baffled"}:
+        # Webster is a plane-mode prescreen. The subsequent modal FEM and
+        # nonuniform aperture observer determine the final recommendation.
         z_norm = np.array([piston_radiation_impedance(ki, a_mouth) for ki in k])
     else:
         if np.any(k * a_mouth >= 1.5):

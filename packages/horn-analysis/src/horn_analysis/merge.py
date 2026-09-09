@@ -35,6 +35,12 @@ def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output
         for col in ("inlet_area_m2", "mouth_area_m2", "mouth_u_real", "mouth_u_imag", "mouth_p_real", "mouth_p_imag", "radiation_model", "phasor_convention", "bc_mode"):
             if col not in df or df[col].isna().any():
                 raise ValueError(f"Missing acoustic contract column {col}")
+        if (df.radiation_model=='modal_baffled').any():
+            if not (df.radiation_model=='modal_baffled').all() or 'modal_mode_count' not in df or not (df.modal_mode_count==16).all():
+                raise ValueError('Inconsistent modal aperture mode count')
+            for col in [f'modal_v_{n}_{part}' for n in range(16) for part in ('real','imag')]:
+                if col not in df or df[col].isna().any():
+                    raise ValueError('Incomplete modal aperture coefficients')
         frames.append(df)
     joined = pd.concat(frames, ignore_index=True).sort_values("frequency")
     inlet_area_from_frame(joined)
@@ -57,6 +63,8 @@ def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output
                       else DEFAULT_AIR.c*DEFAULT_AIR.rho)
     scales = {"z": characteristic, "mouth_p": 1.,
               "mouth_u": float(joined.mouth_area_m2.iloc[0])/characteristic}
+    if joined.radiation_model.iloc[0]=='modal_baffled':
+        scales.update({f'modal_v_{n}':1/characteristic for n in range(16)})
     for _, rows in joined.groupby("frequency"):
         if len(rows) < 2:
             continue
