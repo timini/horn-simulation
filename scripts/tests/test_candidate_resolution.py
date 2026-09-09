@@ -89,6 +89,28 @@ def test_archived_workflow_and_resolution_evidence_have_recorded_identity():
     assert result['passed'] and len(result['health']) == 7
     assert len(result['comparisons']) == 6 and all(row['passed'] for row in result['comparisons'])
     assert result['physical_validation_status']=='experimental_prediction'
+    assert result['comparisons'][0]['kind']=='frequency'
+    assert result['comparisons'][0]['coarse']=='original_ranking'
+    assert 'ripple_db' in result['comparisons'][0]['changes']
+    import tarfile
+    with tarfile.open(directory/'candidate_resolution_artifacts.tar.gz') as archive:
+        def read(name):return archive.extractfile('candidate-resolution/'+name).read()
+        protocol=json.loads(read('protocol.json'))
+        evidence=json.loads(read('solve-evidence.json'))
+        execution=json.loads(read('host-execution.json'))
+        identity=json.loads((directory/'candidate_resolution_manifest.json').read_text())
+        assert protocol['source_revision']==identity['reproduction_source_commit']
+        assert protocol['limits']==v.LIMITS and protocol['cases']==v.CASES
+        assert result['protocol_sha256']==evidence['protocol_sha256']==execution['protocol_sha256']==hashlib.sha256(read('protocol.json')).hexdigest()
+        assert result['solve_evidence_sha256']==execution['solve_evidence_sha256']==hashlib.sha256(read('solve-evidence.json')).hexdigest()
+        assert result['host_execution_sha256']==hashlib.sha256(read('host-execution.json')).hexdigest()
+        assert execution['exit_code']==0
+        assert protocol['solver_image_id']==evidence['solver_image_id']==execution['image_id']==result['solver_image_id']
+        assert execution['image_id'] in execution['command']
+        assert evidence['runtime']['petsc_scalar']=='complex128'
+        assert all(evidence['runtime'][key] for key in ('python','numpy','scipy','dolfinx','gmsh','mpi_library','petsc','numpy_configuration'))
+        for name,digest in {**protocol['inputs'],**evidence['files']}.items():
+            assert hashlib.sha256(read(name)).hexdigest()==digest
 
 
 def test_wavelength_cap_cannot_collapse_refinement():

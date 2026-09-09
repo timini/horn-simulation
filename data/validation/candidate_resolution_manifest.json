@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "kind": "numerical_resolution_not_physical_validation",
-  "reproduction_source_commit": "f4ed2626e4ac8c4d6053cac826c285a2b04032f2",
+  "reproduction_source_commit": "dece5c15e4f7129b336b260221ffb974fece448c",
   "files": {
-    "candidate_resolution_artifacts.tar.gz": "8c94cd471ba84d894cf55a1700ecf103be76aebbabd2be513dd63e585cbc55dc",
-    "candidate_resolution_reference.json": "f382b805bf24d74787cf3fb784603eeca09591dcbe98ae135ef6ec6157659962"
+    "candidate_resolution_artifacts.tar.gz": "bc962d5e176a8bf602489c60e3f29d58255564e85d26cc83e73c5a8855951b06",
+    "candidate_resolution_reference.json": "058e1a7ee8c66509bae98408e0e49692c1b521e0e1e80f892ae1cf3466f0b945"
   },
-  "execution": "All six cases completed; all workers exited normally; parent exit code 0.",
+  "execution": "Host launched the originating immutable solver image; all six cases and workers completed normally; parent exit code 0.",
   "excluded_attempts": [
     {
       "study": "v1/v2",
@@ -19,6 +19,11 @@
     {
       "study": "v4",
       "reason": "All numerical comparisons passed after an explicit forced worker cleanup; replaced with this fresh clean execution"
+    },
+    {
+      "study": "v5",
+      "reason": "Clean numerical pass superseded by actual host/image/runtime binding, logarithmic comparison interpolation and stricter original-grid frequency/ripple gates."
     }
-  ]
+  ],
+  "solver_image_id": "sha256:1cc8ddf6ded3c1b29ae5a51d13b8ee0af67cb4fd643971303d123d2f7ade8ff9"
 }

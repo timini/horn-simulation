@@ -42,15 +42,15 @@ All six new solves, the originating response and all six comparisons passed for 
 
 | Refinement | Maximum output change (dB) | Maximum throat impedance change (dB) | Maximum phase change (degrees) |
 | --- | --- | --- | --- |
-| Original ranking → 201-point baseline | 0.004455 | 0.014793 | 0.08263 |
+| Original ranking → 201-point baseline | 0.004254 | 0.014654 | 0.07581 |
 | Mesh 10 → 6 mm | 0.03969 | 0.11677 | 0.52536 |
 | Mesh 6 → 4 mm | 0.01299 | 0.03757 | 0.16794 |
 | Loft 20 → 40 sections | 0.0006692 | 0.001197 | 0.005445 |
-| Loft 40 → 80 sections | 0.00001859 | 0.00001896 | 0.0007732 |
-| Frequency 101 → 201 points | 0.002646 | 0.008821 | 0.04889 |
+| Loft 40 → 80 sections | 0.00001863 | 0.00001896 | 0.0007732 |
+| Frequency 101 → 201 points | 0.002499 | 0.008825 | 0.04528 |
 
-Target-band ripple changed by 0.001501 dB when doubling frequency sampling. Meshes contained 5,333 to 74,334 tetrahedra. All residuals were below 1e-15 and relative power imbalance below 1e-13. These changes establish stability of the evaluated model at these resolutions; they do not bound physical model error.
+Target-band ripple changed by 0.000885 dB from the originating grid to the baseline, and by 0.001501 dB when doubling frequency sampling on the finest geometry. Both comparisons use the stricter frequency gates. Meshes contained 5,333 to 74,334 tetrahedra. All residuals were below 1e-15 and relative power imbalance below 1e-13. These changes establish stability of the evaluated model at these resolutions; they do not bound physical model error.
 
 The [comparison JSON](../data/validation/candidate_resolution_reference.json), [complete raw archive](../data/validation/candidate_resolution_artifacts.tar.gz) and [identity manifest](../data/validation/candidate_resolution_manifest.json) retain every geometry, response, frozen input/source identity, solver image ID and console log. The manifest records the exact reproduction commit; use that commit to reproduce this historical study, or prepare a new study for newer source.
 
-The final archived study completed with normal worker shutdown and parent exit code zero. Earlier studies are superseded in the manifest, including a numerical pass that required forced cleanup of a completed MPI worker. The originating run and its cached resume completed all 18 processes with output digests recorded.
+The final archived study (v6) completed with normal worker shutdown and parent exit code zero, enforcing the originating image and capturing the actual worker runtime. Its executed source is also archived. Earlier studies are superseded in the manifest, including a numerical pass that required forced cleanup of a completed MPI worker and a clean pass that preceded the stricter provenance/sampling gates. The originating run and its cached resume completed all 18 processes with output digests recorded. Subsequent launcher safeguards preserve the existing seal before resume and atomically claim a fresh resolution directory; they do not change the archived numerical protocol.
