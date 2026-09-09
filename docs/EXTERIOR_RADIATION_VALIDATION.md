@@ -29,6 +29,14 @@ python scripts/validate_mmm_radiation.py compare results/mmm-study
 
 The host needs NumPy, SciPy and pandas. The adapter generates and preserves Bessel roots as reference inputs, provides only a scalar `contains` compatibility helper for Octave 7, and verifies the upstream entry functions' locations. Reference source is mounted read-only. The protocol records source/input hashes; solve evidence seals all output files. The reference image ID and runtime version are retained. A Git worktree should be prepared/compared on its host; only the production stage runs in the solver container. Preserve failed runs and use a fresh directory after any source change.
 
+### Executed result
+
+All five reference sweeps (165 frequency solves) and the 33-point production sweep completed. The reference passes its declared refinement checks: 32→64 modes changes pressure by at most 0.0257 dB and impedance by 0.0399 dB; 500→1,000 axial sections changes them by 0.0073 and 0.0112 dB. Increasing radial integration from 201 to 401 points changes pressure by less than 0.000006 dB. These are observed refinement changes, not an asymptotic error bound.
+
+**The strict model comparison fails.** Production versus the final reference differs by at most 0.39194 dB / 3.1725 degrees in on-axis pressure, and 1.04964 dB / 5.7307 degrees in throat impedance. Output pressure meets its frozen targets; throat impedance exceeds both its 0.5 dB and 5-degree limits. The approximation must not be promoted to a high-accuracy horn-loading model on the strength of its closer pressure result. The discrepancy can affect driver coupling and recommendation ordering.
+
+The [comparison JSON](../data/validation/mmm_radiation_reference.json), [raw archive](../data/validation/mmm_radiation_artifacts.tar.gz) and [identity manifest](../data/validation/mmm_radiation_manifest.json) preserve the failure, exact reproduction source, pristine upstream identity, numerical inputs, response arrays, console logs and runtime/image identities. Reproduce the historical study from the manifest's source commit; do not overwrite its inputs to apply newer source. The earlier v1 attempt was stopped after the production stage rejected harmless frequency-grid roundoff between host and container NumPy versions; v2 fixes that check and reruns both sides. Neither result is a physical assembly measurement.
+
 ## Finite-baffle diagnostic pilot
 
 The separate Boundary Lab pilot uses the exact worked-example air-volume STEP inside a rigid cylindrical body. Its front face is flush with the mouth, the back is 10 mm behind the throat, and the throat floor supplies uniform velocity into the horn. All other surfaces are rigid. The outward-oriented surface is closed and checked for watertight edges and source orientation. This is a defined finite mounting geometry, not an infinite-baffle reference or a proposed fabrication drawing.

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "kind": "failed_strict_model_comparison_not_physical_validation",
+  "reproduction_source_commit": "d83a9505fd8a289f9a256f701a94bf161d620edc",
+  "upstream_revision": "24d533b191f299aafe1c6aae28cba294abc8f8e2",
+  "files": {
+    "mmm_radiation_artifacts.tar.gz": "593f2905e1c39880bfb193a2c7040e052679d270dfbd2bd1121460df475ce72f",
+    "mmm_radiation_reference.json": "091576dfad9620709c18339e55fd5dce3b6b471254de3286d58818d8e85215d5"
+  }
+}

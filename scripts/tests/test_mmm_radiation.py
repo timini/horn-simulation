@@ -61,3 +61,16 @@ def test_finite_baffle_pilot_keeps_raw_identity_and_does_not_claim_validation():
     assert result['physical_validation_status']=='experimental_prediction'
     assert len(result['rows'])==15
     assert max(row['source_velocity_relative_error'] for row in result['rows'])<1e-5
+
+
+def test_strict_loading_failure_is_retained_in_archived_evidence():
+    import json,hashlib
+    directory=v.ROOT/'data/validation'
+    manifest=json.loads((directory/'mmm_radiation_manifest.json').read_text())
+    for name,digest in manifest['files'].items():
+        assert hashlib.sha256((directory/name).read_bytes()).hexdigest()==digest
+    result=json.loads((directory/'mmm_radiation_reference.json').read_text())
+    assert result['reference_converged']
+    assert result['passed'] is False
+    assert result['model_changes']['z']['level_db']>result['limits']['model_impedance_db']
+    assert result['physical_validation_status']=='experimental_prediction'
