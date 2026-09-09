@@ -116,8 +116,8 @@ def main():
         if "output_sha256" in previous:
             if previous["output_sha256"] != output_hashes(run_dir):
                 parser.error("Published outputs changed since the previous attempt; preserve this run and start a new one")
-        elif previous.get("status") == "completed":
-            parser.error("Completed run has no output seal; start a new run")
+        elif previous.get("status") == "completed" or output_hashes(run_dir):
+            parser.error("Previous run has unsealed published outputs or completed without an output seal; start a new run")
         old_args = previous["arguments"]
         new_args = [x for x in forwarded if x != "-resume"]
         if new_args and new_args != old_args:

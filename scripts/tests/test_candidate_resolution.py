@@ -228,6 +228,38 @@ def test_refinement_uses_logarithmic_frequency_interpolation():
     assert all(value==pytest.approx(0.) for value in v.curve_change(coarse,fine).values())
 
 
+def test_non_nested_original_grid_peak_survives_in_both_directions():
+    original=dict(frequency=np.array([1.,1.5,3.]),spl=np.array([0.,5.,0.]),z=np.array([1.+0j,4j,1.+0j]))
+    baseline=dict(frequency=np.array([1.,2.,3.]),spl=np.zeros(3),z=np.ones(3,dtype=complex))
+    for a,b in ((original,baseline),(baseline,original)):
+        change=v.curve_change(a,b)
+        assert change['spl_db']==5.
+        assert change['impedance_db']==pytest.approx(20*np.log10(4))
+        assert change['phase_deg']==90.
+
+
+def test_historical_reanalysis_allows_only_a_preserved_comparator_change(tmp_path,monkeypatch):
+    import hashlib,tarfile,io
+    harness='scripts/validate_candidate_resolution.py';package='packages/horn-core/src/example.py'
+    old=b'original comparator';old_digest=hashlib.sha256(old).hexdigest()
+    monkeypatch.setattr(v,'source_identity',lambda:{harness:'new comparator',package:'same model'})
+    protocol=dict(source={harness:old_digest,package:'same model'},cases=v.CASES,limits=v.LIMITS,
+                  inputs={},solver_image_id='image',candidate_index=0,candidate={})
+    (tmp_path/'protocol.json').write_text(json.dumps(protocol))
+    (tmp_path/'origin_manifest').write_text(json.dumps({'containers':{'horn-solver':{'id':'image'}}}))
+    (tmp_path/'ranking.json').write_text('[{}]')
+    with tarfile.open(tmp_path/'study_source.tar.gz','w:gz') as archive:
+        member=tarfile.TarInfo(harness);member.size=len(old);archive.addfile(member,io.BytesIO(old))
+    with pytest.raises(ValueError,match='Source or fixed protocol'):v.verify(tmp_path)
+    assert v.verify(tmp_path,analysis_only=True)==protocol
+    monkeypatch.setattr(v,'source_identity',lambda:{harness:'new comparator',package:'changed model'})
+    with pytest.raises(ValueError,match='new solve is required'):v.verify(tmp_path,analysis_only=True)
+    monkeypatch.setattr(v,'source_identity',lambda:{harness:'new comparator',package:'same model'})
+    protocol['source'][harness]='unpreserved old comparator'
+    (tmp_path/'protocol.json').write_text(json.dumps(protocol))
+    with pytest.raises(ValueError,match='not preserved'):v.verify(tmp_path,analysis_only=True)
+
+
 @pytest.mark.parametrize('image',['horn-solver:latest','--format','sha256:bad'])
 def test_mutable_or_invalid_image_identifiers_are_rejected_before_docker(image):
     with pytest.raises(ValueError,match='immutable'):

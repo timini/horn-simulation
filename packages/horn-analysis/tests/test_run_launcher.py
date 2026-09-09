@@ -72,7 +72,7 @@ def test_resume_rejects_changed_engine_before_launch(tmp_path, monkeypatch, caps
     assert 'Nextflow engine or launcher changed' in capsys.readouterr().err
 
 
-@pytest.mark.parametrize('change', ['edit', 'remove', 'add', 'missing_seal'])
+@pytest.mark.parametrize('change', ['edit', 'remove', 'add', 'missing_seal', 'failed_unsealed', 'running_unsealed'])
 def test_resume_preserves_original_seal_and_rejects_changed_outputs(tmp_path, monkeypatch, capsys, change):
     launcher = _launcher_module()
     output = tmp_path/'outputs'/'ranking.json'
@@ -84,7 +84,10 @@ def test_resume_preserves_original_seal_and_rejects_changed_outputs(tmp_path, mo
     if change == 'edit': output.write_text('[{"score": 2}]')
     elif change == 'remove': output.unlink()
     elif change == 'add': (output.parent/'extra.csv').write_text('replacement')
-    else: del manifest['output_sha256']
+    else:
+        del manifest['output_sha256']
+        if change == 'failed_unsealed': manifest['status'] = 'failed'
+        if change == 'running_unsealed': manifest['status'] = 'running'
     path = tmp_path/'manifest.json'
     original = json.dumps(manifest)
     path.write_text(original)
