@@ -45,3 +45,9 @@ The cavity check uses the **production volume operator** to assemble a rigid rec
 These six additional cases join the existing seventeen in the required acoustic CI lane. That lane rejects skips as well as failures. The standalone Python CI lane runs the comparison-input/evidence safeguards and subprocess cleanup tests without requiring Julia.
 
 Physical-reference suitability is recorded separately in [the physical audit](PHYSICAL_REFERENCE_AUDIT.md). No numerical pass changes a candidate's physical validation status.
+
+## Independent radiation-integral check
+
+Ten pure-Python cases integrate the [Rayleigh monopole kernel](https://euphonics.org/4-3-2-the-rayleigh-integral-and-the-baffled-piston/) independently of the production closed forms. They cover three radii, near-to-far axial distances and `ka` from 0.01 to 20, including complex RMS amplitude and phase. A double surface integral, reduced using disk-overlap area, checks surface-averaged radiation load without Bessel or Struve functions. Two quadrature resolutions must agree before comparison with production; all ten cases pass the fixed tolerances.
+
+This verifies the implemented uniform circular piston in an infinite baffle. It is not a COMSOL run, a full exterior horn solve, finite-baffle validation or evidence that an arbitrary horn mouth has uniform velocity. The [COMSOL verification model](https://doc.comsol.com/6.3/doc/com.comsol.help.models.aco.baffled_piston_radiation/baffled_piston_radiation.html) describes this distinction between the surface integral and the general exterior-field calculation.
