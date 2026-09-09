@@ -109,7 +109,7 @@ def origin_files(run_dir, ranking, driver, candidate, low, high):
         raise ValueError('Originating package source differs from the resolution study')
     expected=dict(mesh_size=.01,num_sections=20,num_intervals=101,
                   target_f_low=low,target_f_high=high,element_degree=1,
-                  radiation_model='flanged_piston',loss_model='lossless',
+                  radiation_model=candidate.get('radiation_model','flanged_piston'),loss_model='lossless',
                   voltage_rms=candidate['drive_voltage_rms'],
                   observation_distance=candidate['observation_distance_m'])
     if any(parameters.get(key)!=value for key,value in expected.items()):
@@ -169,9 +169,9 @@ def prepare(out, ranking, driver, low, high, index, run_dir=None):
     if record['driver_id'] != candidate['driver_id']:
         raise ValueError('Driver record does not match the selected candidate')
     if (candidate.get('loss_model') != 'lossless'
-            or candidate.get('radiation_model') != 'flanged_piston'
+            or candidate.get('radiation_model') not in {'flanged_piston','modal_baffled'}
             or candidate.get('element_degree') != 1):
-        raise ValueError('This protocol supports the lossless flanged-piston P1 model only')
+        raise ValueError('This protocol supports lossless local-piston or modal-baffled P1 only')
     for key in ('throat_radius', 'mouth_radius', 'length', 'drive_voltage_rms', 'observation_distance_m'):
         if not np.isfinite(candidate[key]) or candidate[key] <= 0:
             raise ValueError(f'Invalid candidate {key}')
@@ -243,7 +243,7 @@ def solve_case(arguments):
                     num_sections=case['sections'])
     run_simulation_from_step(str(step),tuple(p['simulation_band_hz']),case['points'],
         {'length':c['length']},str(directory/'response.csv'),max(p['simulation_band_hz']),
-        mesh_size=case['mesh_size'],element_degree=1,radiation_model='flanged_piston',loss_model='lossless')
+        mesh_size=case['mesh_size'],element_degree=1,radiation_model=c['radiation_model'],loss_model='lossless')
     verify(out)
     print('Completed resolution case:',name,flush=True)
     return runtime
@@ -324,13 +324,13 @@ def solve_in_container(out, jobs=1):
         files={str(f.relative_to(out)):sha(f) for f in sorted(files)}))
 
 
-def check_frame(frame, band, count, *, expected=None):
+def check_frame(frame, band, count, *, expected=None, radiation_model='flanged_piston'):
     expected=np.geomspace(*band,count) if expected is None else np.asarray(expected)
     if (len(frame)!=count or not np.isfinite(frame.select_dtypes(include='number')).all().all()
             or not np.allclose(frame.frequency,expected,rtol=1e-12,atol=0)):
         raise ValueError('Incomplete, nonfinite or incorrect frequency grid')
     for key,value in dict(schema_version=2,bc_mode='dirichlet',phasor_convention='exp(+iwt)_rms',
-                          radiation_model='flanged_piston',loss_model='lossless',element_degree=1).items():
+                          radiation_model=radiation_model,loss_model='lossless',element_degree=1).items():
         if not (frame[key]==value).all():
             raise ValueError(f'Unexpected model contract: {key}')
     incoming=frame.input_acoustic_power_w.to_numpy()
@@ -402,7 +402,7 @@ def compare(out, *, reanalyze=False):
     bands=parameters['num_bands'];points=max(2,int(np.ceil(parameters['num_intervals']/bands)))
     low,high=p['simulation_band_hz'];width=(high-low)/bands
     original_grid=np.unique(np.concatenate([np.geomspace(low+i*width,low+(i+1)*width,points) for i in range(bands)]))
-    health['original_ranking']=check_frame(original,p['simulation_band_hz'],len(original_grid),expected=original_grid)
+    health['original_ranking']=check_frame(original,p['simulation_band_hz'],len(original_grid),expected=original_grid,radiation_model=candidate['radiation_model'])
     original_levels,_,_=coupled_output(original,driver,target)
     metrics=evaluate_response(original.frequency,original_levels,TargetSpec(*p['target_band_hz']))
     for key in ('passband_ripple_db','avg_sensitivity_db'):
@@ -411,7 +411,7 @@ def compare(out, *, reanalyze=False):
     curves['original_ranking']=dict(frequency=original.frequency.to_numpy(),spl=original_levels,z=(original.z_real+1j*original.z_imag).to_numpy())
     for name,case in CASES.items():
         frame=pd.read_csv(out/name/'response.csv')
-        health[name]=check_frame(frame,p['simulation_band_hz'],case['points'])
+        health[name]=check_frame(frame,p['simulation_band_hz'],case['points'],radiation_model=candidate['radiation_model'])
         levels,_,_=coupled_output(frame,driver,target)
         curves[name]=dict(frequency=frame.frequency.to_numpy(),spl=levels,
                          z=frame.z_real.to_numpy()+1j*frame.z_imag.to_numpy())
