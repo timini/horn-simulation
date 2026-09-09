@@ -89,6 +89,35 @@ def test_archived_workflow_and_resolution_evidence_have_recorded_identity():
     assert result['passed'] and len(result['health']) == 7
     assert len(result['comparisons']) == 6 and all(row['passed'] for row in result['comparisons'])
     assert result['physical_validation_status']=='experimental_prediction'
+    assert result['comparisons'][0]['kind']=='frequency'
+    assert result['comparisons'][0]['coarse']=='original_ranking'
+    assert 'ripple_db' in result['comparisons'][0]['changes']
+    import tarfile
+    with tarfile.open(directory/'candidate_resolution_artifacts.tar.gz') as archive:
+        def read(name):return archive.extractfile('candidate-resolution/'+name).read()
+        protocol=json.loads(read('protocol.json'))
+        evidence=json.loads(read('solve-evidence.json'))
+        execution=json.loads(read('host-execution.json'))
+        identity=json.loads((directory/'candidate_resolution_manifest.json').read_text())
+        assert protocol['source_revision']==identity['reproduction_source_commit']
+        assert protocol['limits']==v.LIMITS and protocol['cases']==v.CASES
+        assert result['protocol_sha256']==evidence['protocol_sha256']==execution['protocol_sha256']==hashlib.sha256(read('protocol.json')).hexdigest()
+        assert result['comparison_grid']=='union_log_frequency' and result['historical_reanalysis']
+        assert result['analysis_revision']==identity['analysis_revision']
+        assert result['previous_comparison_sha256']==hashlib.sha256(read('comparison.json')).hexdigest()
+        import io
+        with tarfile.open(fileobj=io.BytesIO(read('analysis_source.tar.gz'))) as source:
+            for name,digest in result['analysis_source'].items():
+                assert hashlib.sha256(source.extractfile(name).read()).hexdigest()==digest
+        assert result['solve_evidence_sha256']==execution['solve_evidence_sha256']==hashlib.sha256(read('solve-evidence.json')).hexdigest()
+        assert result['host_execution_sha256']==hashlib.sha256(read('host-execution.json')).hexdigest()
+        assert execution['exit_code']==0
+        assert protocol['solver_image_id']==evidence['solver_image_id']==execution['image_id']==result['solver_image_id']
+        assert execution['image_id'] in execution['command']
+        assert evidence['runtime']['petsc_scalar']=='complex128'
+        assert all(evidence['runtime'][key] for key in ('python','numpy','scipy','dolfinx','gmsh','mpi_library','petsc','numpy_configuration'))
+        for name,digest in {**protocol['inputs'],**evidence['files']}.items():
+            assert hashlib.sha256(read(name)).hexdigest()==digest
 
 
 def test_wavelength_cap_cannot_collapse_refinement():
@@ -206,6 +235,38 @@ def test_refinement_uses_logarithmic_frequency_interpolation():
     assert all(value==pytest.approx(0.) for value in v.curve_change(coarse,fine).values())
 
 
+def test_non_nested_original_grid_peak_survives_in_both_directions():
+    original=dict(frequency=np.array([1.,1.5,3.]),spl=np.array([0.,5.,0.]),z=np.array([1.+0j,4j,1.+0j]))
+    baseline=dict(frequency=np.array([1.,2.,3.]),spl=np.zeros(3),z=np.ones(3,dtype=complex))
+    for a,b in ((original,baseline),(baseline,original)):
+        change=v.curve_change(a,b)
+        assert change['spl_db']==5.
+        assert change['impedance_db']==pytest.approx(20*np.log10(4))
+        assert change['phase_deg']==90.
+
+
+def test_historical_reanalysis_allows_only_a_preserved_comparator_change(tmp_path,monkeypatch):
+    import hashlib,tarfile,io
+    harness='scripts/validate_candidate_resolution.py';package='packages/horn-core/src/example.py'
+    old=b'original comparator';old_digest=hashlib.sha256(old).hexdigest()
+    monkeypatch.setattr(v,'source_identity',lambda:{harness:'new comparator',package:'same model'})
+    protocol=dict(source={harness:old_digest,package:'same model'},cases=v.CASES,limits=v.LIMITS,
+                  inputs={},solver_image_id='image',candidate_index=0,candidate={})
+    (tmp_path/'protocol.json').write_text(json.dumps(protocol))
+    (tmp_path/'origin_manifest').write_text(json.dumps({'containers':{'horn-solver':{'id':'image'}}}))
+    (tmp_path/'ranking.json').write_text('[{}]')
+    with tarfile.open(tmp_path/'study_source.tar.gz','w:gz') as archive:
+        member=tarfile.TarInfo(harness);member.size=len(old);archive.addfile(member,io.BytesIO(old))
+    with pytest.raises(ValueError,match='Source or fixed protocol'):v.verify(tmp_path)
+    assert v.verify(tmp_path,analysis_only=True)==protocol
+    monkeypatch.setattr(v,'source_identity',lambda:{harness:'new comparator',package:'changed model'})
+    with pytest.raises(ValueError,match='new solve is required'):v.verify(tmp_path,analysis_only=True)
+    monkeypatch.setattr(v,'source_identity',lambda:{harness:'new comparator',package:'same model'})
+    protocol['source'][harness]='unpreserved old comparator'
+    (tmp_path/'protocol.json').write_text(json.dumps(protocol))
+    with pytest.raises(ValueError,match='not preserved'):v.verify(tmp_path,analysis_only=True)
+
+
 @pytest.mark.parametrize('image',['horn-solver:latest','--format','sha256:bad'])
 def test_mutable_or_invalid_image_identifiers_are_rejected_before_docker(image):
     with pytest.raises(ValueError,match='immutable'):
@@ -231,3 +292,18 @@ def test_host_executes_frozen_image_and_preserves_failure_without_a_success_seal
     evidence=json.loads((tmp_path/'host-execution.json').read_text())
     assert evidence['image_id']==image_id and evidence['exit_code']==7
     assert evidence['solve_evidence_sha256'] is None
+    claim=json.loads((tmp_path/'execution-claim.json').read_text())
+    assert commands[0][commands[0].index('--name')+1]=='horn-resolution-'+claim['invocation']
+
+
+def test_overlapping_execution_cannot_launch_or_remove_another_container(tmp_path,monkeypatch):
+    image_id='sha256:'+'1'*64
+    (tmp_path/'protocol.json').write_text('{}')
+    (tmp_path/'execution-claim.json').write_text('{"invocation":"already-running"}')
+    monkeypatch.setattr(v,'clean_source_revision',lambda:'source')
+    monkeypatch.setattr(v,'verify',lambda out:{'solver_image_id':image_id})
+    monkeypatch.setattr(v,'inspect_image',lambda image:{'Id':image,'Architecture':'amd64','Os':'linux'})
+    monkeypatch.setattr(v.subprocess,'run',lambda *a,**kw:pytest.fail('Overlapping invocation must not touch Docker'))
+    with pytest.raises(FileExistsError):v.solve(tmp_path)
+    assert not (tmp_path/'host-execution.json').exists()
+    assert json.loads((tmp_path/'execution-claim.json').read_text())['invocation']=='already-running'

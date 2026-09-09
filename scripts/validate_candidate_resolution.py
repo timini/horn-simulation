@@ -2,7 +2,7 @@
 """Freeze, solve and check a generated candidate's numerical resolution.
 
 This study does not certify a physical assembly or improve driver evidence.
-Run prepare on the host, then solve in the source-mounted solver container.
+Run prepare and solve on the host; solve launches the frozen solver container.
 """
 import argparse
 from datetime import datetime, timezone
@@ -15,6 +15,7 @@ import sys
 import tarfile
 import re
 import os
+import uuid
 from types import SimpleNamespace
 
 import numpy as np
@@ -196,9 +197,20 @@ def prepare(out, ranking, driver, low, high, index, run_dir=None):
         scope='Numerical resolution of this fixed ideal candidate; no physical qualification'))
 
 
-def verify(out):
+def verify(out, *, analysis_only=False):
     p = json.loads((out/'protocol.json').read_text())
-    if p['source'] != source_identity() or p['cases'] != CASES or p['limits'] != LIMITS:
+    current=source_identity()
+    if analysis_only:
+        # Reassess sealed solves with a new comparator, never a different model.
+        harness='scripts/validate_candidate_resolution.py'
+        if set(p['source'])!=set(current) or any(p['source'][k]!=current[k] for k in current if k!=harness):
+            raise ValueError('Executed package source differs; a new solve is required')
+        with tarfile.open(out/'study_source.tar.gz') as archive:
+            if hashlib.sha256(archive.extractfile(harness).read()).hexdigest()!=p['source'][harness]:
+                raise ValueError('Original study harness source is not preserved')
+    elif p['source'] != current:
+        raise ValueError('Source or fixed protocol changed; prepare a fresh study')
+    if p['cases'] != CASES or p['limits'] != LIMITS:
         raise ValueError('Source or fixed protocol changed; prepare a fresh study')
     if any(sha(out/name) != digest for name,digest in p['inputs'].items()):
         raise ValueError('Frozen input changed')
@@ -259,7 +271,12 @@ def solve(out,jobs=1):
     if image['Id']!=p['solver_image_id']:raise ValueError('Solver image identity changed')
     if (out/'host-execution.json').exists() or (out/'solve-evidence.json').exists():
         raise FileExistsError('Study execution already exists')
-    name='horn-resolution-'+sha(out/'protocol.json')[:12]
+    # Claim the output directory atomically before launching anything. Keep the
+    # claim on failure: a failed study is evidence, not a directory to overwrite.
+    token=uuid.uuid4().hex
+    with (out/'execution-claim.json').open('x') as claim:
+        json.dump(dict(invocation=token,protocol_sha256=sha(out/'protocol.json')),claim)
+    name='horn-resolution-'+token
     command=['docker','run','--rm','--name',name,
              '-e','OPENBLAS_NUM_THREADS=1','-e','OMP_NUM_THREADS=1','-e','PYTHONPATH=/usr/local/lib',
              '-e','HORN_STUDY_IMAGE_ID='+image['Id'],
@@ -328,18 +345,21 @@ def check_frame(frame, band, count, *, expected=None, radiation_model='flanged_p
 
 
 def curve_change(coarse, fine):
-    """Compare on the entire finer grid; interpolation cannot drop extra peaks."""
-    f=fine['frequency']
-    if coarse['frequency'][0]>f[0] or coarse['frequency'][-1]<f[-1]:
+    """Preserve every sample from both grids, including non-nested band grids."""
+    if not np.allclose(coarse['frequency'][[0,-1]],fine['frequency'][[0,-1]],rtol=1e-12,atol=0):
         raise ValueError('Comparison grids do not cover the same band')
-    level=np.interp(np.log(f),np.log(coarse['frequency']),coarse['spl'])
-    z=(np.interp(np.log(f),np.log(coarse['frequency']),coarse['z'].real)
-       +1j*np.interp(np.log(f),np.log(coarse['frequency']),coarse['z'].imag))
-    if np.any(np.abs(z)<=0) or np.any(np.abs(fine['z'])<=0):
+    f=np.unique(np.r_[coarse['frequency'],fine['frequency']])
+    levels=[]; impedances=[]
+    for curve in (coarse,fine):
+        levels.append(np.interp(np.log(f),np.log(curve['frequency']),curve['spl']))
+        impedances.append(np.interp(np.log(f),np.log(curve['frequency']),curve['z'].real)
+                          +1j*np.interp(np.log(f),np.log(curve['frequency']),curve['z'].imag))
+    z,other=impedances
+    if np.any(np.abs(z)<=0) or np.any(np.abs(other)<=0):
         raise ValueError('Zero impedance cannot support a magnitude/phase comparison')
-    return dict(spl_db=float(np.max(np.abs(level-fine['spl']))),
-        impedance_db=float(np.max(np.abs(20*np.log10(np.abs(z)/np.abs(fine['z']))))),
-        phase_deg=float(np.max(np.abs(np.angle(z*np.conj(fine['z']),deg=True)))))
+    return dict(spl_db=float(np.max(np.abs(levels[0]-levels[1]))),
+        impedance_db=float(np.max(np.abs(20*np.log10(np.abs(z)/np.abs(other))))),
+        phase_deg=float(np.max(np.abs(np.angle(z*np.conj(other),deg=True)))))
 
 
 def ripple(curve, band):
@@ -350,14 +370,16 @@ def ripple(curve, band):
     return float(np.ptp(np.interp(np.log(points),np.log(f),curve['spl'])))
 
 
-def compare(out):
-    clean_source_revision()
+def compare(out, *, reanalyze=False):
+    analysis_revision=clean_source_revision()
+    analysis_source=source_identity()
     bind_source()
     import pandas as pd
     from horn_drivers.loader import _driver_from_dict
     from horn_analysis.evaluation import coupled_output, evaluate_response
     from horn_analysis.scoring import TargetSpec
-    p=verify(out)
+    p=verify(out,analysis_only=reanalyze)
+    previous_comparison=sha(out/'comparison.json') if reanalyze else None
     evidence=json.loads((out/'solve-evidence.json').read_text())
     execution=json.loads((out/'host-execution.json').read_text())
     if (execution['exit_code']!=0 or execution['image_id']!=p['solver_image_id']
@@ -406,16 +428,21 @@ def compare(out):
             change['ripple_db']=abs(ripple(curves[a],p['target_band_hz'])-ripple(curves[b],p['target_band_hz']))
         passed=all(np.isfinite(value) and value<=LIMITS[f'{kind}_{key}'] for key,value in change.items())
         results.append(dict(kind=kind,coarse=a,fine=b,changes=change,passed=bool(passed)))
-    verify(out)
+    verify(out,analysis_only=reanalyze)
     clean_source_revision()
+    if source_identity()!=analysis_source:
+        raise ValueError('Analysis source changed during comparison')
     if any(sha(out/name)!=digest for name,digest in evidence['files'].items()):
         raise ValueError('Solve evidence changed during comparison')
-    destination=out/'comparison.json'
+    destination=out/('reanalysis.json' if reanalyze else 'comparison.json')
     if destination.exists():
         raise FileExistsError(destination)
     result=dict(scope=p['scope'],protocol_sha256=sha(out/'protocol.json'),
         solve_evidence_sha256=sha(out/'solve-evidence.json'),candidate=candidate,
         host_execution_sha256=sha(out/'host-execution.json'),solver_image_id=p['solver_image_id'],
+        analysis_revision=analysis_revision,analysis_source=analysis_source,
+        comparison_grid='union_log_frequency',historical_reanalysis=reanalyze,
+        previous_comparison_sha256=previous_comparison,
         limits=LIMITS,health=health,comparisons=results,passed=all(r['passed'] for r in results),
         physical_validation_status='experimental_prediction')
     write_json(destination,result)
@@ -426,7 +453,7 @@ def compare(out):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('stage',choices=['prepare','solve','_solve','compare'])
+    parser.add_argument('stage',choices=['prepare','solve','_solve','compare','reanalyze'])
     parser.add_argument('output',type=Path)
     parser.add_argument('--ranking',type=Path)
     parser.add_argument('--run-dir',type=Path)
@@ -446,7 +473,7 @@ def main():
     elif args.stage=='_solve':
         solve_in_container(out,args.jobs)
     else:
-        compare(out)
+        compare(out,reanalyze=args.stage=='reanalyze')
 
 
 if __name__=='__main__':
