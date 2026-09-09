@@ -2,7 +2,7 @@
 
 A completed optimisation is a search result, not evidence that its mesh or frequency grid is adequate. `scripts/validate_candidate_resolution.py` freezes a selected candidate, its driver record and its target band, then checks the production geometry/solver/coupling at increasing resolutions. It never changes the physical evidence status or certifies a driver interface.
 
-The initial protocol supports the default lossless, flanged-piston, P1 model. It uses the candidate's exact profile, dimensions, voltage and observation distance. Its simulation range extends half an octave beyond each target edge. Three mesh sizes (10, 6 and 4 mm), three loft counts (20, 40 and 80 sections), and two nested grids (101 and 201 frequencies) isolate mesh, geometry and sampling changes. Preparation rejects bands whose wavelength-based cap would collapse any mesh refinement. Comparison also requires strictly increasing cell counts across the three mesh cases.
+The initial protocol supports the default lossless, flanged-piston, P1 model. It uses the candidate's exact profile, dimensions, voltage and observation distance. Its simulation range extends half an octave beyond each target edge. Three mesh sizes (10, 6 and 4 mm), three loft counts (20, 40 and 80 sections), and two nested grids (101 and 201 frequencies) isolate mesh, geometry and sampling changes. Every spatial refinement runs at 201 frequencies; the finest geometry also runs at 101 points for the sampling comparison. The actual response that produced the ranking is compared with the first refined solve, and the three mesh cases use the original ranked STEP. Preparation rejects bands whose wavelength-based cap would collapse any mesh refinement. Comparison also requires strictly increasing cell counts across the three mesh cases.
 
 Before solving, the study freezes these engineering gates:
 
@@ -22,6 +22,7 @@ Use the normal prerequisites and build the images. In a clean checkout, select a
 
 ```sh
 python scripts/validate_candidate_resolution.py prepare results/my-resolution-study \
+  --run-dir results/my-design \
   --ranking results/my-design/outputs/auto/report/auto_ranking.json \
   --driver data/drivers-curated/18Sound/18sound-6nmb420.json \
   --f-low 800 --f-high 1600 --candidate-index 0
@@ -33,7 +34,7 @@ docker run --rm -e OPENBLAS_NUM_THREADS=1 -e OMP_NUM_THREADS=1 \
 python scripts/validate_candidate_resolution.py compare results/my-resolution-study
 ```
 
-The host needs NumPy and the comparison stage additionally needs pandas and the dependencies of `horn-core`, `horn-drivers` and `horn-analysis`. The script loads production Python modules from the checkout it hashes. Retain the solver image identity and full console log alongside the study. Each directory is new; there is no partial-resume shortcut. Preparation and comparison require a clean Git checkout, including no untracked files or ignored Python source. Container solves verify the frozen source hashes before and after each case; the host comparison repeats the Git check after solving. Source changes or edited inputs invalidate comparison. A completed solve seals every STEP and response file; the comparison rejects missing or modified evidence and writes explicit passes/failures to `comparison.json`.
+The host needs NumPy and the comparison stage additionally needs pandas and the dependencies of `horn-core`, `horn-drivers` and `horn-analysis`. The script loads production Python modules from the checkout it hashes. Only originating runs with the protocol baseline (10 mm mesh, 20 loft sections and 101 requested frequency points) are admitted. Preparation requires the completed run manifest, resolved settings, original ranking/STEP/response and a complete individual-driver database in the source snapshot. Driver bytes must match that snapshot, and comparison must reproduce the stored ripple and average level before assessing resolution. Other originating settings require a separately designed protocol. Use `solve --jobs 3` to run three independent cases concurrently when resources permit. Retain the solver image identity and full console log alongside the study. Each directory is new; there is no partial-resume shortcut. Preparation and comparison require a clean Git checkout, including no untracked files or ignored Python source. Container solves verify the frozen source hashes before and after each case; the host comparison repeats the Git check after solving. Source changes or edited inputs invalidate comparison. A completed solve seals every STEP and response file; the comparison rejects missing or modified evidence and writes explicit passes/failures to `comparison.json`.
 
 A pass supports numerical exploration of that candidate within the stated model and band. It does not turn an acoustic air-volume STEP into a mounting drawing, establish rear-load or phase-plug behaviour, or replace the two complete assembly references required by [the roadmap](SINGLE_HORN_ROADMAP.md).
 
