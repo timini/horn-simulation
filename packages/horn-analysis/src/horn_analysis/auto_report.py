@@ -1,6 +1,8 @@
 """Reports for experimental driver-horn predictions and their evidence gaps."""
 from horn_analysis.evaluation import coupled_output
 
+from horn_analysis.kpi import format_kpi
+
 import argparse
 import json
 from pathlib import Path
@@ -115,6 +117,7 @@ def generate_auto_report(
         "Horn Driver Auto-Select Results — experimental predictions",
         "Status: experimental_candidates" if all_ranked else "Status: no_feasible_design",
         "No recommendation is physically validated. See evidence gaps in ranking JSON.",
+        "Cutoff ≤ / ≥ values are sweep bounds. KPI bandwidth/ripple describe the contiguous peak lobe, not the target band.",
         "Scores within 0.02 are near-ties for comparison; physical uncertainty is not quantified.",
         "=" * 40,
         f"Target: {target.f_low_hz:.0f} Hz - {target.f_high_hz:.0f} Hz",
@@ -151,8 +154,8 @@ def generate_auto_report(
             lines.append(f"     Throat radius: {result['throat_radius']:.6f} m; mouth radius: {result['mouth_radius']:.6f} m; length: {result['length']:.6f} m")
         if "kpi" in result:
             kpi = result["kpi"]
-            f3l = f"{kpi['f3_low_hz']:.0f}" if kpi.get("f3_low_hz") else "N/A"
-            f3h = f"{kpi['f3_high_hz']:.0f}" if kpi.get("f3_high_hz") else "N/A"
+            f3l = format_kpi(kpi, "f3_low_hz")
+            f3h = format_kpi(kpi, "f3_high_hz")
             lines.append(f"     f3: {f3l} - {f3h} Hz  "
                           f"Peak: {kpi['peak_spl_db']:.1f} dB @ {kpi['peak_frequency_hz']:.0f} Hz")
         lines.append("")
