@@ -111,3 +111,32 @@ def test_java_selection_overrides_incompatible_inherited_command(tmp_path, monke
     environment = launcher.java_environment()
     assert environment['JAVA_CMD'] == str(executable.resolve())
     assert environment['JAVA_HOME'] == environment['NXF_JAVA_HOME'] == str(tmp_path.resolve())
+
+
+def test_unchanged_resume_retains_seal_while_running_and_after_completion(tmp_path, monkeypatch):
+    launcher = _launcher_module()
+    output = tmp_path/'outputs'/'ranking.json'
+    output.parent.mkdir(); output.write_text('[]')
+    seal = launcher.output_hashes(tmp_path)
+    engine = dict(version='24.10.5', executable='/nextflow')
+    images = {name:dict(id='sha256:'+'1'*64) for name in ('horn-solver','horn-analysis','horn-geometry')}
+    manifest = dict(nextflow_engine=engine, source_sha256={}, containers=images, status='completed',
+                    output_sha256=seal, arguments=[], nextflow_session_id='original-session',
+                    input_sha256={'--drivers_db':{}}, started_at='earlier')
+    path = tmp_path/'manifest.json'; path.write_text(json.dumps(manifest))
+    monkeypatch.setattr(launcher, 'ROOT', tmp_path)
+    monkeypatch.setattr(launcher, 'inspect_images', lambda: images)
+    monkeypatch.setattr(launcher, 'source_hashes', lambda *_: {})
+    monkeypatch.setattr(launcher, 'java_environment', lambda: {})
+    monkeypatch.setattr(launcher, 'nextflow_identity', lambda _: engine)
+    monkeypatch.setattr(launcher.sys, 'argv', ['run_pipeline.py', '--run-dir', str(tmp_path), '-resume'])
+    monkeypatch.setattr(launcher.subprocess, 'check_output', lambda *a, **kw: 'revision' if kw.get('text') else b'')
+    def launch(command, **kwargs):
+        running = json.loads(path.read_text())
+        assert running['status'] == 'running' and running['output_sha256'] == seal
+        assert command[command.index('-resume')+1] == 'original-session'
+        return 0
+    monkeypatch.setattr(launcher.subprocess, 'call', launch)
+    assert launcher.main() == 0
+    completed = json.loads(path.read_text())
+    assert completed['status'] == 'completed' and completed['output_sha256'] == seal

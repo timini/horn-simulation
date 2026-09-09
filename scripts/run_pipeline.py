@@ -160,6 +160,10 @@ def main():
         "nextflow_java_home": run_environment.get("NXF_JAVA_HOME"), "validation_status": "experimental",
         "previous_attempt": previous.get("started_at") if previous else None,
     }
+    # A hard interruption of a resumed completed run must not erase the last
+    # authenticated output set before the completion handler can reseal it.
+    if previous is not None and "output_sha256" in previous:
+        manifest["output_sha256"] = previous["output_sha256"]
     manifest_path.write_text(json.dumps(manifest,indent=2))
     (run_dir/"source.patch").write_bytes(subprocess.check_output(["git","diff","--binary","HEAD"],cwd=ROOT))
     if not resume:
