@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "reference_kind": "independent_numerical_not_physical",
+  "reproduction_source_commit": "bd0f47b2abe3d1b206850c523980ad3258a0be98",
+  "files": {
+    "boundary_lab_reference_artifacts.tar.gz": "709e6544d0a728cff6651c45606b2f421047b637e2fb44ee2fbca6aca1a23e13",
+    "boundary_lab_reference.json": "37b538afc61f15dc3f36067bba71e39adbf91916cbbbc2fe7c6616411eaf9931"
+  },
+  "failed_attempts": [
+    {
+      "run": "cross-solver-v1",
+      "status": "invalid_mesh_version",
+      "included_as_pass": false
+    },
+    {
+      "run": "cross-solver-v3",
+      "status": "external_case_timeout",
+      "included_as_pass": false,
+      "correction": "Bound surviving process groups; reran all cases in fresh v4 directory"
+    },
+    {
+      "run": "cross-solver-v5",
+      "status": "Darwin process-group cleanup rejected after one completed case",
+      "included_as_pass": false
+    },
+    {
+      "run": "cross-solver-v6",
+      "status": "Darwin process-group cleanup rejected after five completed cases",
+      "included_as_pass": false
+    }
+  ],
+  "superseded_pass": {
+    "run": "cross-solver-v4",
+    "reason": "Replaced by fresh v7 run using strict source binding, pristine tracked upstream source and isolated Python"
+  }
+}

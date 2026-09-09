@@ -41,6 +41,12 @@ except ImportError:
     BEMPP_AVAILABLE = False
 
 
+def bulk_helmholtz_form(pressure, test, wavenumber):
+    """Production rigid-air volume operator, shared with modal verification."""
+    return (ufl.inner(ufl.grad(pressure), ufl.grad(test))
+            - wavenumber**2 * ufl.inner(pressure, test)) * ufl.dx
+
+
 def _compute_neumann_velocity(
     frequency: float,
     driver: "DriverParameters",
@@ -213,6 +219,7 @@ def run_simulation(
     air: AirProperties = DEFAULT_AIR,
     element_degree: int = 1,
     minimum_wall_scale: Optional[float] = None,
+    inlet_velocity_rms: complex = 1.0,
 ) -> Path:
     """Run the FEM simulation for the Helmholtz equation.
 
@@ -223,8 +230,10 @@ def run_simulation(
         num_intervals: Number of frequency points.
         driver_params: Dict with at least ``length`` key.
         output_file: Path for output CSV.
-        bc_mode: ``"dirichlet"`` (Phase A, p=1 at inlet) or ``"neumann"``
-                 (Phase B, prescribed velocity from driver model).
+        bc_mode: ``"dirichlet"`` (p=1 at inlet), ``"neumann"``
+                 (velocity from driver model), or ``"velocity"``
+                 (uniform prescribed inward RMS velocity).
+        inlet_velocity_rms: Complex inward velocity in m/s for velocity mode.
         driver: DriverParameters instance (required for neumann mode).
         throat_area: Physical throat cross-section in m² (required for neumann).
         z_horn_initial: Dict with ``frequencies``, ``z_real``, ``z_imag`` arrays
@@ -302,8 +311,12 @@ def run_simulation(
             kind="linear", fill_value="extrapolate",
         )
 
-    if bc_mode not in {"dirichlet", "neumann"}:
+    if bc_mode not in {"dirichlet", "neumann", "velocity"}:
         raise ValueError("Unknown inlet boundary condition")
+    if bc_mode == "velocity":
+        inlet_velocity_rms = complex(inlet_velocity_rms)
+        if not np.isfinite(inlet_velocity_rms) or abs(inlet_velocity_rms) <= 1e-30:
+            raise ValueError("Prescribed inlet velocity must be finite and nonzero")
     if radiation_model not in {"plane_wave", "flanged_piston", "unflanged_piston", "finite_flange", "closed", "bem"}:
         raise ValueError("Unknown radiation model")
     if radiation_model == "bem" and bc_mode == "neumann":
@@ -359,8 +372,7 @@ def run_simulation(
         k = omega / air.c
 
         # Helmholtz weak form
-        a = (ufl.inner(ufl.grad(p), ufl.grad(q)) * ufl.dx
-             - k**2 * ufl.inner(p, q) * ufl.dx)
+        a = bulk_helmholtz_form(p, q, k)
 
         if loss_model == "boundary_layer":
             dv, dt = boundary_layer_depths(frequency, air)
@@ -394,14 +406,17 @@ def run_simulation(
 
         bcs = []
 
-        if bc_mode == "neumann":
+        if bc_mode in {"neumann", "velocity"}:
             # --- Neumann mode (Phase B): prescribed velocity at inlet ---
             # Compute v_n from driver model using Phase A impedance
-            z_r = float(_z_real_interp(frequency))
-            z_i = float(_z_imag_interp(frequency))
-            v_n = _compute_neumann_velocity(
-                frequency, driver, throat_area, z_r, z_i,
-            )
+            if bc_mode == "velocity":
+                v_n = inlet_velocity_rms
+            else:
+                z_r = float(_z_real_interp(frequency))
+                z_i = float(_z_imag_interp(frequency))
+                v_n = _compute_neumann_velocity(
+                    frequency, driver, throat_area, z_r, z_i,
+                )
 
             # Neumann source: dp/dn = +jωρ₀·v_n
             # In the weak form, the boundary integral becomes:
@@ -500,6 +515,8 @@ def run_simulation(
         dp_dn_integral = domain.comm.allreduce(dp_dn_integral, op=MPI.SUM)
         inlet_area_val = fem.assemble_scalar(fem.form(one * ds(INLET_TAG)))
         inlet_area_val = domain.comm.allreduce(inlet_area_val, op=MPI.SUM).real
+        if not np.isfinite(inlet_area_val) or inlet_area_val <= 0:
+            raise ValueError("Mesh has no valid inlet boundary")
         if bc_mode == "dirichlet" and radiation_model != "bem":
             # Recover integrated Dirichlet flux from the variational reaction.
             # Direct P1 boundary gradients are only first-order and introduce
@@ -568,6 +585,10 @@ def run_simulation(
             "z_real": z_real,
             "z_imag": z_imag,
             "schema_version": SCHEMA_VERSION,
+            "inlet_p_real": float(np.real(input_p)),
+            "inlet_p_imag": float(np.imag(input_p)),
+            "inlet_u_real": float(np.real(input_u)),
+            "inlet_u_imag": float(np.imag(input_u)),
             "relative_residual": relative_residual,
             "converged_reason": converged_reason,
             "inlet_area_m2": float(physical_inlet_area),
@@ -628,8 +649,10 @@ def main():
     parser.add_argument("--mesh-size", type=float, default=0.01, help="Mesh element size.")
     parser.add_argument("--length", type=float, required=True, help="Length of the horn for boundary tagging.")
     parser.add_argument("--bc-mode", type=str, default="dirichlet",
-                        choices=["dirichlet", "neumann"],
+                        choices=["dirichlet", "neumann", "velocity"],
                         help="Boundary condition mode (default: dirichlet).")
+    parser.add_argument("--inlet-velocity-rms", type=complex, default=1.0,
+                        help="Uniform inward RMS velocity in m/s for velocity mode (complex values accepted).")
     parser.add_argument("--driver-json", type=str, default=None,
                         help="Driver database JSON (required for neumann mode).")
     parser.add_argument("--driver-id", type=str, default=None,
@@ -658,6 +681,7 @@ def main():
         "minimum_wall_scale": args.minimum_wall_scale,
         "element_degree": args.element_degree,
         "bc_mode": args.bc_mode,
+        "inlet_velocity_rms": args.inlet_velocity_rms,
         "radiation_model": args.radiation_model,
         "compute_directivity": args.compute_directivity,
     }
