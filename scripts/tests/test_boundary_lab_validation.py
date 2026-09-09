@@ -145,3 +145,15 @@ def test_untracked_reference_source_is_rejected_before_runtime_probe(tmp_path):
          patch.object(validation,'verify_source'):
         with pytest.raises(ValueError,match='clean and pinned'):
             validation.reference(tmp_path,checkout,tmp_path/'absent-python',tmp_path/'absent-julia')
+
+
+def test_reference_import_rejects_wheel_inside_ignored_checkout_venv(tmp_path):
+    import subprocess
+    subprocess.check_call(['git','init','-q',str(tmp_path)])
+    entry=tmp_path/'src/blab/__init__.py'
+    entry.parent.mkdir(parents=True)
+    entry.write_text('# tracked package')
+    subprocess.check_call(['git','-C',str(tmp_path),'add','src/blab/__init__.py'])
+    validation.verify_reference_module(tmp_path,str(entry))
+    with pytest.raises(ValueError,match='tracked src/blab'):
+        validation.verify_reference_module(tmp_path,str(tmp_path/'.venv/lib/python3.11/site-packages/blab/__init__.py'))

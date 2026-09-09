@@ -145,6 +145,15 @@ def run_logged(command, log, timeout=600):
                 process.wait()
 
 
+def verify_reference_module(checkout, module):
+    # The pinned project uses src/blab. A wheel in checkout/.venv is not
+    # revision-identified source, even though it is beneath the checkout.
+    entry = 'src/blab/__init__.py'
+    subprocess.check_output(['git', '-C', str(checkout), 'ls-files', '--error-unmatch', entry], text=True)
+    if Path(module).resolve() != (checkout/entry).resolve():
+        raise ValueError('Python must import the tracked src/blab package')
+
+
 def reference(root, checkout, python, julia):
     protocol, frozen = verify_inputs(root)
     verify_source(frozen)
@@ -155,7 +164,8 @@ def reference(root, checkout, python, julia):
         raise ValueError('Reference checkout must be clean and pinned')
     probe = json.loads(subprocess.check_output([str(python), '-c',
         'import blab,json,sys; print(json.dumps({"version":list(sys.version_info[:2]),"module":blab.__file__}))'], text=True))
-    if probe['version'] != protocol['python_minor'] or not Path(probe['module']).resolve().is_relative_to(checkout):
+    verify_reference_module(checkout, probe['module'])
+    if probe['version'] != protocol['python_minor']:
         raise ValueError('Python must import the pinned checkout with the declared version')
     version = subprocess.check_output([str(julia), '--version'], text=True).strip()
     if version != 'julia version '+protocol['julia_version']:
