@@ -2,6 +2,8 @@
 
 Nextflow-orchestrated FEM acoustic horn simulation with Docker-containerised packages.
 
+Read [AGENTS.md](AGENTS.md) first. It defines the product goal, proportionate validation and the **one-review-round** delivery policy. Address substantive feedback, verify the fixes and finish the delivery; do not start repeated review cycles.
+
 ## Quick reference
 
 ```bash
