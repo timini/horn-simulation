@@ -50,3 +50,20 @@ def test_multiple_roots_deduplicate_and_do_not_follow_symlinks(tmp_path):
     assert len(rows)==1 and runs.latest(rows)==selected
     with pytest.raises(ValueError,match='not a directory'):
         runs.inventory([tmp_path/'missing'])
+
+
+def test_fresh_checkout_has_empty_inventory_and_no_latest(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(runs,'ROOT',tmp_path)
+    monkeypatch.setattr(runs.sys,'argv',['runs.py','list'])
+    assert runs.main()==0
+    assert json.loads(capsys.readouterr().out)==[]
+    monkeypatch.setattr(runs.sys,'argv',['runs.py','latest'])
+    with pytest.raises(SystemExit) as error:
+        runs.main()
+    assert error.value.code==2
+    assert 'No completed runs found' in capsys.readouterr().err
+    monkeypatch.setattr(runs.sys,'argv',['runs.py','list','--root',str(tmp_path/'missing')])
+    with pytest.raises(SystemExit) as error:
+        runs.main()
+    assert error.value.code==2
+    assert 'Run root is not a directory' in capsys.readouterr().err

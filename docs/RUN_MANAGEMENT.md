@@ -27,6 +27,8 @@ just latest-run --root /path/to/custom/run-parent
 
 `latest-run` prints the absolute directory of the most recently **completed** run, ordered by its recorded finish time. It excludes running, failed, malformed and historical folders. An unsuccessful search exits with a diagnostic. `--status failed`, `--status running` or `--status any` explicitly changes the selection; running runs use their start time. Repeat `--root` to search multiple parents. The commands also work directly as `python3 scripts/runs.py latest` and `python3 scripts/runs.py list` without `just`.
 
+Before the first run, `runs` returns an empty JSON list and `latest-run` reports that no completed run exists. An explicitly supplied nonexistent `--root` is an error.
+
 `runs` returns a read-only JSON inventory, including folders without a run manifest as `unmanaged`, and malformed manifests as `invalid_manifest`. It reads only immediate child directories, does not follow directory symlinks, and does not modify results. A recorded running state may be stale after a machine crash; the locator does not infer liveness. Completed means the workflow exited successfully: it may legitimately report no feasible design or insufficient evidence. It does not mean a physically validated horn was found.
 
 ## Direct Nextflow use

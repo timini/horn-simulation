@@ -10,6 +10,16 @@ ROOT = Path(__file__).resolve().parents[1]
 STATUSES = ('completed', 'running', 'failed')
 
 
+def parse_timestamp(value):
+    if not isinstance(value, str):
+        raise ValueError('Run timestamp must be a string')
+    # Python 3.10 needs an explicit UTC offset; 3.11 also accepts Z.
+    stamp = datetime.fromisoformat(value.replace('Z', '+00:00'))
+    if stamp.tzinfo is None:
+        raise ValueError('Run timestamp has no timezone')
+    return stamp
+
+
 def inventory(roots):
     """Read one level under each run root; never infer success from file names."""
     records = {}
@@ -31,9 +41,7 @@ def inventory(roots):
                     for field in ('started_at', 'finished_at'):
                         value = data.get(field)
                         if value is not None:
-                            timestamp = datetime.fromisoformat(value)
-                            if timestamp.tzinfo is None:
-                                raise ValueError('Run timestamp has no timezone')
+                            parse_timestamp(value)
                         row[field] = value
                     if row['started_at'] is None or (data['status'] != 'running' and row['finished_at'] is None):
                         raise ValueError('Missing run timestamp')
@@ -52,7 +60,7 @@ def latest(records, status='completed'):
     def key(row):
         # Completed/failed runs are ordered by finish time; running by start.
         stamp = row['finished_at'] if row['status'] != 'running' else row['started_at']
-        return datetime.fromisoformat(stamp).timestamp(), row['path']
+        return parse_timestamp(stamp).timestamp(), row['path']
     return max(candidates, key=key)['path']
 
 
@@ -63,7 +71,8 @@ def main():
     parser.add_argument('--status', choices=(*STATUSES, 'any'), default='completed', help='Latest selector only; default completed')
     args = parser.parse_args()
     try:
-        rows = inventory(args.root or [ROOT/'results'])
+        default_root = ROOT/'results'
+        rows = [] if args.root is None and not default_root.exists() else inventory(args.root or [default_root])
         print(json.dumps(rows, indent=2) if args.action == 'list' else latest(rows, args.status))
     except ValueError as error:
         parser.error(str(error))
