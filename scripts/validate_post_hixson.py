@@ -141,7 +141,7 @@ def solve(out):
     with (out/'execution.json').open('x') as f:
         json.dump(dict(protocol_sha256=sha(out/'protocol.json'), image=p['solver_image_id']), f)
     for case in CASES:
-        command = ['docker', 'run', '--rm', '--platform', 'linux/amd64',
+        command = ['docker', 'run', '--rm',
                    '-e', 'OPENBLAS_NUM_THREADS=1', '-e', 'OMP_NUM_THREADS=1',
                    '-e', 'PYTHONPATH=/usr/local/lib', '-v', f'{ROOT}:/workspace:ro',
                    '-v', f'{out}:/study', '-w', '/workspace', p['solver_image_id'],
