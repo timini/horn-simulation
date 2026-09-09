@@ -1,0 +1,47 @@
+# Independent numerical solver validation
+
+This suite supports [#78](https://github.com/timini/horn-simulation/issues/78). It tests the implemented equations with matched inputs; it does not qualify a commercial driver, its chamber/adapter, an exterior radiation model or a physical assembly.
+
+## Frozen comparison
+
+[Protocol](../data/validation/boundary_lab_protocol.json): a straight tube and a cone, each on three shared P1 tetrahedral meshes, with 13 logarithmic frequencies from 250 to 2000 Hz. Both solvers read the **same Gmsh 4.1 mesh**, including inlet/mouth/wall groups. The walls are rigid, the mouth has a plane-wave termination, and air properties match exactly.
+
+The independent implementation is Boundary Lab commit `8cb166226e412877d3f71f2845918e479b97aa85`, Python 3.11 and Julia 1.12.6. Its native 2.83 V RMS electrodynamic piston has a synthetic dry diaphragm mass, known compliance/damping/inductance and zero rear load. Its effective piston area is the actual polygonal mesh inlet area, not an assumed CAD circle. The reference's `exp(-i omega t)` quantities are conjugated into this project's `exp(+i omega t)` convention before comparison.
+
+The production solver uses prescribed inward velocity. The comparison checks complex throat impedance, mouth pressure per inlet velocity, motor current and velocity, throat pressure and coupled mouth pressure. It applies the existing production driver operating-point calculation to the production FEM load, then compares against Boundary Lab's independently coupled solution. The frozen maximum relative complex error is `1e-4`; both linear solvers must meet a `1e-8` residual limit. Every expected frequency must be present and healthy. There is no fitted phase or level shift.
+
+Agreement on shared meshes separates implementation errors from discretization differences. It does **not** establish continuum convergence: the polygonal inlet area itself changes with mesh resolution. Nor does ideal zero-rear-load coupling validate the scraped manufacturer's Mms, phase plug or rear enclosure.
+
+## Reproduction
+
+Use a clean pinned Boundary Lab checkout with its Python dependencies and Julia project installed according to that checkout's instructions. The runner verifies the imported module comes from that checkout, checks its revision/cleanliness and runtime versions, and records installed Python packages. Do not reuse a mutable checkout being edited by another task.
+
+The preparation/comparison Python environment needs NumPy, pandas, SciPy, Gmsh, meshio and this repository's `horn-core`, `horn-drivers` and `horn-analysis` packages. The production stage uses the repository's solver Docker image. Set `JULIA_DEPOT_PATH` if the independent installation has a dedicated depot.
+
+```sh
+python scripts/validate_boundary_lab.py prepare results/qualification/new-comparison
+
+docker run --rm -e OPENBLAS_NUM_THREADS=1 -e OMP_NUM_THREADS=1 \
+  -v "$PWD:/workspace" -w /workspace \
+  -e PYTHONPATH=/usr/local/lib:/workspace/packages/horn-core/src:/workspace/packages/horn-drivers/src:/workspace/packages/horn-analysis/src:/workspace/packages/horn-solver/src:/workspace/packages/horn-geometry/src \
+  horn-solver:latest python3 scripts/validate_boundary_lab.py horn results/qualification/new-comparison
+
+python scripts/validate_boundary_lab.py reference results/qualification/new-comparison \
+  --checkout /path/to/pinned/boundary-lab \
+  --python /path/to/boundary-lab-runtime/bin/python \
+  --julia /path/to/julia-1.12.6/bin/julia
+
+python scripts/validate_boundary_lab.py compare results/qualification/new-comparison
+```
+
+Preparation refuses an existing directory. It freezes geometry, input and source hashes. Each solver stage seals its output hashes. Comparison verifies these hashes, units, shapes, mesh identity, frequency completeness, conventions and residuals before publishing `comparison.json`; changed evidence fails. Keep the whole run directory, not just its summary. A timeout or partial solve has no passing final evidence. Start a fresh directory after a source change or failed attempt. The external runner bounds each case to ten minutes and kills its own remaining process group, including workers surviving the CLI parent.
+
+## Required production checks
+
+The velocity-inlet test solves an analytically matched travelling-wave tube with complex RMS velocity. It checks complex inlet/mouth pressure, integrated flow, absolute acoustic power and power conservation; invalid prescribed velocities are rejected.
+
+The cavity check uses the **production volume operator** to assemble a rigid rectangular cavity, then independently compares its first twelve nonzero eigenfrequencies with analytical box modes. All twelve errors decrease through three P2 mesh refinements; the finest maximum error is approximately **0.033%**, below the frozen 1% bound. The constant-pressure zero mode is also checked.
+
+These six additional cases join the existing seventeen in the required acoustic CI lane. That lane rejects skips as well as failures. The standalone Python CI lane runs the comparison-input/evidence safeguards and subprocess cleanup tests without requiring Julia.
+
+Physical-reference suitability is recorded separately in [the physical audit](PHYSICAL_REFERENCE_AUDIT.md). No numerical pass changes a candidate's physical validation status.

@@ -18,18 +18,20 @@ jobs:
           mkdir -p results/validation
           docker run --rm -v "$PWD/results/validation:/validation" horn-solver:test \
             pytest /app/packages/horn-solver/tests/test_mesh_geometry.py \
+            /app/packages/horn-solver/tests/validation/test_velocity_inlet.py \
+            /app/packages/horn-solver/tests/validation/test_cavity_modes.py \
             /app/packages/horn-solver/tests/validation/test_acoustic_contract.py \
             /app/packages/horn-solver/tests/validation/test_wall_losses.py \
             /app/packages/horn-solver/tests/validation/test_conical_horn_webster.py \
             /app/packages/horn-solver/tests/validation/test_exponential_horn_webster.py \
             /app/packages/horn-solver/tests/validation/test_hyperbolic_horn_webster.py \
             -q --junitxml=/validation/results.xml
-      - name: Require all seventeen cases without skips
+      - name: Require all twenty-three cases without skips
         run: |
           python - <<'PY'
           import xml.etree.ElementTree as ET
           cases = ET.parse('results/validation/results.xml').findall('.//testcase')
-          assert len(cases) == 17, 'Required acoustic cases are missing'
+          assert len(cases) == 23, 'Required acoustic cases are missing'
           assert all(c.find('skipped') is None and c.find('failure') is None and c.find('error') is None for c in cases)
           PY
       - uses: actions/upload-artifact@v4

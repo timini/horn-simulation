@@ -60,7 +60,7 @@ jobs:
       - name: Install audit dependencies
         run: pip install -e packages/horn-core -e packages/horn-drivers -e packages/horn-analysis pytest
       - name: Check reference-audit evidence safeguards
-        run: pytest scripts/tests/test_reference_audit.py -v
+        run: pytest scripts/tests -v
 
   test_packages:
     runs-on: ubuntu-latest

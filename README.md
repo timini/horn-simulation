@@ -328,3 +328,5 @@ Driver pages must identify the requested URL. Missing Mms is not replaced with d
 Refreshes preserve known driver categories. New records have an unknown category until supported metadata is available; diaphragm area alone cannot distinguish a compression driver from a small cone driver.
 Manually enriched interface data, usable-frequency bounds and parameters not supplied by the source survive refresh; values actually fetched from the source replace their earlier values.
 During migration, an existing continuous-power rating must have an independent source in `parameter_sources.power_w`; otherwise it is removed because older scraper versions inferred it from program power. A manufacturer's progress is marked incomplete before discovery, so a failed refresh cannot leave an earlier completion flag in place.
+
+See the [independent solver protocol](docs/INDEPENDENT_SOLVER_VALIDATION.md) and [physical assembly reference audit](docs/PHYSICAL_REFERENCE_AUDIT.md) for the current qualification work.

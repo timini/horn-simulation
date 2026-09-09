@@ -1,0 +1,21 @@
+{
+  "scope": "Classification only; does not qualify driver parameters or horn interfaces.",
+  "records": [
+    {
+      "driver_id": "lavoce-fsn021-00",
+      "previous_type": "compression",
+      "corrected_type": "cone",
+      "source_url": "https://lavocespeakers.com/product/fsn021-00/",
+      "source_evidence": "Manufacturer specifies cone material, surround and a 50 mm nominal cone diameter.",
+      "reviewed_on": "2026-09-09"
+    },
+    {
+      "driver_id": "lavoce-fsn021-02",
+      "previous_type": "compression",
+      "corrected_type": "cone",
+      "source_url": "https://lavocespeakers.com/product/fsn021-02/",
+      "source_evidence": "Manufacturer specifies cone material, surround and a 50 mm nominal cone diameter.",
+      "reviewed_on": "2026-09-09"
+    }
+  ]
+}

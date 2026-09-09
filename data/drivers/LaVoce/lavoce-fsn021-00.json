@@ -2,7 +2,7 @@
     "driver_id": "lavoce-fsn021-00",
     "manufacturer": "LaVoce",
     "model_name": "FSN021.00",
-    "driver_type": "compression",
+    "driver_type": "cone",
     "parameters": {
         "fs_hz": 219.0,
         "re_ohm": 5.8,

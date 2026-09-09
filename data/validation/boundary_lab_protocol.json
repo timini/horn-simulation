@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "reference_kind": "independent_numerical_not_physical",
+  "upstream_revision": "8cb166226e412877d3f71f2845918e479b97aa85",
+  "julia_version": "1.12.6",
+  "python_minor": [3, 11],
+  "frequency_min_hz": 250.0,
+  "frequency_max_hz": 2000.0,
+  "frequency_count": 13,
+  "mesh_sizes_m": [0.008, 0.006, 0.004],
+  "element_degree": 1,
+  "radiation_model": "plane_wave",
+  "air_density_kg_m3": 1.225,
+  "sound_speed_m_s": 343.0,
+  "voltage_rms": 2.83,
+  "relative_complex_error_limit": 0.0001,
+  "residual_limit": 1e-8,
+  "geometries": [
+    {"name": "tube", "throat_radius_m": 0.01, "mouth_radius_m": 0.01, "length_m": 0.18},
+    {"name": "cone", "throat_radius_m": 0.01, "mouth_radius_m": 0.025, "length_m": 0.15}
+  ],
+  "driver": {"re_ohm": 6.0, "le_h": 0.0001, "bl_n_per_a": 4.0, "mmd_kg": 0.005, "cms_m_per_n": 0.0005, "rms_n_s_per_m": 1.0},
+  "scope": "Identical P1 meshes; uniform rigid piston at the inlet, zero rear load, rigid walls and plane-wave mouth. No commercial driver, chamber, exterior field or physical measurement qualification."
+}
