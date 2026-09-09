@@ -210,3 +210,24 @@ def test_refinement_uses_logarithmic_frequency_interpolation():
 def test_mutable_or_invalid_image_identifiers_are_rejected_before_docker(image):
     with pytest.raises(ValueError,match='immutable'):
         v.inspect_image(image)
+
+
+def test_host_executes_frozen_image_and_preserves_failure_without_a_success_seal(tmp_path,monkeypatch):
+    from types import SimpleNamespace
+    image_id='sha256:'+'1'*64
+    (tmp_path/'protocol.json').write_text('{}')
+    monkeypatch.setattr(v,'clean_source_revision',lambda:'source')
+    monkeypatch.setattr(v,'verify',lambda out:{'solver_image_id':image_id})
+    monkeypatch.setattr(v,'inspect_image',lambda image:{'Id':image,'Architecture':'amd64','Os':'linux'})
+    commands=[]
+    def execute(command,**kwargs):
+        commands.append(command)
+        return SimpleNamespace(returncode=7 if command[:2]==['docker','run'] else 0)
+    monkeypatch.setattr(v.subprocess,'run',execute)
+    with pytest.raises(RuntimeError,match='exited 7'):
+        v.solve(tmp_path,jobs=3)
+    assert image_id in commands[0] and not any('latest' in part for part in commands[0])
+    assert commands[-1][:3]==['docker','rm','-f']
+    evidence=json.loads((tmp_path/'host-execution.json').read_text())
+    assert evidence['image_id']==image_id and evidence['exit_code']==7
+    assert evidence['solve_evidence_sha256'] is None
