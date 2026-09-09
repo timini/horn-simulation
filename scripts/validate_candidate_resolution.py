@@ -227,8 +227,12 @@ def solve(out, jobs=1):
     else:
         # Fresh processes isolate Gmsh, MPI/PETSc and source imports per worker.
         from multiprocessing import get_context
-        with get_context('spawn').Pool(jobs) as pool:
-            pool.map(solve_case,arguments)
+        from concurrent.futures import ProcessPoolExecutor
+        # Pool.__exit__ terminates even successful workers. PETSc intercepts
+        # SIGTERM and can hang in MPI_Abort; orderly executor shutdown lets
+        # each completed worker finalize MPI normally. Crashes break the pool.
+        with ProcessPoolExecutor(max_workers=jobs,mp_context=get_context('spawn')) as pool:
+            list(pool.map(solve_case,arguments))
     verify(out)
     files=list(out.glob('*/horn.step'))+list(out.glob('*/response.csv'))
     write_json(out/'solve-evidence.json',dict(protocol_sha256=sha(out/'protocol.json'),jobs=jobs,
