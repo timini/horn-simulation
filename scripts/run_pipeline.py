@@ -66,6 +66,8 @@ def java_environment():
         match = re.search(r'version "(\d+)', result.stderr + result.stdout)
         if result.returncode == 0 and match and 17 <= int(match[1]) <= 22:
             environment["NXF_JAVA_HOME"] = str(executable.resolve().parent.parent)
+            environment["JAVA_HOME"] = environment["NXF_JAVA_HOME"]
+            environment["JAVA_CMD"] = str(executable.resolve())
             return environment
     return environment  # Nextflow reports its normal diagnostic if unavailable.
 
@@ -111,6 +113,11 @@ def main():
             parser.error("Nextflow engine or launcher changed or was not recorded; start a new run")
         if previous["source_sha256"] != hashes or previous["containers"] != images:
             parser.error("Source/data or container images changed; start a new run")
+        if "output_sha256" in previous:
+            if previous["output_sha256"] != output_hashes(run_dir):
+                parser.error("Published outputs changed since the previous attempt; preserve this run and start a new one")
+        elif previous.get("status") == "completed":
+            parser.error("Completed run has no output seal; start a new run")
         old_args = previous["arguments"]
         new_args = [x for x in forwarded if x != "-resume"]
         if new_args and new_args != old_args:

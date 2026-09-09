@@ -231,3 +231,18 @@ def test_host_executes_frozen_image_and_preserves_failure_without_a_success_seal
     evidence=json.loads((tmp_path/'host-execution.json').read_text())
     assert evidence['image_id']==image_id and evidence['exit_code']==7
     assert evidence['solve_evidence_sha256'] is None
+    claim=json.loads((tmp_path/'execution-claim.json').read_text())
+    assert commands[0][commands[0].index('--name')+1]=='horn-resolution-'+claim['invocation']
+
+
+def test_overlapping_execution_cannot_launch_or_remove_another_container(tmp_path,monkeypatch):
+    image_id='sha256:'+'1'*64
+    (tmp_path/'protocol.json').write_text('{}')
+    (tmp_path/'execution-claim.json').write_text('{"invocation":"already-running"}')
+    monkeypatch.setattr(v,'clean_source_revision',lambda:'source')
+    monkeypatch.setattr(v,'verify',lambda out:{'solver_image_id':image_id})
+    monkeypatch.setattr(v,'inspect_image',lambda image:{'Id':image,'Architecture':'amd64','Os':'linux'})
+    monkeypatch.setattr(v.subprocess,'run',lambda *a,**kw:pytest.fail('Overlapping invocation must not touch Docker'))
+    with pytest.raises(FileExistsError):v.solve(tmp_path)
+    assert not (tmp_path/'host-execution.json').exists()
+    assert json.loads((tmp_path/'execution-claim.json').read_text())['invocation']=='already-running'

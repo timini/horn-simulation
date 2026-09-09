@@ -2,7 +2,7 @@
 """Freeze, solve and check a generated candidate's numerical resolution.
 
 This study does not certify a physical assembly or improve driver evidence.
-Run prepare on the host, then solve in the source-mounted solver container.
+Run prepare and solve on the host; solve launches the frozen solver container.
 """
 import argparse
 from datetime import datetime, timezone
@@ -15,6 +15,7 @@ import sys
 import tarfile
 import re
 import os
+import uuid
 from types import SimpleNamespace
 
 import numpy as np
@@ -259,7 +260,12 @@ def solve(out,jobs=1):
     if image['Id']!=p['solver_image_id']:raise ValueError('Solver image identity changed')
     if (out/'host-execution.json').exists() or (out/'solve-evidence.json').exists():
         raise FileExistsError('Study execution already exists')
-    name='horn-resolution-'+sha(out/'protocol.json')[:12]
+    # Claim the output directory atomically before launching anything. Keep the
+    # claim on failure: a failed study is evidence, not a directory to overwrite.
+    token=uuid.uuid4().hex
+    with (out/'execution-claim.json').open('x') as claim:
+        json.dump(dict(invocation=token,protocol_sha256=sha(out/'protocol.json')),claim)
+    name='horn-resolution-'+token
     command=['docker','run','--rm','--name',name,
              '-e','OPENBLAS_NUM_THREADS=1','-e','OMP_NUM_THREADS=1','-e','PYTHONPATH=/usr/local/lib',
              '-e','HORN_STUDY_IMAGE_ID='+image['Id'],
