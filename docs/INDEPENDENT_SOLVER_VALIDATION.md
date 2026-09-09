@@ -12,6 +12,23 @@ The production solver uses prescribed inward velocity. The comparison checks com
 
 Agreement on shared meshes separates implementation errors from discretization differences. It does **not** establish continuum convergence: the polygonal inlet area itself changes with mesh resolution. Nor does ideal zero-rear-load coupling validate the scraped manufacturer's Mms, phase plug or rear enclosure.
 
+## Recorded result
+
+All **6/6 cases, 13 frequencies each**, pass. The largest complex relative discrepancy across all six compared quantities is **8.68e-13**, below the frozen 1e-4 limit; the largest independent residual is **1.74e-14**, below 1e-8. This near-machine-precision agreement is expected when two correct implementations solve the same discrete equations. It is not a physical accuracy estimate.
+
+| Shared mesh case | Maximum complex relative discrepancy |
+| --- | ---: |
+| Tube, 8 mm | 2.57e-13 |
+| Tube, 6 mm | 1.49e-13 |
+| Tube, 4 mm | 3.26e-13 |
+| Cone, 8 mm | 1.95e-13 |
+| Cone, 6 mm | 1.03e-13 |
+| Cone, 4 mm | 8.68e-13 |
+
+The [numeric reference](../data/validation/boundary_lab_reference.json), [complete 2 MB artifact archive](../data/validation/boundary_lab_reference_artifacts.tar.gz) and [identity manifest](../data/validation/boundary_lab_reference_manifest.json) retain original meshes, STEP geometry, both solver outputs, logs, input/source hashes and independent runtime details. The manifest records the exact source commit used for reproduction. Six offline regression tests use the independent complex loads and motor results in ordinary analysis CI.
+
+The earlier Gmsh 2.2 pilot failed the independent reader; a later attempt timed out under shared host load and exposed worker cleanup. Neither counts as a pass. The accepted run starts fresh, uses 4.1 input and the corrected process-group cleanup, and completes every case. Local failed-attempt logs are retained; the checked-in archive contains the accepted complete run.
+
 ## Reproduction
 
 Use a clean pinned Boundary Lab checkout with its Python dependencies and Julia project installed according to that checkout's instructions. The runner verifies the imported module comes from that checkout, checks its revision/cleanliness and runtime versions, and records installed Python packages. Do not reuse a mutable checkout being edited by another task.

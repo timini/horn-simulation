@@ -93,3 +93,14 @@ def test_external_runner_reaps_worker_after_parent_exit_or_timeout(tmp_path, par
                 os.kill(int(pid_file.read_text()),9)
             except ProcessLookupError:
                 pass
+
+
+def test_committed_reference_archive_and_numeric_fixture_have_recorded_identity():
+    import hashlib
+    directory=validation.ROOT/'data/validation'
+    manifest=json.loads((directory/'boundary_lab_reference_manifest.json').read_text())
+    for name,digest in manifest['files'].items():
+        assert hashlib.sha256((directory/name).read_bytes()).hexdigest()==digest
+    result=json.loads((directory/'boundary_lab_reference.json').read_text())
+    assert result['passed'] and len(result['cases'])==6
+    assert all(case['passed'] and case['frequencies']==13 for case in result['cases'])

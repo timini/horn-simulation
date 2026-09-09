@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "reference_kind": "independent_numerical_not_physical",
+  "reproduction_source_commit": "48510419d16b445c0517b7313649c881635f7bdd",
+  "files": {
+    "boundary_lab_reference_artifacts.tar.gz": "c18ce5f8af2acb7c20cc4e6806fb362e7652153bce05cda0d7b05da43e0d3920",
+    "boundary_lab_reference.json": "24adf63a48d88481a9a4885be65370c8b3487577e52783affc778f8e14393ad5"
+  },
+  "failed_attempts": [
+    {
+      "run": "cross-solver-v1",
+      "status": "invalid_mesh_version",
+      "included_as_pass": false
+    },
+    {
+      "run": "cross-solver-v3",
+      "status": "external_case_timeout",
+      "included_as_pass": false,
+      "correction": "Bound surviving process groups; reran all cases in fresh v4 directory"
+    }
+  ]
+}

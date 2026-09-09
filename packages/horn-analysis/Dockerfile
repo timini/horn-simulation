@@ -32,6 +32,7 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 FROM production as test
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 COPY ./scripts/run_pipeline.py /app/scripts/run_pipeline.py
+COPY ./data/validation/boundary_lab_reference.json /app/data/validation/boundary_lab_reference.json
 WORKDIR /app
 ENV PYTHONPATH /app
 
