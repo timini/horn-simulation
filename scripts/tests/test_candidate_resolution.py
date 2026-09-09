@@ -102,6 +102,13 @@ def test_archived_workflow_and_resolution_evidence_have_recorded_identity():
         assert protocol['source_revision']==identity['reproduction_source_commit']
         assert protocol['limits']==v.LIMITS and protocol['cases']==v.CASES
         assert result['protocol_sha256']==evidence['protocol_sha256']==execution['protocol_sha256']==hashlib.sha256(read('protocol.json')).hexdigest()
+        assert result['comparison_grid']=='union_log_frequency' and result['historical_reanalysis']
+        assert result['analysis_revision']==identity['analysis_revision']
+        assert result['previous_comparison_sha256']==hashlib.sha256(read('comparison.json')).hexdigest()
+        import io
+        with tarfile.open(fileobj=io.BytesIO(read('analysis_source.tar.gz'))) as source:
+            for name,digest in result['analysis_source'].items():
+                assert hashlib.sha256(source.extractfile(name).read()).hexdigest()==digest
         assert result['solve_evidence_sha256']==execution['solve_evidence_sha256']==hashlib.sha256(read('solve-evidence.json')).hexdigest()
         assert result['host_execution_sha256']==hashlib.sha256(read('host-execution.json')).hexdigest()
         assert execution['exit_code']==0
@@ -226,6 +233,38 @@ def test_refinement_uses_logarithmic_frequency_interpolation():
     coarse=dict(frequency=np.array([1.,4.]),spl=np.array([0.,2.]),z=np.array([1.+0j,3.+0j]))
     fine=dict(frequency=np.array([1.,2.,4.]),spl=np.array([0.,1.,2.]),z=np.array([1.+0j,2.+0j,3.+0j]))
     assert all(value==pytest.approx(0.) for value in v.curve_change(coarse,fine).values())
+
+
+def test_non_nested_original_grid_peak_survives_in_both_directions():
+    original=dict(frequency=np.array([1.,1.5,3.]),spl=np.array([0.,5.,0.]),z=np.array([1.+0j,4j,1.+0j]))
+    baseline=dict(frequency=np.array([1.,2.,3.]),spl=np.zeros(3),z=np.ones(3,dtype=complex))
+    for a,b in ((original,baseline),(baseline,original)):
+        change=v.curve_change(a,b)
+        assert change['spl_db']==5.
+        assert change['impedance_db']==pytest.approx(20*np.log10(4))
+        assert change['phase_deg']==90.
+
+
+def test_historical_reanalysis_allows_only_a_preserved_comparator_change(tmp_path,monkeypatch):
+    import hashlib,tarfile,io
+    harness='scripts/validate_candidate_resolution.py';package='packages/horn-core/src/example.py'
+    old=b'original comparator';old_digest=hashlib.sha256(old).hexdigest()
+    monkeypatch.setattr(v,'source_identity',lambda:{harness:'new comparator',package:'same model'})
+    protocol=dict(source={harness:old_digest,package:'same model'},cases=v.CASES,limits=v.LIMITS,
+                  inputs={},solver_image_id='image',candidate_index=0,candidate={})
+    (tmp_path/'protocol.json').write_text(json.dumps(protocol))
+    (tmp_path/'origin_manifest').write_text(json.dumps({'containers':{'horn-solver':{'id':'image'}}}))
+    (tmp_path/'ranking.json').write_text('[{}]')
+    with tarfile.open(tmp_path/'study_source.tar.gz','w:gz') as archive:
+        member=tarfile.TarInfo(harness);member.size=len(old);archive.addfile(member,io.BytesIO(old))
+    with pytest.raises(ValueError,match='Source or fixed protocol'):v.verify(tmp_path)
+    assert v.verify(tmp_path,analysis_only=True)==protocol
+    monkeypatch.setattr(v,'source_identity',lambda:{harness:'new comparator',package:'changed model'})
+    with pytest.raises(ValueError,match='new solve is required'):v.verify(tmp_path,analysis_only=True)
+    monkeypatch.setattr(v,'source_identity',lambda:{harness:'new comparator',package:'same model'})
+    protocol['source'][harness]='unpreserved old comparator'
+    (tmp_path/'protocol.json').write_text(json.dumps(protocol))
+    with pytest.raises(ValueError,match='not preserved'):v.verify(tmp_path,analysis_only=True)
 
 
 @pytest.mark.parametrize('image',['horn-solver:latest','--format','sha256:bad'])
