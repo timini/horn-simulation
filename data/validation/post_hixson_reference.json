@@ -1,0 +1,70 @@
+{
+  "scope": "Digitized published complex normalized horn input impedance; no volts-to-SPL validation",
+  "limits": {
+    "measurement_p95_magnitude_db": 2.0,
+    "measurement_p95_phase_deg": 10.0,
+    "measurement_max_complex_normalized": 0.25,
+    "refinement_max_magnitude_db": 0.5,
+    "refinement_max_phase_deg": 5.0
+  },
+  "measurement_comparison_pass": true,
+  "mesh_refinement_pass": true,
+  "comparisons": {
+    "mesh24": {
+      "p95_magnitude_db": 0.8345543673246731,
+      "p95_phase_deg": 2.2707159714765583,
+      "max_magnitude_db": 0.897056968916225,
+      "max_phase_deg": 2.857948055475698,
+      "max_complex_normalized": 0.10867573649536108
+    },
+    "mesh18": {
+      "p95_magnitude_db": 0.5178232586785171,
+      "p95_phase_deg": 1.5494867474680385,
+      "max_magnitude_db": 0.593007821969933,
+      "max_phase_deg": 2.290754916602219,
+      "max_complex_normalized": 0.06481116082221597
+    },
+    "mesh14": {
+      "p95_magnitude_db": 0.41686725748183656,
+      "p95_phase_deg": 1.7947865759019952,
+      "max_magnitude_db": 0.4965891511910938,
+      "max_phase_deg": 1.8734752517162274,
+      "max_complex_normalized": 0.05096602664639156
+    }
+  },
+  "refinements": {
+    "mesh24_mesh18": {
+      "p95_magnitude_db": 0.3792337102377083,
+      "p95_phase_deg": 1.2516568485264892,
+      "max_magnitude_db": 0.39231814083514166,
+      "max_phase_deg": 1.3149741838015072,
+      "max_complex_normalized": 0.05074588411352012
+    },
+    "mesh18_mesh14": {
+      "p95_magnitude_db": 0.2672563307112036,
+      "p95_phase_deg": 0.8969893788741761,
+      "max_magnitude_db": 0.30036352682612993,
+      "max_phase_deg": 0.9294165979435532,
+      "max_complex_normalized": 0.036760610643947714
+    }
+  },
+  "health": {
+    "mesh24": {
+      "relative_residual": 1.5388573261050316e-13,
+      "power_balance_relative_error": 3.91860937675327e-15
+    },
+    "mesh18": {
+      "relative_residual": 4.708829366774543e-13,
+      "power_balance_relative_error": 1.4197602828772026e-14
+    },
+    "mesh14": {
+      "relative_residual": 2.0133875680353864e-12,
+      "power_balance_relative_error": 5.274978777933825e-14
+    }
+  },
+  "frequency_hz": [
+    201.43965121963137,
+    1007.1982560981569
+  ],
+  "physical_assembly_qualified": false
+}

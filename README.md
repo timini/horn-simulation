@@ -11,11 +11,15 @@ An open-source tool for acoustic horn design. Give it a target frequency band an
 
 Built for audio engineers, acousticians, DIY speaker builders, and researchers.
 
+Browse the [ready-to-open design examples](examples/README.md) for a generated report, winning STEP file, response data and commands for your own band.
+
 **Current status: experimental predictions.** The complete automatic workflow runs, including bounded refinement, failure checks and reports. Its driver/interface and listening-distance output models have not passed independent physical validation. Missing driver evidence is reported as `insufficient_evidence`; an unsuccessful search returns no feasible design. Acoustic STEP exports describe an air volume, not fabrication-ready hardware.
 
 The solver container uses the conservative Nehalem OpenBLAS kernel on x86 to keep the pinned numerical environment consistent across host CPUs. This is a workaround under validation for intermittent CI geometry failures, not a confirmed diagnosis of the upstream cause. Independent basis/area checks and a gross mesh-to-CAD area guard catch corrupt geometry before reporting a response. An explicit `OPENBLAS_CORETYPE` override requires validating that alternative backend.
 
 Use `just run-auto --target_f_low 500 --target_f_high 4000` for an isolated run. The launcher writes a manifest, source snapshot and container hashes under a new `results/<run-id>/` directory. Defaults are 2.83 V RMS, 1 m from the mouth, 6 dB maximum band ripple, a uniform baffled-piston observer, ten screened geometries and six additional refinement evaluations. Override these with `--voltage_rms`, `--observation_distance`, `--max_ripple_db`, `--lem_top_n` and `--refinement_budget`. Fix dimensions or set minimum/maximum search bounds when space is limited.
+
+The [measured exponential-horn comparison](docs/POST_HIXSON_VALIDATION.md) passes its fixed input-impedance limits over `1 ≤ ka ≤ 5` (approximately 201–1,007 Hz at the simulated sound speed). This validates a bounded horn-loading comparison; complete driver/assembly qualification remains outstanding.
 
 Optional thermoviscous losses and finite-flange pipe radiation now have independent impedance checks; see [the measured results and remaining failures](docs/LOSS_PHYSICS_VALIDATION.md). Legacy FEM–BEM horn coupling and directivity are disabled pending a correct exterior model.
 

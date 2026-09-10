@@ -1,0 +1,8 @@
+{
+  "reproduction_source_commit": "b8b2b01539e80110713a03d9bf0f297da69ce338",
+  "files": {
+    "post_hixson_artifacts.tar.gz": "21cdf9e6dc6f1a6b407633859242b79ca122853ff691230fc54528ec6f27b205",
+    "post_hixson_reference.json": "e0652aece7e24cedfd767ab5ae98a09a482cc4658e071e1827925ad051de53fa",
+    "post_hixson_comparison.png": "dfefc9088f618c513cab7d05b4334ddde9cd18c4be2c03eb7ed65749021ecd63"
+  }
+}
