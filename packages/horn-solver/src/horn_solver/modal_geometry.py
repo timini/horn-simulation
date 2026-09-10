@@ -3,6 +3,10 @@ import gmsh
 import numpy as np
 
 
+class ModalGeometryError(ValueError):
+    """The CAD volume is not eligible for the axisymmetric aperture model."""
+
+
 def verify_axisymmetric_disk_horn(volumes, inlet, outlet):
     """Reject annular/offset/noncircular ports and non-axisymmetric interiors.
 
@@ -12,14 +16,14 @@ def verify_axisymmetric_disk_horn(volumes, inlet, outlet):
     the overlap tolerance accounts for the corresponding displaced shell.
     """
     if len(volumes)!=1:
-        raise ValueError('Modal aperture requires one connected axisymmetric volume')
+        raise ModalGeometryError('Modal aperture requires one connected axisymmetric volume')
     radii=[]
     for surfaces in (inlet,outlet):
         if len(surfaces)!=1:
-            raise ValueError('Modal aperture requires single circular disk ports')
+            raise ModalGeometryError('Modal aperture requires single circular disk ports')
         curves=gmsh.model.getBoundary([(2,surfaces[0])],oriented=False)
         if len(curves)!=1:
-            raise ValueError('Modal aperture requires circular disk ports without holes')
+            raise ModalGeometryError('Modal aperture requires circular disk ports without holes')
         center=gmsh.model.occ.getCenterOfMass(2,surfaces[0])
         area=gmsh.model.occ.getMass(2,surfaces[0])
         # STEP lofts can encode an exact circle as a rational B-spline.
@@ -28,11 +32,11 @@ def verify_axisymmetric_disk_horn(volumes, inlet, outlet):
         radius=np.sqrt(area/np.pi)
         radii.append(radius)
         if not np.allclose(np.linalg.norm(points[:,:2],axis=1),radius,rtol=1e-6,atol=1e-7):
-            raise ValueError('Modal aperture requires centered circular disk ports')
+            raise ModalGeometryError('Modal aperture requires centered circular disk ports')
         if np.linalg.norm(center[:2])>max(1e-7,radius*1e-6):
-            raise ValueError('Modal aperture ports must be centered on the z axis')
+            raise ModalGeometryError('Modal aperture ports must be centered on the z axis')
     mass=gmsh.model.occ.getMass(*volumes[0])
-    if not np.isfinite(mass) or mass<=0:raise ValueError('Invalid acoustic volume')
+    if not np.isfinite(mass) or mass<=0:raise ModalGeometryError('Invalid acoustic volume')
     for angle in (.713,1.231):
         first=gmsh.model.occ.copy(volumes);second=gmsh.model.occ.copy(volumes)
         gmsh.model.occ.rotate(second,0,0,0,0,0,1,angle)
@@ -40,5 +44,5 @@ def verify_axisymmetric_disk_horn(volumes, inlet, outlet):
         common=sum(gmsh.model.occ.getMass(*entity) for entity in intersection if entity[0]==3)
         gmsh.model.occ.remove(intersection,recursive=True)
         if not np.isfinite(common) or abs(common/mass-1)>max(1e-6,4e-7/min(radii)):
-            raise ValueError('Modal aperture requires a rotationally invariant acoustic volume')
+            raise ModalGeometryError('Modal aperture requires a rotationally invariant acoustic volume')
     gmsh.model.occ.synchronize()

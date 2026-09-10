@@ -38,6 +38,7 @@ def test_modal_pressure_and_velocity_transfers_share_impedance_and_power(tmp_pat
 @pytest.mark.parametrize('shape',['annulus','offset','square','internal_cut'])
 def test_modal_cad_rejects_unsupported_apertures_and_interiors(tmp_path,shape):
     import gmsh
+    from horn_solver.modal_geometry import ModalGeometryError
     gmsh.initialize()
     try:
         if shape=='square':gmsh.model.occ.addBox(-.02,-.02,0,.04,.04,.08)
@@ -51,5 +52,5 @@ def test_modal_cad_rejects_unsupported_apertures_and_interiors(tmp_path,shape):
                 gmsh.model.occ.cut([(3,volume)],[(3,hole)])
         gmsh.model.occ.synchronize();step=tmp_path/f'{shape}.step';gmsh.write(str(step))
     finally:gmsh.finalize()
-    with pytest.raises(ValueError,match='Modal aperture'):
+    with pytest.raises(ModalGeometryError,match='Modal aperture'):
         run_simulation_from_step(str(step),(400.,800.),2,{'length':.08},str(tmp_path/'unused.csv'),800.,mesh_size=.008,radiation_model='modal_baffled')
