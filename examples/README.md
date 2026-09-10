@@ -9,3 +9,7 @@ For the measured exponential reference, see [the Post comparison](../docs/POST_H
 ## 6NMB420, 320–5000 Hz, maximum 300 mm length
 
 [Open the checked design](6nmb420-320-5000/README.md): an experimental OS horn for the 8 Ω 18Sound 6NMB420, with a 76 mm throat and 244.8 mm mouth. Includes physical-scale acoustic STEP, response/impedance data, search provenance and passing mesh/frequency checks. Predicted variation is 4.42 dB at 2.83 V RMS / 1 m. The real adapter and assembly remain unqualified.
+
+## 6NMB420 with a recessed T90A, 7 kHz handover target
+
+[Open the annular-throat study](6nmb420-t90a-annular/README.md): 300 reduced-order comparisons retain a 60 mm-equivalent open throat around a 64 mm centre body (87.7 mm outside), with concept STEP geometry and chamber sensitivity. Predicted variation is 7.18 dB over 320–7000 Hz, missing the 6 dB target. The original-horn comparison shows the reduced-order model is optimistic at 7 kHz; a successful physical crossover is not established. No annular FEM or HF summation is claimed.

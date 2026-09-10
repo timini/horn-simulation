@@ -1,0 +1,281 @@
+{
+  "selected": {
+    "profile": "conical",
+    "equivalent_throat_diameter_m": 0.06,
+    "mouth_diameter_m": 0.18,
+    "length_m": 0.25,
+    "body_diameter_m": 0.064,
+    "body_length_m": 0.1,
+    "outer_throat_diameter_mm": 87.72684879784524,
+    "radial_gap_mm": 11.863424398922614,
+    "throat_area_cm2": 28.274333882308138,
+    "compression_ratio": 4.597809467099199,
+    "ripple_db": 7.181835090266745,
+    "mean_spl_db": 104.56188915569288,
+    "spl_7000_db": 102.67880146743866,
+    "level_7000_relative_mid_db": -2.1194954533562083,
+    "max_excursion_mm": 0.08380436673123653,
+    "max_throat_speed_m_s": 0.6869253521263277,
+    "max_input_power_w": 1.4641293454478876
+  },
+  "unrestricted_reference": {
+    "profile": "exponential",
+    "equivalent_throat_diameter_m": 0.076,
+    "mouth_diameter_m": 0.245,
+    "length_m": 0.25,
+    "body_diameter_m": 0.064,
+    "body_length_m": 0.1,
+    "outer_throat_diameter_mm": 99.35793878699377,
+    "radial_gap_mm": 17.678969393496885,
+    "throat_area_cm2": 45.36459791783661,
+    "compression_ratio": 2.8656707204911904,
+    "ripple_db": 5.263847891242804,
+    "mean_spl_db": 105.65093710499711,
+    "spl_7000_db": 103.62558476757889,
+    "level_7000_relative_mid_db": -2.5665104449712857,
+    "max_excursion_mm": 0.10541844259496579,
+    "max_throat_speed_m_s": 0.44016169066302346,
+    "max_input_power_w": 1.4714668798091994
+  },
+  "best_by_throat": [
+    {
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.042,
+      "mouth_diameter_m": 0.18,
+      "length_m": 0.25,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 76.55063683601855,
+      "radial_gap_mm": 6.275318418009275,
+      "throat_area_cm2": 13.85442360233099,
+      "compression_ratio": 9.383284626733056,
+      "ripple_db": 10.768729786841021,
+      "mean_spl_db": 105.2822384007578,
+      "spl_7000_db": 103.23046013117882,
+      "level_7000_relative_mid_db": -2.2802568332180613,
+      "max_excursion_mm": 0.0820590459835572,
+      "max_throat_speed_m_s": 1.1681705911924394,
+      "max_input_power_w": 1.444215788841605
+    },
+    {
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.047,
+      "mouth_diameter_m": 0.18,
+      "length_m": 0.25,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 79.40403012442127,
+      "radial_gap_mm": 7.7020150622106325,
+      "throat_area_cm2": 17.349445429449634,
+      "compression_ratio": 7.493034894321917,
+      "ripple_db": 9.538967989269068,
+      "mean_spl_db": 105.1483505457935,
+      "spl_7000_db": 103.30676205192675,
+      "level_7000_relative_mid_db": -2.085279255909498,
+      "max_excursion_mm": 0.08332586821922545,
+      "max_throat_speed_m_s": 0.9866974009509979,
+      "max_input_power_w": 1.447967207760139
+    },
+    {
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.052,
+      "mouth_diameter_m": 0.18,
+      "length_m": 0.25,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 82.4621125123532,
+      "radial_gap_mm": 9.231056256176602,
+      "throat_area_cm2": 21.237166338267002,
+      "compression_ratio": 6.121343965072898,
+      "ripple_db": 8.53653442603175,
+      "mean_spl_db": 104.95468849546839,
+      "spl_7000_db": 103.16938305686512,
+      "level_7000_relative_mid_db": -2.0354759067101043,
+      "max_excursion_mm": 0.08397835248253818,
+      "max_throat_speed_m_s": 0.8487914917625079,
+      "max_input_power_w": 1.4550667947036797
+    },
+    {
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.06,
+      "mouth_diameter_m": 0.18,
+      "length_m": 0.25,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 87.72684879784524,
+      "radial_gap_mm": 11.863424398922614,
+      "throat_area_cm2": 28.274333882308138,
+      "compression_ratio": 4.597809467099199,
+      "ripple_db": 7.181835090266745,
+      "mean_spl_db": 104.56188915569288,
+      "spl_7000_db": 102.67880146743866,
+      "level_7000_relative_mid_db": -2.1194954533562083,
+      "max_excursion_mm": 0.08380436673123653,
+      "max_throat_speed_m_s": 0.6869253521263277,
+      "max_input_power_w": 1.4641293454478876
+    },
+    {
+      "profile": "exponential",
+      "equivalent_throat_diameter_m": 0.076,
+      "mouth_diameter_m": 0.245,
+      "length_m": 0.25,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 99.35793878699377,
+      "radial_gap_mm": 17.678969393496885,
+      "throat_area_cm2": 45.36459791783661,
+      "compression_ratio": 2.8656707204911904,
+      "ripple_db": 5.263847891242804,
+      "mean_spl_db": 105.65093710499711,
+      "spl_7000_db": 103.62558476757889,
+      "level_7000_relative_mid_db": -2.5665104449712857,
+      "max_excursion_mm": 0.10541844259496579,
+      "max_throat_speed_m_s": 0.44016169066302346,
+      "max_input_power_w": 1.4714668798091994
+    }
+  ],
+  "front_volume_sensitivity": {
+    "front_0cc": {
+      "ripple_db": 7.392072360490005,
+      "mean_spl_db": 104.43404549532912,
+      "spl_7000_db": 103.2219888257872,
+      "level_7000_relative_mid_db": -1.11260279098299,
+      "max_excursion_mm": 0.08592750286197572,
+      "max_throat_speed_m_s": 0.686040705529572,
+      "max_input_power_w": 1.4676799193415937
+    },
+    "front_5cc": {
+      "ripple_db": 7.318972709144589,
+      "mean_spl_db": 104.55352925125908,
+      "spl_7000_db": 103.50324392861967,
+      "level_7000_relative_mid_db": -0.9566376255263265,
+      "max_excursion_mm": 0.08540344545304866,
+      "max_throat_speed_m_s": 0.6862753316668916,
+      "max_input_power_w": 1.466704366344804
+    },
+    "front_10cc": {
+      "ripple_db": 7.2586148742723395,
+      "mean_spl_db": 104.6112759425344,
+      "spl_7000_db": 103.49730524496127,
+      "level_7000_relative_mid_db": -1.0819794021419682,
+      "max_excursion_mm": 0.08487498745741191,
+      "max_throat_speed_m_s": 0.6865072012360086,
+      "max_input_power_w": 1.4657811461908161
+    },
+    "front_20cc": {
+      "ripple_db": 7.181861005344004,
+      "mean_spl_db": 104.56196960054578,
+      "spl_7000_db": 102.67925595689876,
+      "level_7000_relative_mid_db": -2.1189722051842352,
+      "max_excursion_mm": 0.08380475233406794,
+      "max_throat_speed_m_s": 0.6869229306918302,
+      "max_input_power_w": 1.4641295770245213
+    },
+    "front_40cc": {
+      "ripple_db": 9.470781928992537,
+      "mean_spl_db": 104.07777800622952,
+      "spl_7000_db": 99.6234636973565,
+      "level_7000_relative_mid_db": -5.518590860336559,
+      "max_excursion_mm": 0.08161021465982689,
+      "max_throat_speed_m_s": 0.6875611917097821,
+      "max_input_power_w": 1.4620031939827616
+    },
+    "front_60cc": {
+      "ripple_db": 12.239333773629738,
+      "mean_spl_db": 103.42250393756726,
+      "spl_7000_db": 96.71801021983897,
+      "level_7000_relative_mid_db": -8.61980108230604,
+      "max_excursion_mm": 0.07934217937524154,
+      "max_throat_speed_m_s": 0.6879401417651965,
+      "max_input_power_w": 1.4618920933987956
+    }
+  },
+  "rear_volume_sensitivity": {
+    "0.5": {
+      "ripple_db": 6.3434895970054015,
+      "mean_spl_db": 105.12745531798193,
+      "spl_7000_db": 102.69934308895608,
+      "level_7000_relative_mid_db": -2.5199552726787005,
+      "max_excursion_mm": 0.12294638080529557,
+      "max_throat_speed_m_s": 0.8363279825072931,
+      "max_input_power_w": 1.462301012293459
+    },
+    "2.0": {
+      "ripple_db": 7.181861005344004,
+      "mean_spl_db": 104.56196960054578,
+      "spl_7000_db": 102.67925595689876,
+      "level_7000_relative_mid_db": -2.1189722051842352,
+      "max_excursion_mm": 0.08380475233406794,
+      "max_throat_speed_m_s": 0.6869229306918302,
+      "max_input_power_w": 1.4641295770245213
+    },
+    "4.0": {
+      "ripple_db": 7.3610518982708015,
+      "mean_spl_db": 104.46289851847027,
+      "spl_7000_db": 102.67591258681858,
+      "level_7000_relative_mid_db": -2.052874206202844,
+      "max_excursion_mm": 0.07888054094954862,
+      "max_throat_speed_m_s": 0.6637135550812241,
+      "max_input_power_w": 1.464412594133183
+    }
+  },
+  "numerical_checks": {
+    "existing_tmm_relative_impedance_error": 3.458973877277441e-15,
+    "analytic_tube_relative_error": 3.975300946615131e-10,
+    "segments_300_to_600_max_spl_db": 0.0017715392841068933,
+    "frequency_grid_doubling_max_interpolation_db": 0.020377092093127658,
+    "relative_power_conservation_error": 6.94448164320904e-14,
+    "transfer_determinant_error": 3.6193270602780103e-14,
+    "scope": "Numerical reduced-order checks only; no FEM or physical validation"
+  },
+  "cad": {
+    "units": "mm",
+    "air_volume_litres": 3.336085560124051,
+    "bbox_mm": [
+      -90.0000001,
+      -100.8290764535,
+      -1e-07,
+      90.000000100002,
+      100.82907645354999,
+      250.00000010021
+    ],
+    "sampled_surface_max_radius_mm": 90.00000002539733,
+    "single_connected_air_volume": true,
+    "reimport_volume_relative_error": 8.304468224196171e-14,
+    "note": "Concept packaging only. HF aperture treated as rigid in mid model. No cone adapter or support structure."
+  },
+  "baseline_same_front_and_rear": {
+    "ripple_db": 4.164854003869436,
+    "mean_spl_db": 106.17595552143912,
+    "spl_7000_db": 103.72905047909697,
+    "level_7000_relative_mid_db": -3.1267733070156396,
+    "max_excursion_mm": 0.0756328405346201,
+    "max_throat_speed_m_s": 0.40192855682014655,
+    "max_input_power_w": 1.462567861518195
+  },
+  "original_geometry_tmm_minus_preserved_modal_fem_at_7000_db": 5.896655510506022,
+  "search": {
+    "count": 300,
+    "front_volume_cc": 20,
+    "rear_volume_litres": 2,
+    "target_hz": [
+      320,
+      7000
+    ],
+    "crossover_target_hz": 7000,
+    "selection": "Among equivalent throats <=60 mm, minimum unfiltered 320\u20137000 Hz peak-to-peak ripple with mean SPL >=100 dB; otherwise minimum ripple. 76 mm cases retained as references.",
+    "body_diameter_mm": 64,
+    "body_length_mm": 100
+  },
+  "status": "reduced_order_concept_only",
+  "meets_6db_unfiltered_ripple_target": false,
+  "unresolved": [
+    "Actual cone/dustcap profile and phase-equalising passages",
+    "T90A response and phase when recessed inside this horn",
+    "Non-plane modes and scattering at centre-body termination",
+    "Cone breakup, distortion and thermal limits",
+    "Buildable chamber volume and excursion clearance",
+    "Separate diaphragm and rear acoustic mass; published Mms retained",
+    "Finite baffle and off-axis summation; no finished crossover"
+  ]
+}
