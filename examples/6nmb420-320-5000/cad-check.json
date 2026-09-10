@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "import_unit": "mm",
+  "ports": {
+    "throat": {
+      "z_mm": 0.0,
+      "diameter_mm": 76.0000089888136
+    },
+    "mouth": {
+      "z_mm": 300.0,
+      "diameter_mm": 244.80267937638334
+    }
+  },
+  "acoustic_volume_litres": 5.61405554767258,
+  "scope": "Physical STEP scale and circular port dimensions; not manufacturing qualification"
+}

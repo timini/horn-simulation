@@ -1,0 +1,23 @@
+{
+  "mesh": {
+    "maximum_spl_change_db": 0.2440305385044894,
+    "maximum_impedance_magnitude_change_db": 0.39654866085459584,
+    "maximum_impedance_phase_change_deg": 1.609008944695753
+  },
+  "limits": {
+    "maximum_spl_change_db": 0.5,
+    "maximum_impedance_magnitude_change_db": 0.5,
+    "maximum_impedance_phase_change_deg": 5
+  },
+  "mesh_passed": true,
+  "fine_points": 321,
+  "coarse_points": 161,
+  "fine_mesh_m": 0.006,
+  "coarse_mesh_m": 0.008,
+  "sections": 40,
+  "same_step_sha256": "aff188a0c7cca75a460ad484ec818126531fa476ba583fa9180e288bedb26e8c",
+  "scope": "Numerical sensitivity of this fixed candidate; not physical validation",
+  "frequency_maximum_spl_interpolation_error_db": 0.08806414203093027,
+  "frequency_passed": true,
+  "passed": true
+}

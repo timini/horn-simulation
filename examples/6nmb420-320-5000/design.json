@@ -1,0 +1,96 @@
+{
+  "geometry": {
+    "max_displacement_peak_m": 7.00211176242811e-05,
+    "max_input_power_w": 1.464772268108534,
+    "operating_limit_scope": "Linear model at requested voltage; not a validated maximum-output or thermal prediction",
+    "bandwidth_coverage": 1.0,
+    "passband_ripple_db": 4.288535537535367,
+    "avg_sensitivity_db": 105.53709868583765,
+    "composite_score": 0.7610489304603498,
+    "model_feasible": true,
+    "eligibility_status": "insufficient_evidence",
+    "rejection_reasons": [],
+    "evidence_gaps": [
+      "driver_interface_unverified",
+      "moving_mass_and_rear_load_not_separated"
+    ],
+    "validation_status": "experimental_prediction",
+    "target_min_level_db": 103.13040862644407,
+    "target_max_level_db": 107.41894416397943,
+    "driver_id": "18sound-6nmb420",
+    "horn_label": "refine_os_0004",
+    "kpi": {
+      "peak_spl_db": 107.41894416397943,
+      "peak_frequency_hz": 790.6965720412396,
+      "f3_low_hz": 660.0201085769781,
+      "f3_high_hz": 4047.154062881336,
+      "bandwidth_hz": 3387.1339543043578,
+      "bandwidth_octaves": 2.616325884793331,
+      "passband_ripple_db": 3.0,
+      "average_sensitivity_db": 105.99383912212775,
+      "f3_low_is_bound": false,
+      "f3_high_is_bound": false,
+      "bandwidth_is_lower_bound": false
+    },
+    "manufacturer": "18Sound",
+    "model_name": "6NMB420",
+    "output_metric": "modal_baffled_on_axis",
+    "observation_distance_m": 1.0,
+    "drive_voltage_rms": 2.83,
+    "inlet_area_m2": 0.0045364608648729,
+    "loss_model": "lossless",
+    "radiation_model": "modal_baffled",
+    "element_degree": 1,
+    "profile": "os",
+    "throat_radius": 0.038,
+    "mouth_radius": 0.12240134,
+    "length": 0.3,
+    "score_gap_from_best": 0.0,
+    "comparison_status": "near_tie",
+    "comparison_scope": "0.02 score comparison margin; physical uncertainty unquantified"
+  },
+  "assessment_at_6mm": {
+    "max_displacement_peak_m": 7.010839476453043e-05,
+    "max_input_power_w": 1.4650876180308154,
+    "operating_limit_scope": "Linear model at requested voltage; not a validated maximum-output or thermal prediction",
+    "bandwidth_coverage": 1.0,
+    "passband_ripple_db": 4.4167728664037895,
+    "avg_sensitivity_db": 105.52068359371113,
+    "composite_score": 0.7556373122069718,
+    "model_feasible": true,
+    "eligibility_status": "insufficient_evidence",
+    "rejection_reasons": [],
+    "evidence_gaps": [
+      "driver_interface_unverified",
+      "moving_mass_and_rear_load_not_separated"
+    ],
+    "validation_status": "experimental_prediction",
+    "target_min_level_db": 103.02407531335825,
+    "target_max_level_db": 107.44084817976204
+  },
+  "numerical_resolution": {
+    "mesh": {
+      "maximum_spl_change_db": 0.2440305385044894,
+      "maximum_impedance_magnitude_change_db": 0.39654866085459584,
+      "maximum_impedance_phase_change_deg": 1.609008944695753
+    },
+    "limits": {
+      "maximum_spl_change_db": 0.5,
+      "maximum_impedance_magnitude_change_db": 0.5,
+      "maximum_impedance_phase_change_deg": 5
+    },
+    "mesh_passed": true,
+    "fine_points": 321,
+    "coarse_points": 161,
+    "fine_mesh_m": 0.006,
+    "coarse_mesh_m": 0.008,
+    "sections": 40,
+    "same_step_sha256": "aff188a0c7cca75a460ad484ec818126531fa476ba583fa9180e288bedb26e8c",
+    "scope": "Numerical sensitivity of this fixed candidate; not physical validation",
+    "frequency_maximum_spl_interpolation_error_db": 0.08806414203093027,
+    "frequency_passed": true,
+    "passed": true
+  },
+  "physical_assembly_qualified": false,
+  "selection_scope": "Best coarse-search score among tested candidates; the 239 mm mouth variant is effectively tied. No global optimum claim."
+}

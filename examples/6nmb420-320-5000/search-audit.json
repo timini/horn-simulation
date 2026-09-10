@@ -1,0 +1,78 @@
+{
+  "best_score": 0.7610384985676284,
+  "new_evaluations": 6,
+  "budget": 6,
+  "budget_exhausted": true,
+  "at_bounds": [
+    "mouth_radius",
+    "length",
+    "throat_radius"
+  ],
+  "history": [
+    {
+      "candidate_id": "refine_os_0000",
+      "score": 0.0,
+      "geometry": [
+        "os",
+        0.038,
+        0.13135754,
+        0.3
+      ]
+    },
+    {
+      "candidate_id": "refine_os_0001",
+      "score": 0.6912537304960626,
+      "geometry": [
+        "os",
+        0.038,
+        0.11941594,
+        0.27
+      ]
+    },
+    {
+      "candidate_id": "refine_os_0002",
+      "score": 0.7433038580294273,
+      "geometry": [
+        "os",
+        0.038,
+        0.12538674,
+        0.3
+      ]
+    },
+    {
+      "candidate_id": "refine_os_0003",
+      "score": 0.7252877100581805,
+      "geometry": [
+        "os",
+        0.038,
+        0.11941594,
+        0.285
+      ]
+    },
+    {
+      "candidate_id": "refine_os_0004",
+      "score": 0.7610489304603498,
+      "geometry": [
+        "os",
+        0.038,
+        0.12240134,
+        0.3
+      ]
+    },
+    {
+      "candidate_id": "refine_os_0005",
+      "score": 0.7417048913782007,
+      "geometry": [
+        "os",
+        0.038,
+        0.11941594,
+        0.2925
+      ]
+    }
+  ],
+  "domain_rejected_candidates": [],
+  "geometry_rejected_candidates": [
+    "refine_os_0000"
+  ],
+  "fem_evaluations": 5
+}
