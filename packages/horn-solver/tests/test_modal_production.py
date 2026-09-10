@@ -6,7 +6,18 @@ from horn_geometry.generator import create_horn
 from horn_solver.solver import run_simulation_from_step
 
 
-def test_modal_pressure_and_velocity_transfers_share_impedance_and_power(tmp_path):
+def test_modal_pressure_and_velocity_transfers_share_impedance_and_power(tmp_path, monkeypatch):
+    from scipy.sparse.linalg import splu
+    import horn_solver.modal_boundary as boundary
+    solve = boundary.solve_sparse_system
+
+    def compare_backends(system, forcing):
+        result = solve(system, forcing)
+        reference = splu(system).solve(forcing)
+        np.testing.assert_allclose(result, reference, rtol=1e-9, atol=1e-10)
+        return result
+
+    monkeypatch.setattr(boundary, 'solve_sparse_system', compare_backends)
     step=tmp_path/'tube.step'
     create_horn('conical',.02,.02,.08,step,num_sections=4)
     frames={}

@@ -5,13 +5,36 @@ qualification path, not an unvalidated replacement for the production default.
 """
 import numpy as np
 from scipy.sparse import bmat, csr_matrix
-from scipy.sparse.linalg import splu
 from scipy.special import j0
 from dolfinx import fem
 from dolfinx.fem import petsc as fem_petsc
 from petsc4py import PETSc
 import ufl
 from horn_core.modal_radiation import modal_radiation_impedance, radial_roots
+
+
+def solve_sparse_system(system, forcing):
+    """Use the solver image's MUMPS backend for the coupled sparse system."""
+    csr = system.tocsr()
+    matrix = PETSc.Mat().createAIJ(size=csr.shape, csr=(
+        csr.indptr.astype(PETSc.IntType), csr.indices.astype(PETSc.IntType), csr.data))
+    rhs = solution = solver = None
+    try:
+        matrix.assemble()
+        rhs = PETSc.Vec().createWithArray(np.asarray(forcing, dtype=PETSc.ScalarType))
+        solution = rhs.duplicate()
+        solver = PETSc.KSP().create()
+        solver.setOperators(matrix)
+        solver.setType('preonly')
+        solver.getPC().setType('lu')
+        solver.getPC().setFactorSolverType('mumps')
+        solver.setErrorIfNotConverged(True)
+        solver.solve(rhs, solution)
+        return solution.array.copy()
+    finally:
+        for resource in (solver, solution, rhs, matrix):
+            if resource is not None:
+                resource.destroy()
 
 
 def aperture_projection(V, ds, outlet_tag, radius, modes):
@@ -52,7 +75,7 @@ def solve_modal_aperture(V, a, L, bcs, projection, radius, k, *, rho=1.225,c=343
     system=bmat([[bulk,1j*k*projection],
                  [1j*k*projection.T,csr_matrix(-1j*k*weak_impedance)]],format='csc')
     forcing=np.r_[rhs,np.zeros(projection.shape[1],dtype=complex)]
-    result=splu(system).solve(forcing)
+    result=solve_sparse_system(system,forcing)
     residual=system@result-forcing
     relative=float(np.linalg.norm(residual)/max(np.linalg.norm(forcing),1e-30))
     n=V.dofmap.index_map.size_local*V.dofmap.index_map_bs
