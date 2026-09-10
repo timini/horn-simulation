@@ -1,0 +1,36 @@
+{
+  "source_revision": "77d915b15c82d982e605d4b46bbac861db39d164",
+  "archive": "../../data/validation/worked_example_modal_800_1600.tar.gz",
+  "archive_sha256": "0333a1e0173d79282461f0a6b5db3a04ccdb082bbd1c148272f379741692f0dd",
+  "status": "experimental_prediction",
+  "files": {
+    "report.html": {
+      "archive_member": "worked-example-modal/outputs/auto/report/auto_report.html",
+      "sha256": "a9cdf82a30df2954bd0602e531ce5505cb98308f1b5743c81337ad4a4e568fd8"
+    },
+    "horn.step": {
+      "archive_member": "worked-example-modal/outputs/auto/refinement/refine_hyperbolic_0001.step",
+      "sha256": "e1e135ec3fe3b7d3a3f9c29ea6ee1b5571d850c5e38eb4222adb2348f574e461"
+    },
+    "response.csv": {
+      "archive_member": "worked-example-modal/outputs/auto/report/coupled_01_18sound-6nmb420_refine_hyperbolic_0001.csv",
+      "sha256": "5900819e28bcdaf833eeac18918524460cab11cc97ac32ac4dba7b2fc6e79baf"
+    },
+    "horn-impedance.csv": {
+      "archive_member": "worked-example-modal/outputs/auto/refinement/refine_hyperbolic_0001_results.csv",
+      "sha256": "57f47c193c3d8f6373db3379ac9c3679694d78fdeb79fb72de193cc6e408cae3"
+    },
+    "ranking.json": {
+      "archive_member": "worked-example-modal/outputs/auto/report/auto_ranking.json",
+      "sha256": "bb809254258011aa401737f2dc2d1be1c851db543eea6369f04272ad36416bbd"
+    },
+    "resolved-specification.json": {
+      "archive_member": "worked-example-modal/outputs/resolved_specification.json",
+      "sha256": "b5dfa5b5d443d3539cbc8980d52760109dbe0ba0cdf0f78745316551f2f1c159"
+    },
+    "original-run-manifest.json": {
+      "archive_member": "worked-example-modal/manifest.json",
+      "sha256": "79e772ccbbb9da620ab222926524231237b2eda0dd4dcabaeb8083308f103893"
+    }
+  }
+}

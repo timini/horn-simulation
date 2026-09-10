@@ -11,6 +11,8 @@ An open-source tool for acoustic horn design. Give it a target frequency band an
 
 Built for audio engineers, acousticians, DIY speaker builders, and researchers.
 
+Browse the [ready-to-open design examples](examples/README.md) for a generated report, winning STEP file, response data and commands for your own band.
+
 **Current status: experimental predictions.** The complete automatic workflow runs, including bounded refinement, failure checks and reports. Its driver/interface and listening-distance output models have not passed independent physical validation. Missing driver evidence is reported as `insufficient_evidence`; an unsuccessful search returns no feasible design. Acoustic STEP exports describe an air volume, not fabrication-ready hardware.
 
 The solver container uses the conservative Nehalem OpenBLAS kernel on x86 to keep the pinned numerical environment consistent across host CPUs. This is a workaround under validation for intermittent CI geometry failures, not a confirmed diagnosis of the upstream cause. Independent basis/area checks and a gross mesh-to-CAD area guard catch corrupt geometry before reporting a response. An explicit `OPENBLAS_CORETYPE` override requires validating that alternative backend.
