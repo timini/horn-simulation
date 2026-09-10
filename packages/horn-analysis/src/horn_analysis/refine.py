@@ -38,6 +38,7 @@ def main():
         from horn_geometry.generator import create_horn
         from horn_core.parameters import HornParameters, FlareProfile
         from horn_solver.solver import run_simulation_from_step
+        from horn_solver.modal_geometry import ModalGeometryError
         screen=json.loads(Path(a.prescreen_json).read_text())
         drivers=[d for d in load_drivers(a.drivers_db) if d.driver_id in screen['drivers']]
         target=TargetSpec(design['target_f_low'],design['target_f_high'],voltage_rms=a.voltage,observation_distance_m=a.distance,max_ripple_db=a.max_ripple,max_compression_ratio=a.max_compression)
@@ -50,6 +51,7 @@ def main():
         points = max(2, int(np.ceil(a.num_frequencies/a.num_bands)))
         simulation_frequencies = np.concatenate([np.geomspace(low+i*width, low+(i+1)*width, points) for i in range(a.num_bands)])
         domain_rejected = []
+        geometry_rejected = []
         def evaluate(c):
             key=geometry_key(c)
             if key in cache:return cache[key]
@@ -68,11 +70,24 @@ def main():
             from horn_analysis.merge import merge_bands
             band_dir=out/f'{c.candidate_id}_bands';band_dir.mkdir()
             paths=[]
-            for index in range(a.num_bands):
-                band_low,band_high=low+index*width,low+(index+1)*width
-                path=band_dir/f'results_{index}.csv'
-                run_simulation_from_step(str(step),(band_low,band_high),points,{'length':c.length},str(path),band_high,mesh_size=a.mesh_size,radiation_model=a.radiation_model,loss_model=a.loss_model,flange_width=a.flange_width,minimum_wall_scale=a.minimum_wall_scale,element_degree=a.element_degree)
-                paths.append(path)
+            try:
+                for index in range(a.num_bands):
+                    band_low,band_high=low+index*width,low+(index+1)*width
+                    path=band_dir/f'results_{index}.csv'
+                    run_simulation_from_step(str(step),(band_low,band_high),points,{'length':c.length},str(path),band_high,mesh_size=a.mesh_size,radiation_model=a.radiation_model,loss_model=a.loss_model,flange_width=a.flange_width,minimum_wall_scale=a.minimum_wall_scale,element_degree=a.element_degree)
+                    paths.append(path)
+            except ModalGeometryError as error:
+                geometry_rejected.append(c.candidate_id)
+                rejected.extend({"horn_label": c.candidate_id, "driver_id": drv.driver_id,
+                    "profile": c.profile, "throat_radius": c.throat_radius,
+                    "mouth_radius": c.mouth_radius, "length": c.length,
+                    "model_feasible": False, "simulation_eligible": False,
+                    "composite_score": 0., "bandwidth_coverage": 0.,
+                    "passband_ripple_db": None, "avg_sensitivity_db": None,
+                    "rejection_reasons": ["cad_geometry_rejected"],
+                    "rejection_detail": str(error), "evidence_gaps": []} for drv in drivers)
+                cache[key] = 0.
+                return 0.
             merge_bands(paths,num_bands=a.num_bands,min_freq=low,max_freq=high,points_per_band=points,output=csv)
             rows=rank_horn_drivers(str(csv),c.candidate_id,c.throat_radius,drivers,target,top_n=max(1,len(drivers)))
             for row in rows:
@@ -84,7 +99,8 @@ def main():
         bounds={'mouth_radius':tuple(design['mouth_radius_range']),'length':tuple(design['length_range']),
                 'throat_radius':tuple(design.get('throat_radius_range', (min(screen['throat_radii_m']),max(screen['throat_radii_m']))))}
         best,audit=refine(seed,evaluate,bounds,budget=a.budget)
-        audit.update(domain_rejected_candidates=domain_rejected, fem_evaluations=audit['new_evaluations']-len(domain_rejected))
+        audit.update(domain_rejected_candidates=domain_rejected, geometry_rejected_candidates=geometry_rejected,
+                     fem_evaluations=audit['new_evaluations']-len(domain_rejected)-len(geometry_rejected))
         data.update(results=sorted(all_rows,key=lambda r:r['composite_score'],reverse=True),rejected=rejected,refinement=audit)
         data['total_scored']+=audit['fem_evaluations']*len(drivers)
         data['total_candidates']+=audit['fem_evaluations']

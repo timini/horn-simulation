@@ -1,0 +1,47 @@
+{
+  "raw_origin_mappings": [
+    {
+      "file": "solver-input.step",
+      "manifest": "search-manifest.json",
+      "original_output": "outputs/auto/refinement/refine_os_0004.step"
+    },
+    {
+      "file": "horn-impedance-8mm.csv",
+      "manifest": "search-manifest.json",
+      "original_output": "outputs/auto/refinement/refine_os_0004_results.csv"
+    },
+    {
+      "file": "horn-impedance-6mm.csv",
+      "manifest": "fine-manifest.json",
+      "original_output": "outputs/final_results.csv"
+    }
+  ],
+  "physical_cad_transform": "Replace legacy millimetre declarations with metre declarations; preserve numeric SI coordinates. See cad-check.json.",
+  "files": {
+    "README.md": "56e6a0cd11ef515ef6e627f1ef79d8f66a5a3d74ed1a2b293243d547977d26db",
+    "cad-check.json": "cac743643a061e47e80fa6dba7b8adc8023ba04600b95aff3ec4b3853ba7ddf8",
+    "design-overview.png": "4da9afacf2dd3e7dfdd3d754522023babec339d92118d05587aca048f185beac",
+    "design.json": "cc3ef82180bafc750df60e206f032b993d4efe1ee4527a5caa58ecd4cf2c8860",
+    "driver-database.json": "236ce9ed81fa75dbe326bc1655fe537a9e4cc1c4e4cc4d99e68fdbaf8be403da",
+    "driver.json": "c84ecb1d1a45de67a4d2b8f195cbe8b472022271a7bfd1daf25fcefb3715658a",
+    "fine-manifest.json": "56beabc45219153d4a03a1587a18b072cbd7e182027d55f37eae28817e9ae47d",
+    "fine-specification.json": "6ddb444dd973605db9273116ba001f89f3e6677a83bd05d0d80c2a8e4531990e",
+    "geometry.json": "862e5ee04a4c079ab25fed455b8c757a22978223c6c1de30af2d45d8f5d8ab95",
+    "horn-impedance-6mm.csv": "0c50d46e25b6cd2414b38fd9245a48922e9ec9d6baec9df138de3bde7131312b",
+    "horn-impedance-8mm.csv": "feffcea2c56611c158c2f8fc9d92724ae4c1c656a112a6a9064d809f3960e825",
+    "horn.step": "0a28a9192aa04f638cea9fc5a872a47fda104bd0e9c2b8e72d17f16068478d0c",
+    "profile.csv": "9740039b8224b6718374362f5ccfe4b99b927f2f244684f3054db713f249e703",
+    "report.html": "715d7b70fdaa8d1ecbd7213046009e68c5e529b7b61d5f11749a2590592ca568",
+    "resolution.json": "4f2795b4505d9058c1d9c462d402d6fe90083a3c7c7f4b7fef22885219077283",
+    "response.csv": "6822b03d363acdb81cd4805675d90563a01e91086a63708a1115374a8bdc117b",
+    "search-audit.json": "c50b22fd20d702925772f9b4c23359bdb213b8632442a6208880dc949903d11d",
+    "search-manifest.json": "799498819af4116a262ca2ae5dd43912dacfd95dc4cfbcda3a3d7a57745e20bf",
+    "search-ranking.json": "6c41c484ebcbf591ffc6bc8fbfa9c511dbc11874475037cb3643b1dded453bb7",
+    "search-specification.json": "e546f43ff9fce5a79e70e3a103e2eeb1cfd9a993f98eefb31d49bba5feb3db5e",
+    "solver-input.step": "aff188a0c7cca75a460ad484ec818126531fa476ba583fa9180e288bedb26e8c",
+    "verify_cad.py": "1859f07f87600d28a42508f733655739e7d527c1e9430efced4bdf9261e70977",
+    "wide-search-manifest.json": "d83a85ebf5ec173d06ef50ed5f2400f0127f20e1b60531e959d86cf7cf65c26e",
+    "wide-search-ranking.json": "ca381f4cb9b1ab7ca5590554393a21ffc2619153efd69ae3a1b4cb91378949c2",
+    "wide-search-specification.json": "5afe39062c0f78c0bbd3405e2b0be18e6cedbe525ec9dec507ec831b96e2486a"
+  }
+}
