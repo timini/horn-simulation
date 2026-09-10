@@ -1,22 +1,30 @@
 {
+  "source_git_head": "90cac01efa993fe340383442b730110f541c91dd",
+  "source_identity_note": "Source file hashes identify the executed files, including any changes since source_git_head.",
   "source_sha256": {
-    "scripts/study_t90a_annular.py": "e8c4d25cf5806cfd5d85b3e048b990f010349891260bc7f6f3bcb8bfb3318e8a",
     "examples/6nmb420-320-5000/driver.json": "c84ecb1d1a45de67a4d2b8f195cbe8b472022271a7bfd1daf25fcefb3715658a",
-    "packages/horn-core/src/horn_core/webster.py": "ba6b85ba538431ecbe95ca4d0a0e5e5ab1c07ce0c0f8817e38bc3bd03c992f40",
     "packages/horn-analysis/src/horn_analysis/transfer_function.py": "b310f0dac060ec5fd41a40026eac9b1e822d46e0ea0260be491b9400f909c769",
+    "packages/horn-core/src/horn_core/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "packages/horn-core/src/horn_core/acoustics.py": "1de5378973e8e30ba1d9776f18460fe99b5a93a5c57c71f67c1e9b53108cc48b",
+    "packages/horn-core/src/horn_core/duct.py": "acef8a720d9bd66f998c0b54aef8ca5dfb3cdf7fce4231205f8c2787dcd3a943",
+    "packages/horn-core/src/horn_core/parameters.py": "e372008dbdf0d13f8f6c95303183b513351eb47046fc0ae70a5ad0d207202e9e",
+    "packages/horn-core/src/horn_core/profiles.py": "6f1b67ab9f22c5a5ed61d43794ac00a124b4ff70211211bcf552c3ad0dbfe906",
+    "packages/horn-core/src/horn_core/webster.py": "ba6b85ba538431ecbe95ca4d0a0e5e5ab1c07ce0c0f8817e38bc3bd03c992f40",
+    "packages/horn-drivers/src/horn_drivers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "packages/horn-drivers/src/horn_drivers/loader.py": "7b4f6554e327c27a797fc95d42f71275fdecb3d63af3ee09528adc891a374c90",
+    "scripts/study_t90a_annular.py": "4cc78ec918aee729b71e130aaa3e4693c00d178d25422ba06fc72176e3994bbe",
     "scripts/tests/test_t90a_annular.py": "6843f52cd53f82b2541f596de9405b2953638d29c5fdaad606c2701d1ee8d979"
   },
   "output_sha256": {
     "study.json": "5b1e7dcbbcf19794df881ffe07559c5ddc4327e2ef07ad59e72f93a532281389",
-    "acoustic-air-mm.step": "cbeec3f21cef10e478af7079f8e8af7f7c73ab9a7b53ae3daed00f5789c0d3fb",
+    "acoustic-air-mm.step": "b518674c6850fc48fe858dcb649e449d76e3f005794af1758ff95a8a0f08839e",
     "requirements.txt": "a8d1d7ef2482d7909198bff79e1fe86073cfb7f601aceabc1e9db282c6f9d07d",
-    "housing-concept-mm.step": "6bc6f480748e218c6412afec18cc42e841c96db2a4b09bb9dffbc5cbd107c89c",
+    "housing-concept-mm.step": "58d6260c6b4607ee67cd193dafb6d9dc4d076e55663dd93b277387c019292edb",
     "response-comparison.png": "21555ce0062ac5ffe7a1b9c5227069488aeaf22b270c3c335691c2f1d64ce80f",
     "section.png": "3397c0db9bec76f6dfebf41f33341b923c784a6d849771a5d19423e17fce606e",
     "README.md": "98405cb30b1758f94d606a20ba9d96e6d7eed508b56472023cf89953760d3666",
     "response.csv": "9342fb19a9216d25f5114e3cb1bf5b0edcc69b14c27f35f2dde1ad4608250d25",
     "search.csv": "803bc0504ae78075c56601febea7a6e93486e9dd36bc2c543c50cd2960098ea3",
     "profile-mm.csv": "d37da51d798dcc188c8cab9f2102631ce80f1d9a431c9781e21951a2dee37686"
-  },
-  "source_commit_before_study": "6938490"
+  }
 }

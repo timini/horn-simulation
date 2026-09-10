@@ -13,6 +13,7 @@ from functools import lru_cache
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -308,9 +309,20 @@ def run(out):
               inner_radius_mm=g.body_diameter_m*500 if z<g.body_length_m else 0)
               for z in np.unique(np.r_[np.linspace(0,g.length_m,301),g.body_length_m-1e-9,g.body_length_m])])
     plots(g,f,cases,baseline,matched_baseline,out)
-    source_paths=[Path(__file__),DRIVER_PATH,ROOT/'packages/horn-core/src/horn_core/webster.py',
-                  ROOT/'packages/horn-analysis/src/horn_analysis/transfer_function.py']
-    manifest=dict(source_sha256={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in source_paths},
+    # Capture the imported repository dependency closure, including profiles,
+    # acoustic observation, driver loading, parameters and duct properties.
+    # Third-party dependency versions are frozen separately in requirements.
+    source_paths={Path(__file__).resolve(),DRIVER_PATH,ROOT/'scripts/tests/test_t90a_annular.py'}
+    for module in tuple(sys.modules.values()):
+        filename=getattr(module,'__file__',None)
+        if filename:
+            path=Path(filename).resolve()
+            if path.is_relative_to(ROOT/'packages') and path.is_file():
+                source_paths.add(path)
+    git_head=subprocess.run(['git','rev-parse','HEAD'],cwd=ROOT,capture_output=True,text=True)
+    manifest=dict(source_git_head=git_head.stdout.strip() if git_head.returncode==0 else None,
+                  source_identity_note='Source file hashes identify the executed files, including any changes since source_git_head.',
+                  source_sha256={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(source_paths)},
                   output_sha256={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in out.iterdir() if p.is_file() and p.name!='manifest.json'})
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print(json.dumps(summary,indent=2),flush=True)
