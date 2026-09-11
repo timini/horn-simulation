@@ -73,7 +73,7 @@ def test_origin_probe_accepts_normal_missing_route(clock):
 
 
 RAW = {"fs":100, "re":5, "bl":8, "sd":100, "mmd":10, "pmax":200}
-PARAMS = {"fs_hz":100., "re_ohm":5., "bl_tm":8., "sd_m2":.01, "mms_kg":.012, "mmd_kg":.01}
+PARAMS = {"fs_hz":100., "re_ohm":5., "bl_tm":8., "sd_m2":.01, "mms_kg":.012, "mmd_kg":.01, "le_h":.0003}
 ENTRY = {"manufacturer":"Test", "name":"Model", "url":s.BASE_URL+'/Test/Model'}
 
 
@@ -309,3 +309,19 @@ def test_secondary_refresh_cannot_overwrite_verified_manufacturer(monkeypatch,tm
     s._save_driver(tmp_path,original)
     assert s.scrape_all(db_dir=tmp_path,manufacturer_filter=['Test'],refresh=True)==0
     assert json.loads((tmp_path/'Test/test-model.json').read_text())==original
+
+
+def test_refresh_missing_inductance_cannot_complete(monkeypatch,tmp_path):
+    batch(monkeypatch)
+    incomplete={k:v for k,v in PARAMS.items() if k!='le_h'}
+    monkeypatch.setattr(s,'scrape_driver_page',lambda *a,**kw:incomplete)
+    with pytest.raises(s.ScrapeError,match='failed'):
+        s.scrape_all(db_dir=tmp_path,manufacturer_filter=['Test'])
+    assert not (tmp_path/'Test/test-model.json').exists()
+
+
+def test_zero_inductance_can_complete_and_resume(monkeypatch,tmp_path):
+    batch(monkeypatch)
+    monkeypatch.setattr(s,'scrape_driver_page',lambda *a,**kw:{**PARAMS,'le_h':0})
+    assert s.scrape_all(db_dir=tmp_path,manufacturer_filter=['Test'])==1
+    assert s._driver_is_current(tmp_path,'Test','test-model')

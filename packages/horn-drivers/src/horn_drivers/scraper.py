@@ -72,7 +72,7 @@ DIAMETER_TABLE: List[Tuple[str, float]] = [
 ]
 
 # Essential parameters — drivers missing any of these are skipped.
-ESSENTIAL_PARAMS = ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg")
+ESSENTIAL_PARAMS = ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg", "le_h")
 SCRAPER_SCHEMA_VERSION = 4  # source isolation, verified nominal size, stale-value removal
 
 
@@ -600,7 +600,7 @@ def _driver_is_current(
         params = record.get("parameters", {})
         return all(isinstance(params.get(field), (int, float))
                    and not isinstance(params[field], bool)
-                   and math.isfinite(params[field]) and params[field] > 0
+                   and math.isfinite(params[field]) and (params[field] >= 0 if field == "le_h" else params[field] > 0)
                    for field in set(ESSENTIAL_PARAMS) | set(required_fields))
     except (json.JSONDecodeError, OSError, AttributeError, TypeError):
         return False
@@ -767,7 +767,8 @@ def scrape_all(
 
             # Check essential params
             missing = [p for p in ESSENTIAL_PARAMS if not isinstance(params.get(p), (int, float))
-                       or isinstance(params[p], bool) or not math.isfinite(params[p]) or params[p] <= 0]
+                       or isinstance(params[p], bool) or not math.isfinite(params[p])
+                       or (params[p] < 0 if p == "le_h" else params[p] <= 0)]
             if missing:
                 print(f" -> SKIP (missing or invalid {', '.join(missing)})")
                 mfr_failed += 1
