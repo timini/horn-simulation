@@ -3,18 +3,36 @@
     "manufacturer": "LaVoce",
     "model_name": "MAF061.50",
     "driver_type": "cone",
+    "nominal_diameter": "6.5in",
+    "nominal_diameter_inches": 6.5,
     "parameters": {
-        "fs_hz": 177.0,
+        "fs_hz": 177,
         "re_ohm": 5.5,
         "bl_tm": 10.54,
         "sd_m2": 0.0132,
         "mms_kg": 0.010400000000000001,
         "le_h": 0.00029,
-        "qts": 0.52,
-        "nominal_impedance_ohm": 8.0,
-        "xmax_m": 0.0036000000000000003,
         "qms": 5.77,
-        "qes": 0.57
+        "xmax_m": 0.0036000000000000003,
+        "power_w": 120,
+        "nominal_impedance_ohm": 8
     },
-    "nominal_diameter": "6in"
+    "usable_f_low_hz": 150,
+    "usable_f_high_hz": 6000,
+    "parameter_source": "https://lavocespeakers.com/product/maf061-50/",
+    "physical_envelope_mm": {
+        "maximum_width": 170,
+        "depth": 82
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+            "No measured cone transfer function or phase-plug interface geometry"
+        ]
+    },
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": true,
+    "overall_diameter_m": 0.17
 }

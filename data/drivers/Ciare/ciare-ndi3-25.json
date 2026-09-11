@@ -15,5 +15,7 @@
         "xmax_m": 0.0039,
         "qms": 2.3,
         "qes": 0.48
-    }
+    },
+    "catalogue_status": "legacy_unverified",
+    "nominal_diameter_verified": false
 }

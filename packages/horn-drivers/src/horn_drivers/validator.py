@@ -199,10 +199,20 @@ def validate_driver(driver: dict) -> ValidationResult:
     # --- Essential field checks ---
     for fld in ESSENTIAL_FIELDS:
         val = params.get(fld)
-        if val is None or val == 0.0:
-            result.errors.append(f"Missing or zero: {fld}")
+        if (not isinstance(val, (int, float)) or isinstance(val, bool) or not math.isfinite(val)
+                or val < 0 or (fld != "le_h" and val == 0)):
+            result.errors.append(f"Missing or invalid: {fld}")
             penalties += 0.2
 
+    for fld in ("qms", "qes", "qts", "xmax_m", "power_w", "peak_power_w", "nominal_impedance_ohm"):
+        val = params.get(fld)
+        if val is not None and (not isinstance(val, (int, float)) or isinstance(val, bool)
+                                or not math.isfinite(val) or val <= 0):
+            result.errors.append(f"Invalid optional field: {fld}")
+            penalties += .2
+    if driver.get("catalogue_status") == "quarantined":
+        result.errors.append("Quarantined source identity: " + driver.get("quarantine_reason", "unknown"))
+        penalties = 1.
     # If essential fields missing, can't do physics checks
     if result.errors:
         result.score = max(0.0, 1.0 - penalties)

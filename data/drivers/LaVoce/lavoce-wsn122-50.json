@@ -16,5 +16,7 @@
         "qms": 4.31,
         "qes": 0.39
     },
-    "nominal_diameter": "12in"
+    "nominal_diameter": "12in",
+    "catalogue_status": "legacy_unverified",
+    "nominal_diameter_verified": false
 }

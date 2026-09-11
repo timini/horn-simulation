@@ -1,0 +1,3026 @@
+{
+  "status": "completed_reduced_order_screen_not_validated_design",
+  "selected": {
+    "scenario_id": "beyma-6mcf200nd",
+    "driver_id": "beyma-6mcf200nd",
+    "label": "Beyma 6MCF200Nd",
+    "sensitivity_only": false,
+    "nominal_band_covers_target": true,
+    "profile": "conical",
+    "equivalent_throat_diameter_m": 0.076,
+    "mouth_diameter_m": 0.19,
+    "length_m": 0.125,
+    "body_diameter_m": 0.064,
+    "body_length_m": 0.1,
+    "outer_throat_diameter_mm": 99.35793878699377,
+    "radial_gap_mm": 17.678969393496885,
+    "throat_area_cm2": 45.36459791783661,
+    "compression_ratio": 3.086106929759744,
+    "ripple_db": 3.5465194725635456,
+    "mean_spl_db": 104.44411510038287,
+    "spl_500_db": 102.54760453577907,
+    "spl_6500_db": 102.85091927445932,
+    "level_6500_relative_mid_db": -0.7907833261129582,
+    "max_excursion_mm": 0.05335134852336342,
+    "max_throat_speed_m_s": 0.3786659143507668
+  },
+  "best_by_scenario": [
+    {
+      "scenario_id": "bc-6mdn44-8",
+      "driver_id": "bc-6mdn44-8",
+      "label": "BC 6MDN44",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.052,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 82.4621125123532,
+      "radial_gap_mm": 9.231056256176602,
+      "throat_area_cm2": 21.237166338267002,
+      "compression_ratio": 6.2155184876124805,
+      "ripple_db": 8.002905942414586,
+      "mean_spl_db": 102.92741008982362,
+      "spl_500_db": 100.80702474879857,
+      "spl_6500_db": 97.52830281115054,
+      "level_6500_relative_mid_db": -5.974920598656013,
+      "max_excursion_mm": 0.06086270961421706,
+      "max_throat_speed_m_s": 0.8584239001367225
+    },
+    {
+      "scenario_id": "bc-6pev13",
+      "driver_id": "bc-6pev13",
+      "label": "BC 6PEV13",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": true,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.047,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 79.40403012442127,
+      "radial_gap_mm": 7.7020150622106325,
+      "throat_area_cm2": 17.349445429449634,
+      "compression_ratio": 7.608312354234562,
+      "ripple_db": 7.779729302672507,
+      "mean_spl_db": 104.24444308914507,
+      "spl_500_db": 102.8646334476708,
+      "spl_6500_db": 98.75721822064071,
+      "level_6500_relative_mid_db": -5.813063328232531,
+      "max_excursion_mm": 0.07792880075500931,
+      "max_throat_speed_m_s": 1.3473881695284482
+    },
+    {
+      "scenario_id": "beyma-6mcf200nd",
+      "driver_id": "beyma-6mcf200nd",
+      "label": "Beyma 6MCF200Nd",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": true,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.076,
+      "mouth_diameter_m": 0.19,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 99.35793878699377,
+      "radial_gap_mm": 17.678969393496885,
+      "throat_area_cm2": 45.36459791783661,
+      "compression_ratio": 3.086106929759744,
+      "ripple_db": 3.5465194725635456,
+      "mean_spl_db": 104.44411510038287,
+      "spl_500_db": 102.54760453577907,
+      "spl_6500_db": 102.85091927445932,
+      "level_6500_relative_mid_db": -0.7907833261129582,
+      "max_excursion_mm": 0.05335134852336342,
+      "max_throat_speed_m_s": 0.3786659143507668
+    },
+    {
+      "scenario_id": "beyma-6mi100",
+      "driver_id": "beyma-6mi100",
+      "label": "Beyma 6MI100",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": true,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.076,
+      "mouth_diameter_m": 0.245,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 99.35793878699377,
+      "radial_gap_mm": 17.678969393496885,
+      "throat_area_cm2": 45.36459791783661,
+      "compression_ratio": 3.086106929759744,
+      "ripple_db": 4.624719693898285,
+      "mean_spl_db": 101.3113783019868,
+      "spl_500_db": 99.89600108730848,
+      "spl_6500_db": 98.53907042309878,
+      "level_6500_relative_mid_db": -2.5863391628971044,
+      "max_excursion_mm": 0.044799655930161116,
+      "max_throat_speed_m_s": 0.31367168171049764
+    },
+    {
+      "scenario_id": "beyma-6mi90",
+      "driver_id": "beyma-6mi90",
+      "label": "Beyma 6MI90",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": true,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.06,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 87.72684879784524,
+      "radial_gap_mm": 11.863424398922614,
+      "throat_area_cm2": 28.274333882308138,
+      "compression_ratio": 4.951487118414522,
+      "ripple_db": 7.119294618685743,
+      "mean_spl_db": 103.57016510341226,
+      "spl_500_db": 101.38661099244709,
+      "spl_6500_db": 99.0195259739765,
+      "level_6500_relative_mid_db": -5.03456818087534,
+      "max_excursion_mm": 0.06025155822576238,
+      "max_throat_speed_m_s": 0.6756497089025749
+    },
+    {
+      "scenario_id": "celestion-cf0617m",
+      "driver_id": "celestion-cf0617m",
+      "label": "Celestion CF0617M",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": true,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.042,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 76.55063683601855,
+      "radial_gap_mm": 6.275318418009275,
+      "throat_area_cm2": 13.85442360233099,
+      "compression_ratio": 11.111252580302207,
+      "ripple_db": 12.749702239294948,
+      "mean_spl_db": 95.1293343774274,
+      "spl_500_db": 99.29926337759034,
+      "spl_6500_db": 86.54956113829539,
+      "level_6500_relative_mid_db": -9.250659760675717,
+      "max_excursion_mm": 0.0447428901927337,
+      "max_throat_speed_m_s": 1.1316877749672543
+    },
+    {
+      "scenario_id": "lavoce-maf061-50",
+      "driver_id": "lavoce-maf061-50",
+      "label": "LaVoce MAF061.50",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.076,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 99.35793878699377,
+      "radial_gap_mm": 17.678969393496885,
+      "throat_area_cm2": 45.36459791783661,
+      "compression_ratio": 2.909757962344901,
+      "ripple_db": 6.14028899112499,
+      "mean_spl_db": 103.37885402390978,
+      "spl_500_db": 101.78197835324893,
+      "spl_6500_db": 99.44232698872433,
+      "level_6500_relative_mid_db": -4.446400919062171,
+      "max_excursion_mm": 0.06427166731920239,
+      "max_throat_speed_m_s": 0.42225056264591915
+    },
+    {
+      "scenario_id": "lavoce-man061-80",
+      "driver_id": "lavoce-man061-80",
+      "label": "LaVoce MAN061.80",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "exponential",
+      "equivalent_throat_diameter_m": 0.076,
+      "mouth_diameter_m": 0.245,
+      "length_m": 0.15,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 99.35793878699377,
+      "radial_gap_mm": 17.678969393496885,
+      "throat_area_cm2": 45.36459791783661,
+      "compression_ratio": 2.909757962344901,
+      "ripple_db": 3.413727513200243,
+      "mean_spl_db": 103.63012116422586,
+      "spl_500_db": 101.70055788398044,
+      "spl_6500_db": 101.98123552389711,
+      "level_6500_relative_mid_db": -1.5649036008344552,
+      "max_excursion_mm": 0.04668307537484274,
+      "max_throat_speed_m_s": 0.3110404032751107
+    },
+    {
+      "scenario_id": "phl-1120",
+      "driver_id": "phl-1120",
+      "label": "PHL 1120",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.052,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 82.4621125123532,
+      "radial_gap_mm": 9.231056256176602,
+      "throat_area_cm2": 21.237166338267002,
+      "compression_ratio": 7.0630891904687285,
+      "ripple_db": 7.666019874017877,
+      "mean_spl_db": 101.95508478655755,
+      "spl_500_db": 100.82152853577726,
+      "spl_6500_db": 96.64752859007251,
+      "level_6500_relative_mid_db": -5.71936912821613,
+      "max_excursion_mm": 0.05364869284240042,
+      "max_throat_speed_m_s": 0.8598585025312583
+    },
+    {
+      "scenario_id": "phl-1120ndu",
+      "driver_id": "phl-1120ndu",
+      "label": "PHL 1120NdU",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.052,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 82.4621125123532,
+      "radial_gap_mm": 9.231056256176602,
+      "throat_area_cm2": 21.237166338267002,
+      "compression_ratio": 7.0630891904687285,
+      "ripple_db": 7.666019874017877,
+      "mean_spl_db": 101.95508478655755,
+      "spl_500_db": 100.82152853577726,
+      "spl_6500_db": 96.64752859007251,
+      "level_6500_relative_mid_db": -5.71936912821613,
+      "max_excursion_mm": 0.05364869284240042,
+      "max_throat_speed_m_s": 0.8598585025312583
+    },
+    {
+      "scenario_id": "phl-1343",
+      "driver_id": "phl-1343",
+      "label": "PHL 1343",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "exponential",
+      "equivalent_throat_diameter_m": 0.042,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.25,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 76.55063683601855,
+      "radial_gap_mm": 6.275318418009275,
+      "throat_area_cm2": 13.85442360233099,
+      "compression_ratio": 9.599821964273051,
+      "ripple_db": 16.566457529944174,
+      "mean_spl_db": 100.08385116637606,
+      "spl_500_db": 101.1308958931252,
+      "spl_6500_db": 88.62321343833075,
+      "level_6500_relative_mid_db": -14.535238670361124,
+      "max_excursion_mm": 0.02733665303842073,
+      "max_throat_speed_m_s": 0.6141438753984746
+    },
+    {
+      "scenario_id": "phl-1343ndu",
+      "driver_id": "phl-1343ndu",
+      "label": "PHL 1343NdU",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "exponential",
+      "equivalent_throat_diameter_m": 0.042,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.25,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 76.55063683601855,
+      "radial_gap_mm": 6.275318418009275,
+      "throat_area_cm2": 13.85442360233099,
+      "compression_ratio": 9.599821964273051,
+      "ripple_db": 16.566457529944174,
+      "mean_spl_db": 100.08385116637606,
+      "spl_500_db": 101.1308958931252,
+      "spl_6500_db": 88.62321343833075,
+      "level_6500_relative_mid_db": -14.535238670361124,
+      "max_excursion_mm": 0.02733665303842073,
+      "max_throat_speed_m_s": 0.6141438753984746
+    },
+    {
+      "scenario_id": "phl-1362",
+      "driver_id": "phl-1362",
+      "label": "PHL 1362",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "exponential",
+      "equivalent_throat_diameter_m": 0.042,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.25,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 76.55063683601855,
+      "radial_gap_mm": 6.275318418009275,
+      "throat_area_cm2": 13.85442360233099,
+      "compression_ratio": 10.321613089406362,
+      "ripple_db": 16.338036551484095,
+      "mean_spl_db": 100.19624634707624,
+      "spl_500_db": 101.05306794837227,
+      "spl_6500_db": 88.9071607034212,
+      "level_6500_relative_mid_db": -14.261974454333057,
+      "max_excursion_mm": 0.025198201641492377,
+      "max_throat_speed_m_s": 0.608665558707771
+    },
+    {
+      "scenario_id": "phl-1362ndu",
+      "driver_id": "phl-1362ndu",
+      "label": "PHL 1362NdU",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "exponential",
+      "equivalent_throat_diameter_m": 0.042,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.25,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 76.55063683601855,
+      "radial_gap_mm": 6.275318418009275,
+      "throat_area_cm2": 13.85442360233099,
+      "compression_ratio": 10.321613089406362,
+      "ripple_db": 16.338036551484095,
+      "mean_spl_db": 100.19624634707624,
+      "spl_500_db": 101.05306794837227,
+      "spl_6500_db": 88.9071607034212,
+      "level_6500_relative_mid_db": -14.261974454333057,
+      "max_excursion_mm": 0.025198201641492377,
+      "max_throat_speed_m_s": 0.608665558707771
+    },
+    {
+      "scenario_id": "phl-1426",
+      "driver_id": "phl-1426",
+      "label": "PHL 1426",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.047,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 79.40403012442127,
+      "radial_gap_mm": 7.7020150622106325,
+      "throat_area_cm2": 17.349445429449634,
+      "compression_ratio": 8.357615843666755,
+      "ripple_db": 8.570551169603732,
+      "mean_spl_db": 100.850093470636,
+      "spl_500_db": 99.74632150567876,
+      "spl_6500_db": 94.64474987703261,
+      "level_6500_relative_mid_db": -6.773072825934662,
+      "max_excursion_mm": 0.049543687173933856,
+      "max_throat_speed_m_s": 0.940972936319719
+    },
+    {
+      "scenario_id": "phl-1426ndu",
+      "driver_id": "phl-1426ndu",
+      "label": "PHL 1426NdU",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.047,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 79.40403012442127,
+      "radial_gap_mm": 7.7020150622106325,
+      "throat_area_cm2": 17.349445429449634,
+      "compression_ratio": 8.357615843666755,
+      "ripple_db": 8.570551169603732,
+      "mean_spl_db": 100.850093470636,
+      "spl_500_db": 99.74632150567876,
+      "spl_6500_db": 94.64474987703261,
+      "level_6500_relative_mid_db": -6.773072825934662,
+      "max_excursion_mm": 0.049543687173933856,
+      "max_throat_speed_m_s": 0.940972936319719
+    },
+    {
+      "scenario_id": "phl-1660ndm-sq2",
+      "driver_id": "phl-1660ndm-sq2",
+      "label": "PHL 1660NdM-SQ2",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.042,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 76.55063683601855,
+      "radial_gap_mm": 6.275318418009275,
+      "throat_area_cm2": 13.85442360233099,
+      "compression_ratio": 10.826866876999683,
+      "ripple_db": 9.902223308500538,
+      "mean_spl_db": 102.54958070420537,
+      "spl_500_db": 103.44486221007222,
+      "spl_6500_db": 94.73605466765802,
+      "level_6500_relative_mid_db": -8.53243388783092,
+      "max_excursion_mm": 0.07400553438498689,
+      "max_throat_speed_m_s": 1.823923277931658
+    },
+    {
+      "scenario_id": "phl-1660ndm",
+      "driver_id": "phl-1660ndm",
+      "label": "PHL 1660NdM",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.042,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 76.55063683601855,
+      "radial_gap_mm": 6.275318418009275,
+      "throat_area_cm2": 13.85442360233099,
+      "compression_ratio": 10.826866876999683,
+      "ripple_db": 9.616770035207125,
+      "mean_spl_db": 102.09325537102039,
+      "spl_500_db": 101.60512252073026,
+      "spl_6500_db": 94.71789809214029,
+      "level_6500_relative_mid_db": -8.089983811355907,
+      "max_excursion_mm": 0.05987936890759146,
+      "max_throat_speed_m_s": 1.4757730719199997
+    },
+    {
+      "scenario_id": "phl-1663",
+      "driver_id": "phl-1663",
+      "label": "PHL 1663",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.047,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 79.40403012442127,
+      "radial_gap_mm": 7.7020150622106325,
+      "throat_area_cm2": 17.349445429449634,
+      "compression_ratio": 8.645809493448366,
+      "ripple_db": 8.763647736878355,
+      "mean_spl_db": 102.93117896555808,
+      "spl_500_db": 101.55538545910238,
+      "spl_6500_db": 96.54109061278578,
+      "level_6500_relative_mid_db": -7.098628128499385,
+      "max_excursion_mm": 0.05898183306898716,
+      "max_throat_speed_m_s": 1.1588582859712417
+    },
+    {
+      "scenario_id": "phl-1680ndm-10",
+      "driver_id": "phl-1680ndm-10",
+      "label": "PHL 1680NdM-10",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.047,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 79.40403012442127,
+      "radial_gap_mm": 7.7020150622106325,
+      "throat_area_cm2": 17.349445429449634,
+      "compression_ratio": 7.435396164365595,
+      "ripple_db": 10.187660783307336,
+      "mean_spl_db": 100.86361949968256,
+      "spl_500_db": 100.86771688398342,
+      "spl_6500_db": 93.26909350704977,
+      "level_6500_relative_mid_db": -8.72723076031123,
+      "max_excursion_mm": 0.06336309547356994,
+      "max_throat_speed_m_s": 1.0706484722247558
+    },
+    {
+      "scenario_id": "phl-1683-26",
+      "driver_id": "phl-1683-26",
+      "label": "PHL 1683-26",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.047,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 79.40403012442127,
+      "radial_gap_mm": 7.7020150622106325,
+      "throat_area_cm2": 17.349445429449634,
+      "compression_ratio": 7.435396164365595,
+      "ripple_db": 9.305888845834872,
+      "mean_spl_db": 101.89583321712412,
+      "spl_500_db": 100.6074988157907,
+      "spl_6500_db": 95.11992398293663,
+      "level_6500_relative_mid_db": -7.65568074196338,
+      "max_excursion_mm": 0.06149297184894394,
+      "max_throat_speed_m_s": 1.0390489269908518
+    },
+    {
+      "scenario_id": "phl-1752",
+      "driver_id": "phl-1752",
+      "label": "PHL 1752",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.042,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 76.55063683601855,
+      "radial_gap_mm": 6.275318418009275,
+      "throat_area_cm2": 13.85442360233099,
+      "compression_ratio": 10.465971314433027,
+      "ripple_db": 9.538091705828961,
+      "mean_spl_db": 102.50498794171688,
+      "spl_500_db": 101.55115302398379,
+      "spl_6500_db": 95.25543263916069,
+      "level_6500_relative_mid_db": -7.972167793159855,
+      "max_excursion_mm": 0.061560479860917304,
+      "max_throat_speed_m_s": 1.466631832069528
+    },
+    {
+      "scenario_id": "phl-1752ndu",
+      "driver_id": "phl-1752ndu",
+      "label": "PHL 1752NdU",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.042,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 76.55063683601855,
+      "radial_gap_mm": 6.275318418009275,
+      "throat_area_cm2": 13.85442360233099,
+      "compression_ratio": 10.465971314433027,
+      "ripple_db": 9.476622816491869,
+      "mean_spl_db": 102.05056322101692,
+      "spl_500_db": 101.29302514303495,
+      "spl_6500_db": 94.81928502148735,
+      "level_6500_relative_mid_db": -7.911197348329225,
+      "max_excursion_mm": 0.05975793787272452,
+      "max_throat_speed_m_s": 1.4236876337056072
+    },
+    {
+      "scenario_id": "redcatt-dr-6p5-001-4r-b2-c0001",
+      "driver_id": "redcatt-dr-6p5-001-4r-b2-c0001",
+      "label": "REDCATT 61FHM-2",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.042,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 76.55063683601855,
+      "radial_gap_mm": 6.275318418009275,
+      "throat_area_cm2": 13.85442360233099,
+      "compression_ratio": 9.57816823051905,
+      "ripple_db": 11.472767793891094,
+      "mean_spl_db": 91.06464125533635,
+      "spl_500_db": 93.4456964533961,
+      "spl_6500_db": 82.11426267494849,
+      "level_6500_relative_mid_db": -10.020218320281614,
+      "max_excursion_mm": 0.026456125819415324,
+      "max_throat_speed_m_s": 0.5768305830677294
+    },
+    {
+      "scenario_id": "redcatt-dr-6p5-002-16r-b2-c0001",
+      "driver_id": "redcatt-dr-6p5-002-16r-b2-c0001",
+      "label": "REDCATT 61FIND",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.068,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 93.38094023943002,
+      "radial_gap_mm": 14.690470119715005,
+      "throat_area_cm2": 36.316811075498016,
+      "compression_ratio": 3.6539551813658315,
+      "ripple_db": 6.710271560271991,
+      "mean_spl_db": 95.46738590969649,
+      "spl_500_db": 94.39319427936786,
+      "spl_6500_db": 90.94178030976155,
+      "level_6500_relative_mid_db": -5.091234814685777,
+      "max_excursion_mm": 0.027869416066326633,
+      "max_throat_speed_m_s": 0.23024817047989055
+    },
+    {
+      "scenario_id": "redcatt-dr-6p5-006-8r-b2-c0001",
+      "driver_id": "redcatt-dr-6p5-006-8r-b2-c0001",
+      "label": "REDCATT 6NPM",
+      "sensitivity_only": false,
+      "nominal_band_covers_target": false,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.076,
+      "mouth_diameter_m": 0.19,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 99.35793878699377,
+      "radial_gap_mm": 17.678969393496885,
+      "throat_area_cm2": 45.36459791783661,
+      "compression_ratio": 3.1544421546329953,
+      "ripple_db": 4.050205548965849,
+      "mean_spl_db": 103.41278548497118,
+      "spl_500_db": 101.37976118783132,
+      "spl_6500_db": 101.04029575173898,
+      "level_6500_relative_mid_db": -1.7692466959486808,
+      "max_excursion_mm": 0.04562907195241602,
+      "max_throat_speed_m_s": 0.3310274788696758
+    },
+    {
+      "scenario_id": "celestion-cf0617m-le029",
+      "driver_id": "celestion-cf0617m",
+      "label": "Celestion CF0617M \u2014 Le 0.29 mH sensitivity",
+      "sensitivity_only": true,
+      "nominal_band_covers_target": true,
+      "profile": "conical",
+      "equivalent_throat_diameter_m": 0.068,
+      "mouth_diameter_m": 0.28,
+      "length_m": 0.125,
+      "body_diameter_m": 0.064,
+      "body_length_m": 0.1,
+      "outer_throat_diameter_mm": 93.38094023943002,
+      "radial_gap_mm": 14.690470119715005,
+      "throat_area_cm2": 36.316811075498016,
+      "compression_ratio": 4.238808294042624,
+      "ripple_db": 6.090303896234573,
+      "mean_spl_db": 103.46505754359198,
+      "spl_500_db": 101.44392145767655,
+      "spl_6500_db": 99.86945000511815,
+      "level_6500_relative_mid_db": -3.8304443505640364,
+      "max_excursion_mm": 0.054098306338345906,
+      "max_throat_speed_m_s": 0.5184806428963868
+    }
+  ],
+  "passes_nominal_screen": true,
+  "search": {
+    "target_hz": [
+      500.0,
+      6500.0
+    ],
+    "nominal_diameter_inches": 6.5,
+    "verified_driver_count": 26,
+    "geometry_count": 480,
+    "scenario_count": 12960,
+    "front_volume_cc": 20,
+    "rear_volume_litres": 2,
+    "body_diameter_mm": 64,
+    "body_length_mm": 100
+  },
+  "sensitivity": {
+    "bc-6mdn44-8": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 5.708069283820478,
+          "mean_spl_db": 102.64772089224653,
+          "spl_500_db": 100.73585484987308,
+          "spl_6500_db": 99.16983451880222,
+          "level_6500_relative_mid_db": -3.981253762771587,
+          "max_excursion_mm": 0.06101456307690411,
+          "max_throat_speed_m_s": 0.8514189377092469
+        },
+        "20": {
+          "ripple_db": 8.002905942414586,
+          "mean_spl_db": 102.92741008982362,
+          "spl_500_db": 100.80702474879857,
+          "spl_6500_db": 97.52830281115054,
+          "level_6500_relative_mid_db": -5.974920598656013,
+          "max_excursion_mm": 0.06086270961421706,
+          "max_throat_speed_m_s": 0.8584239001367225
+        },
+        "40": {
+          "ripple_db": 13.672695597453583,
+          "mean_spl_db": 102.76646126543996,
+          "spl_500_db": 100.95072970515533,
+          "spl_6500_db": 93.07672668718567,
+          "level_6500_relative_mid_db": -11.138722665943547,
+          "max_excursion_mm": 0.060551227149690065,
+          "max_throat_speed_m_s": 0.872744355172068
+        },
+        "60": {
+          "ripple_db": 17.512315252168307,
+          "mean_spl_db": 102.23617928754261,
+          "spl_500_db": 101.09627484818203,
+          "spl_6500_db": 89.66237447028035,
+          "level_6500_relative_mid_db": -15.249031296172348,
+          "max_excursion_mm": 0.06022902936586983,
+          "max_throat_speed_m_s": 0.8874917113084574
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 8.087390862639467,
+          "mean_spl_db": 103.39509489142802,
+          "spl_500_db": 102.68244377203868,
+          "spl_6500_db": 97.54702486976839,
+          "level_6500_relative_mid_db": -6.439210254157587,
+          "max_excursion_mm": 0.07553047822280057,
+          "max_throat_speed_m_s": 1.0653020232944541
+        },
+        "1": {
+          "ripple_db": 8.030943045079539,
+          "mean_spl_db": 103.08095752318117,
+          "spl_500_db": 101.44077789044958,
+          "spl_6500_db": 97.53453903077005,
+          "level_6500_relative_mid_db": -6.126706796805195,
+          "max_excursion_mm": 0.06546948736810791,
+          "max_throat_speed_m_s": 0.9233991230872685
+        },
+        "2": {
+          "ripple_db": 8.002905942414586,
+          "mean_spl_db": 102.92741008982362,
+          "spl_500_db": 100.80702474879857,
+          "spl_6500_db": 97.52830281115054,
+          "level_6500_relative_mid_db": -5.974920598656013,
+          "max_excursion_mm": 0.06086270961421706,
+          "max_throat_speed_m_s": 0.8584239001367225
+        },
+        "4": {
+          "ripple_db": 7.988933699423683,
+          "mean_spl_db": 102.85178977460201,
+          "spl_500_db": 100.493054346675,
+          "spl_6500_db": 97.52518637352608,
+          "level_6500_relative_mid_db": -5.90011173653663,
+          "max_excursion_mm": 0.05870198176612524,
+          "max_throat_speed_m_s": 0.827948417887412
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "bc-6pev13": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 5.08117758564579,
+          "mean_spl_db": 103.86547269951372,
+          "spl_500_db": 102.80665279671689,
+          "spl_6500_db": 100.75463518786495,
+          "level_6500_relative_mid_db": -3.45802424468296,
+          "max_excursion_mm": 0.07829966669582612,
+          "max_throat_speed_m_s": 1.338423943473659
+        },
+        "20": {
+          "ripple_db": 7.779729302672507,
+          "mean_spl_db": 104.24444308914507,
+          "spl_500_db": 102.8646334476708,
+          "spl_6500_db": 98.75721822064071,
+          "level_6500_relative_mid_db": -5.813063328232531,
+          "max_excursion_mm": 0.07792880075500931,
+          "max_throat_speed_m_s": 1.3473881695284482
+        },
+        "40": {
+          "ripple_db": 14.761230889019373,
+          "mean_spl_db": 104.09955813363203,
+          "spl_500_db": 102.98133872752294,
+          "spl_6500_db": 93.55713763650952,
+          "level_6500_relative_mid_db": -11.756066891418826,
+          "max_excursion_mm": 0.07717144356561012,
+          "max_throat_speed_m_s": 1.3656141049025814
+        },
+        "60": {
+          "ripple_db": 19.268756120505245,
+          "mean_spl_db": 103.54073869848212,
+          "spl_500_db": 103.09903209778952,
+          "spl_6500_db": 89.88022238693642,
+          "level_6500_relative_mid_db": -16.196876210658743,
+          "max_excursion_mm": 0.07639275906079537,
+          "max_throat_speed_m_s": 1.3842440400437284
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 7.9674686918500015,
+          "mean_spl_db": 105.03192785007269,
+          "spl_500_db": 106.03693114637517,
+          "spl_6500_db": 98.79299843882109,
+          "level_6500_relative_mid_db": -6.567383575819122,
+          "max_excursion_mm": 0.11228270789794519,
+          "max_throat_speed_m_s": 1.9413668733325773
+        },
+        "1": {
+          "ripple_db": 7.820399589873958,
+          "mean_spl_db": 104.50174289378678,
+          "spl_500_db": 103.98372060514981,
+          "spl_6500_db": 98.7691287618491,
+          "level_6500_relative_mid_db": -6.056380143600109,
+          "max_excursion_mm": 0.08864461350590698,
+          "max_throat_speed_m_s": 1.5326644626005377
+        },
+        "2": {
+          "ripple_db": 7.779729302672507,
+          "mean_spl_db": 104.24444308914507,
+          "spl_500_db": 102.8646334476708,
+          "spl_6500_db": 98.75721822064071,
+          "level_6500_relative_mid_db": -5.813063328232531,
+          "max_excursion_mm": 0.07792880075500931,
+          "max_throat_speed_m_s": 1.3473881695284482
+        },
+        "4": {
+          "ripple_db": 7.759490759375524,
+          "mean_spl_db": 104.11930176507573,
+          "spl_500_db": 102.31860257194623,
+          "spl_6500_db": 98.75126900534457,
+          "level_6500_relative_mid_db": -5.694296784332394,
+          "max_excursion_mm": 0.07318068143059145,
+          "max_throat_speed_m_s": 1.2652932348798
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "beyma-6mcf200nd": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 3.5665730374475686,
+          "mean_spl_db": 104.39904019541126,
+          "spl_500_db": 102.43408989336419,
+          "spl_6500_db": 103.55563123554276,
+          "level_6500_relative_mid_db": 0.052138376225371985,
+          "max_excursion_mm": 0.053586569477866226,
+          "max_throat_speed_m_s": 0.3737493806905326
+        },
+        "20": {
+          "ripple_db": 3.5465194725635456,
+          "mean_spl_db": 104.44411510038287,
+          "spl_500_db": 102.54760453577907,
+          "spl_6500_db": 102.85091927445932,
+          "level_6500_relative_mid_db": -0.7907833261129582,
+          "max_excursion_mm": 0.05335134852336342,
+          "max_throat_speed_m_s": 0.3786659143507668
+        },
+        "40": {
+          "ripple_db": 5.120841070052023,
+          "mean_spl_db": 104.27805851593784,
+          "spl_500_db": 102.77695467618628,
+          "spl_6500_db": 100.85193388923435,
+          "level_6500_relative_mid_db": -3.0277175818119986,
+          "max_excursion_mm": 0.052857792882474684,
+          "max_throat_speed_m_s": 0.38879773018984615
+        },
+        "60": {
+          "ripple_db": 7.1795629778817585,
+          "mean_spl_db": 103.90735733341423,
+          "spl_500_db": 103.00926325283973,
+          "spl_6500_db": 98.78724913732111,
+          "level_6500_relative_mid_db": -5.2709605281863645,
+          "max_excursion_mm": 0.05233170802526285,
+          "max_throat_speed_m_s": 0.3993366309824037
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 3.5465194725635456,
+          "mean_spl_db": 104.44411510038287,
+          "spl_500_db": 102.54760453577907,
+          "spl_6500_db": 102.85091927445932,
+          "level_6500_relative_mid_db": -0.7907833261129582,
+          "max_excursion_mm": 0.05335134852336342,
+          "max_throat_speed_m_s": 0.3786659143507668
+        },
+        "1": {
+          "ripple_db": 3.5465194725635456,
+          "mean_spl_db": 104.44411510038287,
+          "spl_500_db": 102.54760453577907,
+          "spl_6500_db": 102.85091927445932,
+          "level_6500_relative_mid_db": -0.7907833261129582,
+          "max_excursion_mm": 0.05335134852336342,
+          "max_throat_speed_m_s": 0.3786659143507668
+        },
+        "2": {
+          "ripple_db": 3.5465194725635456,
+          "mean_spl_db": 104.44411510038287,
+          "spl_500_db": 102.54760453577907,
+          "spl_6500_db": 102.85091927445932,
+          "level_6500_relative_mid_db": -0.7907833261129582,
+          "max_excursion_mm": 0.05335134852336342,
+          "max_throat_speed_m_s": 0.3786659143507668
+        },
+        "4": {
+          "ripple_db": 3.5465194725635456,
+          "mean_spl_db": 104.44411510038287,
+          "spl_500_db": 102.54760453577907,
+          "spl_6500_db": 102.85091927445932,
+          "level_6500_relative_mid_db": -0.7907833261129582,
+          "max_excursion_mm": 0.05335134852336342,
+          "max_throat_speed_m_s": 0.3786659143507668
+        }
+      },
+      "factory_sealed_back": true
+    },
+    "beyma-6mi100": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 3.8251095571791183,
+          "mean_spl_db": 101.19159703302016,
+          "spl_500_db": 99.8238389302616,
+          "spl_6500_db": 99.08655014215684,
+          "level_6500_relative_mid_db": -1.847820211948303,
+          "max_excursion_mm": 0.044901630114406135,
+          "max_throat_speed_m_s": 0.31107650038773976
+        },
+        "20": {
+          "ripple_db": 4.624719693898285,
+          "mean_spl_db": 101.3113783019868,
+          "spl_500_db": 99.89600108730848,
+          "spl_6500_db": 98.53907042309878,
+          "level_6500_relative_mid_db": -2.5863391628971044,
+          "max_excursion_mm": 0.044799655930161116,
+          "max_throat_speed_m_s": 0.31367168171049764
+        },
+        "40": {
+          "ripple_db": 6.845889197185571,
+          "mean_spl_db": 101.28858135835146,
+          "spl_500_db": 100.04164223619354,
+          "spl_6500_db": 96.59165384881193,
+          "level_6500_relative_mid_db": -4.895866651258558,
+          "max_excursion_mm": 0.04459188245862059,
+          "max_throat_speed_m_s": 0.3189755315241657
+        },
+        "60": {
+          "ripple_db": 9.147694170986938,
+          "mean_spl_db": 101.03793367461824,
+          "spl_500_db": 100.1890499802697,
+          "spl_6500_db": 94.4393584075182,
+          "level_6500_relative_mid_db": -7.373996476194435,
+          "max_excursion_mm": 0.04437897744982999,
+          "max_throat_speed_m_s": 0.324435042808771
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 4.699867223520101,
+          "mean_spl_db": 101.76744463212658,
+          "spl_500_db": 102.03750285842445,
+          "spl_6500_db": 98.55527725942437,
+          "level_6500_relative_mid_db": -3.0181958143450345,
+          "max_excursion_mm": 0.05732575286888674,
+          "max_throat_speed_m_s": 0.4013750760884342
+        },
+        "1": {
+          "ripple_db": 4.649668144321467,
+          "mean_spl_db": 101.45906513917294,
+          "spl_500_db": 100.57814047888729,
+          "spl_6500_db": 98.54446934825609,
+          "level_6500_relative_mid_db": -2.7274926246802806,
+          "max_excursion_mm": 0.04845980342688668,
+          "max_throat_speed_m_s": 0.3392987673826765
+        },
+        "2": {
+          "ripple_db": 4.624719693898285,
+          "mean_spl_db": 101.3113783019868,
+          "spl_500_db": 99.89600108730848,
+          "spl_6500_db": 98.53907042309878,
+          "level_6500_relative_mid_db": -2.5863391628971044,
+          "max_excursion_mm": 0.044799655930161116,
+          "max_throat_speed_m_s": 0.31367168171049764
+        },
+        "4": {
+          "ripple_db": 4.6122829407235315,
+          "mean_spl_db": 101.23915464630397,
+          "spl_500_db": 99.56769308254734,
+          "spl_6500_db": 98.53637221630967,
+          "level_6500_relative_mid_db": -2.5167704164034177,
+          "max_excursion_mm": 0.04313792770841888,
+          "max_throat_speed_m_s": 0.3020368359725695
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "beyma-6mi90": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 5.466298228833637,
+          "mean_spl_db": 103.32908845323261,
+          "spl_500_db": 101.32321077466784,
+          "spl_6500_db": 100.04295946955597,
+          "level_6500_relative_mid_db": -3.7231722435806915,
+          "max_excursion_mm": 0.060395790032915515,
+          "max_throat_speed_m_s": 0.6707359482835817
+        },
+        "20": {
+          "ripple_db": 7.119294618685743,
+          "mean_spl_db": 103.57016510341226,
+          "spl_500_db": 101.38661099244709,
+          "spl_6500_db": 99.0195259739765,
+          "level_6500_relative_mid_db": -5.03456818087534,
+          "max_excursion_mm": 0.06025155822576238,
+          "max_throat_speed_m_s": 0.6756497089025749
+        },
+        "40": {
+          "ripple_db": 11.46335769215301,
+          "mean_spl_db": 103.53510668074887,
+          "spl_500_db": 101.51444497797634,
+          "spl_6500_db": 95.58882899844059,
+          "level_6500_relative_mid_db": -9.039456104980545,
+          "max_excursion_mm": 0.05995695111461217,
+          "max_throat_speed_m_s": 0.6856670713002695
+        },
+        "60": {
+          "ripple_db": 14.896844048292266,
+          "mean_spl_db": 103.15618914773347,
+          "spl_500_db": 101.64366627868127,
+          "spl_6500_db": 92.53487508316418,
+          "level_6500_relative_mid_db": -12.648360295846146,
+          "max_excursion_mm": 0.059653952834531974,
+          "max_throat_speed_m_s": 0.6959441014854174
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 7.218295059838852,
+          "mean_spl_db": 104.10664981365937,
+          "spl_500_db": 103.6083475073462,
+          "spl_6500_db": 99.04047691590429,
+          "level_6500_relative_mid_db": -5.560660360600764,
+          "max_excursion_mm": 0.07781352845724858,
+          "max_throat_speed_m_s": 0.8725863595730595
+        },
+        "1": {
+          "ripple_db": 7.152124978983764,
+          "mean_spl_db": 103.7455200747353,
+          "spl_500_db": 102.13146854783349,
+          "spl_6500_db": 99.02650402596238,
+          "level_6500_relative_mid_db": -5.206100101416354,
+          "max_excursion_mm": 0.06564643721390687,
+          "max_throat_speed_m_s": 0.7361468732123584
+        },
+        "2": {
+          "ripple_db": 7.119294618685743,
+          "mean_spl_db": 103.57016510341226,
+          "spl_500_db": 101.38661099244709,
+          "spl_6500_db": 99.0195259739765,
+          "level_6500_relative_mid_db": -5.03456818087534,
+          "max_excursion_mm": 0.06025155822576238,
+          "max_throat_speed_m_s": 0.6756497089025749
+        },
+        "4": {
+          "ripple_db": 7.102942477625021,
+          "mean_spl_db": 103.48414168367631,
+          "spl_500_db": 101.02091726132537,
+          "spl_6500_db": 99.01603904232377,
+          "level_6500_relative_mid_db": -4.950190256911995,
+          "max_excursion_mm": 0.05776750313157336,
+          "max_throat_speed_m_s": 0.6477939795121748
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "celestion-cf0617m": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 9.77272628431632,
+          "mean_spl_db": 94.76931462157229,
+          "spl_500_db": 99.23460280449476,
+          "spl_6500_db": 89.46187652017844,
+          "level_6500_relative_mid_db": -5.892469174376245,
+          "max_excursion_mm": 0.04495965577073211,
+          "max_throat_speed_m_s": 1.123294405214517
+        },
+        "20": {
+          "ripple_db": 12.749702239294948,
+          "mean_spl_db": 95.1293343774274,
+          "spl_500_db": 99.29926337759034,
+          "spl_6500_db": 86.54956113829539,
+          "level_6500_relative_mid_db": -9.250659760675717,
+          "max_excursion_mm": 0.0447428901927337,
+          "max_throat_speed_m_s": 1.1316877749672543
+        },
+        "40": {
+          "ripple_db": 18.724211648286044,
+          "mean_spl_db": 94.7898272062982,
+          "spl_500_db": 99.42984726263242,
+          "spl_6500_db": 80.70563561434638,
+          "level_6500_relative_mid_db": -16.032718219202096,
+          "max_excursion_mm": 0.04430030707109007,
+          "max_throat_speed_m_s": 1.1488301341223277
+        },
+        "60": {
+          "ripple_db": 22.63417531381043,
+          "mean_spl_db": 94.08216343698795,
+          "spl_500_db": 99.56214389977538,
+          "spl_6500_db": 76.92796858596495,
+          "level_6500_relative_mid_db": -20.77823661633768,
+          "max_excursion_mm": 0.043845333564530735,
+          "max_throat_speed_m_s": 1.1664621484723712
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 17.032472782037047,
+          "mean_spl_db": 95.87312592439643,
+          "spl_500_db": 103.60680780433931,
+          "spl_6500_db": 86.57433502230226,
+          "level_6500_relative_mid_db": -9.839302817861352,
+          "max_excursion_mm": 0.07346851396037875,
+          "max_throat_speed_m_s": 1.8582487348453474
+        },
+        "1": {
+          "ripple_db": 14.017162742619263,
+          "mean_spl_db": 95.36077407351999,
+          "spl_500_db": 100.57497402931676,
+          "spl_6500_db": 86.5578112866975,
+          "level_6500_relative_mid_db": -9.440807693995254,
+          "max_excursion_mm": 0.05182145072492095,
+          "max_throat_speed_m_s": 1.310726732534259
+        },
+        "2": {
+          "ripple_db": 12.749702239294948,
+          "mean_spl_db": 95.1293343774274,
+          "spl_500_db": 99.29926337759034,
+          "spl_6500_db": 86.54956113829539,
+          "level_6500_relative_mid_db": -9.250659760675717,
+          "max_excursion_mm": 0.0447428901927337,
+          "max_throat_speed_m_s": 1.1316877749672543
+        },
+        "4": {
+          "ripple_db": 12.169272211411595,
+          "mean_spl_db": 95.01897860414368,
+          "spl_500_db": 98.71471119892517,
+          "spl_6500_db": 86.54543898751358,
+          "level_6500_relative_mid_db": -9.157685989131423,
+          "max_excursion_mm": 0.04183082454586069,
+          "max_throat_speed_m_s": 1.0580325176007221
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "lavoce-maf061-50": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 5.337829896047467,
+          "mean_spl_db": 103.2232525907242,
+          "spl_500_db": 101.7264121365608,
+          "spl_6500_db": 99.90800856949889,
+          "level_6500_relative_mid_db": -3.785874589619908,
+          "max_excursion_mm": 0.06438449022518068,
+          "max_throat_speed_m_s": 0.41955792233453626
+        },
+        "20": {
+          "ripple_db": 6.14028899112499,
+          "mean_spl_db": 103.37885402390978,
+          "spl_500_db": 101.78197835324893,
+          "spl_6500_db": 99.44232698872433,
+          "level_6500_relative_mid_db": -4.446400919062171,
+          "max_excursion_mm": 0.06427166731920239,
+          "max_throat_speed_m_s": 0.42225056264591915
+        },
+        "40": {
+          "ripple_db": 8.559534601414654,
+          "mean_spl_db": 103.42931480799199,
+          "spl_500_db": 101.89379586028629,
+          "spl_6500_db": 97.51258685832921,
+          "level_6500_relative_mid_db": -6.7549665761388695,
+          "max_excursion_mm": 0.06404228552035156,
+          "max_throat_speed_m_s": 0.4277215306138747
+        },
+        "60": {
+          "ripple_db": 10.997961018288876,
+          "mean_spl_db": 103.24044177835235,
+          "spl_500_db": 102.00652358434148,
+          "spl_6500_db": 95.30309348098724,
+          "level_6500_relative_mid_db": -9.321135519368184,
+          "max_excursion_mm": 0.06380786901762495,
+          "max_throat_speed_m_s": 0.4333087893745905
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 6.3147030912604265,
+          "mean_spl_db": 103.8876053109626,
+          "spl_500_db": 103.81180974703744,
+          "spl_6500_db": 99.46179473013282,
+          "level_6500_relative_mid_db": -4.95555670593879,
+          "max_excursion_mm": 0.08119160676776394,
+          "max_throat_speed_m_s": 0.5334108024543464
+        },
+        "1": {
+          "ripple_db": 6.1734173968069825,
+          "mean_spl_db": 103.54603077381334,
+          "spl_500_db": 102.47351834742345,
+          "spl_6500_db": 99.44881139973624,
+          "level_6500_relative_mid_db": -4.612664855632971,
+          "max_excursion_mm": 0.06959796897733282,
+          "max_throat_speed_m_s": 0.45724318016738064
+        },
+        "2": {
+          "ripple_db": 6.14028899112499,
+          "mean_spl_db": 103.37885402390978,
+          "spl_500_db": 101.78197835324893,
+          "spl_6500_db": 99.44232698872433,
+          "level_6500_relative_mid_db": -4.446400919062171,
+          "max_excursion_mm": 0.06427166731920239,
+          "max_throat_speed_m_s": 0.42225056264591915
+        },
+        "4": {
+          "ripple_db": 6.123788271119523,
+          "mean_spl_db": 103.29656181819128,
+          "spl_500_db": 101.43917667481703,
+          "spl_6500_db": 99.43908659362124,
+          "level_6500_relative_mid_db": -4.364529034404072,
+          "max_excursion_mm": 0.06178449232573675,
+          "max_throat_speed_m_s": 0.4059103759945617
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "lavoce-man061-80": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 3.335561390321132,
+          "mean_spl_db": 103.58923303352773,
+          "spl_500_db": 101.60425490564691,
+          "spl_6500_db": 102.73692943241768,
+          "level_6500_relative_mid_db": -0.6484406152526248,
+          "max_excursion_mm": 0.04687729464155167,
+          "max_throat_speed_m_s": 0.3076108554144415
+        },
+        "20": {
+          "ripple_db": 3.413727513200243,
+          "mean_spl_db": 103.63012116422586,
+          "spl_500_db": 101.70055788398044,
+          "spl_6500_db": 101.98123552389711,
+          "level_6500_relative_mid_db": -1.5649036008344552,
+          "max_excursion_mm": 0.04668307537484274,
+          "max_throat_speed_m_s": 0.3110404032751107
+        },
+        "40": {
+          "ripple_db": 5.371442723357944,
+          "mean_spl_db": 103.45388908413936,
+          "spl_500_db": 101.89520393742373,
+          "spl_6500_db": 99.86769394630593,
+          "level_6500_relative_mid_db": -3.952974051304878,
+          "max_excursion_mm": 0.04628512688883158,
+          "max_throat_speed_m_s": 0.31808933559231495
+        },
+        "60": {
+          "ripple_db": 7.374415142581938,
+          "mean_spl_db": 103.0759468639654,
+          "spl_500_db": 102.09254651166154,
+          "spl_6500_db": 97.726387390182,
+          "level_6500_relative_mid_db": -6.296458960817546,
+          "max_excursion_mm": 0.045874584595905155,
+          "max_throat_speed_m_s": 0.32539901780115826
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 3.2190670751723616,
+          "mean_spl_db": 104.00356774412369,
+          "spl_500_db": 103.3163243619812,
+          "spl_6500_db": 101.99648303461338,
+          "level_6500_relative_mid_db": -1.9361561284600697,
+          "max_excursion_mm": 0.05622737160753366,
+          "max_throat_speed_m_s": 0.37463222376586397
+        },
+        "1": {
+          "ripple_db": 3.1616001552884256,
+          "mean_spl_db": 103.75259882044288,
+          "spl_500_db": 102.22860818782561,
+          "spl_6500_db": 101.98631506400238,
+          "level_6500_relative_mid_db": -1.6868609971402009,
+          "max_excursion_mm": 0.04960917146537524,
+          "max_throat_speed_m_s": 0.33053642192240446
+        },
+        "2": {
+          "ripple_db": 3.413727513200243,
+          "mean_spl_db": 103.63012116422586,
+          "spl_500_db": 101.70055788398044,
+          "spl_6500_db": 101.98123552389711,
+          "level_6500_relative_mid_db": -1.5649036008344552,
+          "max_excursion_mm": 0.04668307537484274,
+          "max_throat_speed_m_s": 0.3110404032751107
+        },
+        "4": {
+          "ripple_db": 3.655510852733528,
+          "mean_spl_db": 103.56971035270577,
+          "spl_500_db": 101.44200615616349,
+          "spl_6500_db": 101.97869686363879,
+          "level_6500_relative_mid_db": -1.5045847223793487,
+          "max_excursion_mm": 0.045313944902153916,
+          "max_throat_speed_m_s": 0.3019181487761951
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1120": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 5.4828456863737784,
+          "mean_spl_db": 101.64145088104958,
+          "spl_500_db": 100.76050034719059,
+          "spl_6500_db": 98.2013968936422,
+          "level_6500_relative_mid_db": -3.821891287509871,
+          "max_excursion_mm": 0.053845380798099654,
+          "max_throat_speed_m_s": 0.8538381995094699
+        },
+        "20": {
+          "ripple_db": 7.666019874017877,
+          "mean_spl_db": 101.95508478655755,
+          "spl_500_db": 100.82152853577726,
+          "spl_6500_db": 96.64752859007251,
+          "level_6500_relative_mid_db": -5.71936912821613,
+          "max_excursion_mm": 0.05364869284240042,
+          "max_throat_speed_m_s": 0.8598585025312583
+        },
+        "40": {
+          "ripple_db": 13.48316719325554,
+          "mean_spl_db": 101.85287007950717,
+          "spl_500_db": 100.94461426583123,
+          "spl_6500_db": 92.18416806890097,
+          "level_6500_relative_mid_db": -10.88500281048836,
+          "max_excursion_mm": 0.05324757688404577,
+          "max_throat_speed_m_s": 0.8721301018328128
+        },
+        "60": {
+          "ripple_db": 17.51049574713609,
+          "mean_spl_db": 101.3623664115197,
+          "spl_500_db": 101.06908770332674,
+          "spl_6500_db": 88.73745492292991,
+          "level_6500_relative_mid_db": -15.033847753310042,
+          "max_excursion_mm": 0.05283590847076831,
+          "max_throat_speed_m_s": 0.8847181734486614
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 7.841981833498195,
+          "mean_spl_db": 102.68581540423205,
+          "spl_500_db": 104.42322751732672,
+          "spl_6500_db": 96.67465302523063,
+          "level_6500_relative_mid_db": -6.367038617999967,
+          "max_excursion_mm": 0.08121646710426898,
+          "max_throat_speed_m_s": 1.3017031000234023
+        },
+        "1": {
+          "ripple_db": 7.702985119876175,
+          "mean_spl_db": 102.1874604959068,
+          "spl_500_db": 101.95351714808913,
+          "spl_6500_db": 96.65656071481638,
+          "level_6500_relative_mid_db": -5.928679554584306,
+          "max_excursion_mm": 0.061116514095060304,
+          "max_throat_speed_m_s": 0.979549575309984
+        },
+        "2": {
+          "ripple_db": 7.666019874017877,
+          "mean_spl_db": 101.95508478655755,
+          "spl_500_db": 100.82152853577726,
+          "spl_6500_db": 96.64752859007251,
+          "level_6500_relative_mid_db": -5.71936912821613,
+          "max_excursion_mm": 0.05364869284240042,
+          "max_throat_speed_m_s": 0.8598585025312583
+        },
+        "4": {
+          "ripple_db": 7.647618533847378,
+          "mean_spl_db": 101.84314266555123,
+          "spl_500_db": 100.2895474584146,
+          "spl_6500_db": 96.64301602690985,
+          "level_6500_relative_mid_db": -5.617020105028317,
+          "max_excursion_mm": 0.05046149243217355,
+          "max_throat_speed_m_s": 0.8087754056875879
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1120ndu": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 5.4828456863737784,
+          "mean_spl_db": 101.64145088104958,
+          "spl_500_db": 100.76050034719059,
+          "spl_6500_db": 98.2013968936422,
+          "level_6500_relative_mid_db": -3.821891287509871,
+          "max_excursion_mm": 0.053845380798099654,
+          "max_throat_speed_m_s": 0.8538381995094699
+        },
+        "20": {
+          "ripple_db": 7.666019874017877,
+          "mean_spl_db": 101.95508478655755,
+          "spl_500_db": 100.82152853577726,
+          "spl_6500_db": 96.64752859007251,
+          "level_6500_relative_mid_db": -5.71936912821613,
+          "max_excursion_mm": 0.05364869284240042,
+          "max_throat_speed_m_s": 0.8598585025312583
+        },
+        "40": {
+          "ripple_db": 13.48316719325554,
+          "mean_spl_db": 101.85287007950717,
+          "spl_500_db": 100.94461426583123,
+          "spl_6500_db": 92.18416806890097,
+          "level_6500_relative_mid_db": -10.88500281048836,
+          "max_excursion_mm": 0.05324757688404577,
+          "max_throat_speed_m_s": 0.8721301018328128
+        },
+        "60": {
+          "ripple_db": 17.51049574713609,
+          "mean_spl_db": 101.3623664115197,
+          "spl_500_db": 101.06908770332674,
+          "spl_6500_db": 88.73745492292991,
+          "level_6500_relative_mid_db": -15.033847753310042,
+          "max_excursion_mm": 0.05283590847076831,
+          "max_throat_speed_m_s": 0.8847181734486614
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 7.841981833498195,
+          "mean_spl_db": 102.68581540423205,
+          "spl_500_db": 104.42322751732672,
+          "spl_6500_db": 96.67465302523063,
+          "level_6500_relative_mid_db": -6.367038617999967,
+          "max_excursion_mm": 0.08121646710426898,
+          "max_throat_speed_m_s": 1.3017031000234023
+        },
+        "1": {
+          "ripple_db": 7.702985119876175,
+          "mean_spl_db": 102.1874604959068,
+          "spl_500_db": 101.95351714808913,
+          "spl_6500_db": 96.65656071481638,
+          "level_6500_relative_mid_db": -5.928679554584306,
+          "max_excursion_mm": 0.061116514095060304,
+          "max_throat_speed_m_s": 0.979549575309984
+        },
+        "2": {
+          "ripple_db": 7.666019874017877,
+          "mean_spl_db": 101.95508478655755,
+          "spl_500_db": 100.82152853577726,
+          "spl_6500_db": 96.64752859007251,
+          "level_6500_relative_mid_db": -5.71936912821613,
+          "max_excursion_mm": 0.05364869284240042,
+          "max_throat_speed_m_s": 0.8598585025312583
+        },
+        "4": {
+          "ripple_db": 7.647618533847378,
+          "mean_spl_db": 101.84314266555123,
+          "spl_500_db": 100.2895474584146,
+          "spl_6500_db": 96.64301602690985,
+          "level_6500_relative_mid_db": -5.617020105028317,
+          "max_excursion_mm": 0.05046149243217355,
+          "max_throat_speed_m_s": 0.8087754056875879
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1343": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 12.504802272848352,
+          "mean_spl_db": 100.36175156385897,
+          "spl_500_db": 100.9860060201094,
+          "spl_6500_db": 92.08425378578086,
+          "level_6500_relative_mid_db": -10.491212115726626,
+          "max_excursion_mm": 0.027598395951126092,
+          "max_throat_speed_m_s": 0.6039842747199383
+        },
+        "20": {
+          "ripple_db": 16.566457529944174,
+          "mean_spl_db": 100.08385116637606,
+          "spl_500_db": 101.1308958931252,
+          "spl_6500_db": 88.62321343833075,
+          "level_6500_relative_mid_db": -14.535238670361124,
+          "max_excursion_mm": 0.02733665303842073,
+          "max_throat_speed_m_s": 0.6141438753984746
+        },
+        "40": {
+          "ripple_db": 22.511483496265456,
+          "mean_spl_db": 98.90596335755967,
+          "spl_500_db": 101.42580422323924,
+          "spl_6500_db": 83.61598331710186,
+          "level_6500_relative_mid_db": -20.43088875580385,
+          "max_excursion_mm": 0.026813298560540093,
+          "max_throat_speed_m_s": 0.6353536682267351
+        },
+        "60": {
+          "ripple_db": 26.321853402919928,
+          "mean_spl_db": 97.6741317826872,
+          "spl_500_db": 101.72757426041309,
+          "spl_6500_db": 80.32350326615554,
+          "level_6500_relative_mid_db": -24.065571997323545,
+          "max_excursion_mm": 0.026296633478914307,
+          "max_throat_speed_m_s": 0.6578154107157512
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 16.83670100671847,
+          "mean_spl_db": 100.42976155245448,
+          "spl_500_db": 102.77992663083538,
+          "spl_6500_db": 88.63890763581173,
+          "level_6500_relative_mid_db": -14.839171963094174,
+          "max_excursion_mm": 0.03305193405255389,
+          "max_throat_speed_m_s": 0.742543091867216
+        },
+        "1": {
+          "ripple_db": 16.655817345359807,
+          "mean_spl_db": 100.19624979133887,
+          "spl_500_db": 101.65642673364775,
+          "spl_6500_db": 88.62844168947697,
+          "level_6500_relative_mid_db": -14.635499488459317,
+          "max_excursion_mm": 0.029041689824464163,
+          "max_throat_speed_m_s": 0.6524491462743918
+        },
+        "2": {
+          "ripple_db": 16.566457529944174,
+          "mean_spl_db": 100.08385116637606,
+          "spl_500_db": 101.1308958931252,
+          "spl_6500_db": 88.62321343833075,
+          "level_6500_relative_mid_db": -14.535238670361124,
+          "max_excursion_mm": 0.02733665303842073,
+          "max_throat_speed_m_s": 0.6141438753984746
+        },
+        "4": {
+          "ripple_db": 16.522008227192188,
+          "mean_spl_db": 100.02868638492815,
+          "spl_500_db": 100.87687663512688,
+          "spl_6500_db": 88.62060049160773,
+          "level_6500_relative_mid_db": -14.48549884210901,
+          "max_excursion_mm": 0.02654876832942747,
+          "max_throat_speed_m_s": 0.5964432970625586
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1343ndu": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 12.504802272848352,
+          "mean_spl_db": 100.36175156385897,
+          "spl_500_db": 100.9860060201094,
+          "spl_6500_db": 92.08425378578086,
+          "level_6500_relative_mid_db": -10.491212115726626,
+          "max_excursion_mm": 0.027598395951126092,
+          "max_throat_speed_m_s": 0.6039842747199383
+        },
+        "20": {
+          "ripple_db": 16.566457529944174,
+          "mean_spl_db": 100.08385116637606,
+          "spl_500_db": 101.1308958931252,
+          "spl_6500_db": 88.62321343833075,
+          "level_6500_relative_mid_db": -14.535238670361124,
+          "max_excursion_mm": 0.02733665303842073,
+          "max_throat_speed_m_s": 0.6141438753984746
+        },
+        "40": {
+          "ripple_db": 22.511483496265456,
+          "mean_spl_db": 98.90596335755967,
+          "spl_500_db": 101.42580422323924,
+          "spl_6500_db": 83.61598331710186,
+          "level_6500_relative_mid_db": -20.43088875580385,
+          "max_excursion_mm": 0.026813298560540093,
+          "max_throat_speed_m_s": 0.6353536682267351
+        },
+        "60": {
+          "ripple_db": 26.321853402919928,
+          "mean_spl_db": 97.6741317826872,
+          "spl_500_db": 101.72757426041309,
+          "spl_6500_db": 80.32350326615554,
+          "level_6500_relative_mid_db": -24.065571997323545,
+          "max_excursion_mm": 0.026296633478914307,
+          "max_throat_speed_m_s": 0.6578154107157512
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 16.83670100671847,
+          "mean_spl_db": 100.42976155245448,
+          "spl_500_db": 102.77992663083538,
+          "spl_6500_db": 88.63890763581173,
+          "level_6500_relative_mid_db": -14.839171963094174,
+          "max_excursion_mm": 0.03305193405255389,
+          "max_throat_speed_m_s": 0.742543091867216
+        },
+        "1": {
+          "ripple_db": 16.655817345359807,
+          "mean_spl_db": 100.19624979133887,
+          "spl_500_db": 101.65642673364775,
+          "spl_6500_db": 88.62844168947697,
+          "level_6500_relative_mid_db": -14.635499488459317,
+          "max_excursion_mm": 0.029041689824464163,
+          "max_throat_speed_m_s": 0.6524491462743918
+        },
+        "2": {
+          "ripple_db": 16.566457529944174,
+          "mean_spl_db": 100.08385116637606,
+          "spl_500_db": 101.1308958931252,
+          "spl_6500_db": 88.62321343833075,
+          "level_6500_relative_mid_db": -14.535238670361124,
+          "max_excursion_mm": 0.02733665303842073,
+          "max_throat_speed_m_s": 0.6141438753984746
+        },
+        "4": {
+          "ripple_db": 16.522008227192188,
+          "mean_spl_db": 100.02868638492815,
+          "spl_500_db": 100.87687663512688,
+          "spl_6500_db": 88.62060049160773,
+          "level_6500_relative_mid_db": -14.48549884210901,
+          "max_excursion_mm": 0.02654876832942747,
+          "max_throat_speed_m_s": 0.5964432970625586
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1362": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 12.256572580722349,
+          "mean_spl_db": 100.45150561933151,
+          "spl_500_db": 100.91396920953218,
+          "spl_6500_db": 92.37317583180524,
+          "level_6500_relative_mid_db": -10.204932776143153,
+          "max_excursion_mm": 0.025456436201937462,
+          "max_throat_speed_m_s": 0.5989958189583268
+        },
+        "20": {
+          "ripple_db": 16.338036551484095,
+          "mean_spl_db": 100.19624634707624,
+          "spl_500_db": 101.05306794837227,
+          "spl_6500_db": 88.9071607034212,
+          "level_6500_relative_mid_db": -14.261974454333057,
+          "max_excursion_mm": 0.025198201641492377,
+          "max_throat_speed_m_s": 0.608665558707771
+        },
+        "40": {
+          "ripple_db": 22.34639071411877,
+          "mean_spl_db": 99.0475677820345,
+          "spl_500_db": 101.33612968422543,
+          "spl_6500_db": 83.88542047800898,
+          "level_6500_relative_mid_db": -20.214118443800814,
+          "max_excursion_mm": 0.024682100739333267,
+          "max_throat_speed_m_s": 0.6288279179148224
+        },
+        "60": {
+          "ripple_db": 26.23364284997473,
+          "mean_spl_db": 97.83555601366716,
+          "spl_500_db": 101.62573121444831,
+          "spl_6500_db": 80.58568901699105,
+          "level_6500_relative_mid_db": -23.923098067030296,
+          "max_excursion_mm": 0.024172613296761212,
+          "max_throat_speed_m_s": 0.6501474915125965
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 16.623172801240358,
+          "mean_spl_db": 100.56525820251143,
+          "spl_500_db": 102.81332967350566,
+          "spl_6500_db": 88.92459619221954,
+          "level_6500_relative_mid_db": -14.582749092692751,
+          "max_excursion_mm": 0.030859055760352284,
+          "max_throat_speed_m_s": 0.745404163471749
+        },
+        "1": {
+          "ripple_db": 16.432318693607485,
+          "mean_spl_db": 100.3159898437138,
+          "spl_500_db": 101.61274715699882,
+          "spl_6500_db": 88.91296864833006,
+          "level_6500_relative_mid_db": -14.36778624855026,
+          "max_excursion_mm": 0.026875311542780785,
+          "max_throat_speed_m_s": 0.6491763479142972
+        },
+        "2": {
+          "ripple_db": 16.338036551484095,
+          "mean_spl_db": 100.19624634707624,
+          "spl_500_db": 101.05306794837227,
+          "spl_6500_db": 88.9071607034212,
+          "level_6500_relative_mid_db": -14.261974454333057,
+          "max_excursion_mm": 0.025198201641492377,
+          "max_throat_speed_m_s": 0.608665558707771
+        },
+        "4": {
+          "ripple_db": 16.291127075305482,
+          "mean_spl_db": 100.13753390496653,
+          "spl_500_db": 100.78306269252067,
+          "spl_6500_db": 88.90425818545744,
+          "level_6500_relative_mid_db": -14.20948420568844,
+          "max_excursion_mm": 0.024426952288924438,
+          "max_throat_speed_m_s": 0.5900359388339945
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1362ndu": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 12.256572580722349,
+          "mean_spl_db": 100.45150561933151,
+          "spl_500_db": 100.91396920953218,
+          "spl_6500_db": 92.37317583180524,
+          "level_6500_relative_mid_db": -10.204932776143153,
+          "max_excursion_mm": 0.025456436201937462,
+          "max_throat_speed_m_s": 0.5989958189583268
+        },
+        "20": {
+          "ripple_db": 16.338036551484095,
+          "mean_spl_db": 100.19624634707624,
+          "spl_500_db": 101.05306794837227,
+          "spl_6500_db": 88.9071607034212,
+          "level_6500_relative_mid_db": -14.261974454333057,
+          "max_excursion_mm": 0.025198201641492377,
+          "max_throat_speed_m_s": 0.608665558707771
+        },
+        "40": {
+          "ripple_db": 22.34639071411877,
+          "mean_spl_db": 99.0475677820345,
+          "spl_500_db": 101.33612968422543,
+          "spl_6500_db": 83.88542047800898,
+          "level_6500_relative_mid_db": -20.214118443800814,
+          "max_excursion_mm": 0.024682100739333267,
+          "max_throat_speed_m_s": 0.6288279179148224
+        },
+        "60": {
+          "ripple_db": 26.23364284997473,
+          "mean_spl_db": 97.83555601366716,
+          "spl_500_db": 101.62573121444831,
+          "spl_6500_db": 80.58568901699105,
+          "level_6500_relative_mid_db": -23.923098067030296,
+          "max_excursion_mm": 0.024172613296761212,
+          "max_throat_speed_m_s": 0.6501474915125965
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 16.623172801240358,
+          "mean_spl_db": 100.56525820251143,
+          "spl_500_db": 102.81332967350566,
+          "spl_6500_db": 88.92459619221954,
+          "level_6500_relative_mid_db": -14.582749092692751,
+          "max_excursion_mm": 0.030859055760352284,
+          "max_throat_speed_m_s": 0.745404163471749
+        },
+        "1": {
+          "ripple_db": 16.432318693607485,
+          "mean_spl_db": 100.3159898437138,
+          "spl_500_db": 101.61274715699882,
+          "spl_6500_db": 88.91296864833006,
+          "level_6500_relative_mid_db": -14.36778624855026,
+          "max_excursion_mm": 0.026875311542780785,
+          "max_throat_speed_m_s": 0.6491763479142972
+        },
+        "2": {
+          "ripple_db": 16.338036551484095,
+          "mean_spl_db": 100.19624634707624,
+          "spl_500_db": 101.05306794837227,
+          "spl_6500_db": 88.9071607034212,
+          "level_6500_relative_mid_db": -14.261974454333057,
+          "max_excursion_mm": 0.025198201641492377,
+          "max_throat_speed_m_s": 0.608665558707771
+        },
+        "4": {
+          "ripple_db": 16.291127075305482,
+          "mean_spl_db": 100.13753390496653,
+          "spl_500_db": 100.78306269252067,
+          "spl_6500_db": 88.90425818545744,
+          "level_6500_relative_mid_db": -14.20948420568844,
+          "max_excursion_mm": 0.024426952288924438,
+          "max_throat_speed_m_s": 0.5900359388339945
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1426": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 5.819682992293167,
+          "mean_spl_db": 100.53166047464953,
+          "spl_500_db": 99.67507427690641,
+          "spl_6500_db": 96.82745942374424,
+          "level_6500_relative_mid_db": -4.192718099139896,
+          "max_excursion_mm": 0.04970349365654965,
+          "max_throat_speed_m_s": 0.9332860432587492
+        },
+        "20": {
+          "ripple_db": 8.570551169603732,
+          "mean_spl_db": 100.850093470636,
+          "spl_500_db": 99.74632150567876,
+          "spl_6500_db": 94.64474987703261,
+          "level_6500_relative_mid_db": -6.773072825934662,
+          "max_excursion_mm": 0.049543687173933856,
+          "max_throat_speed_m_s": 0.940972936319719
+        },
+        "40": {
+          "ripple_db": 15.26404463560867,
+          "mean_spl_db": 100.60765947231526,
+          "spl_500_db": 99.89027532673282,
+          "spl_6500_db": 89.50073579950065,
+          "level_6500_relative_mid_db": -12.735857549830797,
+          "max_excursion_mm": 0.04921634783407466,
+          "max_throat_speed_m_s": 0.9566979067969283
+        },
+        "60": {
+          "ripple_db": 19.40677405676547,
+          "mean_spl_db": 99.98944849063186,
+          "spl_500_db": 100.03620538882309,
+          "spl_6500_db": 85.88860313640322,
+          "level_6500_relative_mid_db": -17.166769189756465,
+          "max_excursion_mm": 0.04887837839221504,
+          "max_throat_speed_m_s": 0.9729069971597798
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 8.789115556060977,
+          "mean_spl_db": 101.42000795839992,
+          "spl_500_db": 102.43537749661995,
+          "spl_6500_db": 94.66600244125468,
+          "level_6500_relative_mid_db": -7.291754274927996,
+          "max_excursion_mm": 0.06752135116775346,
+          "max_throat_speed_m_s": 1.2824189659025536
+        },
+        "1": {
+          "ripple_db": 8.599822319471826,
+          "mean_spl_db": 101.03326242535549,
+          "spl_500_db": 100.60268095814108,
+          "spl_6500_db": 94.651828312091,
+          "level_6500_relative_mid_db": -6.941737270845763,
+          "max_excursion_mm": 0.05467720390734898,
+          "max_throat_speed_m_s": 1.038472750924343
+        },
+        "2": {
+          "ripple_db": 8.570551169603732,
+          "mean_spl_db": 100.850093470636,
+          "spl_500_db": 99.74632150567876,
+          "spl_6500_db": 94.64474987703261,
+          "level_6500_relative_mid_db": -6.773072825934662,
+          "max_excursion_mm": 0.049543687173933856,
+          "max_throat_speed_m_s": 0.940972936319719
+        },
+        "4": {
+          "ripple_db": 8.555966935743555,
+          "mean_spl_db": 100.76107815811585,
+          "spl_500_db": 99.33678410816528,
+          "spl_6500_db": 94.64121281281692,
+          "level_6500_relative_mid_db": -6.690243004361193,
+          "max_excursion_mm": 0.04726193025238504,
+          "max_throat_speed_m_s": 0.8976360021327282
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1426ndu": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 5.819682992293167,
+          "mean_spl_db": 100.53166047464953,
+          "spl_500_db": 99.67507427690641,
+          "spl_6500_db": 96.82745942374424,
+          "level_6500_relative_mid_db": -4.192718099139896,
+          "max_excursion_mm": 0.04970349365654965,
+          "max_throat_speed_m_s": 0.9332860432587492
+        },
+        "20": {
+          "ripple_db": 8.570551169603732,
+          "mean_spl_db": 100.850093470636,
+          "spl_500_db": 99.74632150567876,
+          "spl_6500_db": 94.64474987703261,
+          "level_6500_relative_mid_db": -6.773072825934662,
+          "max_excursion_mm": 0.049543687173933856,
+          "max_throat_speed_m_s": 0.940972936319719
+        },
+        "40": {
+          "ripple_db": 15.26404463560867,
+          "mean_spl_db": 100.60765947231526,
+          "spl_500_db": 99.89027532673282,
+          "spl_6500_db": 89.50073579950065,
+          "level_6500_relative_mid_db": -12.735857549830797,
+          "max_excursion_mm": 0.04921634783407466,
+          "max_throat_speed_m_s": 0.9566979067969283
+        },
+        "60": {
+          "ripple_db": 19.40677405676547,
+          "mean_spl_db": 99.98944849063186,
+          "spl_500_db": 100.03620538882309,
+          "spl_6500_db": 85.88860313640322,
+          "level_6500_relative_mid_db": -17.166769189756465,
+          "max_excursion_mm": 0.04887837839221504,
+          "max_throat_speed_m_s": 0.9729069971597798
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 8.789115556060977,
+          "mean_spl_db": 101.42000795839992,
+          "spl_500_db": 102.43537749661995,
+          "spl_6500_db": 94.66600244125468,
+          "level_6500_relative_mid_db": -7.291754274927996,
+          "max_excursion_mm": 0.06752135116775346,
+          "max_throat_speed_m_s": 1.2824189659025536
+        },
+        "1": {
+          "ripple_db": 8.599822319471826,
+          "mean_spl_db": 101.03326242535549,
+          "spl_500_db": 100.60268095814108,
+          "spl_6500_db": 94.651828312091,
+          "level_6500_relative_mid_db": -6.941737270845763,
+          "max_excursion_mm": 0.05467720390734898,
+          "max_throat_speed_m_s": 1.038472750924343
+        },
+        "2": {
+          "ripple_db": 8.570551169603732,
+          "mean_spl_db": 100.850093470636,
+          "spl_500_db": 99.74632150567876,
+          "spl_6500_db": 94.64474987703261,
+          "level_6500_relative_mid_db": -6.773072825934662,
+          "max_excursion_mm": 0.049543687173933856,
+          "max_throat_speed_m_s": 0.940972936319719
+        },
+        "4": {
+          "ripple_db": 8.555966935743555,
+          "mean_spl_db": 100.76107815811585,
+          "spl_500_db": 99.33678410816528,
+          "spl_6500_db": 94.64121281281692,
+          "level_6500_relative_mid_db": -6.690243004361193,
+          "max_excursion_mm": 0.04726193025238504,
+          "max_throat_speed_m_s": 0.8976360021327282
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1660ndm-sq2": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 6.442217664518978,
+          "mean_spl_db": 102.22264617101597,
+          "spl_500_db": 103.37403023053228,
+          "spl_6500_db": 97.69606556226233,
+          "level_6500_relative_mid_db": -5.135087297916741,
+          "max_excursion_mm": 0.07431125089215766,
+          "max_throat_speed_m_s": 1.8091099702944313
+        },
+        "20": {
+          "ripple_db": 9.902223308500538,
+          "mean_spl_db": 102.54958070420537,
+          "spl_500_db": 103.44486221007222,
+          "spl_6500_db": 94.73605466765802,
+          "level_6500_relative_mid_db": -8.53243388783092,
+          "max_excursion_mm": 0.07400553438498689,
+          "max_throat_speed_m_s": 1.823923277931658
+        },
+        "40": {
+          "ripple_db": 17.304571711820444,
+          "mean_spl_db": 102.16077964267936,
+          "spl_500_db": 103.58749971057,
+          "spl_6500_db": 88.92357622710193,
+          "level_6500_relative_mid_db": -15.258579092983894,
+          "max_excursion_mm": 0.07337524800348726,
+          "max_throat_speed_m_s": 1.854122572369373
+        },
+        "60": {
+          "ripple_db": 21.848528695532366,
+          "mean_spl_db": 101.41906531035771,
+          "spl_500_db": 103.73141229900769,
+          "spl_6500_db": 85.16558408368815,
+          "level_6500_relative_mid_db": -19.944670239687028,
+          "max_excursion_mm": 0.07271885324326148,
+          "max_throat_speed_m_s": 1.8850985984253485
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 9.902223308500538,
+          "mean_spl_db": 102.54958070420537,
+          "spl_500_db": 103.44486221007222,
+          "spl_6500_db": 94.73605466765802,
+          "level_6500_relative_mid_db": -8.53243388783092,
+          "max_excursion_mm": 0.07400553438498689,
+          "max_throat_speed_m_s": 1.823923277931658
+        },
+        "1": {
+          "ripple_db": 9.902223308500538,
+          "mean_spl_db": 102.54958070420537,
+          "spl_500_db": 103.44486221007222,
+          "spl_6500_db": 94.73605466765802,
+          "level_6500_relative_mid_db": -8.53243388783092,
+          "max_excursion_mm": 0.07400553438498689,
+          "max_throat_speed_m_s": 1.823923277931658
+        },
+        "2": {
+          "ripple_db": 9.902223308500538,
+          "mean_spl_db": 102.54958070420537,
+          "spl_500_db": 103.44486221007222,
+          "spl_6500_db": 94.73605466765802,
+          "level_6500_relative_mid_db": -8.53243388783092,
+          "max_excursion_mm": 0.07400553438498689,
+          "max_throat_speed_m_s": 1.823923277931658
+        },
+        "4": {
+          "ripple_db": 9.902223308500538,
+          "mean_spl_db": 102.54958070420537,
+          "spl_500_db": 103.44486221007222,
+          "spl_6500_db": 94.73605466765802,
+          "level_6500_relative_mid_db": -8.53243388783092,
+          "max_excursion_mm": 0.07400553438498689,
+          "max_throat_speed_m_s": 1.823923277931658
+        }
+      },
+      "factory_sealed_back": true
+    },
+    "phl-1660ndm": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 6.150264758856849,
+          "mean_spl_db": 101.76348012451999,
+          "spl_500_db": 101.52958839626811,
+          "spl_6500_db": 97.6784666074999,
+          "level_6500_relative_mid_db": -4.686248806366706,
+          "max_excursion_mm": 0.06009418922951214,
+          "max_throat_speed_m_s": 1.4629951129424996
+        },
+        "20": {
+          "ripple_db": 9.616770035207125,
+          "mean_spl_db": 102.09325537102039,
+          "spl_500_db": 101.60512252073026,
+          "spl_6500_db": 94.71789809214029,
+          "level_6500_relative_mid_db": -8.089983811355907,
+          "max_excursion_mm": 0.05987936890759146,
+          "max_throat_speed_m_s": 1.4757730719199997
+        },
+        "40": {
+          "ripple_db": 17.214350011090374,
+          "mean_spl_db": 101.70964251204823,
+          "spl_500_db": 101.75771199118854,
+          "spl_6500_db": 88.90576155365625,
+          "level_6500_relative_mid_db": -14.827896099273488,
+          "max_excursion_mm": 0.059437453726895136,
+          "max_throat_speed_m_s": 1.5019277971497789
+        },
+        "60": {
+          "ripple_db": 21.68421360983136,
+          "mean_spl_db": 100.9727701388129,
+          "spl_500_db": 101.9123515052809,
+          "spl_6500_db": 85.14799026784941,
+          "level_6500_relative_mid_db": -19.525217626794813,
+          "max_excursion_mm": 0.058978535163272144,
+          "max_throat_speed_m_s": 1.5289068654801299
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 9.945969125325021,
+          "mean_spl_db": 102.6195094490071,
+          "spl_500_db": 103.70074290223985,
+          "spl_6500_db": 94.73878651724078,
+          "level_6500_relative_mid_db": -8.601272465146707,
+          "max_excursion_mm": 0.07621812023346052,
+          "max_throat_speed_m_s": 1.87845415683133
+        },
+        "1": {
+          "ripple_db": 9.725043794421993,
+          "mean_spl_db": 102.26561313945246,
+          "spl_500_db": 102.3216665432088,
+          "spl_6500_db": 94.72485534125839,
+          "level_6500_relative_mid_db": -8.256497937213027,
+          "max_excursion_mm": 0.06502860171143186,
+          "max_throat_speed_m_s": 1.6026798722351816
+        },
+        "2": {
+          "ripple_db": 9.616770035207125,
+          "mean_spl_db": 102.09325537102039,
+          "spl_500_db": 101.60512252073026,
+          "spl_6500_db": 94.71789809214029,
+          "level_6500_relative_mid_db": -8.089983811355907,
+          "max_excursion_mm": 0.05987936890759146,
+          "max_throat_speed_m_s": 1.4757730719199997
+        },
+        "4": {
+          "ripple_db": 9.5636705725111,
+          "mean_spl_db": 102.00862767698953,
+          "spl_500_db": 101.24987261569828,
+          "spl_6500_db": 94.71442154843405,
+          "level_6500_relative_mid_db": -8.008132848594741,
+          "max_excursion_mm": 0.05747972997218099,
+          "max_throat_speed_m_s": 1.4166321259178019
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1663": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 6.1290184176904035,
+          "mean_spl_db": 102.6177999535611,
+          "spl_500_db": 101.48292550476671,
+          "spl_6500_db": 98.73061529329861,
+          "level_6500_relative_mid_db": -4.516046057859398,
+          "max_excursion_mm": 0.059163821882828205,
+          "max_throat_speed_m_s": 1.1492310007206932
+        },
+        "20": {
+          "ripple_db": 8.763647736878355,
+          "mean_spl_db": 102.93117896555808,
+          "spl_500_db": 101.55538545910238,
+          "spl_6500_db": 96.54109061278578,
+          "level_6500_relative_mid_db": -7.098628128499385,
+          "max_excursion_mm": 0.05898183306898716,
+          "max_throat_speed_m_s": 1.1588582859712417
+        },
+        "40": {
+          "ripple_db": 15.41867539557542,
+          "mean_spl_db": 102.68037158553557,
+          "spl_500_db": 101.70170658737389,
+          "spl_6500_db": 91.39928278859487,
+          "level_6500_relative_mid_db": -13.048389760983355,
+          "max_excursion_mm": 0.05860810634623087,
+          "max_throat_speed_m_s": 1.1785455890935437
+        },
+        "60": {
+          "ripple_db": 19.627525242818237,
+          "mean_spl_db": 102.05582536837288,
+          "spl_500_db": 101.84991544771438,
+          "spl_6500_db": 87.78960973120314,
+          "level_6500_relative_mid_db": -17.46374987069285,
+          "max_excursion_mm": 0.058220916172770906,
+          "max_throat_speed_m_s": 1.1988278673992108
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 9.09926725735103,
+          "mean_spl_db": 103.44725613737806,
+          "spl_500_db": 103.59973686065413,
+          "spl_6500_db": 96.56179161750268,
+          "level_6500_relative_mid_db": -7.6087879712344915,
+          "max_excursion_mm": 0.07463384834777126,
+          "max_throat_speed_m_s": 1.466384631867478
+        },
+        "1": {
+          "ripple_db": 8.873367869706058,
+          "mean_spl_db": 103.10045463874154,
+          "spl_500_db": 102.25235154571433,
+          "spl_6500_db": 96.5479854880524,
+          "level_6500_relative_mid_db": -7.264964081632314,
+          "max_excursion_mm": 0.0639096692545297,
+          "max_throat_speed_m_s": 1.2556790102245126
+        },
+        "2": {
+          "ripple_db": 8.763647736878355,
+          "mean_spl_db": 102.93117896555808,
+          "spl_500_db": 101.55538545910238,
+          "spl_6500_db": 96.54109061278578,
+          "level_6500_relative_mid_db": -7.098628128499385,
+          "max_excursion_mm": 0.05898183306898716,
+          "max_throat_speed_m_s": 1.1588582859712417
+        },
+        "4": {
+          "ripple_db": 8.709839577569014,
+          "mean_spl_db": 102.84795915690553,
+          "spl_500_db": 101.2098945890466,
+          "spl_6500_db": 96.53764521875536,
+          "level_6500_relative_mid_db": -7.016804140301048,
+          "max_excursion_mm": 0.056681811591194585,
+          "max_throat_speed_m_s": 1.1136681179353614
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1680ndm-10": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 7.474666801520584,
+          "mean_spl_db": 100.57741586390154,
+          "spl_500_db": 100.78998383048454,
+          "spl_6500_db": 95.52474003373119,
+          "level_6500_relative_mid_db": -6.0624104556870435,
+          "max_excursion_mm": 0.06352002874647239,
+          "max_throat_speed_m_s": 1.0611096128669917
+        },
+        "20": {
+          "ripple_db": 10.187660783307336,
+          "mean_spl_db": 100.86361949968256,
+          "spl_500_db": 100.86771688398342,
+          "spl_6500_db": 93.26909350704977,
+          "level_6500_relative_mid_db": -8.72723076031123,
+          "max_excursion_mm": 0.06336309547356994,
+          "max_throat_speed_m_s": 1.0706484722247558
+        },
+        "40": {
+          "ripple_db": 16.238755626487404,
+          "mean_spl_db": 100.57068728369379,
+          "spl_500_db": 101.02486309076069,
+          "spl_6500_db": 88.15215309829946,
+          "level_6500_relative_mid_db": -14.68076382091617,
+          "max_excursion_mm": 0.0630401246601205,
+          "max_throat_speed_m_s": 1.090195065458352
+        },
+        "60": {
+          "ripple_db": 20.752827739440235,
+          "mean_spl_db": 99.92004361370438,
+          "spl_500_db": 101.18428165222333,
+          "spl_6500_db": 84.56799346715499,
+          "level_6500_relative_mid_db": -19.086088524731437,
+          "max_excursion_mm": 0.06270452672326925,
+          "max_throat_speed_m_s": 1.1103889723991989
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 10.464140326678134,
+          "mean_spl_db": 101.27622196971686,
+          "spl_500_db": 102.47737474701088,
+          "spl_6500_db": 93.28418354586971,
+          "level_6500_relative_mid_db": -9.13664224897984,
+          "max_excursion_mm": 0.07626394710793741,
+          "max_throat_speed_m_s": 1.2886346199895091
+        },
+        "1": {
+          "ripple_db": 10.27881531200272,
+          "mean_spl_db": 100.99922745540549,
+          "spl_500_db": 101.41423301966068,
+          "spl_6500_db": 93.27412061393423,
+          "level_6500_relative_mid_db": -8.861203664178618,
+          "max_excursion_mm": 0.06747799852681993,
+          "max_throat_speed_m_s": 1.1401781351048275
+        },
+        "2": {
+          "ripple_db": 10.187660783307336,
+          "mean_spl_db": 100.86361949968256,
+          "spl_500_db": 100.86771688398342,
+          "spl_6500_db": 93.26909350704977,
+          "level_6500_relative_mid_db": -8.72723076031123,
+          "max_excursion_mm": 0.06336309547356994,
+          "max_throat_speed_m_s": 1.0706484722247558
+        },
+        "4": {
+          "ripple_db": 10.142452231119506,
+          "mean_spl_db": 100.79672953892452,
+          "spl_500_db": 100.59523901452116,
+          "spl_6500_db": 93.26658104191347,
+          "level_6500_relative_mid_db": -8.661148960920912,
+          "max_excursion_mm": 0.06140623809438739,
+          "max_throat_speed_m_s": 1.0375833836629536
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1683-26": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 6.594256482699976,
+          "mean_spl_db": 101.60985128636725,
+          "spl_500_db": 100.528884053718,
+          "spl_6500_db": 97.37515236593764,
+          "level_6500_relative_mid_db": -4.992457439876418,
+          "max_excursion_mm": 0.0616390160088589,
+          "max_throat_speed_m_s": 1.0296870720212778
+        },
+        "20": {
+          "ripple_db": 9.305888845834872,
+          "mean_spl_db": 101.89583321712412,
+          "spl_500_db": 100.6074988157907,
+          "spl_6500_db": 95.11992398293663,
+          "level_6500_relative_mid_db": -7.65568074196338,
+          "max_excursion_mm": 0.06149297184894394,
+          "max_throat_speed_m_s": 1.0390489269908518
+        },
+        "40": {
+          "ripple_db": 15.65520387474912,
+          "mean_spl_db": 101.60257959562593,
+          "spl_500_db": 100.76646868884181,
+          "spl_6500_db": 90.00286703781285,
+          "level_6500_relative_mid_db": -13.606268056590665,
+          "max_excursion_mm": 0.06119237976522035,
+          "max_throat_speed_m_s": 1.0582407763844228
+        },
+        "60": {
+          "ripple_db": 20.00465189931593,
+          "mean_spl_db": 100.95166108101543,
+          "spl_500_db": 100.92779509380819,
+          "spl_6500_db": 86.41856429994857,
+          "level_6500_relative_mid_db": -18.007770435439454,
+          "max_excursion_mm": 0.06087998914660469,
+          "max_throat_speed_m_s": 1.0780795601330433
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 9.573124836161128,
+          "mean_spl_db": 102.29489283655619,
+          "spl_500_db": 102.1863390058123,
+          "spl_6500_db": 95.13504708542847,
+          "level_6500_relative_mid_db": -8.053586523653422,
+          "max_excursion_mm": 0.07375092840561186,
+          "max_throat_speed_m_s": 1.2461720538189633
+        },
+        "1": {
+          "ripple_db": 9.3939759185007,
+          "mean_spl_db": 102.02700134664356,
+          "spl_500_db": 101.13973956419949,
+          "spl_6500_db": 95.12496209836291,
+          "level_6500_relative_mid_db": -7.7860328025803085,
+          "max_excursion_mm": 0.06537888650737847,
+          "max_throat_speed_m_s": 1.104709364839633
+        },
+        "2": {
+          "ripple_db": 9.305888845834872,
+          "mean_spl_db": 101.89583321712412,
+          "spl_500_db": 100.6074988157907,
+          "spl_6500_db": 95.11992398293663,
+          "level_6500_relative_mid_db": -7.65568074196338,
+          "max_excursion_mm": 0.06149297184894394,
+          "max_throat_speed_m_s": 1.0390489269908518
+        },
+        "4": {
+          "ripple_db": 9.2625997397908,
+          "mean_spl_db": 101.8311053886545,
+          "spl_500_db": 100.34288294025359,
+          "spl_6500_db": 95.11740601827569,
+          "level_6500_relative_mid_db": -7.591335562858632,
+          "max_excursion_mm": 0.05964783548036531,
+          "max_throat_speed_m_s": 1.0078715923088832
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1752": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 6.074121926114145,
+          "mean_spl_db": 102.1770332030658,
+          "spl_500_db": 101.4739386931268,
+          "spl_6500_db": 98.21571834676178,
+          "level_6500_relative_mid_db": -4.570864989225413,
+          "max_excursion_mm": 0.0617693813739241,
+          "max_throat_speed_m_s": 1.4536517994540858
+        },
+        "20": {
+          "ripple_db": 9.538091705828961,
+          "mean_spl_db": 102.50498794171688,
+          "spl_500_db": 101.55115302398379,
+          "spl_6500_db": 95.25543263916069,
+          "level_6500_relative_mid_db": -7.972167793159855,
+          "max_excursion_mm": 0.061560479860917304,
+          "max_throat_speed_m_s": 1.466631832069528
+        },
+        "40": {
+          "ripple_db": 17.181368241164293,
+          "mean_spl_db": 102.1187364303916,
+          "spl_500_db": 101.70715830268938,
+          "spl_6500_db": 89.44483114936149,
+          "level_6500_relative_mid_db": -14.702968201593691,
+          "max_excursion_mm": 0.06113019322897344,
+          "max_throat_speed_m_s": 1.493211653744086
+        },
+        "60": {
+          "ripple_db": 21.621311599343557,
+          "mean_spl_db": 101.37985675440827,
+          "spl_500_db": 101.8652872990501,
+          "spl_6500_db": 85.68763672490849,
+          "level_6500_relative_mid_db": -19.392169241793013,
+          "max_excursion_mm": 0.06068257878063351,
+          "max_throat_speed_m_s": 1.5206449378130333
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 9.863426548266432,
+          "mean_spl_db": 103.00362243287144,
+          "spl_500_db": 103.40795966535441,
+          "spl_6500_db": 95.27623930762923,
+          "level_6500_relative_mid_db": -8.473666875832393,
+          "max_excursion_mm": 0.07623288022211443,
+          "max_throat_speed_m_s": 1.8161906638268142
+        },
+        "1": {
+          "ripple_db": 9.64447799777163,
+          "mean_spl_db": 102.66937132573965,
+          "spl_500_db": 102.19777887179964,
+          "spl_6500_db": 95.26236268123355,
+          "level_6500_relative_mid_db": -8.135743442581514,
+          "max_excursion_mm": 0.06631828531997126,
+          "max_throat_speed_m_s": 1.5799829455242627
+        },
+        "2": {
+          "ripple_db": 9.538091705828961,
+          "mean_spl_db": 102.50498794171688,
+          "spl_500_db": 101.55115302398379,
+          "spl_6500_db": 95.25543263916069,
+          "level_6500_relative_mid_db": -7.972167793159855,
+          "max_excursion_mm": 0.061560479860917304,
+          "max_throat_speed_m_s": 1.466631832069528
+        },
+        "4": {
+          "ripple_db": 9.485392551118622,
+          "mean_spl_db": 102.42392522832519,
+          "spl_500_db": 101.22674489674608,
+          "spl_6500_db": 95.25196968208887,
+          "level_6500_relative_mid_db": -7.89168109678333,
+          "max_excursion_mm": 0.05930367268471253,
+          "max_throat_speed_m_s": 1.412865109475051
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "phl-1752ndu": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 6.009525889659301,
+          "mean_spl_db": 101.72193901078603,
+          "spl_500_db": 101.21670157543133,
+          "spl_6500_db": 97.77993115807922,
+          "level_6500_relative_mid_db": -4.507412512214145,
+          "max_excursion_mm": 0.059966872037766246,
+          "max_throat_speed_m_s": 1.4112323857938287
+        },
+        "20": {
+          "ripple_db": 9.476622816491869,
+          "mean_spl_db": 102.05056322101692,
+          "spl_500_db": 101.29302514303495,
+          "spl_6500_db": 94.81928502148735,
+          "level_6500_relative_mid_db": -7.911197348329225,
+          "max_excursion_mm": 0.05975793787272452,
+          "max_throat_speed_m_s": 1.4236876337056072
+        },
+        "40": {
+          "ripple_db": 17.152848778236404,
+          "mean_spl_db": 101.66547050489041,
+          "spl_500_db": 101.44724079462902,
+          "spl_6500_db": 89.00878578670076,
+          "level_6500_relative_mid_db": -14.64674933748644,
+          "max_excursion_mm": 0.05932802527791521,
+          "max_throat_speed_m_s": 1.4491905564044365
+        },
+        "60": {
+          "ripple_db": 21.58101116449265,
+          "mean_spl_db": 100.92765300826302,
+          "spl_500_db": 101.60357208468173,
+          "spl_6500_db": 85.25168630589587,
+          "level_6500_relative_mid_db": -19.34127396262072,
+          "max_excursion_mm": 0.05888141900324428,
+          "max_throat_speed_m_s": 1.4755096691294043
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 9.800368778843492,
+          "mean_spl_db": 102.56561386093388,
+          "spl_500_db": 103.34562053365215,
+          "spl_6500_db": 94.8400707161028,
+          "level_6500_relative_mid_db": -8.413335435949861,
+          "max_excursion_mm": 0.07568771113207914,
+          "max_throat_speed_m_s": 1.803202422943823
+        },
+        "1": {
+          "ripple_db": 9.582507798632477,
+          "mean_spl_db": 102.21931393228692,
+          "spl_500_db": 101.99274667652871,
+          "spl_6500_db": 94.82620808321072,
+          "level_6500_relative_mid_db": -8.074843948803249,
+          "max_excursion_mm": 0.06477116061318972,
+          "max_throat_speed_m_s": 1.543123870541847
+        },
+        "2": {
+          "ripple_db": 9.476622816491869,
+          "mean_spl_db": 102.05056322101692,
+          "spl_500_db": 101.29302514303495,
+          "spl_6500_db": 94.81928502148735,
+          "level_6500_relative_mid_db": -7.911197348329225,
+          "max_excursion_mm": 0.05975793787272452,
+          "max_throat_speed_m_s": 1.4236876337056072
+        },
+        "4": {
+          "ripple_db": 9.447192200065913,
+          "mean_spl_db": 101.96766043791733,
+          "spl_500_db": 100.94623237771299,
+          "spl_6500_db": 94.81582555050089,
+          "level_6500_relative_mid_db": -7.8307179460248335,
+          "max_excursion_mm": 0.057419044891223334,
+          "max_throat_speed_m_s": 1.3679652789380083
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "redcatt-dr-6p5-001-4r-b2-c0001": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 8.26139461584637,
+          "mean_spl_db": 90.81058225643439,
+          "spl_500_db": 93.35342772608941,
+          "spl_6500_db": 85.21672257476249,
+          "level_6500_relative_mid_db": -6.419848473233543,
+          "max_excursion_mm": 0.02649993342534791,
+          "max_throat_speed_m_s": 0.5707354411037312
+        },
+        "20": {
+          "ripple_db": 11.472767793891094,
+          "mean_spl_db": 91.06464125533635,
+          "spl_500_db": 93.4456964533961,
+          "spl_6500_db": 82.11426267494849,
+          "level_6500_relative_mid_db": -10.020218320281614,
+          "max_excursion_mm": 0.026456125819415324,
+          "max_throat_speed_m_s": 0.5768305830677294
+        },
+        "40": {
+          "ripple_db": 18.20771908530645,
+          "mean_spl_db": 90.57905986631624,
+          "spl_500_db": 93.6330002161054,
+          "spl_6500_db": 76.40099323557992,
+          "level_6500_relative_mid_db": -16.75950264401459,
+          "max_excursion_mm": 0.02636604224631861,
+          "max_throat_speed_m_s": 0.5894045259123651
+        },
+        "60": {
+          "ripple_db": 23.050970370575456,
+          "mean_spl_db": 89.78370369710338,
+          "spl_500_db": 93.82410519795242,
+          "spl_6500_db": 72.70524346636945,
+          "level_6500_relative_mid_db": -21.44756183682064,
+          "max_excursion_mm": 0.026272536417206137,
+          "max_throat_speed_m_s": 0.6025161820876556
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 12.866608096935309,
+          "mean_spl_db": 91.34792718604314,
+          "spl_500_db": 94.98971936855372,
+          "spl_6500_db": 82.12311127161841,
+          "level_6500_relative_mid_db": -10.260736641004556,
+          "max_excursion_mm": 0.03160293319308908,
+          "max_throat_speed_m_s": 0.6890479167226362
+        },
+        "1": {
+          "ripple_db": 11.872406960676912,
+          "mean_spl_db": 91.15637169362125,
+          "spl_500_db": 93.93137926775236,
+          "spl_6500_db": 82.11721120628582,
+          "level_6500_relative_mid_db": -10.09937935159138,
+          "max_excursion_mm": 0.027977595576060242,
+          "max_throat_speed_m_s": 0.6100036293722396
+        },
+        "2": {
+          "ripple_db": 11.472767793891094,
+          "mean_spl_db": 91.06464125533635,
+          "spl_500_db": 93.4456964533961,
+          "spl_6500_db": 82.11426267494849,
+          "level_6500_relative_mid_db": -10.020218320281614,
+          "max_excursion_mm": 0.026456125819415324,
+          "max_throat_speed_m_s": 0.5768305830677294
+        },
+        "4": {
+          "ripple_db": 11.319547394452158,
+          "mean_spl_db": 91.01970444878165,
+          "spl_500_db": 93.21242666970166,
+          "spl_6500_db": 82.1127887843152,
+          "level_6500_relative_mid_db": -9.981004716748501,
+          "max_excursion_mm": 0.025755071396061976,
+          "max_throat_speed_m_s": 0.5615452901814842
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "redcatt-dr-6p5-002-16r-b2-c0001": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 5.681759112630772,
+          "mean_spl_db": 95.28246585205052,
+          "spl_500_db": 94.3293326055496,
+          "spl_6500_db": 91.64985333822564,
+          "level_6500_relative_mid_db": -4.139083619042637,
+          "max_excursion_mm": 0.0279115104254415,
+          "max_throat_speed_m_s": 0.2285615140951192
+        },
+        "20": {
+          "ripple_db": 6.710271560271991,
+          "mean_spl_db": 95.46738590969649,
+          "spl_500_db": 94.39319427936786,
+          "spl_6500_db": 90.94178030976155,
+          "level_6500_relative_mid_db": -5.091234814685777,
+          "max_excursion_mm": 0.027869416066326633,
+          "max_throat_speed_m_s": 0.23024817047989055
+        },
+        "40": {
+          "ripple_db": 9.932066119598147,
+          "mean_spl_db": 95.47030559806296,
+          "spl_500_db": 94.5220248153592,
+          "spl_6500_db": 88.34167159173558,
+          "level_6500_relative_mid_db": -8.168715770038446,
+          "max_excursion_mm": 0.02778374290822634,
+          "max_throat_speed_m_s": 0.23368870119254442
+        },
+        "60": {
+          "ripple_db": 12.85771705290837,
+          "mean_spl_db": 95.18456016861003,
+          "spl_500_db": 94.65234698529676,
+          "spl_6500_db": 85.71563293064361,
+          "level_6500_relative_mid_db": -11.244725509798329,
+          "max_excursion_mm": 0.027696062817977114,
+          "max_throat_speed_m_s": 0.23722137744049007
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 6.919351792628305,
+          "mean_spl_db": 95.90393944541657,
+          "spl_500_db": 96.55543170620689,
+          "spl_6500_db": 90.9559739138083,
+          "level_6500_relative_mid_db": -5.485144842203937,
+          "max_excursion_mm": 0.0357470115468422,
+          "max_throat_speed_m_s": 0.29533033592076957
+        },
+        "1": {
+          "ripple_db": 6.734728953645501,
+          "mean_spl_db": 95.60815005864934,
+          "spl_500_db": 95.07572857783686,
+          "spl_6500_db": 90.94650893793019,
+          "level_6500_relative_mid_db": -5.220066524322135,
+          "max_excursion_mm": 0.030147727713456567,
+          "max_throat_speed_m_s": 0.24907085005402477
+        },
+        "2": {
+          "ripple_db": 6.710271560271991,
+          "mean_spl_db": 95.46738590969649,
+          "spl_500_db": 94.39319427936786,
+          "spl_6500_db": 90.94178030976155,
+          "level_6500_relative_mid_db": -5.091234814685777,
+          "max_excursion_mm": 0.027869416066326633,
+          "max_throat_speed_m_s": 0.23024817047989055
+        },
+        "4": {
+          "ripple_db": 6.698300634661308,
+          "mean_spl_db": 95.39870335475402,
+          "spl_500_db": 94.06607686857753,
+          "spl_6500_db": 90.93941695939773,
+          "level_6500_relative_mid_db": -5.02770579867645,
+          "max_excursion_mm": 0.026839350303584183,
+          "max_throat_speed_m_s": 0.2217380977614318
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "redcatt-dr-6p5-006-8r-b2-c0001": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 3.66506817309093,
+          "mean_spl_db": 103.35101430360466,
+          "spl_500_db": 101.28115013028071,
+          "spl_6500_db": 101.72971681901231,
+          "level_6500_relative_mid_db": -0.9303112213948452,
+          "max_excursion_mm": 0.045908950942875164,
+          "max_throat_speed_m_s": 0.32729057081962526
+        },
+        "20": {
+          "ripple_db": 4.050205548965849,
+          "mean_spl_db": 103.41278548497118,
+          "spl_500_db": 101.37976118783132,
+          "spl_6500_db": 101.04029575173898,
+          "level_6500_relative_mid_db": -1.7692466959486808,
+          "max_excursion_mm": 0.04562907195241602,
+          "max_throat_speed_m_s": 0.3310274788696758
+        },
+        "40": {
+          "ripple_db": 6.078613045371867,
+          "mean_spl_db": 103.27817772382431,
+          "spl_500_db": 101.57909334875538,
+          "spl_6500_db": 99.04996463339735,
+          "level_6500_relative_mid_db": -4.024157596173055,
+          "max_excursion_mm": 0.04505099221355299,
+          "max_throat_speed_m_s": 0.3387120555486118
+        },
+        "60": {
+          "ripple_db": 8.145869760064073,
+          "mean_spl_db": 102.93414215412305,
+          "spl_500_db": 101.78120868626871,
+          "spl_6500_db": 96.98091762949042,
+          "level_6500_relative_mid_db": -6.303201211515201,
+          "max_excursion_mm": 0.04444783207187495,
+          "max_throat_speed_m_s": 0.34668609353502605
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 4.5470600668711825,
+          "mean_spl_db": 103.82914674715411,
+          "spl_500_db": 103.04516073134099,
+          "spl_6500_db": 101.06202088842551,
+          "level_6500_relative_mid_db": -2.2445203928444784,
+          "max_excursion_mm": 0.05527281875816632,
+          "max_throat_speed_m_s": 0.4009904444827859
+        },
+        "1": {
+          "ripple_db": 4.079470421430415,
+          "mean_spl_db": 103.55127574398415,
+          "spl_500_db": 101.93791925590315,
+          "spl_6500_db": 101.0475314578847,
+          "level_6500_relative_mid_db": -1.9256506751258797,
+          "max_excursion_mm": 0.04865747175002956,
+          "max_throat_speed_m_s": 0.3529977602520998
+        },
+        "2": {
+          "ripple_db": 4.050205548965849,
+          "mean_spl_db": 103.41278548497118,
+          "spl_500_db": 101.37976118783132,
+          "spl_6500_db": 101.04029575173898,
+          "level_6500_relative_mid_db": -1.7692466959486808,
+          "max_excursion_mm": 0.04562907195241602,
+          "max_throat_speed_m_s": 0.3310274788696758
+        },
+        "4": {
+          "ripple_db": 4.035624549831525,
+          "mean_spl_db": 103.34392201844277,
+          "spl_500_db": 101.10334886189173,
+          "spl_6500_db": 101.03668014661487,
+          "level_6500_relative_mid_db": -1.691840494616926,
+          "max_excursion_mm": 0.04419987279467498,
+          "max_throat_speed_m_s": 0.3206589972471906
+        }
+      },
+      "factory_sealed_back": false
+    },
+    "celestion-cf0617m-le029": {
+      "front_cc": {
+        "10": {
+          "ripple_db": 4.970824067674499,
+          "mean_spl_db": 103.26269767122966,
+          "spl_500_db": 101.38724381567842,
+          "spl_6500_db": 100.52590560050538,
+          "level_6500_relative_mid_db": -2.9360304140389104,
+          "max_excursion_mm": 0.0542248475913325,
+          "max_throat_speed_m_s": 0.5151084388660531
+        },
+        "20": {
+          "ripple_db": 6.090303896234573,
+          "mean_spl_db": 103.46505754359198,
+          "spl_500_db": 101.44392145767655,
+          "spl_6500_db": 99.86945000511815,
+          "level_6500_relative_mid_db": -3.8304443505640364,
+          "max_excursion_mm": 0.054098306338345906,
+          "max_throat_speed_m_s": 0.5184806428963868
+        },
+        "40": {
+          "ripple_db": 9.339464247000663,
+          "mean_spl_db": 103.50357027919773,
+          "spl_500_db": 101.55809551481427,
+          "spl_6500_db": 97.29757626122172,
+          "level_6500_relative_mid_db": -6.872103097206647,
+          "max_excursion_mm": 0.05384107559149509,
+          "max_throat_speed_m_s": 0.5253409435936929
+        },
+        "60": {
+          "ripple_db": 12.2854105738175,
+          "mean_spl_db": 103.2458317140926,
+          "spl_500_db": 101.67336733076253,
+          "spl_6500_db": 94.65926455649299,
+          "level_6500_relative_mid_db": -9.961150609731177,
+          "max_excursion_mm": 0.05357824619055691,
+          "max_throat_speed_m_s": 0.5323592942055059
+        }
+      },
+      "rear_litres": {
+        "0.5": {
+          "ripple_db": 6.20407539000675,
+          "mean_spl_db": 104.11812591927416,
+          "spl_500_db": 104.45603534140687,
+          "spl_6500_db": 99.89330980070199,
+          "level_6500_relative_mid_db": -4.43836937438769,
+          "max_excursion_mm": 0.07652253752285197,
+          "max_throat_speed_m_s": 0.7333955004574416
+        },
+        "1": {
+          "ripple_db": 6.128002804653775,
+          "mean_spl_db": 103.67503527213034,
+          "spl_500_db": 102.41098218444948,
+          "spl_6500_db": 99.87739601403888,
+          "level_6500_relative_mid_db": -4.027630565871874,
+          "max_excursion_mm": 0.0604695456072238,
+          "max_throat_speed_m_s": 0.5795428915278754
+        },
+        "2": {
+          "ripple_db": 6.090303896234573,
+          "mean_spl_db": 103.46505754359198,
+          "spl_500_db": 101.44392145767655,
+          "spl_6500_db": 99.86945000511815,
+          "level_6500_relative_mid_db": -3.8304443505640364,
+          "max_excursion_mm": 0.054098306338345906,
+          "max_throat_speed_m_s": 0.5184806428963868
+        },
+        "4": {
+          "ripple_db": 6.071537817665771,
+          "mean_spl_db": 103.36316556845559,
+          "spl_500_db": 100.9823068883044,
+          "spl_6500_db": 99.86547971599322,
+          "level_6500_relative_mid_db": -3.733789963764636,
+          "max_excursion_mm": 0.05129829613716958,
+          "max_throat_speed_m_s": 0.491645217030322
+        }
+      },
+      "factory_sealed_back": false
+    }
+  },
+  "numerical_checks": {
+    "bc-6mdn44-8": {
+      "section_doubling_max_db": 0.0015596135713167314,
+      "frequency_doubling_interpolation_max_db": 0.0028006130020372666,
+      "relative_real_power_error": 7.03824161048287e-14
+    },
+    "bc-6pev13": {
+      "section_doubling_max_db": 0.0016903225752571416,
+      "frequency_doubling_interpolation_max_db": 0.00279654597736112,
+      "relative_real_power_error": 6.984973567421418e-14
+    },
+    "beyma-6mcf200nd": {
+      "section_doubling_max_db": 0.0004664193153729457,
+      "frequency_doubling_interpolation_max_db": 0.004246627085009891,
+      "relative_real_power_error": 7.109091184967124e-14
+    },
+    "beyma-6mi100": {
+      "section_doubling_max_db": 0.0007045426398235577,
+      "frequency_doubling_interpolation_max_db": 0.0028173238549129564,
+      "relative_real_power_error": 6.96478867411644e-14
+    },
+    "beyma-6mi90": {
+      "section_doubling_max_db": 0.0013233165918506984,
+      "frequency_doubling_interpolation_max_db": 0.0027174024032348143,
+      "relative_real_power_error": 6.884038797873416e-14
+    },
+    "celestion-cf0617m": {
+      "section_doubling_max_db": 0.0016913742129673892,
+      "frequency_doubling_interpolation_max_db": 0.0027998443144809926,
+      "relative_real_power_error": 7.170479099803754e-14
+    },
+    "lavoce-maf061-50": {
+      "section_doubling_max_db": 0.00084824686885554,
+      "frequency_doubling_interpolation_max_db": 0.0024772214915316226,
+      "relative_real_power_error": 7.2671856673657e-14
+    },
+    "lavoce-man061-80": {
+      "section_doubling_max_db": 0.0008282554777707674,
+      "frequency_doubling_interpolation_max_db": 0.004004581254477557,
+      "relative_real_power_error": 6.799882586207644e-14
+    },
+    "phl-1120": {
+      "section_doubling_max_db": 0.0015698434095270386,
+      "frequency_doubling_interpolation_max_db": 0.002806551797021939,
+      "relative_real_power_error": 7.02790917377246e-14
+    },
+    "phl-1120ndu": {
+      "section_doubling_max_db": 0.0015698434095270386,
+      "frequency_doubling_interpolation_max_db": 0.002806551797021939,
+      "relative_real_power_error": 7.02790917377246e-14
+    },
+    "phl-1343": {
+      "section_doubling_max_db": 0.002349030738201918,
+      "frequency_doubling_interpolation_max_db": 0.007000058536192455,
+      "relative_real_power_error": 7.170727853170243e-14
+    },
+    "phl-1343ndu": {
+      "section_doubling_max_db": 0.002349030738201918,
+      "frequency_doubling_interpolation_max_db": 0.007000058536192455,
+      "relative_real_power_error": 7.170727853170243e-14
+    },
+    "phl-1362": {
+      "section_doubling_max_db": 0.0023541947835497012,
+      "frequency_doubling_interpolation_max_db": 0.007011542513026825,
+      "relative_real_power_error": 7.174490598116116e-14
+    },
+    "phl-1362ndu": {
+      "section_doubling_max_db": 0.0023541947835497012,
+      "frequency_doubling_interpolation_max_db": 0.007011542513026825,
+      "relative_real_power_error": 7.174490598116116e-14
+    },
+    "phl-1426": {
+      "section_doubling_max_db": 0.0016623032301055218,
+      "frequency_doubling_interpolation_max_db": 0.0027794946795154374,
+      "relative_real_power_error": 6.984008076226337e-14
+    },
+    "phl-1426ndu": {
+      "section_doubling_max_db": 0.0016623032301055218,
+      "frequency_doubling_interpolation_max_db": 0.0027794946795154374,
+      "relative_real_power_error": 6.984008076226337e-14
+    },
+    "phl-1660ndm-sq2": {
+      "section_doubling_max_db": 0.0016794988973742875,
+      "frequency_doubling_interpolation_max_db": 0.0027952919935785303,
+      "relative_real_power_error": 7.159951540216823e-14
+    },
+    "phl-1660ndm": {
+      "section_doubling_max_db": 0.0016794280625020974,
+      "frequency_doubling_interpolation_max_db": 0.00279505133543978,
+      "relative_real_power_error": 7.194867232511794e-14
+    },
+    "phl-1663": {
+      "section_doubling_max_db": 0.0016612003859819424,
+      "frequency_doubling_interpolation_max_db": 0.0027797903129282986,
+      "relative_real_power_error": 6.943480351559575e-14
+    },
+    "phl-1680ndm-10": {
+      "section_doubling_max_db": 0.0016500484189947429,
+      "frequency_doubling_interpolation_max_db": 0.002778355258826082,
+      "relative_real_power_error": 6.981058267400694e-14
+    },
+    "phl-1683-26": {
+      "section_doubling_max_db": 0.0016500987699146208,
+      "frequency_doubling_interpolation_max_db": 0.002777747956940857,
+      "relative_real_power_error": 6.942366890370102e-14
+    },
+    "phl-1752": {
+      "section_doubling_max_db": 0.0016790276882119315,
+      "frequency_doubling_interpolation_max_db": 0.002794818871009852,
+      "relative_real_power_error": 7.20287076795858e-14
+    },
+    "phl-1752ndu": {
+      "section_doubling_max_db": 0.0016789984121885482,
+      "frequency_doubling_interpolation_max_db": 0.002794706926366075,
+      "relative_real_power_error": 7.192883902293229e-14
+    },
+    "redcatt-dr-6p5-001-4r-b2-c0001": {
+      "section_doubling_max_db": 0.0016437593736782219,
+      "frequency_doubling_interpolation_max_db": 0.0027819249987430794,
+      "relative_real_power_error": 7.142411139540645e-14
+    },
+    "redcatt-dr-6p5-002-16r-b2-c0001": {
+      "section_doubling_max_db": 0.001073027171855756,
+      "frequency_doubling_interpolation_max_db": 0.0026099919345483613,
+      "relative_real_power_error": 7.122761412802457e-14
+    },
+    "redcatt-dr-6p5-006-8r-b2-c0001": {
+      "section_doubling_max_db": 0.000464993842314243,
+      "frequency_doubling_interpolation_max_db": 0.00424492653399966,
+      "relative_real_power_error": 7.122030848010722e-14
+    },
+    "celestion-cf0617m-le029": {
+      "section_doubling_max_db": 0.0010687398941371384,
+      "frequency_doubling_interpolation_max_db": 0.002602936350285745,
+      "relative_real_power_error": 7.065466163162863e-14
+    }
+  },
+  "cad": {
+    "selected": {
+      "units": "mm",
+      "air_volume_litres": 1.800512470832578,
+      "bbox_mm": [
+        -95.0000001,
+        -106.43069180639999,
+        -1e-07,
+        95.00000010000299,
+        106.43069180654,
+        125.0000001001
+      ],
+      "sampled_surface_max_radius_mm": 95.0000000268079,
+      "single_connected_air_volume": true,
+      "reimport_volume_relative_error": 1.745270594710746e-13,
+      "note": "Concept packaging only. HF aperture treated as rigid in mid model. No cone adapter or support structure."
+    },
+    "celestion": {
+      "units": "mm",
+      "air_volume_litres": 3.137134805286928,
+      "bbox_mm": [
+        -140.0000001,
+        -156.8452299832,
+        -1e-07,
+        140.0000001,
+        156.84522998333,
+        125.0000001001
+      ],
+      "sampled_surface_max_radius_mm": 140.0000000395019,
+      "single_connected_air_volume": true,
+      "reimport_volume_relative_error": 3.2940317140628395e-13,
+      "note": "Concept packaging only. HF aperture treated as rigid in mid model. No cone adapter or support structure."
+    }
+  },
+  "baseline_diagnostic": {
+    "tmm_minus_preserved_fem_at_6500_db": 4.793735879500602,
+    "scope": "Original unobstructed horn only; not a correction to new candidates"
+  },
+  "compact_reference": {
+    "scenario_id": "beyma-6mcf200nd",
+    "driver_id": "beyma-6mcf200nd",
+    "label": "Beyma 6MCF200Nd",
+    "sensitivity_only": false,
+    "nominal_band_covers_target": true,
+    "profile": "conical",
+    "equivalent_throat_diameter_m": 0.076,
+    "mouth_diameter_m": 0.19,
+    "length_m": 0.125,
+    "body_diameter_m": 0.064,
+    "body_length_m": 0.1,
+    "outer_throat_diameter_mm": 99.35793878699377,
+    "radial_gap_mm": 17.678969393496885,
+    "throat_area_cm2": 45.36459791783661,
+    "compression_ratio": 3.086106929759744,
+    "ripple_db": 3.5465104616908576,
+    "mean_spl_db": 104.4441006770335,
+    "spl_500_db": 102.54763078969278,
+    "spl_6500_db": 102.8506330102136,
+    "level_6500_relative_mid_db": -0.7910923496163491,
+    "max_excursion_mm": 0.05335130043482415,
+    "max_throat_speed_m_s": 0.3786656016927731
+  }
+}

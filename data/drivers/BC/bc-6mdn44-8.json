@@ -1,18 +1,44 @@
 {
     "driver_id": "bc-6mdn44-8",
     "manufacturer": "BC",
-    "model_name": "6MDN44_8\u00ce\u00a9",
+    "model_name": "6MDN44",
+    "nominal_diameter": "6.5in",
+    "nominal_diameter_inches": 6.5,
     "driver_type": "cone",
     "parameters": {
-        "fs_hz": 29.0,
-        "re_ohm": 4.6,
-        "bl_tm": 42.0,
-        "sd_m2": 0.14500000000000002,
-        "mms_kg": 0.4093,
-        "le_h": 0.0040999999999999995,
-        "qts": 0.2,
-        "nominal_impedance_ohm": 8.0,
-        "xmax_m": 0.0235
+        "fs_hz": 140,
+        "re_ohm": 5.4,
+        "bl_tm": 11,
+        "sd_m2": 0.0132,
+        "mms_kg": 0.011,
+        "le_h": 0.00047,
+        "qms": 2.8,
+        "xmax_m": 0.0025,
+        "power_w": 200,
+        "nominal_impedance_ohm": 8
     },
-    "nominal_diameter": "18in"
+    "usable_f_low_hz": 150,
+    "usable_f_high_hz": 6000,
+    "parameter_source": "https://www.bcspeakers.com/en/products/lf-driver/6.5/8/6MDN44",
+    "physical_envelope_mm": {
+        "maximum_width": 187,
+        "depth": 73
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manual transcription from manufacturer specifications; URLs retained. Stock availability not checked.",
+        "derived_fields": [
+            "cms_m_per_n from Fs/Mms",
+            "rms_kg_per_s from Fs/Mms/Qms"
+        ],
+        "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band",
+        "limitations": [
+            "No measured cone transfer function or interface geometry",
+            "Constant Le and rigid-piston model cannot establish upper-band quality",
+            "Published Mms includes unspecified air mass"
+        ]
+    },
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": true,
+    "overall_diameter_m": 0.187
 }

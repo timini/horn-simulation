@@ -1,0 +1,41 @@
+{
+    "driver_id": "phl-1343",
+    "manufacturer": "PHL",
+    "model_name": "1343",
+    "driver_type": "cone",
+    "nominal_diameter": "6.5in",
+    "nominal_diameter_inches": 6.5,
+    "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 5.8,
+        "bl_tm": 8.1,
+        "sd_m2": 0.013300000000000001,
+        "mms_kg": 0.0133,
+        "le_h": 0.000624,
+        "qms": 4.82,
+        "xmax_m": 0.005,
+        "power_w": 100.0,
+        "nominal_impedance_ohm": 8.0
+    },
+    "usable_f_low_hz": 40.0,
+    "usable_f_high_hz": 4000.0,
+    "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1343_SpecSheet.pdf",
+    "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 72.5
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+            "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "91ca064faa51babc8b5eff3444c2012fe94980ff5ee0b40738159480682f2d14",
+        "inductance_10khz_mh": 0.217
+    },
+    "factory_sealed_back": false,
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": true,
+    "overall_diameter_m": 0.1875
+}

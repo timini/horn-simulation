@@ -325,10 +325,24 @@ Discovery failures, incomplete pagination and failed driver retrieval return a f
 
 Driver pages must identify the requested URL. Missing Mms is not replaced with dry Mmd, and program power is not converted into an assumed continuous rating. Records lacking essential known parameters are rejected; additional chamber/interface validation is still required before making physical driver recommendations.
 Refreshes preserve known driver categories. New records have an unknown category until supported metadata is available; diaphragm area alone cannot distinguish a compression driver from a small cone driver.
-Manually enriched interface data, usable-frequency bounds and parameters not supplied by the source survive refresh; values actually fetched from the source replace their earlier values.
+Manually enriched interface data survives refresh. Omitted numeric fields survive only with explicit per-field provenance; stale unsourced values are removed. Source-derived nominal-size estimates are kept separate from verified nominal sizes.
 During migration, an existing continuous-power rating must have an independent source in `parameter_sources.power_w`; otherwise it is removed because older scraper versions inferred it from program power. A manufacturer's progress is marked incomplete before discovery, so a failed refresh cannot leave an earlier completion flag in place.
 
 See the [independent solver protocol](docs/INDEPENDENT_SOLVER_VALIDATION.md) and [physical assembly reference audit](docs/PHYSICAL_REFERENCE_AUDIT.md) for the current qualification work.
 See [run locations, latest-run lookup, resume and cleanup](docs/RUN_MANAGEMENT.md).
 
 Start with the [reproducible 800–1600 Hz worked example](docs/WORKED_EXAMPLE.md), then check a candidate using the [mesh, frequency and loft resolution procedure](docs/CANDIDATE_RESOLUTION.md). Read [cutoff and sweep-bound metric definitions](docs/REPORT_METRICS.md) when interpreting the report.
+
+### September 2026 catalogue audit and 6.5-inch study
+
+[Driver-source research](docs/research/driver-sources-2026-09.md) documents new sources, model revisions, conflicting size labels and the shared catalogue repair. [Source inventory](data/catalogue-sources.json) distinguishes imported records from discovery leads. The catalogue has 29 manufacturer-sourced records, 375 quarantined entries and 1,485 legacy-unverified records; it is not a fully independently verified database. The loader rejects quarantine and unknown inductance, and unverified nominal sizes cannot satisfy size-constrained searches.
+
+```sh
+python scripts/audit_driver_catalogue.py --apply
+python scripts/refresh_redcatt_drivers.py --size 6.5
+python scripts/study_6p5_mid.py --output results/6p5-mid-500-6500
+```
+
+The source audit annotates the shared directory and legacy subset without deleting historic records. REDCATT refresh imports selected engineering facts under its research-use terms; it does not infer removals from a filtered feed. Keep the failing secondary-source identity guard enabled. Secondary-source sweeps preserve manufacturer-verified records even with `--refresh`; refresh those through their primary source.
+
+The [completed 500–6,500 Hz study](examples/6p5-mid-500-6500/README.md) uses 26 verified nominal 6.5-inch cone drivers from the shared catalogue, handles factory-sealed rear loads, and reserves a 64 mm central HF housing. It includes predictions and acoustic STEP files. It remains a reduced-order screen; annular FEM, a cone-following phase plug, HF crossover summation and the outer 15-inch horn are unqualified.

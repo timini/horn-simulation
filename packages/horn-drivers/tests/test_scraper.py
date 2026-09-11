@@ -283,7 +283,7 @@ def test_migration_removes_legacy_inferred_power(monkeypatch, tmp_path, old_vers
     assert s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test']) == 1
     record = json.loads((tmp_path/'Test/test-model.json').read_text())
     assert 'power_w' not in record['parameters']
-    assert record['parameters']['peak_power_w'] == 200
+    assert 'peak_power_w' not in record['parameters']  # Unproven stale rating must not survive
     assert s._driver_is_current(tmp_path, 'Test', 'test-model')
 
 
@@ -300,3 +300,12 @@ def test_failed_discovery_clears_old_complete_progress(monkeypatch, tmp_path):
     progress = json.loads(state.read_text())['Test']
     assert progress['complete'] is False
     assert progress['failure_reason'] == 'Incomplete pagination'
+
+
+def test_secondary_refresh_cannot_overwrite_verified_manufacturer(monkeypatch,tmp_path):
+    batch(monkeypatch)
+    original=dict(driver_id='test-model',manufacturer='Test',catalogue_status='manufacturer_verified',
+                  parameter_source='https://manufacturer.example/model',parameters={**PARAMS,'fs_hz':123})
+    s._save_driver(tmp_path,original)
+    assert s.scrape_all(db_dir=tmp_path,manufacturer_filter=['Test'],refresh=True)==0
+    assert json.loads((tmp_path/'Test/test-model.json').read_text())==original

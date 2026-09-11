@@ -1,7 +1,7 @@
 {
     "driver_id": "bc-10mbx64-16",
     "manufacturer": "BC",
-    "model_name": "10MBX64_16\u00ce\u00a9",
+    "model_name": "10MBX64_16\u03a9",
     "driver_type": "cone",
     "parameters": {
         "fs_hz": 29.0,
@@ -14,5 +14,8 @@
         "nominal_impedance_ohm": 8.0,
         "xmax_m": 0.0235
     },
-    "nominal_diameter": "18in"
+    "nominal_diameter": "18in",
+    "catalogue_status": "quarantined",
+    "quarantine_reason": "Mass repeated T/S fingerprint across unrelated products; source identity requires manufacturer verification.",
+    "nominal_diameter_verified": false
 }

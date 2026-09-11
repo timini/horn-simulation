@@ -1,0 +1,39 @@
+{
+    "driver_id": "beyma-6mcf200nd",
+    "manufacturer": "Beyma",
+    "model_name": "6MCF200Nd",
+    "driver_type": "cone",
+    "nominal_diameter": "6.5in",
+    "nominal_diameter_inches": 6.5,
+    "parameters": {
+        "fs_hz": 406,
+        "re_ohm": 6.2,
+        "bl_tm": 18.1,
+        "sd_m2": 0.014,
+        "mms_kg": 0.015,
+        "le_h": 0.0001,
+        "qms": 10.3,
+        "xmax_m": 0.0025,
+        "power_w": 200,
+        "nominal_impedance_ohm": 8
+    },
+    "usable_f_low_hz": 400,
+    "usable_f_high_hz": 12000,
+    "parameter_source": "https://www.beyma.com/speakers/Fichas_Tecnicas/beyma-speakers-data-sheet-low-mid-frequency-6MCF200Nd.pdf",
+    "physical_envelope_mm": {
+        "maximum_width": 174,
+        "depth": 75
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+            "No measured cone transfer function or phase-plug interface geometry"
+        ]
+    },
+    "factory_sealed_back": true,
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": true,
+    "overall_diameter_m": 0.17400000000000002
+}

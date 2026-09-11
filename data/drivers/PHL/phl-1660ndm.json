@@ -1,0 +1,41 @@
+{
+    "driver_id": "phl-1660ndm",
+    "manufacturer": "PHL",
+    "model_name": "1660NdM",
+    "driver_type": "cone",
+    "nominal_diameter": "6.5in",
+    "nominal_diameter_inches": 6.5,
+    "parameters": {
+        "fs_hz": 125.0,
+        "re_ohm": 5.2,
+        "bl_tm": 12.5,
+        "sd_m2": 0.015000000000000001,
+        "mms_kg": 0.013000000000000001,
+        "le_h": 0.000746,
+        "qms": 4.08,
+        "xmax_m": 0.0025,
+        "power_w": 250.0,
+        "nominal_impedance_ohm": 8.0
+    },
+    "usable_f_low_hz": 300.0,
+    "usable_f_high_hz": 5000.0,
+    "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1660NdM_SpecSheet.pdf",
+    "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 63.0
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+            "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "6654b82b1666906e9ad39acc231bb2ca7221e5e756e9c88d335f665aa2ed524c",
+        "inductance_10khz_mh": 0.317
+    },
+    "factory_sealed_back": false,
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": true,
+    "overall_diameter_m": 0.1875
+}

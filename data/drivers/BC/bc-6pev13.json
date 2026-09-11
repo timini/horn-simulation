@@ -2,19 +2,43 @@
     "driver_id": "bc-6pev13",
     "manufacturer": "BC",
     "model_name": "6PEV13",
+    "nominal_diameter": "6.5in",
+    "nominal_diameter_inches": 6.5,
     "driver_type": "cone",
     "parameters": {
-        "fs_hz": 126.0,
+        "fs_hz": 126,
         "re_ohm": 5.2,
         "bl_tm": 8.2,
         "sd_m2": 0.0132,
         "mms_kg": 0.006,
         "le_h": 0.0006,
-        "qts": 0.36,
-        "nominal_impedance_ohm": 8.0,
-        "xmax_m": 0.0025,
         "qms": 4.6,
-        "qes": 0.39
+        "xmax_m": 0.0025,
+        "power_w": 120,
+        "nominal_impedance_ohm": 8
     },
-    "nominal_diameter": "6in"
+    "usable_f_low_hz": 150,
+    "usable_f_high_hz": 8000,
+    "parameter_source": "https://old.bcspeakers.com/en/products/lf-driver/6-5/8/6pev13.pdf",
+    "physical_envelope_mm": {
+        "maximum_width": 187,
+        "depth": 78
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manual transcription from manufacturer specifications; URLs retained. Stock availability not checked.",
+        "derived_fields": [
+            "cms_m_per_n from Fs/Mms",
+            "rms_kg_per_s from Fs/Mms/Qms"
+        ],
+        "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band",
+        "limitations": [
+            "No measured cone transfer function or interface geometry",
+            "Constant Le and rigid-piston model cannot establish upper-band quality",
+            "Published Mms includes unspecified air mass"
+        ]
+    },
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": true,
+    "overall_diameter_m": 0.187
 }

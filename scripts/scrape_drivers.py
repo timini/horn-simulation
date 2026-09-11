@@ -3,4 +3,4 @@
 from horn_drivers.scraper import main
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

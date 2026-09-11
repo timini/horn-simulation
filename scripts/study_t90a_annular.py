@@ -53,11 +53,11 @@ class Geometry:
         return get_radius_func(self.profile, self.outer_throat_radius,
                                self.mouth_diameter_m / 2, self.length_m)(z)
 
-    def dimensions(self):
+    def dimensions(self, driver=None):
         return dict(asdict(self), outer_throat_diameter_mm=2000*self.outer_throat_radius,
                     radial_gap_mm=1000*(self.outer_throat_radius-self.body_diameter_m/2),
                     throat_area_cm2=self.throat_area*1e4,
-                    compression_ratio=BASE_DRIVER.sd_m2/self.throat_area)
+                    compression_ratio=(BASE_DRIVER if driver is None else driver).sd_m2/self.throat_area)
 
 
 @lru_cache(maxsize=64)
@@ -102,7 +102,7 @@ def transfer(g, f, segments=300):
     return dict(z_acoustic=pin/uin, uout_over_uin=1/uin, load=load, matrix=mat)
 
 
-def response(g, f, front_cc=20., rear_litres=2., segments=300, tr=None):
+def response(g, f, front_cc=20., rear_litres=2., segments=300, tr=None, *, driver=None):
     """Ideal rigid-piston driver, shunt front compliance, sealed rear volume.
 
     Vf is a sensitivity parameter, not a measured/packaged compression chamber.
@@ -115,7 +115,7 @@ def response(g, f, front_cc=20., rear_litres=2., segments=300, tr=None):
     omega = 2*np.pi*f
     chamber_factor = 1+1j*omega*(front_cc*1e-6/(RHO*C*C))*tr['z_acoustic']
     zfront = tr['z_acoustic']/chamber_factor
-    driver = BASE_DRIVER
+    driver = BASE_DRIVER if driver is None else driver
     if rear_litres is not None:
         compliance = 1/(1/driver.cms_m_per_n+RHO*C*C*driver.sd_m2**2/(rear_litres*1e-3))
         driver = replace(driver, cms_m_per_n=compliance)

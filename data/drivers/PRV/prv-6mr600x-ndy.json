@@ -1,0 +1,39 @@
+{
+    "driver_id": "prv-6mr600x-ndy",
+    "manufacturer": "PRV",
+    "model_name": "6MR600X-NDY",
+    "driver_type": "cone",
+    "nominal_diameter": "6in",
+    "nominal_diameter_inches": 6,
+    "parameters": {
+        "fs_hz": 95.2,
+        "re_ohm": 6.5,
+        "bl_tm": 15.84,
+        "sd_m2": 0.0143,
+        "mms_kg": 0.01584,
+        "le_h": 2.3e-05,
+        "qms": 15.64,
+        "xmax_m": 0.0035,
+        "power_w": 300,
+        "nominal_impedance_ohm": 8
+    },
+    "usable_f_low_hz": 90,
+    "usable_f_high_hz": 13000,
+    "parameter_source": "https://prvaudio.com/products/6mr600x-ndy-6-5-inch-neodymium-loudspeaker/",
+    "physical_envelope_mm": {
+        "maximum_width": 164.5,
+        "depth": 87
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+            "No measured cone transfer function or phase-plug interface geometry"
+        ]
+    },
+    "nominal_size_conflict": "Manufacturer headline says 6.5in; specification table says 6in. Excluded from exact-size runs pending clarification.",
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": false,
+    "overall_diameter_m": 0.1645
+}

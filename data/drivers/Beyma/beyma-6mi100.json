@@ -2,19 +2,44 @@
     "driver_id": "beyma-6mi100",
     "manufacturer": "Beyma",
     "model_name": "6MI100",
+    "nominal_diameter": "6.5in",
+    "nominal_diameter_inches": 6.5,
     "driver_type": "cone",
     "parameters": {
-        "fs_hz": 128.0,
-        "re_ohm": 6.0,
+        "fs_hz": 128,
+        "re_ohm": 6,
         "bl_tm": 10.8,
         "sd_m2": 0.014,
         "mms_kg": 0.014,
         "le_h": 0.0002,
-        "qts": 0.517,
-        "nominal_impedance_ohm": 8.0,
-        "xmax_m": 0.003,
         "qms": 8.6,
-        "qes": 0.55
+        "xmax_m": 0.003,
+        "power_w": 250,
+        "nominal_impedance_ohm": 8
     },
-    "nominal_diameter": "6in"
+    "usable_f_low_hz": 100,
+    "usable_f_high_hz": 8000,
+    "parameter_source": "https://www.beyma.com/en/products/c/low-mid-frequency/106MI108/loudspeaker-6mi100-8-oh/",
+    "physical_envelope_mm": {
+        "maximum_width": 174,
+        "depth": 85
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manual transcription from manufacturer specifications; URLs retained. Stock availability not checked.",
+        "derived_fields": [
+            "cms_m_per_n from Fs/Mms",
+            "rms_kg_per_s from Fs/Mms/Qms"
+        ],
+        "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band",
+        "limitations": [
+            "No measured cone transfer function or interface geometry",
+            "Constant Le and rigid-piston model cannot establish upper-band quality",
+            "Published Mms includes unspecified air mass"
+        ],
+        "dimension_source": "https://www.beyma.com/speakers/Fichas_Tecnicas/beyma-speakers-data-sheet-low-mid-frequency-6MI100.pdf"
+    },
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": true,
+    "overall_diameter_m": 0.17400000000000002
 }

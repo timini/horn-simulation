@@ -2,19 +2,46 @@
     "driver_id": "celestion-cf0617m",
     "manufacturer": "Celestion",
     "model_name": "CF0617M",
+    "nominal_diameter": "6.5in",
+    "nominal_diameter_inches": 6.5,
     "driver_type": "cone",
     "parameters": {
         "fs_hz": 116.6,
         "re_ohm": 5.3,
         "bl_tm": 9.68,
         "sd_m2": 0.015394,
-        "mms_kg": 0.0116,
+        "mms_kg": 0.01159,
         "le_h": 0.00173,
-        "qts": 0.451,
-        "nominal_impedance_ohm": 8.0,
-        "xmax_m": 0.0027,
         "qms": 6.93,
-        "qes": 0.48
+        "xmax_m": 0.0027,
+        "power_w": 200,
+        "nominal_impedance_ohm": 8
     },
-    "nominal_diameter": "6in"
+    "usable_f_low_hz": 300,
+    "usable_f_high_hz": 7000,
+    "parameter_source": "https://celestion.com/product/cf0617m/",
+    "physical_envelope_mm": {
+        "maximum_width": 189,
+        "depth": 78.5
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manual transcription from manufacturer specifications; URLs retained. Stock availability not checked.",
+        "derived_fields": [
+            "cms_m_per_n from Fs/Mms",
+            "rms_kg_per_s from Fs/Mms/Qms"
+        ],
+        "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band",
+        "limitations": [
+            "No measured cone transfer function or interface geometry",
+            "Constant Le and rigid-piston model cannot establish upper-band quality",
+            "Published Mms includes unspecified air mass",
+            "Manufacturer Le=1.73 mH differs greatly from approximately 0.28\u20130.30 mH reported in the 2015 Voice Coil test; alternative 0.29 mH is evaluated separately, never silently substituted.",
+            "Current published Xmax=2.7 mm includes gap allowance; geometric coil overhang is 1.2 mm. No maximum-SPL rating inferred."
+        ]
+    },
+    "inductance_sensitivity_source": "https://audioxpress.com/article/test-bench-celestion-cf0617m-prosound-midrange-driver",
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": true,
+    "overall_diameter_m": 0.189
 }

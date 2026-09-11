@@ -15,5 +15,7 @@
         "qes": 0.3659,
         "xmax_m": 0.0064,
         "nominal_impedance_ohm": 8.0
-    }
+    },
+    "catalogue_status": "legacy_unverified",
+    "nominal_diameter_verified": false
 }
