@@ -28,6 +28,8 @@ def _driver_from_dict(d: dict) -> DriverParameters:
     Handles both v1 (flat) and v2 (nested ``parameters``) formats, and
     converts common non-SI units (mH → H, cm² → m², mm → m) on the fly.
     """
+    if d.get("catalogue_status") == "quarantined":
+        raise ValueError("Catalogue record quarantined: " + d.get("quarantine_reason", "source identity unverified"))
     # v2 format nests T-S params under "parameters"
     params = d.get("parameters", d)
 
@@ -37,6 +39,8 @@ def _driver_from_dict(d: dict) -> DriverParameters:
     le_h = params.get("le_h")
     if le_h is None:
         le_h = _mh_to_h(params.get("le_mh"))
+    if le_h is None:
+        raise ValueError("Missing voice-coil inductance; unknown is not zero")
     sd_m2 = params.get("sd_m2")
     if sd_m2 is None:
         sd_m2 = params.get("sd_sq_meters")
@@ -65,7 +69,8 @@ def _driver_from_dict(d: dict) -> DriverParameters:
         qts=params.get("qts"),
         exit_area_m2=exit_area_m2,
         driver_type=d.get("driver_type"),
-        nominal_diameter=d.get("nominal_diameter"),
+        nominal_diameter=d.get("nominal_diameter") if d.get("nominal_diameter_verified") is not False else None,
+        overall_diameter_m=d.get("overall_diameter_m"),
         xmax_m=xmax_m,
         nominal_impedance_ohm=params.get("nominal_impedance_ohm"),
         power_w=params.get("power_w"),

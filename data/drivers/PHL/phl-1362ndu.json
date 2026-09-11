@@ -1,0 +1,41 @@
+{
+    "driver_id": "phl-1362ndu",
+    "manufacturer": "PHL",
+    "model_name": "1362NdU",
+    "driver_type": "cone",
+    "nominal_diameter": "6.5in",
+    "nominal_diameter_inches": 6.5,
+    "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 5.8,
+        "bl_tm": 8.1,
+        "sd_m2": 0.0143,
+        "mms_kg": 0.0139,
+        "le_h": 0.000624,
+        "qms": 4.93,
+        "xmax_m": 0.005,
+        "power_w": 100.0,
+        "nominal_impedance_ohm": 8.0
+    },
+    "usable_f_low_hz": 40.0,
+    "usable_f_high_hz": 4000.0,
+    "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1362NdU_SpecSheet.pdf",
+    "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 74.0
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+            "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "f320e3fc00ad9333077798612eee304fd3f8fdb389276e074c501db8a9e00e81",
+        "inductance_10khz_mh": 0.217
+    },
+    "factory_sealed_back": false,
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": true,
+    "overall_diameter_m": 0.1875
+}

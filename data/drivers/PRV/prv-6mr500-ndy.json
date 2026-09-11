@@ -1,0 +1,39 @@
+{
+    "driver_id": "prv-6mr500-ndy",
+    "manufacturer": "PRV",
+    "model_name": "6MR500-NDY",
+    "driver_type": "cone",
+    "nominal_diameter": "6in",
+    "nominal_diameter_inches": 6,
+    "parameters": {
+        "fs_hz": 104.6,
+        "re_ohm": 6.2,
+        "bl_tm": 9.84,
+        "sd_m2": 0.0143,
+        "mms_kg": 0.01288,
+        "le_h": 0.00012,
+        "qms": 22.73,
+        "xmax_m": 0.00422,
+        "power_w": 250,
+        "nominal_impedance_ohm": 8
+    },
+    "usable_f_low_hz": 90,
+    "usable_f_high_hz": 13000,
+    "parameter_source": "https://prvaudio.com/products/prv-6-5-inch-neo-midrange-speaker-6mr500-ndy/",
+    "physical_envelope_mm": {
+        "maximum_width": 164.5,
+        "depth": 82
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+            "No measured cone transfer function or phase-plug interface geometry"
+        ]
+    },
+    "nominal_size_conflict": "Manufacturer headline says 6.5in; specification table says 6in. Excluded from exact-size runs pending clarification.",
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": false,
+    "overall_diameter_m": 0.1645
+}

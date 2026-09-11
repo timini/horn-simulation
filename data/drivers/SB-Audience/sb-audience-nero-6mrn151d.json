@@ -1,0 +1,39 @@
+{
+    "driver_id": "sb-audience-nero-6mrn151d",
+    "manufacturer": "SB-Audience",
+    "model_name": "NERO-6MRN151D",
+    "driver_type": "cone",
+    "nominal_diameter": "6in",
+    "nominal_diameter_inches": 6,
+    "parameters": {
+        "fs_hz": 230,
+        "re_ohm": 5.6,
+        "bl_tm": 14.5,
+        "sd_m2": 0.013680000000000001,
+        "mms_kg": 0.0146,
+        "le_h": 0.00017,
+        "qms": 2.65,
+        "xmax_m": 0.0034300000000000003,
+        "power_w": 180,
+        "nominal_impedance_ohm": 8
+    },
+    "usable_f_low_hz": 230,
+    "usable_f_high_hz": 10500,
+    "parameter_source": "https://www.sbaudience.com/index.php/download_file/-/view/3645/",
+    "physical_envelope_mm": {
+        "maximum_width": 185,
+        "depth": null
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+            "No measured cone transfer function or phase-plug interface geometry"
+        ]
+    },
+    "source_revision": "R.0 / 03.08.2026",
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": true,
+    "overall_diameter_m": 0.185
+}

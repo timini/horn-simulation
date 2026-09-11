@@ -390,7 +390,7 @@ class TestDiameterFilter:
         assert "big" not in ids
 
     def test_diameter_filter_skips_missing_diameter(self):
-        """Drivers without nominal_diameter should not be filtered by diameter."""
+        """Drivers without nominal diameter cannot satisfy an explicit size constraint."""
         config = PrescreenConfig(
             target_f_low_hz=300,
             target_f_high_hz=3000,
@@ -399,7 +399,7 @@ class TestDiameterFilter:
         )
         no_dia = _make_driver("no_dia", fs_hz=200, qes=0.4, sd_m2=0.0020)
         result = prescreen_drivers([no_dia], config)
-        assert result.count == 1
+        assert result.count == 0
 
     def test_no_diameter_filter_by_default(self):
         """Without diameter config, all drivers pass diameter check."""
@@ -446,3 +446,16 @@ def test_rounded_throat_radii_remain_within_absolute_ka_cap():
     cap=343*cfg.ka_max/(2*math.pi*cfg.target_f_high_hz)
     assert result.count == 1
     assert max(result.throat_radii_m) <= cap
+
+
+@pytest.mark.parametrize("value", ["165mm", "6.5watts", "6.5 or 8", "NaN", "0in"])
+def test_ambiguous_size_strings_rejected(value):
+    assert _parse_diameter_inches(value) is None
+
+
+def test_phase_plug_exit_cannot_make_large_frame_fit():
+    from dataclasses import replace
+    d=replace(_make_driver(fs_hz=100,qes=.3,driver_type="cone",sd_m2=.014),
+              exit_area_m2=.001,overall_diameter_m=.189,nominal_diameter="6.5in")
+    config=PrescreenConfig(500,6500,mouth_radius_m=.08)
+    assert prescreen_drivers([d],config).count==0

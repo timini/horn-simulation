@@ -1,0 +1,44 @@
+{
+    "driver_id": "redcatt-dr-6p5-002-16r-b2-c0001",
+    "manufacturer": "REDCATT",
+    "model_name": "61FIND",
+    "ordering_code": "DR-6.5-002-16R-B2-C0001",
+    "driver_type": "cone",
+    "nominal_diameter": "6.5in",
+    "nominal_diameter_inches": 6.5,
+    "nominal_diameter_verified": true,
+    "catalogue_status": "manufacturer_verified",
+    "parameters": {
+        "fs_hz": 130.0,
+        "re_ohm": 14.9,
+        "bl_tm": 15.64,
+        "qms": 5.13,
+        "qes": 0.71,
+        "qts": 0.62,
+        "sd_m2": 0.013269999999999999,
+        "mms_kg": 0.0143,
+        "le_h": 0.00092,
+        "nominal_impedance_ohm": 16.0,
+        "power_w": 150.0,
+        "peak_power_w": 600.0,
+        "xmax_m": 0.0023
+    },
+    "parameter_source": "https://www.redcatt.net/products/dr-65-002-16r-b2-c0001",
+    "usable_f_low_hz": null,
+    "usable_f_high_hz": null,
+    "physical_envelope_mm": {
+        "maximum_width": 165.2,
+        "depth": 78
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "source_updated_at": "2026-09-04T11:08:52+00:00",
+        "capture_method": "REDCATT API v1 engineering fields; units per products/schema",
+        "band_definition": "Unknown; free-text AI summaries are not a response specification",
+        "limitations": [
+            "Frame maximum including ears must be checked against drawing",
+            "No cone transfer function or phase-plug interface measurement"
+        ]
+    },
+    "overall_diameter_m": 0.16519999999999999
+}

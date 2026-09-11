@@ -73,7 +73,7 @@ def test_origin_probe_accepts_normal_missing_route(clock):
 
 
 RAW = {"fs":100, "re":5, "bl":8, "sd":100, "mmd":10, "pmax":200}
-PARAMS = {"fs_hz":100., "re_ohm":5., "bl_tm":8., "sd_m2":.01, "mms_kg":.012, "mmd_kg":.01}
+PARAMS = {"fs_hz":100., "re_ohm":5., "bl_tm":8., "sd_m2":.01, "mms_kg":.012, "mmd_kg":.01, "le_h":.0003}
 ENTRY = {"manufacturer":"Test", "name":"Model", "url":s.BASE_URL+'/Test/Model'}
 
 
@@ -283,7 +283,7 @@ def test_migration_removes_legacy_inferred_power(monkeypatch, tmp_path, old_vers
     assert s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test']) == 1
     record = json.loads((tmp_path/'Test/test-model.json').read_text())
     assert 'power_w' not in record['parameters']
-    assert record['parameters']['peak_power_w'] == 200
+    assert 'peak_power_w' not in record['parameters']  # Unproven stale rating must not survive
     assert s._driver_is_current(tmp_path, 'Test', 'test-model')
 
 
@@ -300,3 +300,28 @@ def test_failed_discovery_clears_old_complete_progress(monkeypatch, tmp_path):
     progress = json.loads(state.read_text())['Test']
     assert progress['complete'] is False
     assert progress['failure_reason'] == 'Incomplete pagination'
+
+
+def test_secondary_refresh_cannot_overwrite_verified_manufacturer(monkeypatch,tmp_path):
+    batch(monkeypatch)
+    original=dict(driver_id='test-model',manufacturer='Test',catalogue_status='manufacturer_verified',
+                  parameter_source='https://manufacturer.example/model',parameters={**PARAMS,'fs_hz':123})
+    s._save_driver(tmp_path,original)
+    assert s.scrape_all(db_dir=tmp_path,manufacturer_filter=['Test'],refresh=True)==0
+    assert json.loads((tmp_path/'Test/test-model.json').read_text())==original
+
+
+def test_refresh_missing_inductance_cannot_complete(monkeypatch,tmp_path):
+    batch(monkeypatch)
+    incomplete={k:v for k,v in PARAMS.items() if k!='le_h'}
+    monkeypatch.setattr(s,'scrape_driver_page',lambda *a,**kw:incomplete)
+    with pytest.raises(s.ScrapeError,match='failed'):
+        s.scrape_all(db_dir=tmp_path,manufacturer_filter=['Test'])
+    assert not (tmp_path/'Test/test-model.json').exists()
+
+
+def test_zero_inductance_can_complete_and_resume(monkeypatch,tmp_path):
+    batch(monkeypatch)
+    monkeypatch.setattr(s,'scrape_driver_page',lambda *a,**kw:{**PARAMS,'le_h':0})
+    assert s.scrape_all(db_dir=tmp_path,manufacturer_filter=['Test'])==1
+    assert s._driver_is_current(tmp_path,'Test','test-model')

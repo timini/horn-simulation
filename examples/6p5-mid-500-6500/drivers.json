@@ -1,0 +1,1089 @@
+{
+  "schema_version": 2,
+  "drivers": [
+    {
+      "driver_id": "bc-6mdn44-8",
+      "manufacturer": "BC",
+      "model_name": "6MDN44",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "driver_type": "cone",
+      "parameters": {
+        "fs_hz": 140,
+        "re_ohm": 5.4,
+        "bl_tm": 11,
+        "sd_m2": 0.0132,
+        "mms_kg": 0.011,
+        "le_h": 0.00047,
+        "qms": 2.8,
+        "xmax_m": 0.0025,
+        "power_w": 200,
+        "nominal_impedance_ohm": 8
+      },
+      "usable_f_low_hz": 150,
+      "usable_f_high_hz": 6000,
+      "parameter_source": "https://www.bcspeakers.com/en/products/lf-driver/6.5/8/6MDN44",
+      "physical_envelope_mm": {
+        "maximum_width": 187,
+        "depth": 73
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manual transcription from manufacturer specifications; URLs retained. Stock availability not checked.",
+        "derived_fields": [
+          "cms_m_per_n from Fs/Mms",
+          "rms_kg_per_s from Fs/Mms/Qms"
+        ],
+        "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band",
+        "limitations": [
+          "No measured cone transfer function or interface geometry",
+          "Constant Le and rigid-piston model cannot establish upper-band quality",
+          "Published Mms includes unspecified air mass"
+        ]
+      },
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.187
+    },
+    {
+      "driver_id": "bc-6pev13",
+      "manufacturer": "BC",
+      "model_name": "6PEV13",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "driver_type": "cone",
+      "parameters": {
+        "fs_hz": 126,
+        "re_ohm": 5.2,
+        "bl_tm": 8.2,
+        "sd_m2": 0.0132,
+        "mms_kg": 0.006,
+        "le_h": 0.0006,
+        "qms": 4.6,
+        "xmax_m": 0.0025,
+        "power_w": 120,
+        "nominal_impedance_ohm": 8
+      },
+      "usable_f_low_hz": 150,
+      "usable_f_high_hz": 8000,
+      "parameter_source": "https://old.bcspeakers.com/en/products/lf-driver/6-5/8/6pev13.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187,
+        "depth": 78
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manual transcription from manufacturer specifications; URLs retained. Stock availability not checked.",
+        "derived_fields": [
+          "cms_m_per_n from Fs/Mms",
+          "rms_kg_per_s from Fs/Mms/Qms"
+        ],
+        "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band",
+        "limitations": [
+          "No measured cone transfer function or interface geometry",
+          "Constant Le and rigid-piston model cannot establish upper-band quality",
+          "Published Mms includes unspecified air mass"
+        ]
+      },
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.187
+    },
+    {
+      "driver_id": "beyma-6mcf200nd",
+      "manufacturer": "Beyma",
+      "model_name": "6MCF200Nd",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 406,
+        "re_ohm": 6.2,
+        "bl_tm": 18.1,
+        "sd_m2": 0.014,
+        "mms_kg": 0.015,
+        "le_h": 0.0001,
+        "qms": 10.3,
+        "xmax_m": 0.0025,
+        "power_w": 200,
+        "nominal_impedance_ohm": 8
+      },
+      "usable_f_low_hz": 400,
+      "usable_f_high_hz": 12000,
+      "parameter_source": "https://www.beyma.com/speakers/Fichas_Tecnicas/beyma-speakers-data-sheet-low-mid-frequency-6MCF200Nd.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 174,
+        "depth": 75
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ]
+      },
+      "factory_sealed_back": true,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.17400000000000002
+    },
+    {
+      "driver_id": "beyma-6mi100",
+      "manufacturer": "Beyma",
+      "model_name": "6MI100",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "driver_type": "cone",
+      "parameters": {
+        "fs_hz": 128,
+        "re_ohm": 6,
+        "bl_tm": 10.8,
+        "sd_m2": 0.014,
+        "mms_kg": 0.014,
+        "le_h": 0.0002,
+        "qms": 8.6,
+        "xmax_m": 0.003,
+        "power_w": 250,
+        "nominal_impedance_ohm": 8
+      },
+      "usable_f_low_hz": 100,
+      "usable_f_high_hz": 8000,
+      "parameter_source": "https://www.beyma.com/en/products/c/low-mid-frequency/106MI108/loudspeaker-6mi100-8-oh/",
+      "physical_envelope_mm": {
+        "maximum_width": 174,
+        "depth": 85
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manual transcription from manufacturer specifications; URLs retained. Stock availability not checked.",
+        "derived_fields": [
+          "cms_m_per_n from Fs/Mms",
+          "rms_kg_per_s from Fs/Mms/Qms"
+        ],
+        "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band",
+        "limitations": [
+          "No measured cone transfer function or interface geometry",
+          "Constant Le and rigid-piston model cannot establish upper-band quality",
+          "Published Mms includes unspecified air mass"
+        ],
+        "dimension_source": "https://www.beyma.com/speakers/Fichas_Tecnicas/beyma-speakers-data-sheet-low-mid-frequency-6MI100.pdf"
+      },
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.17400000000000002
+    },
+    {
+      "driver_id": "beyma-6mi90",
+      "manufacturer": "Beyma",
+      "model_name": "6MI90",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "driver_type": "cone",
+      "parameters": {
+        "fs_hz": 134,
+        "re_ohm": 5.7,
+        "bl_tm": 11.3,
+        "sd_m2": 0.014,
+        "mms_kg": 0.011,
+        "le_h": 0.0004,
+        "qms": 8.4,
+        "xmax_m": 0.0025,
+        "power_w": 125,
+        "nominal_impedance_ohm": 8
+      },
+      "usable_f_low_hz": 140,
+      "usable_f_high_hz": 8000,
+      "parameter_source": "https://www.beyma.com/speakers/Fichas_Tecnicas/beyma-speakers-data-sheet-low-mid-frequency-6MI90.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 174,
+        "depth": 84
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manual transcription from manufacturer specifications; URLs retained. Stock availability not checked.",
+        "derived_fields": [
+          "cms_m_per_n from Fs/Mms",
+          "rms_kg_per_s from Fs/Mms/Qms"
+        ],
+        "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band",
+        "limitations": [
+          "No measured cone transfer function or interface geometry",
+          "Constant Le and rigid-piston model cannot establish upper-band quality",
+          "Published Mms includes unspecified air mass"
+        ]
+      },
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.17400000000000002
+    },
+    {
+      "driver_id": "celestion-cf0617m",
+      "manufacturer": "Celestion",
+      "model_name": "CF0617M",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "driver_type": "cone",
+      "parameters": {
+        "fs_hz": 116.6,
+        "re_ohm": 5.3,
+        "bl_tm": 9.68,
+        "sd_m2": 0.015394,
+        "mms_kg": 0.01159,
+        "le_h": 0.00173,
+        "qms": 6.93,
+        "xmax_m": 0.0027,
+        "power_w": 200,
+        "nominal_impedance_ohm": 8
+      },
+      "usable_f_low_hz": 300,
+      "usable_f_high_hz": 7000,
+      "parameter_source": "https://celestion.com/product/cf0617m/",
+      "physical_envelope_mm": {
+        "maximum_width": 189,
+        "depth": 78.5
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manual transcription from manufacturer specifications; URLs retained. Stock availability not checked.",
+        "derived_fields": [
+          "cms_m_per_n from Fs/Mms",
+          "rms_kg_per_s from Fs/Mms/Qms"
+        ],
+        "band_definition": "Manufacturer nominal frequency range, not a validated horn-loaded band",
+        "limitations": [
+          "No measured cone transfer function or interface geometry",
+          "Constant Le and rigid-piston model cannot establish upper-band quality",
+          "Published Mms includes unspecified air mass",
+          "Manufacturer Le=1.73 mH differs greatly from approximately 0.28\u20130.30 mH reported in the 2015 Voice Coil test; alternative 0.29 mH is evaluated separately, never silently substituted.",
+          "Current published Xmax=2.7 mm includes gap allowance; geometric coil overhang is 1.2 mm. No maximum-SPL rating inferred."
+        ]
+      },
+      "inductance_sensitivity_source": "https://audioxpress.com/article/test-bench-celestion-cf0617m-prosound-midrange-driver",
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.189
+    },
+    {
+      "driver_id": "lavoce-maf061-50",
+      "manufacturer": "LaVoce",
+      "model_name": "MAF061.50",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 177,
+        "re_ohm": 5.5,
+        "bl_tm": 10.54,
+        "sd_m2": 0.0132,
+        "mms_kg": 0.010400000000000001,
+        "le_h": 0.00029,
+        "qms": 5.77,
+        "xmax_m": 0.0036000000000000003,
+        "power_w": 120,
+        "nominal_impedance_ohm": 8
+      },
+      "usable_f_low_hz": 150,
+      "usable_f_high_hz": 6000,
+      "parameter_source": "https://lavocespeakers.com/product/maf061-50/",
+      "physical_envelope_mm": {
+        "maximum_width": 170,
+        "depth": 82
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ]
+      },
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.17
+    },
+    {
+      "driver_id": "lavoce-man061-80",
+      "manufacturer": "LaVoce",
+      "model_name": "MAN061.80",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 172,
+        "re_ohm": 5.56,
+        "bl_tm": 11.03,
+        "sd_m2": 0.0132,
+        "mms_kg": 0.01326,
+        "le_h": 8.999999999999999e-05,
+        "qms": 4.69,
+        "xmax_m": 0.003,
+        "power_w": 150,
+        "nominal_impedance_ohm": 8
+      },
+      "usable_f_low_hz": 170,
+      "usable_f_high_hz": 6000,
+      "parameter_source": "https://lavocespeakers.com/product/man061-80/",
+      "physical_envelope_mm": {
+        "maximum_width": null,
+        "depth": null
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ]
+      },
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true
+    },
+    {
+      "driver_id": "phl-1120",
+      "manufacturer": "PHL",
+      "model_name": "1120",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 135.0,
+        "re_ohm": 5.4,
+        "bl_tm": 8.5,
+        "sd_m2": 0.015000000000000001,
+        "mms_kg": 0.0099,
+        "le_h": 0.0005160000000000001,
+        "qms": 5.25,
+        "xmax_m": 0.002,
+        "power_w": 130.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 300.0,
+      "usable_f_high_hz": 5000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1120_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 68.5
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "44ae24173492a56a817c2ecc3437805d4f126839f8e4e527d8fc146972efb946",
+        "inductance_10khz_mh": 0.212
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1120ndu",
+      "manufacturer": "PHL",
+      "model_name": "1120NdU",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 135.0,
+        "re_ohm": 5.4,
+        "bl_tm": 8.5,
+        "sd_m2": 0.015000000000000001,
+        "mms_kg": 0.0099,
+        "le_h": 0.0005160000000000001,
+        "qms": 5.25,
+        "xmax_m": 0.002,
+        "power_w": 130.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 300.0,
+      "usable_f_high_hz": 5000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1120NdU_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 74.0
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "3af59b613e07b9b7ece1caddfd2b85319bd9107041566e398c6d502409fdc515",
+        "inductance_10khz_mh": 0.212
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1343",
+      "manufacturer": "PHL",
+      "model_name": "1343",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 5.8,
+        "bl_tm": 8.1,
+        "sd_m2": 0.013300000000000001,
+        "mms_kg": 0.0133,
+        "le_h": 0.000624,
+        "qms": 4.82,
+        "xmax_m": 0.005,
+        "power_w": 100.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 40.0,
+      "usable_f_high_hz": 4000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1343_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 72.5
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "91ca064faa51babc8b5eff3444c2012fe94980ff5ee0b40738159480682f2d14",
+        "inductance_10khz_mh": 0.217
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1343ndu",
+      "manufacturer": "PHL",
+      "model_name": "1343NdU",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 40.0,
+        "re_ohm": 5.8,
+        "bl_tm": 8.1,
+        "sd_m2": 0.013300000000000001,
+        "mms_kg": 0.0133,
+        "le_h": 0.000624,
+        "qms": 4.82,
+        "xmax_m": 0.005,
+        "power_w": 100.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 40.0,
+      "usable_f_high_hz": 4000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1343NdU_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 74.0
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "24edbd8e8578b894178861c2b909cd834b16496091643a70cd660f1004642423",
+        "inductance_10khz_mh": 0.217
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1362",
+      "manufacturer": "PHL",
+      "model_name": "1362",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 5.8,
+        "bl_tm": 8.1,
+        "sd_m2": 0.0143,
+        "mms_kg": 0.0139,
+        "le_h": 0.000624,
+        "qms": 4.93,
+        "xmax_m": 0.005,
+        "power_w": 100.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 40.0,
+      "usable_f_high_hz": 4000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1362_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 72.5
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "6a92016958b7aeb02cfc9438ed2ee3e4713581a5f6ae723734042af3275b4d45",
+        "inductance_10khz_mh": 0.217
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1362ndu",
+      "manufacturer": "PHL",
+      "model_name": "1362NdU",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 5.8,
+        "bl_tm": 8.1,
+        "sd_m2": 0.0143,
+        "mms_kg": 0.0139,
+        "le_h": 0.000624,
+        "qms": 4.93,
+        "xmax_m": 0.005,
+        "power_w": 100.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 40.0,
+      "usable_f_high_hz": 4000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1362NdU_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 74.0
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "f320e3fc00ad9333077798612eee304fd3f8fdb389276e074c501db8a9e00e81",
+        "inductance_10khz_mh": 0.217
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1426",
+      "manufacturer": "PHL",
+      "model_name": "1426",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 72.0,
+        "re_ohm": 5.8,
+        "bl_tm": 10.3,
+        "sd_m2": 0.0145,
+        "mms_kg": 0.0118,
+        "le_h": 0.000652,
+        "qms": 2.14,
+        "xmax_m": 0.004,
+        "power_w": 100.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 60.0,
+      "usable_f_high_hz": 4000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1426_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 68.5
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "7f4d3d1dcd6b622f45164a07f6e91f3fc8f18c69370f0ed53bd0cfe2de3ba6c8",
+        "inductance_10khz_mh": 0.288
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1426ndu",
+      "manufacturer": "PHL",
+      "model_name": "1426NdU",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 72.0,
+        "re_ohm": 5.8,
+        "bl_tm": 10.3,
+        "sd_m2": 0.0145,
+        "mms_kg": 0.0118,
+        "le_h": 0.000652,
+        "qms": 2.14,
+        "xmax_m": 0.004,
+        "power_w": 100.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 60.0,
+      "usable_f_high_hz": 4000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1426NdU_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 74.0
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "cdd7f085a9fdef5ed5f41fc42e0d89ec376bf259bab5557bed4c3914ec66a2c2",
+        "inductance_10khz_mh": 0.288
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1660ndm-sq2",
+      "manufacturer": "PHL",
+      "model_name": "1660NdM-SQ2",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 360.0,
+        "re_ohm": 5.2,
+        "bl_tm": 12.5,
+        "sd_m2": 0.015000000000000001,
+        "mms_kg": 0.013000000000000001,
+        "le_h": 0.000746,
+        "qms": 11.76,
+        "xmax_m": 0.0025,
+        "power_w": 250.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 450.0,
+      "usable_f_high_hz": 5000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1660NdM-SQ2_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 63.0
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "37cb3cc2393476622a0878c63f18120e2fa204db150d7ea495128003daeb5804",
+        "inductance_10khz_mh": 0.324
+      },
+      "factory_sealed_back": true,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1660ndm",
+      "manufacturer": "PHL",
+      "model_name": "1660NdM",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 125.0,
+        "re_ohm": 5.2,
+        "bl_tm": 12.5,
+        "sd_m2": 0.015000000000000001,
+        "mms_kg": 0.013000000000000001,
+        "le_h": 0.000746,
+        "qms": 4.08,
+        "xmax_m": 0.0025,
+        "power_w": 250.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 300.0,
+      "usable_f_high_hz": 5000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1660NdM_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 63.0
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "6654b82b1666906e9ad39acc231bb2ca7221e5e756e9c88d335f665aa2ed524c",
+        "inductance_10khz_mh": 0.317
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1663",
+      "manufacturer": "PHL",
+      "model_name": "1663",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 125.0,
+        "re_ohm": 5.3,
+        "bl_tm": 12.5,
+        "sd_m2": 0.015000000000000001,
+        "mms_kg": 0.013000000000000001,
+        "le_h": 0.000599,
+        "qms": 4.86,
+        "xmax_m": 0.0025,
+        "power_w": 250.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 300.0,
+      "usable_f_high_hz": 5000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1663_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 73.5
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "62c22a8dae1086f7f88598b693dc338b6fa0efad7fc38e69f957d71e82dc936c",
+        "inductance_10khz_mh": 0.249
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1680ndm-10",
+      "manufacturer": "PHL",
+      "model_name": "1680NdM-10",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 125.0,
+        "re_ohm": 5.2,
+        "bl_tm": 12.5,
+        "sd_m2": 0.0129,
+        "mms_kg": 0.013000000000000001,
+        "le_h": 0.000746,
+        "qms": 4.08,
+        "xmax_m": 0.0025,
+        "power_w": 250.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 300.0,
+      "usable_f_high_hz": 5000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1680NdM-10_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 63.0
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "44178acb21a722ff8dc25db3999a0d8d0d13bcba14906140198121664981eb98",
+        "inductance_10khz_mh": 0.317
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1683-26",
+      "manufacturer": "PHL",
+      "model_name": "1683-26",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 125.0,
+        "re_ohm": 5.3,
+        "bl_tm": 12.5,
+        "sd_m2": 0.0129,
+        "mms_kg": 0.013000000000000001,
+        "le_h": 0.000599,
+        "qms": 4.86,
+        "xmax_m": 0.0025,
+        "power_w": 250.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 300.0,
+      "usable_f_high_hz": 5000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1683-26_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 73.5
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "923407e6b55d560d7f850a2fb955cfd7823c49b09332bafbe5ab8052d015a5a7",
+        "inductance_10khz_mh": 0.249
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1752",
+      "manufacturer": "PHL",
+      "model_name": "1752",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 119.0,
+        "re_ohm": 5.2,
+        "bl_tm": 12.5,
+        "sd_m2": 0.0145,
+        "mms_kg": 0.0122,
+        "le_h": 0.000722,
+        "qms": 2.61,
+        "xmax_m": 0.003,
+        "power_w": 200.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 100.0,
+      "usable_f_high_hz": 4000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1752_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 73.5
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "8a11f921aa793d7db516d474b1a56d4dd2690fc40ab19593874077c2b3e82e13",
+        "inductance_10khz_mh": 0.314
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "phl-1752ndu",
+      "manufacturer": "PHL",
+      "model_name": "1752NdU",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "parameters": {
+        "fs_hz": 119.0,
+        "re_ohm": 5.2,
+        "bl_tm": 11.9,
+        "sd_m2": 0.0145,
+        "mms_kg": 0.0122,
+        "le_h": 0.000722,
+        "qms": 2.61,
+        "xmax_m": 0.003,
+        "power_w": 200.0,
+        "nominal_impedance_ohm": 8.0
+      },
+      "usable_f_low_hz": 100.0,
+      "usable_f_high_hz": 4000.0,
+      "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1752NdU_SpecSheet.pdf",
+      "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 76.5
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+          "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "bbcac74740b94562fc08c07dd6e3994ffbab86e22393da5f8a70ad61e50f4aec",
+        "inductance_10khz_mh": 0.314
+      },
+      "factory_sealed_back": false,
+      "catalogue_status": "manufacturer_verified",
+      "nominal_diameter_verified": true,
+      "overall_diameter_m": 0.1875
+    },
+    {
+      "driver_id": "redcatt-dr-6p5-001-4r-b2-c0001",
+      "manufacturer": "REDCATT",
+      "model_name": "61FHM-2",
+      "ordering_code": "DR-6.5-001-4R-B2-C0001",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "nominal_diameter_verified": true,
+      "catalogue_status": "manufacturer_verified",
+      "parameters": {
+        "fs_hz": 44.0,
+        "re_ohm": 3.2,
+        "bl_tm": 6.02,
+        "qms": 5.27,
+        "qes": 0.58,
+        "qts": 0.52,
+        "sd_m2": 0.013269999999999999,
+        "mms_kg": 0.023039999999999998,
+        "le_h": 0.00074,
+        "nominal_impedance_ohm": 4.0,
+        "power_w": 50.0,
+        "peak_power_w": 200.0,
+        "xmax_m": 0.0032
+      },
+      "parameter_source": "https://www.redcatt.net/products/dr-65-001-4r-b2-c0001",
+      "usable_f_low_hz": null,
+      "usable_f_high_hz": null,
+      "physical_envelope_mm": {
+        "maximum_width": 165.5,
+        "depth": 68
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "source_updated_at": "2026-09-04T11:08:52+00:00",
+        "capture_method": "REDCATT API v1 engineering fields; units per products/schema",
+        "band_definition": "Unknown; free-text AI summaries are not a response specification",
+        "limitations": [
+          "Frame maximum including ears must be checked against drawing",
+          "No cone transfer function or phase-plug interface measurement"
+        ]
+      },
+      "overall_diameter_m": 0.1655
+    },
+    {
+      "driver_id": "redcatt-dr-6p5-002-16r-b2-c0001",
+      "manufacturer": "REDCATT",
+      "model_name": "61FIND",
+      "ordering_code": "DR-6.5-002-16R-B2-C0001",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "nominal_diameter_verified": true,
+      "catalogue_status": "manufacturer_verified",
+      "parameters": {
+        "fs_hz": 130.0,
+        "re_ohm": 14.9,
+        "bl_tm": 15.64,
+        "qms": 5.13,
+        "qes": 0.71,
+        "qts": 0.62,
+        "sd_m2": 0.013269999999999999,
+        "mms_kg": 0.0143,
+        "le_h": 0.00092,
+        "nominal_impedance_ohm": 16.0,
+        "power_w": 150.0,
+        "peak_power_w": 600.0,
+        "xmax_m": 0.0023
+      },
+      "parameter_source": "https://www.redcatt.net/products/dr-65-002-16r-b2-c0001",
+      "usable_f_low_hz": null,
+      "usable_f_high_hz": null,
+      "physical_envelope_mm": {
+        "maximum_width": 165.2,
+        "depth": 78
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "source_updated_at": "2026-09-04T11:08:52+00:00",
+        "capture_method": "REDCATT API v1 engineering fields; units per products/schema",
+        "band_definition": "Unknown; free-text AI summaries are not a response specification",
+        "limitations": [
+          "Frame maximum including ears must be checked against drawing",
+          "No cone transfer function or phase-plug interface measurement"
+        ]
+      },
+      "overall_diameter_m": 0.16519999999999999
+    },
+    {
+      "driver_id": "redcatt-dr-6p5-006-8r-b2-c0001",
+      "manufacturer": "REDCATT",
+      "model_name": "6NPM",
+      "ordering_code": "DR-6.5-006-8R-B2-C0001",
+      "driver_type": "cone",
+      "nominal_diameter": "6.5in",
+      "nominal_diameter_inches": 6.5,
+      "nominal_diameter_verified": true,
+      "catalogue_status": "manufacturer_verified",
+      "parameters": {
+        "fs_hz": 150.0,
+        "re_ohm": 6.9,
+        "bl_tm": 13.7,
+        "qms": 4.58,
+        "qes": 0.38,
+        "qts": 0.35,
+        "sd_m2": 0.01431,
+        "mms_kg": 0.0111,
+        "le_h": 0.00016,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 180.0,
+        "peak_power_w": 720.0,
+        "xmax_m": 0.0004
+      },
+      "parameter_source": "https://www.redcatt.net/products/dr-65-006-8r-b2-c0001",
+      "usable_f_low_hz": null,
+      "usable_f_high_hz": null,
+      "physical_envelope_mm": {
+        "maximum_width": null,
+        "depth": 52.5
+      },
+      "provenance": {
+        "retrieved_on": "2026-09-11",
+        "source_updated_at": "2026-09-04T11:08:52+00:00",
+        "capture_method": "REDCATT API v1 engineering fields; units per products/schema",
+        "band_definition": "Unknown; free-text AI summaries are not a response specification",
+        "limitations": [
+          "Frame maximum including ears must be checked against drawing",
+          "No cone transfer function or phase-plug interface measurement"
+        ]
+      }
+    }
+  ]
+}

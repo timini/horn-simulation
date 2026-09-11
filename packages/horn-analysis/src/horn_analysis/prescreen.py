@@ -54,8 +54,8 @@ def _parse_diameter_inches(d: Optional[str]) -> Optional[float]:
     """Parse a nominal diameter string like '4in' or '6.5' to inches."""
     if not d:
         return None
-    m = re.match(r"(\d+(?:\.\d+)?)", d)
-    return float(m.group(1)) if m else None
+    m = re.fullmatch(r'(\d+(?:\.\d+)?)\s*(?:in|inch|inches|["″])?', str(d).strip(), re.I)
+    return float(m.group(1)) if m and float(m.group(1)) > 0 else None
 
 
 def prescreen_drivers(
@@ -89,6 +89,12 @@ def prescreen_drivers(
         raise ValueError("Throat fractions must be finite and within (0, 1]")
     if not math.isfinite(config.ka_max) or config.ka_max <= 0:
         raise ValueError("Throat ka cap must be positive and finite")
+    for value in (config.min_nominal_diameter_in, config.max_nominal_diameter_in):
+        if value is not None and (not math.isfinite(value) or value <= 0):
+            raise ValueError("Diameter bounds must be positive and finite")
+    if (config.min_nominal_diameter_in is not None and config.max_nominal_diameter_in is not None
+            and config.min_nominal_diameter_in > config.max_nominal_diameter_in):
+        raise ValueError("Minimum diameter exceeds maximum")
     candidates = []
 
     # Max driver radius: driver must fit inside the horn mouth
@@ -114,6 +120,8 @@ def prescreen_drivers(
         # 3. Optional nominal diameter filter
         if config.min_nominal_diameter_in is not None or config.max_nominal_diameter_in is not None:
             dia_in = _parse_diameter_inches(drv.nominal_diameter)
+            if dia_in is None:
+                continue
             if dia_in is not None:
                 if config.min_nominal_diameter_in is not None and dia_in < config.min_nominal_diameter_in:
                     continue
@@ -121,7 +129,11 @@ def prescreen_drivers(
                     continue
 
         # 4. Driver must fit in the horn mouth
-        drv_radius = math.sqrt(drv.effective_throat_area / math.pi)
+        # A phase-plug exit is not a frame dimension. Prefer the measured frame;
+        # otherwise this is only an optimistic diaphragm/nominal-size check.
+        nominal = _parse_diameter_inches(drv.nominal_diameter) if drv.driver_type == "cone" else None
+        drv_radius = (drv.overall_diameter_m / 2 if drv.overall_diameter_m is not None
+                      else max(math.sqrt(drv.sd_m2 / math.pi), (nominal or 0) * .0254 / 2))
         if drv_radius > max_driver_radius:
             continue
 

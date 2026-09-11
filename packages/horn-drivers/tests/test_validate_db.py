@@ -38,7 +38,7 @@ def db_raw():
     drivers = load_drivers_raw(str(DB_PATH))
     if not drivers:
         pytest.skip("Driver database is empty")
-    return drivers
+    return [d for d in drivers if d.get("catalogue_status") != "quarantined"]
 
 
 @pytest.fixture

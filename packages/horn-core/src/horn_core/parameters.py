@@ -69,6 +69,7 @@ class DriverParameters:
     peak_power_w: Optional[float] = None      # Peak / program power (W)
     usable_f_low_hz: Optional[float] = None
     usable_f_high_hz: Optional[float] = None
+    overall_diameter_m: Optional[float] = None  # Maximum frame span, including mounting ears
     parameter_source: Optional[str] = None
     interface_model: Optional[str] = None
     mmd_kg: Optional[float] = None  # diaphragm mass without the measured free-air load
@@ -87,7 +88,7 @@ class DriverParameters:
         return self.exit_area_m2 if self.exit_area_m2 is not None else self.sd_m2
 
     def _validate_optional_numbers(self):
-        positive = ("qms", "qes", "qts", "cms_m_per_n", "exit_area_m2", "xmax_m",
+        positive = ("overall_diameter_m", "qms", "qes", "qts", "cms_m_per_n", "exit_area_m2", "xmax_m",
                     "nominal_impedance_ohm", "power_w", "peak_power_w", "usable_f_low_hz",
                     "usable_f_high_hz", "mmd_kg")
         # Zero resistance or rear air mass is a meaningful limiting case.

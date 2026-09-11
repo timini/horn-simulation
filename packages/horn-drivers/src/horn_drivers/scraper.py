@@ -18,6 +18,7 @@ Usage:
 
 import argparse
 import json
+from urllib.parse import unquote
 import math
 import random
 import os
@@ -71,8 +72,8 @@ DIAMETER_TABLE: List[Tuple[str, float]] = [
 ]
 
 # Essential parameters — drivers missing any of these are skipped.
-ESSENTIAL_PARAMS = ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg")
-SCRAPER_SCHEMA_VERSION = 3  # independent Mms and removal of legacy inferred power
+ESSENTIAL_PARAMS = ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg", "le_h")
+SCRAPER_SCHEMA_VERSION = 4  # source isolation, verified nominal size, stale-value removal
 
 
 def slugify(manufacturer: str, model: str) -> str:
@@ -85,11 +86,11 @@ def _parse_float(text: str) -> Optional[float]:
     """Extract a float from a string, returning None on failure."""
     if not text:
         return None
-    cleaned = re.sub(r"[^\d.\-eE+]", "", text.strip())
-    try:
-        return float(cleaned)
-    except (ValueError, TypeError):
+    match = re.fullmatch(r'\s*([+-]?(?:\d+(?:[.,]\d*)?|[.,]\d+)(?:[eE][+-]?\d+)?)\s*[^\d]*', str(text))
+    if not match:
         return None
+    value = float(match.group(1).replace(',', '.'))
+    return value if math.isfinite(value) else None
 
 
 def build_session():
@@ -230,7 +231,7 @@ def _paths_match(requested_url: str, claimed_path: Optional[str]) -> bool:
     if claimed_path is None:
         return False  # an unidentified page cannot safely replace a driver record
     requested = requested_url[len(BASE_URL):] if requested_url.startswith(BASE_URL) else requested_url
-    return requested.rstrip("/").lower() == claimed_path.rstrip("/").lower()
+    return unquote(requested).rstrip("/").lower() == unquote(claimed_path).rstrip("/").lower()
 
 
 def origin_is_up(session, delay: float = 0.0) -> bool:
@@ -360,7 +361,12 @@ def _parse_data_woofer(json_str: str) -> Optional[dict]:
         "mmd_kg": float(mmd_g) * 1e-3,        # g -> kg, dry moving mass
     }
 
-    if le_mh is not None and le_mh > 0:
+    for field in ("le", "qts", "z", "xmax", "pmax"):
+        value = raw.get(field)
+        if value is not None and (not isinstance(value, (int, float)) or isinstance(value, bool)
+                or not math.isfinite(value) or value < 0 or (field in ("qts", "z") and value == 0)):
+            return None
+    if le_mh is not None and le_mh >= 0:
         si["le_h"] = float(le_mh) * 1e-3      # mH -> H
 
     if raw.get("qts") is not None:
@@ -394,7 +400,7 @@ def scrape_driver_page(
     if resp is None:
         return None
 
-    soup = BeautifulSoup(resp.text, "html.parser")
+    soup = BeautifulSoup(getattr(resp, "content", None) or resp.text, "html.parser")
 
     # Refuse to trust a page that says it is a different driver: a wedged
     # origin serving one page for every URL would otherwise fill the whole
@@ -406,12 +412,13 @@ def scrape_driver_page(
         )
 
     # --- Primary: extract from data-woofer JSON ---
-    si = None
-    for el in soup.find_all(attrs={"data-woofer": True}):
-        candidate = _parse_data_woofer(el["data-woofer"])
-        if candidate:
-            si = candidate
-            break
+    elements = [el for el in soup.find_all(attrs={"data-woofer": True})
+                if el.get("data-graph-size") != "mini" and
+                not el.find_parent(class_="woofer_card") and "woofer_card" not in el.get("class", [])]
+    payloads = {el["data-woofer"] for el in elements}
+    if len(payloads) != 1:
+        return None  # Never guess between multiple products or take a recommendation.
+    si = _parse_data_woofer(payloads.pop())
 
     if si is None:
         return None
@@ -458,7 +465,7 @@ def discover_manufacturers(
     if resp is None:
         raise ScrapeError("Could not fetch the manufacturer index")
 
-    soup = BeautifulSoup(resp.text, "html.parser")
+    soup = BeautifulSoup(getattr(resp, "content", None) or resp.text, "html.parser")
     manufacturers = set()
 
     for link in soup.find_all("a", href=True):
@@ -521,7 +528,7 @@ def discover_drivers(
     if resp is None:
         raise ScrapeError(f"Could not fetch manufacturer {manufacturer_slug}")
 
-    soup = BeautifulSoup(resp.text, "html.parser")
+    soup = BeautifulSoup(getattr(resp, "content", None) or resp.text, "html.parser")
 
     # Extract total result count from the page
     total_count = PAGE_SIZE  # fallback: assume single page
@@ -547,7 +554,7 @@ def discover_drivers(
             resp = request(session, page_url, delay=delay, patience_s=patience_s)
             if resp is None:
                 raise ScrapeError(f"Incomplete pagination for {manufacturer_slug} at offset {offset}")
-            page_soup = BeautifulSoup(resp.text, "html.parser")
+            page_soup = BeautifulSoup(getattr(resp, "content", None) or resp.text, "html.parser")
             drivers.extend(
                 _extract_driver_links(page_soup, manufacturer_slug, seen_urls)
             )
@@ -593,7 +600,7 @@ def _driver_is_current(
         params = record.get("parameters", {})
         return all(isinstance(params.get(field), (int, float))
                    and not isinstance(params[field], bool)
-                   and math.isfinite(params[field]) and params[field] > 0
+                   and math.isfinite(params[field]) and (params[field] >= 0 if field == "le_h" else params[field] > 0)
                    for field in set(ESSENTIAL_PARAMS) | set(required_fields))
     except (json.JSONDecodeError, OSError, AttributeError, TypeError):
         return False
@@ -726,6 +733,9 @@ def scrape_all(
         mfr_failed = 0
         for entry in driver_entries:
             driver_id = slugify(entry["manufacturer"], entry["name"])
+            if db_dir is not None and _existing_driver(db_dir, entry["manufacturer"], driver_id).get("catalogue_status") == "manufacturer_verified":
+                mfr_skipped += 1
+                continue  # A secondary-source sweep cannot downgrade verified primary data.
             if (not refresh) and db_dir is not None and _driver_is_current(
                 db_dir, entry["manufacturer"], driver_id, required_fields
             ):
@@ -757,7 +767,8 @@ def scrape_all(
 
             # Check essential params
             missing = [p for p in ESSENTIAL_PARAMS if not isinstance(params.get(p), (int, float))
-                       or isinstance(params[p], bool) or not math.isfinite(params[p]) or params[p] <= 0]
+                       or isinstance(params[p], bool) or not math.isfinite(params[p])
+                       or (params[p] < 0 if p == "le_h" else params[p] <= 0)]
             if missing:
                 print(f" -> SKIP (missing or invalid {', '.join(missing)})")
                 mfr_failed += 1
@@ -779,7 +790,12 @@ def scrape_all(
                     and not (isinstance(power_source, str) and power_source.strip())):
                 existing_params.pop("power_w", None)
             driver_type = infer_driver_type(sd, existing.get("driver_type"))
-            nominal_diameter = (existing.get("nominal_diameter") or infer_nominal_diameter(sd)) if driver_type == "cone" else None
+            nominal_diameter = (existing.get("nominal_diameter")
+                if driver_type == "cone" and existing.get("nominal_diameter_verified") is True else None)
+            # Retain omitted values only when their own source is explicit.
+            existing_params = {k: v for k, v in existing_params.items()
+                               if (isinstance(sources, dict) and sources.get(k))
+                               or (existing.get("interface_model") and k in ("exit_area_m2", "rear_load_mass_kg"))}
 
             model = entry["name"]
             manufacturer = entry["manufacturer"]
@@ -794,8 +810,14 @@ def scrape_all(
                 "parameter_source": entry["url"],
                 "scraper_schema_version": SCRAPER_SCHEMA_VERSION,
             }
+            driver["catalogue_status"] = "secondary_source_refreshed"
+            driver.pop("quarantine_reason", None)
+            driver["nominal_diameter_verified"] = bool(nominal_diameter)
             if nominal_diameter:
                 driver["nominal_diameter"] = nominal_diameter
+            else:
+                driver.pop("nominal_diameter", None)
+                driver["estimated_diameter_from_sd"] = infer_nominal_diameter(sd)
 
             # Write immediately
             if db_dir is not None:

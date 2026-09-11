@@ -1,0 +1,41 @@
+{
+    "driver_id": "phl-1120",
+    "manufacturer": "PHL",
+    "model_name": "1120",
+    "driver_type": "cone",
+    "nominal_diameter": "6.5in",
+    "nominal_diameter_inches": 6.5,
+    "parameters": {
+        "fs_hz": 135.0,
+        "re_ohm": 5.4,
+        "bl_tm": 8.5,
+        "sd_m2": 0.015000000000000001,
+        "mms_kg": 0.0099,
+        "le_h": 0.0005160000000000001,
+        "qms": 5.25,
+        "xmax_m": 0.002,
+        "power_w": 130.0,
+        "nominal_impedance_ohm": 8.0
+    },
+    "usable_f_low_hz": 300.0,
+    "usable_f_high_hz": 5000.0,
+    "parameter_source": "https://phlaudio.com/fileadmin/user_upload/phl_audio/1120_SpecSheet.pdf",
+    "physical_envelope_mm": {
+        "maximum_width": 187.5,
+        "depth": 68.5
+    },
+    "provenance": {
+        "retrieved_on": "2026-09-11",
+        "capture_method": "Manufacturer specification transcription",
+        "band_definition": "Manufacturer nominal range; not validated horn band",
+        "limitations": [
+            "No measured cone transfer function or phase-plug interface geometry"
+        ],
+        "source_sha256": "44ae24173492a56a817c2ecc3437805d4f126839f8e4e527d8fc146972efb946",
+        "inductance_10khz_mh": 0.212
+    },
+    "factory_sealed_back": false,
+    "catalogue_status": "manufacturer_verified",
+    "nominal_diameter_verified": true,
+    "overall_diameter_m": 0.1875
+}

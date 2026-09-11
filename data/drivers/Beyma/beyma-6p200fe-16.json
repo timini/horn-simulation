@@ -1,7 +1,7 @@
 {
     "driver_id": "beyma-6p200fe-16",
     "manufacturer": "Beyma",
-    "model_name": "6P200Fe_16\u00ce\u00a9",
+    "model_name": "6P200Fe_16\u03a9",
     "driver_type": "cone",
     "parameters": {
         "fs_hz": 36.0,
@@ -14,5 +14,7 @@
         "nominal_impedance_ohm": 8.0,
         "xmax_m": 0.011
     },
-    "nominal_diameter": "15in"
+    "nominal_diameter": "15in",
+    "catalogue_status": "legacy_unverified",
+    "nominal_diameter_verified": false
 }

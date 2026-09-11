@@ -1,0 +1,180 @@
+{
+  "reviewed_on": "2026-09-11",
+  "scope": "Professional cone-driver discovery, focused on 6.5-inch mids. A source listing is not a complete range refresh.",
+  "sources": [
+    {
+      "manufacturer": "BC",
+      "access": "manufacturer_web_or_pdf",
+      "import_status": "selected_records_verified",
+      "driver_ids": [
+        "bc-6pev13",
+        "bc-6mdn44-8"
+      ],
+      "urls": [
+        "https://old.bcspeakers.com/en/products/lf-driver/6-5/8/6pev13.pdf",
+        "https://www.bcspeakers.com/en/products/lf-driver/6.5/8/6MDN44"
+      ]
+    },
+    {
+      "manufacturer": "Beyma",
+      "access": "manufacturer_web_or_pdf",
+      "import_status": "selected_records_verified",
+      "driver_ids": [
+        "beyma-6mcf200nd",
+        "beyma-6mi100",
+        "beyma-6mi90"
+      ],
+      "urls": [
+        "https://www.beyma.com/en/products/c/low-mid-frequency/106MI108/loudspeaker-6mi100-8-oh/",
+        "https://www.beyma.com/speakers/Fichas_Tecnicas/beyma-speakers-data-sheet-low-mid-frequency-6MCF200Nd.pdf",
+        "https://www.beyma.com/speakers/Fichas_Tecnicas/beyma-speakers-data-sheet-low-mid-frequency-6MI90.pdf"
+      ]
+    },
+    {
+      "manufacturer": "Celestion",
+      "access": "manufacturer_web_or_pdf",
+      "import_status": "selected_records_verified",
+      "driver_ids": [
+        "celestion-cf0617m"
+      ],
+      "urls": [
+        "https://celestion.com/product/cf0617m/"
+      ]
+    },
+    {
+      "manufacturer": "LaVoce",
+      "access": "manufacturer_web_or_pdf",
+      "import_status": "selected_records_verified",
+      "driver_ids": [
+        "lavoce-maf061-50",
+        "lavoce-man061-80"
+      ],
+      "urls": [
+        "https://lavocespeakers.com/product/maf061-50/",
+        "https://lavocespeakers.com/product/man061-80/"
+      ]
+    },
+    {
+      "manufacturer": "PHL",
+      "access": "manufacturer_web_or_pdf",
+      "import_status": "selected_records_verified",
+      "driver_ids": [
+        "phl-1426ndu",
+        "phl-1683-26",
+        "phl-1120ndu",
+        "phl-1752ndu",
+        "phl-1660ndm-sq2",
+        "phl-1120",
+        "phl-1362ndu",
+        "phl-1663",
+        "phl-1343",
+        "phl-1752",
+        "phl-1362",
+        "phl-1680ndm-10",
+        "phl-1426",
+        "phl-1660ndm",
+        "phl-1343ndu"
+      ],
+      "urls": [
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1120NdU_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1120_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1343NdU_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1343_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1362NdU_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1362_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1426NdU_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1426_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1660NdM-SQ2_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1660NdM_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1663_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1680NdM-10_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1683-26_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1752NdU_SpecSheet.pdf",
+        "https://phlaudio.com/fileadmin/user_upload/phl_audio/1752_SpecSheet.pdf"
+      ]
+    },
+    {
+      "manufacturer": "PRV",
+      "access": "manufacturer_web_or_pdf",
+      "import_status": "selected_records_verified",
+      "driver_ids": [
+        "prv-6mr600x-ndy",
+        "prv-6mr500-ndy"
+      ],
+      "urls": [
+        "https://prvaudio.com/products/6mr600x-ndy-6-5-inch-neodymium-loudspeaker/",
+        "https://prvaudio.com/products/prv-6-5-inch-neo-midrange-speaker-6mr500-ndy/"
+      ]
+    },
+    {
+      "manufacturer": "REDCATT",
+      "access": "public_api",
+      "import_status": "selected_records_verified",
+      "driver_ids": [
+        "redcatt-dr-6p5-002-16r-b2-c0001",
+        "redcatt-dr-6p5-001-4r-b2-c0001",
+        "redcatt-dr-6p5-006-8r-b2-c0001"
+      ],
+      "urls": [
+        "https://www.redcatt.net/products/dr-65-001-4r-b2-c0001",
+        "https://www.redcatt.net/products/dr-65-002-16r-b2-c0001",
+        "https://www.redcatt.net/products/dr-65-006-8r-b2-c0001"
+      ]
+    },
+    {
+      "manufacturer": "SB-Audience",
+      "access": "manufacturer_web_or_pdf",
+      "import_status": "selected_records_verified",
+      "driver_ids": [
+        "sb-audience-nero-6mrn151d"
+      ],
+      "urls": [
+        "https://www.sbaudience.com/index.php/download_file/-/view/3645/"
+      ]
+    },
+    {
+      "manufacturer": "Ground Zero",
+      "urls": [
+        "https://www.ground-zero-audio.com/en/gzcm-6-5n-prox/"
+      ],
+      "import_status": "discovery_only",
+      "notes": "Missing explicit Sd; existing central phase plug needs redesign."
+    },
+    {
+      "manufacturer": "Dayton",
+      "urls": [
+        "https://www.daytonaudio.com/category/283/pro-series"
+      ],
+      "import_status": "discovery_only",
+      "notes": "ODEUM6.5N primary FRD/ZMA/specification acquisition remains."
+    },
+    {
+      "manufacturer": "Oberton",
+      "urls": [
+        "https://www.oberton.com/en/products/neodymium-loudspeakers/458-6nmb200v.html?showall=1"
+      ],
+      "import_status": "discovery_only",
+      "notes": "6NMB200V 16-ohm table ends at 5 kHz."
+    },
+    {
+      "manufacturer": "BMS",
+      "urls": [
+        "https://www.bmsspeakers.com/index.php-226.html?id=6n160_specification"
+      ],
+      "import_status": "discovery_only",
+      "notes": "6N160 lower-band application."
+    },
+    {
+      "manufacturer": "Kartesian",
+      "urls": [
+        "https://www.kartesian-acoustic.com/product/wom165_vhe"
+      ],
+      "import_status": "discovery_only",
+      "notes": "Wom165_vHE lower-band application."
+    }
+  ],
+  "blocked_secondary_source": {
+    "url": "https://loudspeakerdatabase.com",
+    "reason": "Wrong product returned for unrelated routes on 2026-09-11; leave identity guard enabled."
+  }
+}

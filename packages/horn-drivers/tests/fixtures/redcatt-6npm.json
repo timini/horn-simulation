@@ -1,0 +1,55 @@
+{
+  "code": "DR-6.5-006-8R-B2-C0001",
+  "name": "6NPM",
+  "slug": "dr-65-006-8r-b2-c0001",
+  "description": "Mid-Range/6.5inch/Neo/Paper/180W/8ohm",
+  "url": "https://www.redcatt.net/products/dr-65-006-8r-b2-c0001",
+  "category": "LF",
+  "type": "Midrange",
+  "size_inches": 6.5,
+  "is_featured": false,
+  "status": "active",
+  "updated_at": "2026-09-04T11:08:52+00:00",
+  "general": {
+    "nominal_impedance": "8",
+    "magnet": "Neodymium",
+    "basket_material": "Aluminum"
+  },
+  "power_handling": {
+    "aes_watts": "180",
+    "continuous_watts": "360",
+    "peak_watts": "720"
+  },
+  "voice_coil": {
+    "diameter": "44.5",
+    "wire": null,
+    "former": "Glass Fiber",
+    "winding_height": "6.8"
+  },
+  "thiele_small_parameters": {
+    "fs_hz": 150,
+    "re_ohm": 6.9,
+    "qes": 0.38,
+    "qms": 4.58,
+    "qts": 0.35,
+    "vas_liters": 2.9,
+    "sd_cm2": 143.1,
+    "sensitivity_db": 96.79,
+    "mms_grams": 11.1,
+    "rms": 2.28,
+    "cms": 0.1,
+    "bl_tm": 13.7,
+    "le_mh": 0.16
+  },
+  "physical": {
+    "overall_diameter_mm": 162,
+    "bolt_circle_diameter_mm": 172,
+    "baffle_cutout_diameter_mm": 145,
+    "mounting_holes": "4",
+    "depth_mm": 52.5,
+    "net_weight_kg": 1.2,
+    "packaging_dimensions_mm": null,
+    "xmax_mm": "0.4",
+    "xmech_mm": "6.4"
+  }
+}
