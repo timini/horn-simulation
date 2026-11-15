@@ -341,6 +341,15 @@ def test_mouth_not_larger_than_throat_is_an_empty_search():
     assert candidates == [] and design.reason == 'no_mouth_larger_than_throat'
 
 
+def test_tractrix_only_below_natural_length_reports_profile_reason():
+    from horn_core.profiles import natural_tractrix_length
+    short = 0.5 * natural_tractrix_length(.025, .15)
+    candidates,design=generate_auto_candidates(500,2000,[.025],mouth_radius=.15,length=short,profiles=['tractrix'])
+    assert candidates == []
+    assert design.status == 'no_feasible_design'
+    assert design.reason == 'profile_geometry_infeasible'
+
+
 @pytest.mark.parametrize('kwargs',[{'max_length':-1},{'min_length':.2,'max_length':.1},{'max_mouth_radius':float('nan')}])
 def test_invalid_explicit_geometry_constraints_still_raise(kwargs):
     with pytest.raises(ValueError):generate_auto_candidates(500,2000,[.01],**kwargs)

@@ -12,7 +12,7 @@
       "derived_from_archive_member": "worked-example-modal/outputs/auto/refinement/refine_hyperbolic_0001.step",
       "archive_member_sha256": "e1e135ec3fe3b7d3a3f9c29ea6ee1b5571d850c5e38eb4222adb2348f574e461",
       "sha256": "044f022afbf6c9453b6cb844a5f31b780f391b097b142807c58f4746906b380f",
-      "note": "Re-exported with true STEP units (millimetre coordinates under a millimetre declaration). The archived file held metre values under a millimetre declaration. Same geometry: volume and port areas agree to 1e-12 relative.",
+      "note": "Re-exported with true STEP units (millimetre coordinates under a millimetre declaration). The archived file held metre values under a millimetre declaration. Same geometry: volume and port areas agree to 1e-12 relative. The current generator revolves a spline profile instead of lofting sections, so the command now gives a wall that is not byte-identical; its volume agrees to 1e-6 relative.",
       "command": "horn-geometry --profile hyperbolic --throat-radius 0.032498 --mouth-radius 0.08870898640584517 --length 0.11790625 --num-sections 20 --output-file horn.step"
     },
     "response.csv": {

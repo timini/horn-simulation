@@ -35,7 +35,7 @@ def main():
     if a.budget==0 or not data['results']:
         data['refinement']={'new_evaluations':0,'budget':a.budget,'reason':'disabled' if a.budget==0 else 'no_feasible_seed'}
     else:
-        from horn_geometry.generator import create_horn
+        from horn_geometry.generator import create_horn, LoftAccuracyError
         from horn_core.parameters import HornParameters, FlareProfile
         from horn_solver.solver import run_simulation_from_step
         from horn_solver.modal_geometry import ModalGeometryError
@@ -79,7 +79,20 @@ def main():
                 cache[key] = 0.
                 return 0.
             step=out/f'{c.candidate_id}.step'
-            create_horn(c.profile,c.throat_radius,c.mouth_radius,c.length,step,num_sections=a.num_sections)
+            try:
+                create_horn(c.profile,c.throat_radius,c.mouth_radius,c.length,step,num_sections=a.num_sections)
+            except LoftAccuracyError as error:
+                geometry_rejected.append(c.candidate_id)
+                rejected.extend({"horn_label": c.candidate_id, "driver_id": drv.driver_id,
+                    "profile": c.profile, "throat_radius": c.throat_radius,
+                    "mouth_radius": c.mouth_radius, "length": c.length,
+                    "model_feasible": False, "simulation_eligible": False,
+                    "composite_score": 0., "bandwidth_coverage": 0.,
+                    "passband_ripple_db": None, "avg_sensitivity_db": None,
+                    "rejection_reasons": ["loft_accuracy_unmet"],
+                    "rejection_detail": str(error), "evidence_gaps": []} for drv in drivers)
+                cache[key] = 0.
+                return 0.
             csv=out/f'{c.candidate_id}_results.csv'
             from horn_analysis.merge import merge_bands
             band_dir=out/f'{c.candidate_id}_bands';band_dir.mkdir()

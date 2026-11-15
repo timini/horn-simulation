@@ -36,7 +36,8 @@ This project focuses on selecting a driver and sizing a conventional single-driv
 
 - **7 horn profiles**: conical, exponential, hyperbolic (hypex T=0, catenoidal), tractrix (true constant-tangent curve), oblate spheroid, axially scaled tractrix, and an exponential throat with a tangent cone (`cd`). `lecleach` remains as a deprecated alias of `scaled_tractrix`; it was never a Le Cléac’h horn.
   - A tractrix through the throat and mouth radii has a natural length (tractrix constant equal to the mouth radius, wall perpendicular at the mouth). A longer requested length uses a larger tractrix constant, so the wall stops short of 90 degrees at the mouth. A shorter one has no tractrix: the candidate grid skips it, refinement rejects it, and single mode stops with the natural length in the message.
-  - Generated STEP walls stay within 1% of the profile radius; the generator adds loft sections beyond `--num_sections` when a profile needs them.
+  - The pipeline always uses hypex T=0 for `hyperbolic`. Other T values are available only through the Python API (`get_radius_func(hypex_t=)`, `create_horn(hypex_t=)`) and `horn-geometry --hypex-t`; the screen, report render and candidate CSV do not carry T, so do not feed a STEP made with another T into the pipeline.
+  - The generated STEP wall is the profile curve revolved about the horn axis. The generator checks it against the profile radius by dense sampling along the wall and requires it to stay within 1%; the generator uses more profile points than `--num_sections` when a profile needs them.
 - **FEM Helmholtz solver** — FEniCSx/dolfinx with adaptive meshing and radiation BC
 - **Driver database** with Thiele-Small parameter coupling
 - **3 operating modes** — single simulation, auto comparison, full-auto design exploration

@@ -13,7 +13,7 @@ params.throat_radius = null
 params.mouth_radius = null
 params.length = null
 params.profile = "conical" // Horn flare profile: conical, exponential, hyperbolic, tractrix, os, scaled_tractrix, cd (lecleach: deprecated alias of scaled_tractrix)
-params.num_sections = 20   // Number of cross-sections for lofting
+params.num_sections = 20   // Minimum profile points in the revolved horn wall
 
 // Simulation Settings
 params.min_freq = 500      // Minimum frequency for the sweep in Hz
@@ -506,7 +506,7 @@ from pathlib import Path
 from horn_analysis.auto_report import generate_auto_report
 from horn_analysis.scoring import TargetSpec
 target = TargetSpec(${params.target_f_low}, ${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio})
-reasons = {"no_drivers_passed_prescreen": "No drivers passed the initial screening for this request.", "size_constraints_exclude_search_range": "No geometry remains within the requested size limits and current search range.", "no_mouth_larger_than_throat": "The searched mouth sizes are no larger than the throat.", "no_geometry_in_radiation_domain": "No searched geometry lies within the selected radiation model domain."}
+reasons = {"no_drivers_passed_prescreen": "No drivers passed the initial screening for this request.", "size_constraints_exclude_search_range": "No geometry remains within the requested size limits and current search range.", "no_mouth_larger_than_throat": "The searched mouth sizes are no larger than the throat.", "profile_geometry_infeasible": "Every searched geometry is impossible for its profile, for example a tractrix shorter than its natural length.", "no_geometry_in_radiation_domain": "No searched geometry lies within the selected radiation model domain."}
 metadata = json.loads(Path("${empty_metadata}").read_text())
 rejected = metadata.get("rankings", [])
 count = metadata.get("total_evaluated", 0)
