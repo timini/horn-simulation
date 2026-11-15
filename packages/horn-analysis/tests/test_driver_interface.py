@@ -13,6 +13,7 @@ from horn_analysis.evaluation import evaluate_response
 from horn_analysis.electrical_output import electrical_table, system_group_delay, stress_assessment
 from horn_analysis.scoring import TargetSpec
 from horn_analysis.transfer_function import compute_driver_operating_point
+from horn_core.driver_interface import estimate_cone_front_chamber_m3
 
 
 def cone(**overrides):
@@ -68,6 +69,40 @@ def test_cone_without_chamber_data_uses_flagged_cone_volume_estimate():
     assert "front_chamber_volume_estimated" in result["evidence_gaps"]
     assert result["driver_interface"]["front_chamber_source"] == "estimated"
     assert result["driver_interface"]["front_chamber_volume_cm3"] == pytest.approx(expected_volume * 1e6)
+
+
+def _throat_to_diaphragm_db(driver, f, throat_area):
+    z = np.full(f.shape, RHO0 * C0)  # resistive plane-wave load rho c / St
+    point = compute_driver_operating_point(driver, f, z, 0 * z, throat_area, 2.83)
+    return 20 * np.log10(np.abs(point["throat_volume_velocity"] / (driver.sd_m2 * point["velocity_rms"])))
+
+
+def test_cone_estimate_has_no_effect_when_throat_matches_cone():
+    """The cone air between a diaphragm and a throat of the same area only
+    carries the wave: on a matched rho c / Sd load there is no level change."""
+    driver = cone()
+    f = np.geomspace(100., 8000., 200)
+    np.testing.assert_allclose(_throat_to_diaphragm_db(driver, f, driver.sd_m2), 0., atol=1e-9)
+
+
+def test_cone_estimate_tends_to_lumped_compliance_at_high_compression():
+    """With Sd >> St the cone air acts as the shunt compliance V/(rho c^2)."""
+    driver = cone()
+    throat = driver.sd_m2 / 10
+    volume = estimate_cone_front_chamber_m3(driver.sd_m2)
+    corner = C0 * throat / (2 * math.pi * volume)
+    f = np.geomspace(corner / 10, corner, 50)
+    np.testing.assert_allclose(_throat_to_diaphragm_db(driver, f, throat),
+                               -10 * np.log10(1 + (f / corner)**2), atol=0.05)
+
+
+def test_lumped_validity_flag_starts_at_ka_one():
+    driver = cone()
+    ka_one = C0 / (2 * math.pi * math.sqrt(driver.sd_m2 / math.pi))
+    below = evaluate_response(np.array([300., 800.]), np.full(2, 100.), TargetSpec(300, .9 * ka_one), driver, AREA)
+    above = evaluate_response(np.array([300., 1600.]), np.full(2, 100.), TargetSpec(300, 1.1 * ka_one), driver, AREA)
+    assert "front_chamber_not_lumped_in_band" not in below["evidence_gaps"]
+    assert "front_chamber_not_lumped_in_band" in above["evidence_gaps"]
 
 
 def test_interface_flags_for_expansion_and_unknown_chamber():
@@ -196,8 +231,8 @@ def test_stress_power_is_separate_from_drive_voltage():
     assert stressed["test_power_xmax_margin_mm"] == pytest.approx(3. - at_band_edge * 1e3, rel=1e-12)
     # 100 W drives this cone past Xmax only below the band; the crossover must sit above that.
     assert stressed["model_feasible"]
-    assert 50 < stressed["test_power_xmax_exceeded_below_hz"] < 800
-    assert excursion[f <= stressed["test_power_xmax_exceeded_below_hz"]].max() > .003
+    assert 50 < stressed["test_power_xmax_exceeded_up_to_hz"] < 800
+    assert excursion[f <= stressed["test_power_xmax_exceeded_up_to_hz"]].max() > .003
     loud = evaluate_response(f, levels, TargetSpec(800, 1600, test_power_w=5e4), driver, AREA, operating_point=point)
     assert "test_power_excursion_exceeded" in loud["rejection_reasons"] and loud["composite_score"] == 0
 

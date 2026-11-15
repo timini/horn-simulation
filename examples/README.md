@@ -8,4 +8,4 @@ For the measured exponential reference, see [the Post comparison](../docs/POST_H
 
 ## 6NMB420, 320–5000 Hz, maximum 300 mm length
 
-[Open the checked design](6nmb420-320-5000/README.md): an experimental OS horn for the 8 Ω 18Sound 6NMB420, with a 76 mm throat and 244.8 mm mouth. Includes physical-scale acoustic STEP, response/impedance data, search provenance and passing mesh/frequency checks. Predicted variation is 4.42 dB at 2.83 V RMS / 1 m. The real adapter and assembly remain unqualified.
+[Open the checked design](6nmb420-320-5000/README.md): an experimental OS horn for the 8 Ω 18Sound 6NMB420, with a 76 mm throat and 244.8 mm mouth. Includes physical-scale acoustic STEP, response/impedance data, search provenance and passing mesh/frequency checks. Predicted variation is 4.42 dB at 2.83 V RMS / 1 m with an ideal area transformer at the throat. With the current default front chamber estimate for cone drivers the same FEM data give about 13 dB and the design fails; see its README. The real adapter and assembly remain unqualified.

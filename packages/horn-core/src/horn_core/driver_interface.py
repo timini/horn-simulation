@@ -32,12 +32,18 @@ A chamber volume of zero, with no area, uses exactly the previous ideal area
 transformer arithmetic, so results are bit-for-bit unchanged.
 
 Cone drivers with no chamber data get an estimated front chamber equal to the
-air volume of the cone itself: a right circular cone of base Sd and depth
-0.25 times the effective diameter, V = Sd * 0.25 * D_eff / 3. Any adapter
-between the cone rim and the throat adds to this, so the estimate is a lower
-bound and is reported as "estimated". Compression drivers and drivers of
-unknown type are not estimated: their front chamber is treated as zero and
-flagged as unknown.
+air volume of an open cone closed by a flat adapter plate at its rim: a right
+circular cone of base Sd and depth 0.25 times the effective diameter,
+V = Sd * 0.25 * D_eff / 3. It is modelled as a duct of area Sd and length
+V / Sd = D_eff / 12, not as a pure shunt compliance. At high compression
+(Sd >> St) this behaves as the same compliance; when the throat is about as
+large as the cone it correctly has almost no effect, because the cone air
+then just carries the wave to the throat. The estimate is neither an upper
+nor a lower bound: a spacer between the cone rim and the throat adds volume,
+while a phase plug or cone filler removes it. It is reported as "estimated";
+supply front_chamber_volume_m3 (and optionally front_chamber_area_m2) for the
+actual adapter. Compression drivers and drivers of unknown type are not
+estimated: their front chamber is treated as zero and flagged as unknown.
 """
 import math
 
@@ -46,8 +52,10 @@ import numpy as np
 from horn_core.acoustics import C0, RHO0
 
 CONE_DEPTH_TO_DIAMETER = 0.25
-# First radial (0,1) mode of a thin cylindrical cavity, j'_1 zero: k a = 3.8317.
-FIRST_RADIAL_CAVITY_ROOT = 3.8317
+# Chamber pressure is taken as uniform across the diaphragm. Radial variation is
+# already about 20 % at k a = 1 (J0(1) = 0.77), well below the first radial
+# (0,1) mode at k a = 3.83, so k a = 1 is used as the validity limit.
+LUMPED_CHAMBER_KA_LIMIT = 1.0
 
 
 def estimate_cone_front_chamber_m3(sd_m2: float) -> float:
@@ -65,7 +73,7 @@ def resolve_front_chamber(driver):
     if driver.front_chamber_volume_m3 is not None:
         return float(driver.front_chamber_volume_m3), driver.front_chamber_area_m2, "specified"
     if (driver.driver_type or "").lower() == "cone":
-        return estimate_cone_front_chamber_m3(driver.sd_m2), None, "estimated"
+        return estimate_cone_front_chamber_m3(driver.sd_m2), driver.sd_m2, "estimated"
     return 0.0, None, "unknown"
 
 
@@ -142,12 +150,18 @@ def driver_operating_point(driver, frequencies, z_horn, throat_area, v_g, *, rho
 
 
 def interface_summary(driver, throat_area):
-    """Chamber assumption actually used, for rankings and reports."""
+    """Chamber assumption actually used, for rankings and reports.
+
+    front_chamber_corner_hz is the lumped-compliance corner c St / (2 pi V) on a
+    resistive rho c / St throat load. It indicates scale only: with a duct
+    chamber or a reactive real throat load the actual -3 dB point differs.
+    """
     volume, area, source = resolve_front_chamber(driver)
     corner = C0 * throat_area / (2 * math.pi * volume) if volume > 0 else None
     return {"front_chamber_volume_cm3": volume * 1e6, "front_chamber_source": source,
             "front_chamber_area_cm2": None if area is None else area * 1e4,
             "front_chamber_corner_hz": corner,
+            "front_chamber_corner_basis": "lumped compliance on a resistive rho c / St load",
             "rear_chamber_volume_cm3": None if driver.rear_chamber_volume_m3 is None else driver.rear_chamber_volume_m3 * 1e6,
             "compression_ratio": driver.sd_m2 / throat_area}
 
@@ -160,9 +174,9 @@ def interface_evidence_gaps(driver, throat_area, f_high_hz):
       or unknown driver type); the ideal transformer is optimistic when Sd > St.
     * diaphragm_smaller_than_throat: Sd < St, the interface expands instead of
       compressing, which the plane-wave transformer does not describe.
-    * front_chamber_not_lumped_in_band: the target band reaches the first radial
-      mode of a cavity of the diaphragm's radius (k a = 3.83), above which a
-      single uniform chamber pressure is not a valid assumption.
+    * front_chamber_not_lumped_in_band: the target band reaches k a = 1 for the
+      diaphragm radius a, above which a single uniform pressure across the
+      chamber is a poor approximation (the first radial mode is at k a = 3.83).
     """
     volume, _, source = resolve_front_chamber(driver)
     gaps = []
@@ -173,6 +187,6 @@ def interface_evidence_gaps(driver, throat_area, f_high_hz):
     if driver.sd_m2 < throat_area * (1 - 1e-12):
         gaps.append("diaphragm_smaller_than_throat")
     radius = math.sqrt(driver.sd_m2 / math.pi)
-    if volume > 0 and f_high_hz > FIRST_RADIAL_CAVITY_ROOT * C0 / (2 * math.pi * radius):
+    if volume > 0 and f_high_hz > LUMPED_CHAMBER_KA_LIMIT * C0 / (2 * math.pi * radius):
         gaps.append("front_chamber_not_lumped_in_band")
     return gaps

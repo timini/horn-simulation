@@ -153,8 +153,10 @@ def generate_auto_report(
             lines.append(f"     Throat radius: {result['throat_radius']:.6f} m; mouth radius: {result['mouth_radius']:.6f} m; length: {result['length']:.6f} m")
         interface = result.get("driver_interface")
         if interface:
+            corner = interface.get("front_chamber_corner_hz")
             lines.append(f"     Front chamber: {interface['front_chamber_volume_cm3']:.1f} cm3 ({interface['front_chamber_source']}); "
-                         f"Sd/St {interface['compression_ratio']:.2f}")
+                         f"Sd/St {interface['compression_ratio']:.2f}"
+                         + (f"; lumped corner on a resistive load {corner:.0f} Hz" if corner else ""))
         if result.get("test_power_w") is not None:
             margin = result.get("test_power_xmax_margin_mm")
             lines.append(f"     At {result['test_power_w']:g} W: max in-band excursion {result['test_power_band_max_excursion_mm']:.2f} mm"

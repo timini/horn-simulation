@@ -250,7 +250,7 @@ _EVIDENCE_LABELS = {
     "front_chamber_volume_estimated": "Front chamber volume is a cone-geometry estimate, not a measured adapter",
     "front_chamber_volume_unknown": "Front chamber volume is unknown; the ideal area transformer is optimistic",
     "diaphragm_smaller_than_throat": "Throat is larger than the diaphragm",
-    "front_chamber_not_lumped_in_band": "Target band reaches the front chamber's first radial mode",
+    "front_chamber_not_lumped_in_band": "Target band goes above ka = 1 for the front chamber, where a uniform chamber pressure is approximate",
 }
 
 
