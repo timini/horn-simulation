@@ -1,7 +1,7 @@
 {
     "driver_id": "beyma-18qlex1600fe-4",
     "manufacturer": "Beyma",
-    "model_name": "18QLEX1600Fe_4\u00ce\u00a9",
+    "model_name": "18QLEX1600Fe_4Ω",
     "driver_type": "cone",
     "parameters": {
         "fs_hz": 36.0,
@@ -14,5 +14,18 @@
         "nominal_impedance_ohm": 8.0,
         "xmax_m": 0.011
     },
-    "nominal_diameter": "15in"
+    "nominal_diameter": "15in",
+    "parameter_source": "https://loudspeakerdatabase.com/Beyma/18QLEX1600Fe_4%CE%A9",
+    "record_schema_version": 1,
+    "provenance": {
+        "retrieved_on": "2026-02-26",
+        "retrieved_on_basis": "Date of commit 3f212b1, which wrote this record. The scrape date itself was not recorded.",
+        "source_kind": "third_party_aggregator",
+        "capture_method": "Legacy scrape of loudspeakerdatabase.com (before scraper schema 3). parameter_source was reconstructed from the manufacturer slug and model name.",
+        "known_limitations": [
+            "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
+            "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
+            "Band, power handling, Rms and sensitivity were not captured."
+        ]
+    }
 }
