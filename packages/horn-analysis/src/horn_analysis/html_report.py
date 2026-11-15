@@ -247,6 +247,10 @@ _EVIDENCE_LABELS = {
     "moving_mass_and_rear_load_not_separated": "Diaphragm mass and rear air load have not been characterized separately",
     "maximum_output_limits_unknown": "Power or excursion limits are missing",
     "mechanical_damping_unknown": "Mechanical damping is unknown",
+    "front_chamber_volume_estimated": "Front chamber volume is a cone-geometry estimate, not a measured adapter",
+    "front_chamber_volume_unknown": "Front chamber volume is unknown; the ideal area transformer is optimistic",
+    "diaphragm_smaller_than_throat": "Throat is larger than the diaphragm",
+    "front_chamber_not_lumped_in_band": "Target band reaches the front chamber's first radial mode",
 }
 
 

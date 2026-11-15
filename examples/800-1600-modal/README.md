@@ -14,7 +14,7 @@ Open [report.html](report.html) locally in a browser to inspect the predicted re
 | Radiation setting | Nonuniform axisymmetric mouth in an infinite baffle (`modal_baffled`) |
 | Physical evidence status | Insufficient evidence; experimental prediction |
 
-The selected candidate is near-tied with other designs. Its throat dimensions describe an ideal acoustic connection. The real cone driver's chamber/adapter, rear load and moving-mass decomposition have not been qualified.
+The selected candidate is near-tied with other designs. Its throat dimensions describe an ideal acoustic connection. The real cone driver's chamber/adapter, rear load and moving-mass decomposition have not been qualified. This run used the ideal area transformer. The current coupling adds an estimated front chamber for cone drivers (139 cm3 here, corner near 1.3 kHz); with it the same FEM response gives about 6.5 dB ripple and fails the 6 dB limit.
 
 ## Inspect the design
 

@@ -34,7 +34,9 @@ def test_modal_exhaustive_search_replays_from_frozen_responses(tmp_path):
         assert result['geometry_count']==20 and result['driver_count']==3
         assert len(result['cases'])==4
         assert len(result['raw_sha256'])==40
-        drivers=[DriverParameters(**record) for record in result['drivers']]
+        # The frozen shortlist and audit figures were recorded with the ideal
+        # area transformer (no front chamber); replay under that same model.
+        drivers=[DriverParameters(**{**record,'front_chamber_volume_m3':0.}) for record in result['drivers']]
         for name,digest in result['raw_sha256'].items():
             raw=read(name);assert hashlib.sha256(raw).hexdigest()==digest
             if name.endswith('.csv'):(tmp_path/name).write_bytes(raw)

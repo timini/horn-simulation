@@ -46,6 +46,15 @@ def _driver_from_dict(d: dict) -> DriverParameters:
     exit_area_m2 = params.get("exit_area_m2")
     if exit_area_m2 is None:
         exit_area_m2 = _cm2_to_m2(params.get("exit_area_cm2"))
+    front_chamber_volume_m3 = params.get("front_chamber_volume_m3")
+    if front_chamber_volume_m3 is None:
+        front_chamber_volume_m3 = _cm3_to_m3(params.get("front_chamber_volume_cm3"))
+    front_chamber_area_m2 = params.get("front_chamber_area_m2")
+    if front_chamber_area_m2 is None:
+        front_chamber_area_m2 = _cm2_to_m2(params.get("front_chamber_area_cm2"))
+    rear_chamber_volume_m3 = params.get("rear_chamber_volume_m3")
+    if rear_chamber_volume_m3 is None:
+        rear_chamber_volume_m3 = _cm3_to_m3(params.get("rear_chamber_volume_cm3"))
     re_ohm = params.get("re_ohm")
     if re_ohm is None:
         re_ohm = params.get("re_ohms", 0.0)
@@ -78,6 +87,9 @@ def _driver_from_dict(d: dict) -> DriverParameters:
         rear_load_mass_kg=params.get("rear_load_mass_kg"),
         cms_m_per_n=params.get("cms_m_per_n"),
         rms_kg_per_s=params.get("rms_kg_per_s"),
+        front_chamber_volume_m3=front_chamber_volume_m3,
+        front_chamber_area_m2=front_chamber_area_m2,
+        rear_chamber_volume_m3=rear_chamber_volume_m3,
     )
 
 
@@ -161,3 +173,7 @@ def _mm_to_m(val: Optional[float]) -> Optional[float]:
 
 def _cm2_to_m2(val: Optional[float]) -> Optional[float]:
     return val * 1e-4 if val is not None else None
+
+
+def _cm3_to_m3(val: Optional[float]) -> Optional[float]:
+    return val * 1e-6 if val is not None else None

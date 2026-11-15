@@ -64,26 +64,12 @@ def _compute_neumann_velocity(
     Returns:
         Complex normal velocity v_n (m/s) at the throat.
     """
-    omega = 2.0 * np.pi * frequency
-
-    # Electrical impedance
-    z_e = driver.re_ohm + 1j * omega * driver.le_h
-
-    # Mechanical impedance of the driver suspension
-    rms = driver.rms_kg_per_s if driver.rms_kg_per_s is not None else 0.0
-    z_mech_driver = rms + 1j * omega * driver.coupled_moving_mass_kg + 1.0 / (1j * omega * driver.cms_m_per_n)
-
-    # Horn throat impedance (specific acoustic → mechanical)
-    z_horn = z_horn_real + 1j * z_horn_imag
-    z_mech_load = z_horn * (driver.sd_m2 ** 2) / throat_area
-
-    z_mech_total = z_mech_driver + z_mech_load
-    # Solve the motor balance directly, including zero mechanical impedance.
-    velocity = driver.bl_tm * v_g / (z_e * z_mech_total + driver.bl_tm ** 2)
-
-    # Volume velocity at throat = v_diaphragm * Sd, normal velocity = U / S_throat
-    v_n = velocity * driver.sd_m2 / throat_area
-    return v_n
+    # Same motor and chamber network as the analysis coupling
+    # (horn_core.driver_interface). Normal velocity = U_throat / S_throat.
+    from horn_core.driver_interface import driver_operating_point
+    point = driver_operating_point(driver, np.array([frequency], dtype=float),
+                                   np.array([z_horn_real + 1j * z_horn_imag]), throat_area, v_g)
+    return complex(point["throat_volume_velocity"][0] / throat_area)
 
 def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float, geometry_order: int = 1, *, require_axisymmetric_disk=False) -> Tuple["mesh.Mesh", "mesh.MeshTags"]:
     """
