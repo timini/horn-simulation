@@ -169,15 +169,107 @@ def test_database_paths_cannot_escape_output_directory(tmp_path):
 
 
 @pytest.mark.parametrize('sd', [.00126, .0045, .005])
-def test_refresh_preserves_compression_category_without_cone_diameter(monkeypatch, tmp_path, sd):
+def test_refresh_preserves_sourced_compression_category_without_cone_diameter(monkeypatch, tmp_path, sd):
     batch(monkeypatch)
     s._save_driver(tmp_path, dict(driver_id='test-model', manufacturer='Test',
-        driver_type='compression', parameters={**PARAMS, 'sd_m2': sd}))
+        driver_type='compression', type_source='datasheet: https://example.org/ds.pdf',
+        parameters={**PARAMS, 'sd_m2': sd}))
     monkeypatch.setattr(s, 'scrape_driver_page', lambda *a, **k: {**PARAMS, 'sd_m2': sd})
     assert s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test'], refresh=True) == 1
     record = json.loads((tmp_path/'Test/test-model.json').read_text())
     assert record['driver_type'] == 'compression'
+    assert record['type_source'] == 'datasheet: https://example.org/ds.pdf'
     assert 'nominal_diameter' not in record
+
+
+def test_refresh_replaces_unsourced_heuristic_category_with_site_category(monkeypatch, tmp_path):
+    """Old records got 'compression' from Sd < 0.005; a small full-range cone
+    must not keep that label through a refresh."""
+    batch(monkeypatch)
+    s._save_driver(tmp_path, dict(driver_id='test-model', manufacturer='Test',
+        driver_type='compression', parameters={**PARAMS, 'sd_m2': .003}))
+    monkeypatch.setattr(s, 'scrape_driver_page',
+                        lambda *a, **k: {**PARAMS, 'sd_m2': .003, '_category': 'Full-range'})
+    s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test'], refresh=True)
+    record = json.loads((tmp_path/'Test/test-model.json').read_text())
+    assert record['driver_type'] == 'cone'
+    assert record['type_source'] == "loudspeakerdatabase.com category 'Full-range'"
+    monkeypatch.setattr(s, 'scrape_driver_page', lambda *a, **k: {**PARAMS, 'sd_m2': .003})
+    s._save_driver(tmp_path, {**record, 'driver_type': 'compression', 'type_source': None})
+    s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test'], refresh=True)
+    assert json.loads((tmp_path/'Test/test-model.json').read_text())['driver_type'] == 'unknown'
+
+
+SITE_JSON = {"re": 3.3, "bl": 10.2, "mmd": 42.0, "rms": 2.7, "cms": 160.0, "sd": 549.0, "le": 0.44,
+             "fs": 55.0, "qts": 0.52, "xmax": 5.42, "pmax": 400, "frmin": 55, "frmax": 4000,
+             "spl1w": 94.4, "z": 4}
+SIMILAR_JSON = {**SITE_JSON, "re": 5.5, "fs": 99.0, "frmin": 20, "frmax": 900}
+
+
+def real_page(identity='/Test/Model_4\u03a9'):
+    """Shape of a real driver page: own data first, 'similar drivers' after."""
+    def hl(key, value):
+        return (f'<li><span data-highlight="{key}">label</span>'
+                f'<span class="symbol_value" data-highlight="{key}"><b>{value}</b></span></li>')
+    return (f'<html><head><meta charset="utf-8"><meta property="og:url" content="{s.BASE_URL}{identity}"></head>'
+            '<body><main><header><a class="type-ribbon" href="/Subwoofer"><h2>Subwoofer</h2></a></header>'
+            '<table><tr><td class="value" data-highlight="size">12\u2033 / 300 mm</td></tr></table>'
+            f"<div data-woofer='{json.dumps(SITE_JSON)}'></div><ul>"
+            + hl('qms', '6.60') + hl('qes', '0.56') + hl('mms', '51') + hl('pw', '200') +
+            '</ul></main><section class="similar">'
+            f"<article data-woofer='{json.dumps(SIMILAR_JSON)}'></article>"
+            + hl('pw', '999') + '</section></body></html>')
+
+
+def test_driver_page_maps_band_power_damping_and_sensitivity(clock):
+    """The site supplies Rms, Cms, band, power and sensitivity; the old parser
+    threw them away, leaving every scraped driver with unknown band and power."""
+    page = response(text=real_page())
+    parsed = s.scrape_driver_page(s.BASE_URL + '/Test/Model_4\u03a9', Session(page))
+    assert parsed['fs_hz'] == 55.0 and parsed['re_ohm'] == 3.3  # own block, not the similar card
+    assert parsed['rms_kg_per_s'] == 2.7
+    assert parsed['cms_m_per_n'] == pytest.approx(160e-6)
+    assert parsed['sd_m2'] == 0.0549  # no binary noise from the unit conversion
+    assert (parsed['_usable_f_low_hz'], parsed['_usable_f_high_hz']) == (55.0, 4000.0)
+    assert parsed['sensitivity_db_1w1m'] == 94.4
+    assert parsed['power_w'] == 200 and parsed['peak_power_w'] == 400
+    assert parsed['qms'] == 6.6 and parsed['mms_kg'] == pytest.approx(0.051)
+    assert parsed['_category'] == 'Subwoofer' and parsed['_nominal_diameter'] == '12in'
+
+
+def test_page_without_charset_is_decoded_as_utf8():
+    """requests falls back to Latin-1 without a charset, turning the ohm sign
+    into mojibake and failing the identity check on every page."""
+    class Resp:
+        status_code = 200
+        headers = {'Content-Type': 'text/html'}
+        encoding = 'ISO-8859-1'
+    resp = Resp()
+    s._fix_encoding(resp)
+    assert resp.encoding == 'utf-8'
+    resp = Resp(); resp.headers = {'Content-Type': 'text/html; charset=windows-1252'}
+    s._fix_encoding(resp)
+    assert resp.encoding == 'ISO-8859-1'
+
+
+def test_scraped_record_carries_band_provenance_and_schema(monkeypatch, tmp_path):
+    batch(monkeypatch)
+    monkeypatch.setattr(s, 'scrape_driver_page', lambda *a, **k: {
+        **PARAMS, 'rms_kg_per_s': 2.7, '_usable_f_low_hz': 55.0, '_usable_f_high_hz': 4000.0,
+        '_category': 'Woofer', '_nominal_diameter': '12in'})
+    s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test'])
+    record = json.loads((tmp_path/'Test/test-model.json').read_text())
+    assert (record['usable_f_low_hz'], record['usable_f_high_hz']) == (55.0, 4000.0)
+    assert record['driver_type'] == 'cone' and record['nominal_diameter'] == '12in'
+    assert record['parameter_source'] == ENTRY['url']
+    assert record['scraper_schema_version'] == s.SCRAPER_SCHEMA_VERSION
+    assert record['record_schema_version'] == s.RECORD_SCHEMA_VERSION
+    assert record['provenance']['retrieved_on']
+    assert 'nominal' in record['provenance']['band_definition']
+    assert not any(key.startswith('_') for key in record['parameters'])
+    from horn_drivers.loader import _driver_from_dict
+    driver = _driver_from_dict(record)
+    assert driver.usable_f_low_hz == 55.0 and driver.rms_kg_per_s == 2.7
 
 
 def test_new_ambiguous_driver_has_no_invented_category_or_diameter(monkeypatch, tmp_path):

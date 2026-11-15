@@ -7,8 +7,12 @@ The site embeds driver data in JSON ``data-woofer`` attributes, which we
 extract directly — more reliable than HTML table parsing.
 
 All values are converted to SI on extraction (mH -> H, cm^2 -> m^2,
-mm -> m, g -> kg). Existing driver classifications are preserved; Sd alone
-cannot distinguish small cone drivers from compression drivers.
+mm -> m, g -> kg, um/N -> m/N). The driver category comes from the site's
+own category ribbon (Woofer, Subwoofer, ...); Sd alone cannot distinguish
+small cone drivers from compression drivers, so a record without a sourced
+category is "unknown".
+
+Every record carries its source URL, retrieval date and schema version.
 
 Usage:
     horn-scrape-drivers --db data/drivers
@@ -72,7 +76,21 @@ DIAMETER_TABLE: List[Tuple[str, float]] = [
 
 # Essential parameters — drivers missing any of these are skipped.
 ESSENTIAL_PARAMS = ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg")
-SCRAPER_SCHEMA_VERSION = 3  # independent Mms and removal of legacy inferred power
+# 4: UTF-8 decoding, Rms/Cms/band/power/sensitivity mapped, sourced category,
+#    retrieval date. 3: independent Mms and removal of legacy inferred power.
+SCRAPER_SCHEMA_VERSION = 4
+RECORD_SCHEMA_VERSION = 1
+
+# Site categories that are all direct-radiating cone (or coaxial cone) drivers.
+CONE_CATEGORIES = frozenset({
+    "woofer", "subwoofer", "mid bass", "mid-bass", "midbass", "mid-range",
+    "midrange", "full-range", "fullrange", "coaxial", "triaxial",
+})
+COMPRESSION_CATEGORIES = frozenset({"compression driver", "compression"})
+BAND_DEFINITION = ("Manufacturer nominal frequency range as listed by "
+                   "loudspeakerdatabase.com, not a validated horn-loaded band.")
+POWER_DEFINITION = ("power_w is the listed power handling; peak_power_w is the "
+                    "listed program power.")
 
 
 def slugify(manufacturer: str, model: str) -> str:
@@ -119,6 +137,18 @@ def _retry_after_seconds(resp, fallback: float) -> float:
         return fallback
 
 
+def _fix_encoding(resp) -> None:
+    """Decode pages as UTF-8 when the server omits a charset.
+
+    The site sends ``Content-Type: text/html`` with no charset, so requests
+    falls back to ISO-8859-1 and "4Ω" becomes "4Î©". That mojibake
+    then leaks into model names and makes the page identity check fail.
+    """
+    content_type = getattr(resp, "headers", {}).get("Content-Type", "") or ""
+    if "charset" not in content_type.lower() and hasattr(resp, "encoding"):
+        resp.encoding = "utf-8"
+
+
 def request(
     session,
     url: str,
@@ -155,6 +185,7 @@ def request(
             resp = session.get(url, timeout=timeout)
             status = resp.status_code
             if status == 200:
+                _fix_encoding(resp)
                 return resp
             reason = f"HTTP {status}"
         except Exception as exc:  # network-level failure
@@ -300,6 +331,29 @@ def infer_driver_type(sd_m2: float, known_type: Optional[str] = None) -> str:
     return known_type if known_type in ("compression", "cone") else "unknown"
 
 
+def driver_type_from_category(category: Optional[str]) -> str:
+    """Map the site's category ribbon to a driver type, else "unknown"."""
+    if not category:
+        return "unknown"
+    key = category.strip().lower()
+    if key in CONE_CATEGORIES:
+        return "cone"
+    if key in COMPRESSION_CATEGORIES:
+        return "compression"
+    return "unknown"
+
+
+def _nominal_diameter_from_size(text: Optional[str]) -> Optional[str]:
+    """Turn the site's '12″ / 300 mm' size cell into '12in'."""
+    if not text:
+        return None
+    match = re.match(r"\s*(\d+(?:[.,]\d+)?)\s*(?:″|\"|in)", text)
+    if not match:
+        return None
+    value = match.group(1).replace(",", ".")
+    return f"{float(value):g}in"
+
+
 def infer_nominal_diameter(sd_m2: float) -> Optional[str]:
     """Infer nominal diameter from Sd using geometric lookup.
 
@@ -372,8 +426,24 @@ def _parse_data_woofer(json_str: str) -> Optional[dict]:
     if raw.get("pmax") is not None and raw["pmax"] > 0:
         pmax = float(raw["pmax"])
         si["peak_power_w"] = pmax             # pmax is program power
+    if _positive(raw.get("rms")):
+        si["rms_kg_per_s"] = float(raw["rms"])        # mechanical ohms, kg/s
+    if _positive(raw.get("cms")):
+        si["cms_m_per_n"] = float(raw["cms"]) * 1e-6  # um/N -> m/N
+    if _positive(raw.get("spl1w")):
+        si["sensitivity_db_1w1m"] = float(raw["spl1w"])
+    # frmin/frmax are the manufacturer's nominal frequency range. They are
+    # returned under private keys and lifted to the record's top level.
+    if _positive(raw.get("frmin")) and _positive(raw.get("frmax")) and raw["frmin"] < raw["frmax"]:
+        si["_usable_f_low_hz"] = float(raw["frmin"])
+        si["_usable_f_high_hz"] = float(raw["frmax"])
 
     return si
+
+
+def _positive(value) -> bool:
+    return (isinstance(value, (int, float)) and not isinstance(value, bool)
+            and math.isfinite(value) and value > 0)
 
 
 def scrape_driver_page(
@@ -406,8 +476,13 @@ def scrape_driver_page(
         )
 
     # --- Primary: extract from data-woofer JSON ---
+    # The page also embeds "similar drivers" cards with their own
+    # data-woofer JSON; only the driver's own block (outside that section)
+    # describes this driver.
     si = None
     for el in soup.find_all(attrs={"data-woofer": True}):
+        if el.find_parent("section", class_="similar") is not None:
+            continue
         candidate = _parse_data_woofer(el["data-woofer"])
         if candidate:
             si = candidate
@@ -422,10 +497,13 @@ def scrape_driver_page(
         "qms": "qms",
         "qes": "qes",
         "mms": "mms_g",  # Mms with air load, in grams
+        "pw": "power_w",  # listed power handling (nominal), W
     }
 
     for key, field in highlight_map.items():
         el = soup.find(attrs={"data-highlight": key})
+        if el is not None and el.find_parent("section", class_="similar") is not None:
+            continue
         if el:
             # Find the <b> tag inside the value span
             val_el = el.find_next(attrs={"data-highlight": key})
@@ -441,7 +519,16 @@ def scrape_driver_page(
                         else:
                             si[field] = val
 
-    return si
+    ribbon = soup.find("a", class_="type-ribbon")
+    if ribbon is not None and ribbon.get_text(strip=True):
+        si["_category"] = ribbon.get_text(strip=True)
+    size = soup.find("td", class_="value", attrs={"data-highlight": "size"})
+    diameter = _nominal_diameter_from_size(size.get_text(" ", strip=True) if size else None)
+    if diameter:
+        si["_nominal_diameter"] = diameter
+    # Unit conversion leaves binary noise (0.0549 -> 0.054900000000000004).
+    return {key: float(f"{value:.12g}") if isinstance(value, float) else value
+            for key, value in si.items()}
 
 
 def discover_manufacturers(
@@ -778,11 +865,26 @@ def scrape_all(
             if (existing.get("scraper_schema_version") != SCRAPER_SCHEMA_VERSION
                     and not (isinstance(power_source, str) and power_source.strip())):
                 existing_params.pop("power_w", None)
-            driver_type = infer_driver_type(sd, existing.get("driver_type"))
-            nominal_diameter = (existing.get("nominal_diameter") or infer_nominal_diameter(sd)) if driver_type == "cone" else None
+            params = dict(params)
+            category = params.pop("_category", None)
+            site_diameter = params.pop("_nominal_diameter", None)
+            band = (params.pop("_usable_f_low_hz", None), params.pop("_usable_f_high_hz", None))
+            # A category is kept only when someone sourced it (type_source).
+            # Old labels came from an Sd threshold and are not evidence.
+            sourced_type = existing.get("driver_type") if existing.get("type_source") else None
+            if sourced_type in ("cone", "compression"):
+                driver_type, type_source = sourced_type, existing["type_source"]
+            else:
+                driver_type = driver_type_from_category(category)
+                type_source = (f"loudspeakerdatabase.com category '{category}'"
+                               if driver_type != "unknown" else None)
+            nominal_diameter = None
+            if driver_type == "cone":
+                nominal_diameter = site_diameter or existing.get("nominal_diameter") or infer_nominal_diameter(sd)
 
             model = entry["name"]
             manufacturer = entry["manufacturer"]
+            merged_params = {**existing_params, **params}
 
             driver = {
                 **existing,
@@ -790,10 +892,35 @@ def scrape_all(
                 "manufacturer": manufacturer,
                 "model_name": model,
                 "driver_type": driver_type,
-                "parameters": {**existing_params, **params},
+                "parameters": merged_params,
                 "parameter_source": entry["url"],
                 "scraper_schema_version": SCRAPER_SCHEMA_VERSION,
+                "record_schema_version": RECORD_SCHEMA_VERSION,
             }
+            driver.pop("type_source", None)
+            driver.pop("site_category", None)
+            if type_source:
+                driver["type_source"] = type_source
+            if category:
+                driver["site_category"] = category
+            # A band someone measured or sourced elsewhere wins over the
+            # site's nominal range.
+            existing_band_from_site = (
+                (existing.get("provenance") or {}).get("band_definition") == BAND_DEFINITION)
+            if band[0] is not None and (existing.get("usable_f_low_hz") is None or existing_band_from_site):
+                driver["usable_f_low_hz"], driver["usable_f_high_hz"] = band
+            provenance = dict(existing.get("provenance") or {})
+            provenance.update({
+                "retrieved_on": time.strftime("%Y-%m-%d", time.gmtime()),
+                "source_kind": "third_party_aggregator",
+                "capture_method": ("Scraped from the loudspeakerdatabase.com driver page "
+                                   "(data-woofer JSON and parameter list)."),
+                "supplied_fields": sorted(params),
+                "band_definition": BAND_DEFINITION,
+                "power_definition": POWER_DEFINITION,
+            })
+            driver["provenance"] = provenance
+            driver.pop("nominal_diameter", None)
             if nominal_diameter:
                 driver["nominal_diameter"] = nominal_diameter
 
