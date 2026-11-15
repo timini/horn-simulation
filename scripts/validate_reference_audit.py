@@ -157,6 +157,8 @@ def run_fem(out, case, h, count):
     step = out/f"{case}.step"
     if not step.exists():
         gmsh.initialize()
+        from horn_core.cad_units import set_step_units
+        set_step_units(gmsh)  # write true-size STEP (metre model)
         try:
             gmsh.model.add(case)
             if throat == mouth:

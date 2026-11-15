@@ -23,6 +23,7 @@ from petsc4py.PETSc import ScalarType
 from petsc4py import PETSc
 
 from horn_core.acoustics import validate_band, SCHEMA_VERSION
+from horn_core.cad_units import import_step_metres
 
 from horn_solver.radiation import (
     piston_radiation_impedance,
@@ -92,8 +93,8 @@ def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float, 
     gmsh.initialize()
     gmsh.option.setNumber("General.Terminal", 1)
     gmsh.model.add("horn")
-    gmsh.model.occ.importShapes(step_file)
-    gmsh.model.occ.synchronize()
+    # Honour the unit declared in the STEP file and work in metres.
+    import_step_metres(gmsh, step_file, horn_length)
 
     # Tag the physical volume for meshing
     volumes = gmsh.model.occ.getEntities(dim=3)

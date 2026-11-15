@@ -30,7 +30,7 @@ A broad 700-geometry analytical search preceded the focused 175-geometry search.
 Reproduce the selected geometry at the finer resolution:
 
 ```bash
-just run --step_file examples/6nmb420-320-5000/solver-input.step \
+just run --step_file examples/6nmb420-320-5000/horn.step \
   --profile os --length 0.3 --throat_radius 0.038 --mouth_radius 0.12240134 \
   --drivers_db examples/6nmb420-320-5000/driver-database.json \
   --driver_id 18sound-6nmb420 --target_f_low 320 --target_f_high 5000 \
@@ -43,6 +43,6 @@ The sweep extends beyond the target band to show roll-off. Assess the requested 
 
 ## CAD units and provenance
 
-**Use `horn.step` for CAD.** The pipeline's preserved `solver-input.step` has numeric metre coordinates but a legacy millimetre declaration. The physical export changes `SI_UNIT(.MILLI.,.METRE.)` to `SI_UNIT($,.METRE.)`, leaving the geometry coordinates unchanged. Re-importing that physical export in millimetres verifies the dimensions in `cad-check.json`. Use the preserved solver input for the current pipeline, not the physical export. `profile.csv` describes the nominal mathematical curve; the STEP uses its 40-section loft approximation.
+**Use `horn.step` for CAD and for the pipeline.** The pipeline now writes STEP files at true size and reads the unit each file declares. `solver-input.step` is the original solver input, kept unchanged because the manifests hash it. It holds metre values under a millimetre declaration, written before that fix; current versions reject it with a units message. `horn.step` is the same geometry with the declaration corrected to `SI_UNIT($,.METRE.)` and the coordinates unchanged. `horn-geometry --profile os --throat-radius 0.038 --mouth-radius 0.12240134 --length 0.3 --num-sections 40` regenerates it with the same volume (agreement better than 1e-9 relative), written in millimetres. Re-importing `horn.step` in millimetres verifies the dimensions in `cad-check.json`. `profile.csv` describes the nominal mathematical curve; the STEP uses its 40-section loft approximation.
 
 `search-manifest.json`, `fine-manifest.json` and `wide-search-manifest.json` identify the actual source, inputs, container images, commands and completion-time output hashes. The executed refined/fine package source is commit `fea77f8`; earlier broad search source is `9febae1`. `example-manifest.json` maps the selected raw results to their sealed originating outputs and hashes the delivered files. Source archives and interrupted exploratory attempts remain in the original local run directories; this directory is a compact result package, not resumable Nextflow state.

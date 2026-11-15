@@ -26,7 +26,7 @@ The selected candidate is near-tied with other designs. Its throat dimensions de
 - [original-run-manifest.json](original-run-manifest.json): original source, input, container and completion identities.
 - [example-manifest.json](example-manifest.json): maps these conveniently named files to their original archive members and hashes.
 
-The files are copied unchanged from the [completed example archive](../../data/validation/worked_example_modal_800_1600.tar.gz), executed at source `77d915b`. This folder contains selected outputs, while the archive preserves the complete output collection. The original run manifest describes that original collection and its paths.
+The files are copied unchanged from the [completed example archive](../../data/validation/worked_example_modal_800_1600.tar.gz), executed at source `77d915b`, except `horn.step`. The archived STEP held metre values under a millimetre unit declaration, so it opened 1000 times too small in CAD. `horn.step` is the same geometry re-exported with true units; `example-manifest.json` records both hashes and the command. This folder contains selected outputs, while the archive preserves the complete output collection. The original run manifest describes that original collection and its paths.
 
 ## Generate a fresh design
 

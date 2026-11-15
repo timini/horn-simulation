@@ -28,6 +28,8 @@ def prepare_cases(root, protocol):
         mouth = geometry['mouth_radius_m']
         length = geometry['length_m']
         gmsh.initialize()
+        from horn_core.cad_units import set_step_units
+        set_step_units(gmsh)  # write true-size STEP (metre model)
         try:
             gmsh.model.add(name)
             if radius == mouth:

@@ -37,52 +37,21 @@ def _radius_profile(
     throat_radius, mouth_radius, length : float
         Horn dimensions (m).
     profile : str
-        One of ``"conical"``, ``"exponential"``, ``"hyperbolic"``.
+        A profile name from horn_core.profiles.PROFILE_NAMES. The radii come
+        from horn_core.profiles, the same functions the STEP generator uses.
 
     Returns
     -------
     numpy array of radii at each z position.
     """
-    z = np.asarray(z, dtype=float)
-    if profile == "conical":
-        return throat_radius + (mouth_radius - throat_radius) * z / length
-    elif profile == "exponential":
-        m = np.log(mouth_radius / throat_radius)
-        return throat_radius * np.exp(m * z / length)
-    elif profile == "hyperbolic":
-        m = np.arccosh(mouth_radius / throat_radius)
-        return throat_radius * np.cosh(m * z / length)
-    elif profile == "tractrix":
-        t = np.linspace(np.pi - 1e-6, np.pi / 2, 500)
-        y, x = np.sin(t), np.log(np.tan(t / 2)) + np.cos(t)
-        x -= x[0]
-        x_n, y_n = x / x[-1], y / y[-1]
-        return throat_radius + (mouth_radius - throat_radius) * np.interp(z, x_n * length, y_n)
-    elif profile == "os":
-        theta = np.arctan2(np.sqrt(mouth_radius**2 - throat_radius**2), length)
-        return np.sqrt(throat_radius**2 + (z * np.tan(theta)) ** 2)
-    elif profile == "lecleach":
-        from horn_core.profiles import get_radius_func
-        radius = get_radius_func("lecleach", throat_radius, mouth_radius, length)
-        return np.array([radius(float(zi)) for zi in z])
-    elif profile == "cd":
-        frac = 0.3
-        z_t = frac * length
-        r_trans = throat_radius * (mouth_radius / throat_radius) ** frac
-        result = np.empty_like(z)
-        mask_exp = z <= z_t
-        result[mask_exp] = throat_radius * np.exp(
-            np.log(r_trans / throat_radius) * z[mask_exp] / z_t
-        )
-        result[~mask_exp] = r_trans + (mouth_radius - r_trans) * (
-            z[~mask_exp] - z_t
-        ) / (length - z_t)
-        return result
-    else:
-        raise ValueError(
-            f"Unknown profile '{profile}'. "
-            f"Choose from: conical, exponential, hyperbolic, tractrix, os, lecleach, cd"
-        )
+    from horn_core.profiles import radius_profile
+    return radius_profile(z, throat_radius, mouth_radius, length, profile)
+
+
+def _profile_label(profile: str) -> str:
+    from horn_core.profiles import DEPRECATED_PROFILE_ALIASES, PROFILE_DESCRIPTIONS
+    name = DEPRECATED_PROFILE_ALIASES.get(profile, profile)
+    return PROFILE_DESCRIPTIONS.get(name, profile.capitalize())
 
 
 # -- 3D rendering ------------------------------------------------------------
@@ -145,7 +114,7 @@ def render_horn_3d(
     ax3d.set_xlabel("Axial position (m)")
     ax3d.set_ylabel("X (m)")
     ax3d.set_zlabel("Y (m)")
-    ax3d.set_title(f"{profile.capitalize()} Horn — 3D View")
+    ax3d.set_title(f"{_profile_label(profile)} Horn — 3D View")
     ax3d.view_init(elev=20, azim=-60)
 
     # Equal aspect ratio for all three axes
@@ -185,7 +154,7 @@ def render_horn_3d(
 
         ax2d.set_xlabel("Axial position (mm)")
         ax2d.set_ylabel("Radius (mm)")
-        ax2d.set_title(f"{profile.capitalize()} Horn — Wall Profile")
+        ax2d.set_title(f"{_profile_label(profile)} Horn — Wall Profile")
         ax2d.set_aspect("equal", adjustable="datalim")
         plot_theme.setup_grid(ax2d)
 
@@ -219,7 +188,7 @@ def fig_to_b64_3d(
     figsize = kwargs.pop("figsize", (14, 6))
     title = kwargs.pop("title", None)
 
-    base_title = title or f"{profile.capitalize()} Horn"
+    base_title = title or f"{_profile_label(profile)} Horn"
 
     z_vals = np.linspace(0, length, n_z)
     r_vals = _radius_profile(z_vals, throat_radius, mouth_radius, length, profile)
@@ -292,8 +261,8 @@ def main():
     parser.add_argument("--length", type=float, required=True,
                         help="Horn length in metres")
     parser.add_argument("--profile", type=str, default="conical",
-                        choices=["conical", "exponential", "hyperbolic",
-                                 "tractrix", "os", "lecleach", "cd"],
+                        choices=["conical", "exponential", "hyperbolic", "tractrix",
+                                 "os", "scaled_tractrix", "lecleach", "cd"],
                         help="Horn flare profile (default: conical)")
     parser.add_argument("--no-profile-panel", action="store_true",
                         help="Omit the 2D cross-section panel")

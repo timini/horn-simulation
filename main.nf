@@ -12,7 +12,7 @@ params.mode = "single"
 params.throat_radius = null
 params.mouth_radius = null
 params.length = null
-params.profile = "conical" // Horn flare profile: conical, exponential, hyperbolic, tractrix, os, lecleach, cd
+params.profile = "conical" // Horn flare profile: conical, exponential, hyperbolic, tractrix, os, scaled_tractrix, cd (lecleach: deprecated alias of scaled_tractrix)
 params.num_sections = 20   // Number of cross-sections for lofting
 
 // Simulation Settings

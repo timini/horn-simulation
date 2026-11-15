@@ -70,6 +70,8 @@ def main():
         for case in ['Brass_O','Wood_O','Cone_O']:
             throat,mouth,width,radiation=CASES[case];step=out/f'{case}.step'
             gmsh.initialize()
+            from horn_core.cad_units import set_step_units
+            set_step_units(gmsh)  # write true-size STEP (metre model)
             try:
                 gmsh.model.add(case)
                 if throat==mouth:gmsh.model.occ.addCylinder(0,0,0,0,0,.18,throat)

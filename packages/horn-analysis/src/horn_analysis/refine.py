@@ -64,6 +64,20 @@ def main():
                                  **rejection} for drv in drivers)
                 cache[key] = 0.
                 return 0.
+            from horn_core.profiles import profile_geometry_error
+            profile_error = profile_geometry_error(c.profile, c.throat_radius, c.mouth_radius, c.length)
+            if profile_error:
+                geometry_rejected.append(c.candidate_id)
+                rejected.extend({"horn_label": c.candidate_id, "driver_id": drv.driver_id,
+                    "profile": c.profile, "throat_radius": c.throat_radius,
+                    "mouth_radius": c.mouth_radius, "length": c.length,
+                    "model_feasible": False, "simulation_eligible": False,
+                    "composite_score": 0., "bandwidth_coverage": 0.,
+                    "passband_ripple_db": None, "avg_sensitivity_db": None,
+                    "rejection_reasons": ["profile_geometry_infeasible"],
+                    "rejection_detail": profile_error, "evidence_gaps": []} for drv in drivers)
+                cache[key] = 0.
+                return 0.
             step=out/f'{c.candidate_id}.step'
             create_horn(c.profile,c.throat_radius,c.mouth_radius,c.length,step,num_sections=a.num_sections)
             csv=out/f'{c.candidate_id}_results.csv'

@@ -9,8 +9,11 @@
       "sha256": "a9cdf82a30df2954bd0602e531ce5505cb98308f1b5743c81337ad4a4e568fd8"
     },
     "horn.step": {
-      "archive_member": "worked-example-modal/outputs/auto/refinement/refine_hyperbolic_0001.step",
-      "sha256": "e1e135ec3fe3b7d3a3f9c29ea6ee1b5571d850c5e38eb4222adb2348f574e461"
+      "derived_from_archive_member": "worked-example-modal/outputs/auto/refinement/refine_hyperbolic_0001.step",
+      "archive_member_sha256": "e1e135ec3fe3b7d3a3f9c29ea6ee1b5571d850c5e38eb4222adb2348f574e461",
+      "sha256": "044f022afbf6c9453b6cb844a5f31b780f391b097b142807c58f4746906b380f",
+      "note": "Re-exported with true STEP units (millimetre coordinates under a millimetre declaration). The archived file held metre values under a millimetre declaration. Same geometry: volume and port areas agree to 1e-12 relative.",
+      "command": "horn-geometry --profile hyperbolic --throat-radius 0.032498 --mouth-radius 0.08870898640584517 --length 0.11790625 --num-sections 20 --output-file horn.step"
     },
     "response.csv": {
       "archive_member": "worked-example-modal/outputs/auto/report/coupled_01_18sound-6nmb420_refine_hyperbolic_0001.csv",

@@ -30,6 +30,7 @@ _BADGE_STYLES = {
     "hyperbolic":  {"badge_bg": "#fef3c7", "badge_fg": "#92400e"},
     "tractrix":    {"badge_bg": "#ede9fe", "badge_fg": "#5b21b6"},
     "os":          {"badge_bg": "#ccfbf1", "badge_fg": "#115e59"},
+    "scaled_tractrix": {"badge_bg": "#fce7f3", "badge_fg": "#9d174d"},
     "lecleach":    {"badge_bg": "#fce7f3", "badge_fg": "#9d174d"},
     "cd":          {"badge_bg": "#e2e8f0", "badge_fg": "#334155"},
 }
@@ -93,6 +94,7 @@ _SHORT_TO_PROFILE = {
     "tra": "tractrix",
     "os": "os",
     "lec": "lecleach",
+    "sca": "scaled_tractrix",
     "cd": "cd",
 }
 

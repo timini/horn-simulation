@@ -22,11 +22,12 @@ from typing import List, Optional
 import numpy as np
 
 from horn_core.candidates import CandidateGeometry, write_candidates_csv
+from horn_core.profiles import profile_geometry_error
 
 # Speed of sound in air at ~20C
 C0 = 343.0
 
-DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"]
+DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "cd"]
 
 
 @dataclass
@@ -180,6 +181,8 @@ def generate_auto_candidates(
                 for horn_length in lengths:
                     if r_mouth <= r_throat:
                         continue
+                    if profile_geometry_error(profile, r_throat, r_mouth, horn_length):
+                        continue  # e.g. a tractrix shorter than its natural length
                     candidate_id = f"auto_{profile[:3]}_{idx:04d}"
                     candidates.append(
                         CandidateGeometry(
@@ -263,6 +266,8 @@ def generate_fullauto_candidates(
                 for horn_length in lengths:
                     if r_mouth <= r_throat:
                         continue
+                    if profile_geometry_error(profile, r_throat, r_mouth, horn_length):
+                        continue  # e.g. a tractrix shorter than its natural length
                     candidate_id = f"fa_{profile[:3]}_{idx:04d}"
                     candidates.append(
                         CandidateGeometry(

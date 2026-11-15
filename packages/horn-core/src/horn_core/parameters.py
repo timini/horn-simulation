@@ -12,7 +12,8 @@ class FlareProfile(str, Enum):
     CONICAL = "conical"
     TRACTRIX = "tractrix"
     OS = "os"
-    LECLEACH = "lecleach"
+    SCALED_TRACTRIX = "scaled_tractrix"
+    LECLEACH = "lecleach"  # deprecated alias of SCALED_TRACTRIX
     CD = "cd"
 
 

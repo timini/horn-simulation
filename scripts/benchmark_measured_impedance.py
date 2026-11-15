@@ -45,6 +45,8 @@ def main():
     from horn_solver.solver import run_simulation_from_step
     step = out/'cylinder-air-volume.step'
     gmsh.initialize()
+    from horn_core.cad_units import set_step_units
+    set_step_units(gmsh)  # write true-size STEP (metre model)
     try:
         gmsh.model.add('benchmark_cylinder')
         gmsh.model.occ.addCylinder(0, 0, 0, 0, 0, length, radius)
