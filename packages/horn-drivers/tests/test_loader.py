@@ -170,3 +170,75 @@ def test_explicit_zero_inductance_takes_precedence_over_alternate_units(v2_db):
     raw = json.loads(Path(v2_db).read_text())['drivers'][0]
     raw['parameters'].update(le_h=0., le_mh=5.)
     assert _driver_from_dict(raw).le_h == 0.
+
+
+# ---------------------------------------------------------------------------
+# Datasheet units, unit mistakes and Q consistency
+# ---------------------------------------------------------------------------
+
+def _record(**params):
+    base = {"fs_hz": 45.0, "re_ohm": 5.6, "bl_tm": 15.2, "le_mh": 0.9, "qms": 5.1, "qes": 0.38}
+    base.update(params)
+    return {"driver_id": "acme-ac10", "manufacturer": "Acme", "model_name": "AC10", "parameters": base}
+
+
+def test_datasheet_units_with_vas_instead_of_mms():
+    """A typical datasheet gives Sd in cm^2 and Vas in litres, not Mms."""
+    from horn_drivers.loader import _driver_from_dict
+    d = _driver_from_dict(_record(sd_cm2=346.0, vas_l=52.0))
+    assert d.sd_m2 == pytest.approx(0.0346)
+    # Hand calculation: Cms = Vas/(rho c^2 Sd^2) = 0.052/(1.204*343^2*0.0346^2)
+    # = 3.067e-4 m/N; Mms = 1/((2 pi 45)^2 Cms) = 0.04079 kg.
+    assert d.mms_kg == pytest.approx(0.04079, rel=2e-3)
+    assert d.fs_hz == pytest.approx(1 / (2 * 3.141592653589793 * (d.mms_kg * d.cms_m_per_n) ** 0.5))
+
+
+def test_brief_table_aliases_are_accepted():
+    from horn_drivers.loader import _driver_from_dict
+    d = _driver_from_dict(_record(sd_sq_cm=1225.0, vas_liters=180.0, power_aes_watts=600.0, fs_hz=38.0))
+    assert d.sd_m2 == pytest.approx(0.1225)
+    assert d.power_w == 600.0
+    assert 0.05 < d.mms_kg < 0.5
+
+
+@pytest.mark.parametrize("field,value,hint", [
+    ("sd_m2", 1225.0, "sd_cm2"),       # cm^2 typed under the m^2 key
+    ("mms_kg", 180.0, "mms_g"),        # grams under the kg key
+    ("le_h", 1.9, "le_mh"),            # mH under the H key
+])
+def test_order_of_magnitude_unit_mistakes_are_rejected_with_a_hint(field, value, hint):
+    from horn_drivers.loader import _driver_from_dict
+    record = _record(sd_m2=0.0346, mms_kg=0.04)
+    record["parameters"].pop("le_mh")
+    record["parameters"].setdefault("le_h", 0.0009)
+    record["parameters"][field] = value
+    with pytest.raises(ValueError, match=hint):
+        _driver_from_dict(record)
+
+
+def test_inconsistent_three_q_record_is_rejected():
+    """lavoce-waf102-50 shipped with Qts 0.38 while Qms 4.01 and Qes 0.12 imply 0.117."""
+    from horn_drivers.loader import _driver_from_dict
+    record = _record(sd_m2=0.0346, mms_kg=0.04, qms=4.01, qes=0.12, qts=0.38)
+    with pytest.raises(ValueError, match="Q factors are inconsistent"):
+        _driver_from_dict(record)
+    # Two-decimal rounding on a consistent driver is accepted.
+    record["parameters"].update(qms=6.6, qes=0.56, qts=0.52)
+    assert _driver_from_dict(record).qts == 0.52
+
+
+def test_supplied_rms_fixes_qms_instead_of_ill_conditioned_derivation():
+    """With only Qts given, Qms = Qes*Qts/(Qes-Qts) explodes when the derived
+    Qes is close to Qts (sica-12cx3pl8-8 came out at Qms ~ 107), or the driver
+    is rejected outright. A supplied Rms must be used instead."""
+    from horn_drivers.loader import _driver_from_dict
+    params = {"fs_hz": 30.3, "re_ohm": 6.1, "bl_tm": 12.38, "sd_m2": 0.0531, "mms_kg": 0.049,
+              "le_h": 0.001, "qts": 0.37}
+    with pytest.warns(RuntimeWarning, match="implausibly high"):
+        ill = _driver_from_dict({"driver_id": "x", "parameters": dict(params)})
+    assert ill.qms > 30
+    d = _driver_from_dict({"driver_id": "x", "parameters": {**params, "rms_kg_per_s": 1.5}})
+    omega = 2 * 3.141592653589793 * 30.3
+    assert d.rms_kg_per_s == 1.5
+    assert d.qms == pytest.approx(omega * 0.049 / 1.5)
+    assert 1 / d.qts == pytest.approx(1 / d.qms + 1 / d.qes)
