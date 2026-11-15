@@ -5,6 +5,7 @@ import re
 import numpy as np
 import pandas as pd
 from horn_core.acoustics import validate_band, validate_response, inlet_area_from_frame
+from horn_core.frequency_grid import DEFAULT_MIN_POINTS_PER_OCTAVE, band_edges, points_per_band as grid_points_per_band
 
 
 def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output):
@@ -19,6 +20,7 @@ def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output
         indexed[int(match[1])] = path
     if set(indexed) != set(range(num_bands)):
         raise ValueError(f"Incomplete simulation: expected bands 0..{num_bands-1}, got {sorted(indexed)}")
+    edges = band_edges(min_freq, max_freq, num_bands)
     frames = []
     for index, path in sorted(indexed.items()):
         df = pd.read_csv(path)
@@ -26,8 +28,7 @@ def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output
             if col not in df:
                 raise ValueError(f"Missing solver column {col}: {path}")
         validate_response(df.frequency, *[df[c] for c in df.select_dtypes(include="number")])
-        width = (max_freq - min_freq) / num_bands
-        expected = np.geomspace(min_freq+index*width, min_freq+(index+1)*width, points_per_band)
+        expected = np.geomspace(edges[index], edges[index+1], points_per_band)
         if len(df) != len(expected) or not np.allclose(df.frequency, expected, rtol=1e-9, atol=1e-8):
             raise ValueError(f"Incomplete or incorrect frequency grid in band {index}")
         if "schema_version" not in df or not (df.schema_version == 2).all():
@@ -89,11 +90,13 @@ def main():
     p.add_argument("--num-bands", type=int, required=True)
     p.add_argument("--min-freq", type=float, required=True)
     p.add_argument("--max-freq", type=float, required=True)
-    p.add_argument("--points-per-band", type=int, required=True)
+    p.add_argument("--num-intervals", type=int, required=True)
+    p.add_argument("--min-points-per-octave", type=float, default=DEFAULT_MIN_POINTS_PER_OCTAVE)
     p.add_argument("--output", required=True)
     a = p.parse_args()
+    points = grid_points_per_band(a.min_freq, a.max_freq, a.num_bands, a.num_intervals, a.min_points_per_octave)
     merge_bands(a.files, num_bands=a.num_bands, min_freq=a.min_freq, max_freq=a.max_freq,
-                points_per_band=a.points_per_band, output=a.output)
+                points_per_band=points, output=a.output)
 
 
 if __name__ == "__main__":

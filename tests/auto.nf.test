@@ -17,6 +17,7 @@ nextflow_pipeline {
                 num_lengths = 2
                 drivers_db = "${projectDir}/tests/data/my drivers ' database.json"
                 num_intervals = 12
+                min_points_per_octave = 0
                 num_bands = 2
                 lem_top_n = 2
                 top_n = 1
@@ -75,6 +76,7 @@ nextflow_pipeline {
                 length = 0.08
                 drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
                 num_intervals = 12
+                min_points_per_octave = 0
                 num_bands = 2
                 lem_top_n = 1
                 refinement_budget = 1
@@ -103,6 +105,7 @@ nextflow_pipeline {
                 length = 0.055
                 drivers_db = "${projectDir}/data/drivers-curated"
                 num_intervals = 30
+                min_points_per_octave = 0
                 num_bands = 2
                 lem_top_n = 2
                 refinement_budget = 0

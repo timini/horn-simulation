@@ -12,6 +12,7 @@ nextflow_process {
                 min_freq = 100
                 max_freq = 1000
                 num_intervals = 3
+                min_points_per_octave = 0
                 num_bands = 1
             }
             process {
@@ -31,6 +32,7 @@ nextflow_process {
                 min_freq = 100
                 max_freq = 1000
                 num_intervals = 6
+                min_points_per_octave = 0
                 num_bands = 2
             }
             process {

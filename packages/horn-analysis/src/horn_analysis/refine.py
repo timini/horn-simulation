@@ -9,6 +9,7 @@ from horn_core.candidates import CandidateGeometry
 from horn_analysis.search import refine, geometry_key
 from horn_analysis.rank_pipeline import rank_horn_drivers
 from horn_analysis.scoring import TargetSpec
+from horn_core.frequency_grid import DEFAULT_MIN_POINTS_PER_OCTAVE, band_grids
 from horn_drivers.loader import load_drivers
 
 
@@ -19,6 +20,8 @@ def main():
     p.add_argument('--solver-csvs',nargs='+',required=True);p.add_argument('--output-dir',required=True)
     p.add_argument('--top-n',type=int,default=10)
     p.add_argument('--budget',type=int,default=6);p.add_argument('--num-frequencies',type=int,default=100)
+    p.add_argument('--min-points-per-octave',type=float,default=DEFAULT_MIN_POINTS_PER_OCTAVE)
+    p.add_argument('--min-output',type=float,default=None);p.add_argument('--score-weights',default=None)
     p.add_argument('--num-bands',type=int,default=8);p.add_argument('--num-sections',type=int,default=20)
     p.add_argument('--mesh-size',type=float,default=.01);p.add_argument('--radiation-model',default='flanged_piston')
     p.add_argument('--voltage',type=float,default=2.83);p.add_argument('--distance',type=float,default=1.)
@@ -41,15 +44,16 @@ def main():
         from horn_solver.modal_geometry import ModalGeometryError
         screen=json.loads(Path(a.prescreen_json).read_text())
         drivers=[d for d in load_drivers(a.drivers_db) if d.driver_id in screen['drivers']]
-        target=TargetSpec(design['target_f_low'],design['target_f_high'],voltage_rms=a.voltage,observation_distance_m=a.distance,max_ripple_db=a.max_ripple,max_compression_ratio=a.max_compression)
+        target=TargetSpec(design['target_f_low'],design['target_f_high'],voltage_rms=a.voltage,observation_distance_m=a.distance,max_ripple_db=a.max_ripple,max_compression_ratio=a.max_compression,min_output_db=a.min_output,score_weights=a.score_weights)
         r=data['results'][0]
         seed=CandidateGeometry(candidate_id=r['horn_label'],profile=r['profile'],throat_radius=r['throat_radius'],mouth_radius=r['mouth_radius'],length=r['length'])
         cache={geometry_key(seed):r['composite_score']}
         all_rows=list(data['results']); rejected=list(data.get('rejected',[]))
         from horn_analysis.evaluation import radiation_domain_rejection
-        low, high = design['sim_freq_range']; width = (high-low)/a.num_bands
-        points = max(2, int(np.ceil(a.num_frequencies/a.num_bands)))
-        simulation_frequencies = np.concatenate([np.geomspace(low+i*width, low+(i+1)*width, points) for i in range(a.num_bands)])
+        low, high = design['sim_freq_range']
+        grids = band_grids(low, high, a.num_bands, a.num_frequencies, a.min_points_per_octave)
+        points = len(grids[0][2])
+        simulation_frequencies = np.concatenate([f for _, _, f in grids])
         domain_rejected = []
         geometry_rejected = []
         def evaluate(c):
@@ -71,8 +75,7 @@ def main():
             band_dir=out/f'{c.candidate_id}_bands';band_dir.mkdir()
             paths=[]
             try:
-                for index in range(a.num_bands):
-                    band_low,band_high=low+index*width,low+(index+1)*width
+                for index,(band_low,band_high,_) in enumerate(grids):
                     path=band_dir/f'results_{index}.csv'
                     run_simulation_from_step(str(step),(band_low,band_high),points,{'length':c.length},str(path),band_high,mesh_size=a.mesh_size,radiation_model=a.radiation_model,loss_model=a.loss_model,flange_width=a.flange_width,minimum_wall_scale=a.minimum_wall_scale,element_degree=a.element_degree)
                     paths.append(path)
@@ -82,14 +85,14 @@ def main():
                     "profile": c.profile, "throat_radius": c.throat_radius,
                     "mouth_radius": c.mouth_radius, "length": c.length,
                     "model_feasible": False, "simulation_eligible": False,
-                    "composite_score": 0., "bandwidth_coverage": 0.,
+                    "composite_score": 0., "extension_octaves": None,
                     "passband_ripple_db": None, "avg_sensitivity_db": None,
                     "rejection_reasons": ["cad_geometry_rejected"],
                     "rejection_detail": str(error), "evidence_gaps": []} for drv in drivers)
                 cache[key] = 0.
                 return 0.
             merge_bands(paths,num_bands=a.num_bands,min_freq=low,max_freq=high,points_per_band=points,output=csv)
-            rows=rank_horn_drivers(str(csv),c.candidate_id,c.throat_radius,drivers,target,top_n=max(1,len(drivers)))
+            rows=rank_horn_drivers(str(csv),c.candidate_id,c.throat_radius,drivers,target,top_n=max(1,len(drivers)),length=c.length)
             for row in rows:
                 row.update({'profile':c.profile,'throat_radius':c.throat_radius,'mouth_radius':c.mouth_radius,'length':c.length})
                 (all_rows if row['model_feasible'] else rejected).append(row)

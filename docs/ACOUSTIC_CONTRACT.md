@@ -25,7 +25,7 @@ When available, diaphragm-only mass and rear air-load mass are separate inputs. 
 
 ## Acceptance and numerical evidence
 
-Target bounds must be finite and increasing. All target-band samples, including interpolated endpoints, determine ripple and coverage; out-of-band peaks and internal notches cannot be hidden by outer cutoff estimates. Hard failures receive zero preference score and explicit rejection reasons. Missing evidence receives `insufficient_evidence`.
+Target bounds must be finite and increasing. All target-band samples, including interpolated endpoints, determine ripple and the mean level; out-of-band peaks and internal notches cannot be hidden by outer cutoff estimates. Hard failures receive zero preference score and explicit rejection reasons. Missing evidence receives `insufficient_evidence`.
 
 Schema-2 band merging requires every expected band, frequency sample, convention and area. It rejects missing/nonfinite data and mouth-level discontinuities greater than 0.5 dB at overlapping endpoints. The production tube tests additionally check complex impedance, phase, passive loading, three mesh resolutions and split/unsplit sweeps. A finite 20-geometry benchmark compares screening against exhaustive FEM using synthetic motors; it does not validate real drivers.
 

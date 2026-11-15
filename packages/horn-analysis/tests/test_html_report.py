@@ -76,7 +76,11 @@ def report_inputs(tmp_path):
                 "manufacturer": drv.manufacturer,
                 "model_name": drv.model_name,
                 "composite_score": 0.85 - i * 0.05 - list(solver_csvs).index(profile) * 0.02,
-                "bandwidth_coverage": 0.90 - i * 0.1,
+                "extension_octaves": 0.40 - i * 0.1,
+                "f3_low_hz": 430.0,
+                "f3_high_hz": 4600.0,
+                "f3_low_is_bound": False,
+                "f3_high_is_bound": i == 0,
                 "passband_ripple_db": 2.5 + i * 0.5,
                 "avg_sensitivity_db": 92.0 - i * 2.0,
                 "kpi": {
@@ -192,3 +196,18 @@ def test_imported_report_uses_cad_areas_without_parametric_dimensions(tmp_path):
     assert '<dt>Mouth diameter</dt>' not in text
     assert 'Throat: 100.0 mm' not in text
     assert 'Imported step' in text
+
+
+def test_report_states_score_formula_weights_and_band_referenced_f3(report_inputs):
+    from horn_analysis.scoring import describe_scoring
+    target = TargetSpec(500, 4000, min_output_db=90., score_weights="size=0.2")
+    scoring = describe_scoring(target, {"length_range": [.1, .2]}, {"max_length": .2})
+    text = generate_html_report(**{**report_inputs, "target": target}, scoring=scoring)
+    assert "Extension (oct)" in text and "BW Cov." not in text
+    assert "+0.40" in text
+    # Rankings show f3 from the target-band reference, not the peak-lobe KPI.
+    assert "<td>430 \u2014 \u22654600</td>" in text and "<td>520 \u2014" not in text
+    assert "clip((L_mean-60)/60,0,1)" in text
+    assert "size 0.167" in text
+    assert "heuristic range with a user limit" in text
+    assert "min_output_db 90.0 (user)" in text

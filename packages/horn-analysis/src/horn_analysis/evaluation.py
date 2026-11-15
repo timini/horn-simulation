@@ -56,14 +56,13 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
     ripple = float(np.ptp(y))
     integrate = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
     average = float(integrate(y, x)/(x[-1]-x[0]))
-    threshold = max(float(y.max()-target.max_ripple_db), target.min_output_db if target.min_output_db is not None else -np.inf)
-    covered = 0.0
-    for x0, x1, y0, y1 in zip(x[:-1], x[1:], y[:-1], y[1:]):
-        if min(y0,y1) >= threshold:
-            covered += x1-x0
-        elif max(y0,y1) > threshold:
-            covered += (x1-x0)*(max(y0,y1)-threshold)/abs(y1-y0)
-    coverage = float(covered/(x[-1]-x[0]))
+    # f3 is referenced to the same target-band mean as the ripple and mean
+    # level columns, and searched over the full sweep so extension counts.
+    log_f = np.log(f)
+    f3_threshold = average - 3.0
+    f3_low, low_bound = _f3_edge(log_f, levels, x[0], x[-1], f3_threshold, -1)
+    f3_high, high_bound = _f3_edge(log_f, levels, x[-1], x[0], f3_threshold, 1)
+    extension = float(np.log2(target.f_low_hz/f3_low) + np.log2(f3_high/target.f_high_hz))
     reasons, missing = [], []
     if ripple > target.max_ripple_db + 1e-9:
         reasons.append("target_band_ripple_exceeded")
@@ -106,10 +105,17 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
             if limit is not None and peak > limit:
                 reasons.append(reason)
         operating_limits["operating_limit_scope"] = "Linear model at requested voltage; not a validated maximum-output or thermal prediction"
-    score = .5*coverage + .25*max(0, 1-ripple/target.max_ripple_db) + .25*float(np.clip((average-60)/60, 0, 1))
+    from horn_analysis.scoring import score_terms, weighted_score
+    terms = score_terms(target, average, ripple, extension, mouth_radius, length)
+    score = weighted_score(target, terms)
     return {
         **operating_limits,
-        "bandwidth_coverage": coverage, "passband_ripple_db": ripple,
+        "passband_ripple_db": ripple,
+        "f3_low_hz": f3_low, "f3_high_hz": f3_high,
+        "f3_low_is_bound": low_bound, "f3_high_is_bound": high_bound,
+        "f3_reference": "target_band_mean_minus_3db",
+        "extension_octaves": extension,
+        "score_terms": terms,
         "avg_sensitivity_db": average,  # retained JSON key; reports label actual quantity
         "composite_score": 0.0 if reasons else score,
         "model_feasible": not reasons,
@@ -121,6 +127,36 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
     }
 
 
+def _f3_edge(log_f, levels, log_edge, log_other_edge, threshold, direction):
+    """First crossing of ``threshold`` measured from one target-band edge.
+
+    If the level at the edge is at or above the threshold, walk outward
+    (``direction`` -1 below the band, +1 above) over the full sweep to the
+    first sample below it. Otherwise walk inward towards the other band edge
+    to the first sample at or above it. Crossings are interpolated linearly
+    against log frequency. Returns (f3_hz, is_sweep_bound).
+    """
+    level_at_edge = float(np.interp(log_edge, log_f, levels))
+    outward = level_at_edge >= threshold
+    step = direction if outward else -direction
+    if step > 0:
+        mask = (log_f > log_edge) if outward else (log_f > log_edge) & (log_f < log_other_edge)
+        path_x, path_y = log_f[mask], levels[mask]
+    else:
+        mask = (log_f < log_edge) if outward else (log_f < log_edge) & (log_f > log_other_edge)
+        path_x, path_y = log_f[mask][::-1], levels[mask][::-1]
+    xs = np.r_[log_edge, path_x]
+    ys = np.r_[level_at_edge, path_y]
+    for i in range(1, len(xs)):
+        crossed = ys[i] < threshold if outward else ys[i] >= threshold
+        if crossed:
+            fraction = (ys[i-1]-threshold)/(ys[i-1]-ys[i])
+            return float(np.exp(xs[i-1] + fraction*(xs[i]-xs[i-1]))), False
+    if outward:
+        return float(np.exp(xs[-1])), True
+    return float(np.exp(log_other_edge)), False
+
+
 def radiation_domain_rejection(frequencies, mouth_radius, radiation_model, flange_width=0.):
     """Reject unsupported geometries without masking invalid inputs/solver errors."""
     if radiation_model=='modal_baffled' and np.max(2*np.pi*np.asarray(frequencies)*mouth_radius/343.)>30:
@@ -129,7 +165,7 @@ def radiation_domain_rejection(frequencies, mouth_radius, radiation_model, flang
                 "rejection_reasons":["radiation_model_out_of_domain"],
                 "rejection_detail":"Modal aperture quadrature requires ka <= 30",
                 "evidence_gaps":[],"validation_status":"outside_supported_model_domain",
-                "bandwidth_coverage":0.,"passband_ripple_db":None,"avg_sensitivity_db":None}
+                "extension_octaves":None,"passband_ripple_db":None,"avg_sensitivity_db":None}
     if radiation_model not in {"finite_flange", "unflanged", "unflanged_piston"}:
         return None
     from horn_core.duct import DEFAULT_AIR, RadiationDomainError, circular_pipe_radiation
@@ -141,6 +177,6 @@ def radiation_domain_rejection(frequencies, mouth_radius, radiation_model, flang
                 "rejection_reasons": ["radiation_model_out_of_domain"],
                 "rejection_detail": str(error), "evidence_gaps": [],
                 "validation_status": "outside_supported_model_domain",
-                "bandwidth_coverage": 0., "passband_ripple_db": None,
+                "extension_octaves": None, "passband_ripple_db": None,
                 "avg_sensitivity_db": None}
     return None

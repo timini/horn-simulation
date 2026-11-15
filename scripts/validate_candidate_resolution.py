@@ -399,9 +399,10 @@ def compare(out, *, reanalyze=False):
     curves,health={},{}
     original=pd.read_csv(out/'original_response')
     parameters=json.loads((out/'origin_specification').read_text())['parameters']
-    bands=parameters['num_bands'];points=max(2,int(np.ceil(parameters['num_intervals']/bands)))
-    low,high=p['simulation_band_hz'];width=(high-low)/bands
-    original_grid=np.unique(np.concatenate([np.geomspace(low+i*width,low+(i+1)*width,points) for i in range(bands)]))
+    from horn_core.frequency_grid import DEFAULT_MIN_POINTS_PER_OCTAVE, merged_grid
+    low,high=p['simulation_band_hz']
+    original_grid=merged_grid(low,high,parameters['num_bands'],parameters['num_intervals'],
+                              parameters.get('min_points_per_octave',DEFAULT_MIN_POINTS_PER_OCTAVE))
     health['original_ranking']=check_frame(original,p['simulation_band_hz'],len(original_grid),expected=original_grid,radiation_model=candidate['radiation_model'])
     original_levels,_,_=coupled_output(original,driver,target)
     metrics=evaluate_response(original.frequency,original_levels,TargetSpec(*p['target_band_hz']))

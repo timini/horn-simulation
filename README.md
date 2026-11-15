@@ -164,6 +164,7 @@ just test-package horn-solver    # single package
 | `min_freq` | Minimum simulation frequency (Hz) | `500` |
 | `max_freq` | Maximum simulation frequency (Hz) | `8000` |
 | `num_intervals` | Number of frequency steps | `100` |
+| `min_points_per_octave` | Minimum log-spaced solver points per octave (0 disables) | `24` |
 | `mesh_size` | Target mesh element size (m) | `0.01` |
 | `num_bands` | Parallel frequency band jobs | `8` |
 | `outdir` | Direct Nextflow output directory | Required for direct invocation; launcher chooses an isolated run |
@@ -179,7 +180,11 @@ just test-package horn-solver    # single package
 | `target_f_high` | Target high frequency (Hz) | `4000` |
 | `drivers_db` | Path to driver database JSON | `data/drivers.json` |
 | `top_n` | Number of top results to return | `10` |
+| `max_ripple_db` | Maximum target-band ripple for a feasible design (dB) | `6.0` |
+| `min_output_db` | Optional minimum observer level anywhere in the target band (dB) | unset |
+| `score_weights` | Preference weights, e.g. `sensitivity=0.625,ripple=0.25,extension=0.125,size=0` (normalised to sum to 1) | as shown |
 
+The score is a weighted sum of four terms on fixed scales: target-band mean level, target-band ripple, extension (octaves by which the f3 points, 3 dB below the target-band mean, lie outside the band) and horn volume. With the default weights, 1 dB less ripple is worth 2 dB of sensitivity and 1 octave more extension is worth 6 dB; size is ignored. The formula, weights, exchange rates and the origin of every bound are written to `ranked_results.json` and the report.
 
 </details>
 
@@ -267,7 +272,7 @@ where `p_ref = 20 µPa` is the standard acoustic reference pressure. The outlet 
 
 ### Frequency sweep
 
-Frequencies are logarithmically spaced using `np.geomspace`, providing finer resolution at lower frequencies where acoustic behaviour changes more rapidly. The total range is split into `num_bands` independent sub-ranges that run in parallel as separate Nextflow processes, each in its own Docker container. Results are merged and sorted by frequency after all bands complete.
+Frequencies are logarithmically spaced, so every octave gets the same number of points. The total range is split into `num_bands` sub-ranges of equal width on a logarithmic axis, each with the same number of points (at least `num_intervals / num_bands`, raised if needed to `min_points_per_octave`), so the merged grid is uniform in log frequency. The sub-ranges run in parallel as separate Nextflow processes, each in its own Docker container. Results are merged and sorted by frequency after all bands complete.
 
 ### Physical constants
 
