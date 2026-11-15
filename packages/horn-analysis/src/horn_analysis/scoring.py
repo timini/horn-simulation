@@ -28,11 +28,14 @@ class TargetSpec:
     max_ripple_db: float = 6.0
     max_compression_ratio: float = 10.0
     min_output_db: Optional[float] = None
+    # Separate stress level (W into nominal impedance) for excursion checks over
+    # the full sweep; the SPL used for scoring stays at voltage_rms.
+    test_power_w: Optional[float] = None
 
     def __post_init__(self):
         from horn_core.acoustics import validate_band
         validate_band(self.f_low_hz, self.f_high_hz)
-        for name in ("voltage_rms", "observation_distance_m", "max_ripple_db", "max_compression_ratio", "max_length_m", "max_mouth_radius_m"):
+        for name in ("voltage_rms", "observation_distance_m", "max_ripple_db", "max_compression_ratio", "max_length_m", "max_mouth_radius_m", "test_power_w"):
             value = getattr(self, name)
             if value is not None and (not np.isfinite(value) or value <= 0):
                 raise ValueError(f"{name} must be finite and positive")

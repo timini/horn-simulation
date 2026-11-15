@@ -9,6 +9,16 @@ from horn_analysis.transfer_function import compute_driver_response, scale_solve
 
 
 def coupled_output(frame, driver, target, legacy_radius=None):
+    """Observer level (dB), inlet area and output metric for a driver on a solved horn."""
+    result = coupled_observer(frame, driver, target, legacy_radius)
+    return result["levels"], result["area"], result["metric"]
+
+
+def coupled_observer(frame, driver, target, legacy_radius=None):
+    """Coupled observer level, complex observer pressure, inlet area and metric.
+
+    pressure is None for legacy frames, which only give mouth-plane levels.
+    """
     from horn_core.duct import DEFAULT_AIR
     for name,value in [("air_c_m_s",DEFAULT_AIR.c),("air_rho_kg_m3",DEFAULT_AIR.rho)]:
         if name in frame and not np.allclose(frame[name],value,rtol=1e-12):
@@ -16,8 +26,10 @@ def coupled_output(frame, driver, target, legacy_radius=None):
     f = validate_response(frame.frequency, frame.spl, frame.z_real, frame.z_imag)
     area = inlet_area_from_frame(frame, legacy_radius)
     p = compute_driver_response(driver, f, frame.z_real.to_numpy(), frame.z_imag.to_numpy(), area, target.voltage_rms)
+    def result(levels, pressure, metric):
+        return {"levels": levels, "pressure": pressure, "area": area, "metric": metric}
     if "schema_version" not in frame:
-        return scale_solver_spl(frame.spl.to_numpy(), p), area, "legacy_mouth_pressure"
+        return result(scale_solver_spl(frame.spl.to_numpy(), p), None, "legacy_mouth_pressure")
     if not (frame.schema_version == 2).all() or not (frame.phasor_convention == "exp(+iwt)_rms").all():
         raise ValueError("Unsupported solver phase convention/schema")
     if not (frame.bc_mode == "dirichlet").all():
@@ -38,9 +50,9 @@ def coupled_output(frame, driver, target, legacy_radius=None):
         if not np.isfinite(velocity).all() or not np.allclose(u,mouth_area*velocity[:,0],rtol=1e-8,atol=1e-15):
             raise ValueError('Inconsistent modal aperture volume velocity')
         observer=modal_baffled_on_axis(f,velocity*p[:,None],np.sqrt(mouth_area[0]/np.pi),target.observation_distance_m)
-        return pressure_level(observer),area,'modal_baffled_on_axis'
+        return result(pressure_level(observer),observer,'modal_baffled_on_axis')
     observer = baffled_piston_on_axis(f, u*p, float(mouth_area[0]), target.observation_distance_m)
-    return pressure_level(observer), area, "uniform_baffled_piston_on_axis"
+    return result(pressure_level(observer), observer, "uniform_baffled_piston_on_axis")
 
 
 def evaluate_response(frequencies, levels, target, driver=None, throat_area=None, length=None, mouth_radius=None, operating_point=None):
@@ -95,6 +107,8 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
             missing.append("moving_mass_and_rear_load_not_separated")
         if driver.xmax_m is None or driver.power_w is None:
             missing.append("maximum_output_limits_unknown")
+        from horn_core.driver_interface import interface_evidence_gaps, interface_summary
+        missing.extend(interface_evidence_gaps(driver, throat_area, target.f_high_hz))
     operating_limits = {}
     if driver is not None and operating_point is not None:
         for quantity, limit, reason in [("displacement_peak_m",driver.xmax_m,"driver_excursion_exceeded"),
@@ -106,9 +120,15 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
             if limit is not None and peak > limit:
                 reasons.append(reason)
         operating_limits["operating_limit_scope"] = "Linear model at requested voltage; not a validated maximum-output or thermal prediction"
+        if getattr(target, "test_power_w", None) is not None:
+            from horn_analysis.electrical_output import stress_assessment
+            stress, stress_reasons = stress_assessment(f, operating_point, driver, target)
+            operating_limits.update(stress)
+            reasons.extend(stress_reasons)
     score = .5*coverage + .25*max(0, 1-ripple/target.max_ripple_db) + .25*float(np.clip((average-60)/60, 0, 1))
+    interface = {} if driver is None else {"driver_interface": interface_summary(driver, throat_area)}
     return {
-        **operating_limits,
+        **operating_limits, **interface,
         "bandwidth_coverage": coverage, "passband_ripple_db": ripple,
         "avg_sensitivity_db": average,  # retained JSON key; reports label actual quantity
         "composite_score": 0.0 if reasons else score,

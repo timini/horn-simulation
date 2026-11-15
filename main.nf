@@ -57,6 +57,7 @@ params.num_mouth_radii = 3 // Mouth radius grid points (when mouth_radius is nul
 params.num_lengths = 3     // Length grid points (when length is null)
 params.refinement_budget = 6
 params.voltage_rms = 2.83
+params.test_power_w = null   // Optional stress power (W into nominal impedance) for full-sweep excursion and Xmax margin
 params.observation_distance = 1.0
 params.max_ripple_db = 6.0
 params.max_compression_ratio = 10.0
@@ -505,7 +506,7 @@ import json
 from pathlib import Path
 from horn_analysis.auto_report import generate_auto_report
 from horn_analysis.scoring import TargetSpec
-target = TargetSpec(${params.target_f_low}, ${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio})
+target = TargetSpec(${params.target_f_low}, ${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio}, test_power_w=${params.test_power_w ?: 'None'})
 reasons = {"no_drivers_passed_prescreen": "No drivers passed the initial screening for this request.", "size_constraints_exclude_search_range": "No geometry remains within the requested size limits and current search range.", "no_mouth_larger_than_throat": "The searched mouth sizes are no larger than the throat.", "no_geometry_in_radiation_domain": "No searched geometry lies within the selected radiation model domain."}
 metadata = json.loads(Path("${empty_metadata}").read_text())
 rejected = metadata.get("rankings", [])
@@ -577,6 +578,7 @@ process lem_prescreen {
         --radiation-model ${params.radiation_model} --loss-model ${params.loss_model} --flange-width ${params.flange_width} \
         --voltage ${params.voltage_rms} --distance ${params.observation_distance} \
         --max-ripple ${params.max_ripple_db} --max-compression ${params.max_compression_ratio} \
+        ${params.test_power_w ? "--test-power " + params.test_power_w : ""} \
         --top-n ${params.lem_top_n} \
         --output lem_results.json \
         --filtered-csv lem_filtered_candidates.csv
@@ -676,7 +678,7 @@ from horn_analysis.scoring import TargetSpec
 
 prescreen = json.loads(Path('${prescreen_json}').read_text())
 throat_radius = prescreen['throat_radius_m']
-target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio})
+target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio}, test_power_w=${params.test_power_w ?: 'None'})
 
 # Load only pre-screened drivers
 all_drivers = load_drivers('${drivers_db}')
@@ -760,6 +762,7 @@ process refine_ranked_candidates {
         --element-degree ${params.element_degree} ${params.minimum_wall_scale != null ? "--minimum-wall-scale " + params.minimum_wall_scale : ""} \
         --voltage ${params.voltage_rms} --distance ${params.observation_distance} \
         --max-ripple ${params.max_ripple_db} --max-compression ${params.max_compression_ratio} \
+        ${params.test_power_w ? "--test-power " + params.test_power_w : ""} \
         --output-dir refinement
     """
 }
@@ -781,6 +784,7 @@ process generate_auto_report {
     path "report/auto_summary.txt"
     path "report/auto_report.html"
     path "report/coupled_*.csv", optional: true
+    path "report/auto_electrical.png", optional: true
 
     script:
     """
@@ -812,7 +816,7 @@ driver_list = load_drivers('${drivers_db}')
 driver_ids = set(prescreen['drivers'])
 drivers = {d.driver_id: d for d in driver_list if d.driver_id in driver_ids}
 
-target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio})
+target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio}, test_power_w=${params.test_power_w ?: 'None'})
 
 generate_auto_report(
     all_ranked=all_ranked,
@@ -1073,7 +1077,7 @@ workflow {
     }
     if (params.num_intervals < 2 || params.num_sections < 2) error "At least two frequency points and geometry sections are required"
     if (params.refinement_budget < 0) error "Refinement budget must be nonnegative"
-    for (key in ['throat_radius', 'mouth_radius', 'length', 'min_length', 'max_length', 'min_mouth_radius', 'max_mouth_radius']) {
+    for (key in ['throat_radius', 'mouth_radius', 'length', 'min_length', 'max_length', 'min_mouth_radius', 'max_mouth_radius', 'test_power_w']) {
         if (params[key] != null && !(params[key] > 0 && Double.isFinite(params[key] as double))) error "${key} must be finite and positive"
     }
     def outputRoot = new File(params.outdir as String)
