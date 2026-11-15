@@ -11,7 +11,8 @@ Updated 7 September 2026. Band-to-driver-and-horn search, bounded refinement, CA
 - Requested-band ripple/output constraints, known driver-band and compression rejection, missing-provenance/interface/mass flags, and linear excursion/input-power rejection at the requested voltage.
 - Fixed-budget analytical shortlist with score and geometry diversity, bounded refinement, explicit boundary/budget status, and near-tied score reporting. A result is the best evaluated candidate, never a proven global optimum.
 - Explicit empty and rejected outcomes; coupled response files and acoustic air-volume CAD; default assumptions and experimental labels in reports.
-- Three manufacturer-sourced motor variants in `data/drivers-curated`, with supplied/derived/missing fields distinguished. Their throat interfaces and separate air loads are unresolved; they are not promoted to physically validated drivers.
+- Three manufacturer-sourced cone motor variants and four compression drivers (Peerless/Tymphany, with datasheet exit diameters) in `data/drivers-curated`, with supplied/derived/missing fields distinguished. Their throat interfaces and separate air loads are unresolved; they are not promoted to physically validated drivers. Seven further compression drivers whose public data lack a complete Thiele-Small set are listed, unloadable, in `data/drivers-incomplete`.
+- Driver database hygiene: every record in `data/drivers` and `data/drivers-curated` carries its source URL, retrieval date and record schema version; CI requires zero validator errors (Q identity, loader acceptance, copied pages, mojibake). The 30 synthetic seed records are no longer in the database (kept only as a test fixture). The 376 copied Faital, B&C and 18Sound pages and 7 self-contradictory records were removed and are listed in `data/drivers-incomplete/removed-scraped-records.json`; the copies are not yet re-fetched because the source site returned HTTP 429 on 2026-11-15.
 - Published reference importer with archive hashes, units, phase availability and duplicate detection. Six acquired archives contain 383 curves, 378 unique files: 299 research measurements, 40 independent simulations and 44 DIY response/impedance files.
 - Disabled the invalid legacy FEM–BEM horn coupling at public entry points. It mapped the whole boundary instead of a verified mouth-only exterior problem. Independent backend/operator tests remain available.
 - Native container builds, repaired Nextflow tests, pinned Nextflow/nf-test CI versions, and a dedicated production acoustic lane requiring all 13 declared cases without skips.
@@ -38,6 +39,11 @@ Updated 7 September 2026. Band-to-driver-and-horn search, bounded refinement, CA
 The earlier band-only run produced a Beyma 3FR30Nd/hyperbolic experimental candidate with 19.868 mm throat diameter, 141.934 mm mouth diameter and 171.5 mm length. It had insufficient driver/interface evidence. This is historical execution evidence, not a recommendation or evidence for the latest source snapshot. Likewise the earlier resume and six-feasible-pair benchmark do not replace final release checks.
 
 Review corrections also enforce each independently known driver-band endpoint, constrain custom throat fractions, propagate single-driver voltage, reject inconsistent complex band joins, and report valid-but-empty size searches. The custom run directory is excluded from source hashing so it cannot invalidate its own resume.
+
+## Recorded decisions
+
+- Driver data are per-driver JSON files under version control, not PostgreSQL. A single-user local pipeline gains nothing from a database server, and git history gives the audit trail.
+- PDF datasheet parsing and a human-review queue are dropped. `horn-add-driver` takes datasheet values with explicit units, converts them to SI, runs the loader and validator and records the source URL and retrieval date; a person reading the datasheet is the review.
 
 ## Outstanding gates
 

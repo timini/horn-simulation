@@ -50,6 +50,21 @@ jobs:
       - name: Run tests
         run: pytest packages/${{ matrix.package }}/tests -v
 
+  validate_driver_databases:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install driver tools
+        run: pip install -e packages/horn-core -e packages/horn-drivers
+      - name: Validate shipped driver databases (zero errors allowed)
+        run: |
+          horn-validate-drivers --db data/drivers > validate-drivers.log || { grep -E 'ERROR|Results' validate-drivers.log; exit 1; }
+          tail -3 validate-drivers.log
+          horn-validate-drivers --db data/drivers-curated
+
   test_reference_audit:
     runs-on: ubuntu-latest
     steps:

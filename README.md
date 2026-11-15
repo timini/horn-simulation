@@ -177,7 +177,7 @@ just test-package horn-solver    # single package
 |-----------|-------------|---------|
 | `target_f_low` | Target low frequency (Hz) | `500` |
 | `target_f_high` | Target high frequency (Hz) | `4000` |
-| `drivers_db` | Path to driver database JSON | `data/drivers.json` |
+| `drivers_db` | Driver database directory (`data/drivers-curated` holds the sourced, hand-checked set) | `data/drivers` |
 | `top_n` | Number of top results to return | `10` |
 
 
@@ -190,7 +190,7 @@ just test-package horn-solver    # single package
 |-----------|-------------|---------|
 | `target_f_low` | Target low frequency (Hz) | `500` |
 | `target_f_high` | Target high frequency (Hz) | `4000` |
-| `drivers_db` | Path to driver database JSON | `data/drivers.json` |
+| `drivers_db` | Driver database directory (`data/drivers-curated` holds the sourced, hand-checked set) | `data/drivers` |
 | `top_n` | Number of top results to return | `10` |
 | `num_mouth_radii` | Mouth radius grid points | `3` |
 | `num_lengths` | Length grid points | `3` |
@@ -324,9 +324,24 @@ Discovery failures, incomplete pagination and failed driver retrieval return a f
 `--patience-hours` optionally waits through origin outages; exhausting that budget stops the batch instead of restarting the wait for the next driver. Throttling retries remain bounded.
 
 Driver pages must identify the requested URL. Missing Mms is not replaced with dry Mmd, and program power is not converted into an assumed continuous rating. Records lacking essential known parameters are rejected; additional chamber/interface validation is still required before making physical driver recommendations.
-Refreshes preserve known driver categories. New records have an unknown category until supported metadata is available; diaphragm area alone cannot distinguish a compression driver from a small cone driver.
+Pages are decoded as UTF-8 (the site sends no charset). Each record stores the source URL, retrieval date, `scraper_schema_version` and `record_schema_version`, plus the site's Rms, Cms, power handling, sensitivity and nominal frequency range (stored as `usable_f_low_hz`/`usable_f_high_hz` and labelled nominal in `provenance.band_definition`). The driver category comes from the site's category label and is recorded in `type_source`; a refresh keeps an existing category only when it has a `type_source`. Without one the category is unknown, because diaphragm area alone cannot distinguish a compression driver from a small cone driver.
 Manually enriched interface data, usable-frequency bounds and parameters not supplied by the source survive refresh; values actually fetched from the source replace their earlier values.
 During migration, an existing continuous-power rating must have an independent source in `parameter_sources.power_w`; otherwise it is removed because older scraper versions inferred it from program power. A manufacturer's progress is marked incomplete before discovery, so a failed refresh cannot leave an earlier completion flag in place.
+
+### Checking and adding drivers
+
+`horn-validate-drivers --db data/drivers` must report zero errors; CI runs it on `data/drivers` and `data/drivers-curated`. Errors include inconsistent Qms/Qes/Qts (relative tolerance 10%), records the loader would reject, mojibake in model names and the same parameter tuple across unrelated models (a copied page).
+
+To add a driver from a datasheet, give each value in the unit the datasheet uses:
+
+```bash
+horn-add-driver --db data/drivers-curated --manufacturer Acme --model "AC10 8ohm" --type cone \
+  --fs-hz 45 --re-ohm 5.6 --bl-tm 15.2 --sd-cm2 346 --vas-l 52 --le-mh 0.9 \
+  --qms 5.1 --qes 0.38 --qts 0.354 --xmax-mm 4 --power-w 300 \
+  --f-low-hz 50 --f-high-hz 3000 --source-url https://example.com/ac10.pdf
+```
+
+Mms is derived from Vas, Sd and Fs when it is not given. Compression drivers take `--exit-diameter-mm`. The command converts to SI, runs the loader and validator and writes nothing if either fails. The loader also accepts `sd_cm2`, `vas_l`, `mms_g`, `le_mh`, `xmax_mm`, `exit_area_cm2`, `exit_diameter_mm` and `power_aes_watts` in hand-written JSON, and rejects values that are orders of magnitude off with a hint about the unit.
 
 See the [independent solver protocol](docs/INDEPENDENT_SOLVER_VALIDATION.md) and [physical assembly reference audit](docs/PHYSICAL_REFERENCE_AUDIT.md) for the current qualification work.
 See [run locations, latest-run lookup, resume and cleanup](docs/RUN_MANAGEMENT.md).

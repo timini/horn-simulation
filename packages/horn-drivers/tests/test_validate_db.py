@@ -5,12 +5,15 @@ database has good coverage, the vast majority of drivers have essential
 T-S parameters, values fall within plausible physical ranges, and
 cross-parameter physics checks pass.
 
-Since the database contains scraped data, some drivers may have data
-quality issues from the source.  Tests use statistical thresholds
-(e.g. "at least 95% pass") rather than requiring perfection.
+Hard requirements: the validator reports zero errors on the shipped
+databases, no record is a copy of another page or a synthetic seed, every
+record carries provenance, and the loader rejects nothing. Plausibility
+warnings on scraped values use statistical thresholds.
 """
 
+import json
 import math
+import warnings
 from collections import Counter
 from pathlib import Path
 
@@ -23,11 +26,16 @@ from horn_drivers.validator import (
     RANGES_BY_DIAMETER,
     ValidationResult,
     compute_derived_params,
+    find_duplicate_groups,
     validate_driver,
 )
 from horn_drivers.loader import load_drivers, load_drivers_raw
 
-DB_PATH = Path(__file__).resolve().parents[3] / "data" / "drivers"
+REPO = Path(__file__).resolve().parents[3]
+DB_PATH = REPO / "data" / "drivers"
+CURATED_PATH = REPO / "data" / "drivers-curated"
+SHIPPED_DBS = [DB_PATH, CURATED_PATH]
+SEED_FIXTURE = Path(__file__).parent / "fixtures" / "synthetic_seed_drivers.json"
 
 
 @pytest.fixture
@@ -68,16 +76,64 @@ class TestDriverDatabaseCompleteness:
         ids = [d.driver_id for d in db_drivers]
         assert len(ids) == len(set(ids)), "Duplicate driver IDs found"
 
-    def test_no_validation_errors_above_threshold(self, db_raw):
-        """At least 95% of drivers should have zero validation errors."""
-        error_free = sum(
-            1 for d in db_raw if not validate_driver(d).errors
-        )
-        rate = error_free / len(db_raw)
-        assert rate >= 0.95, (
-            f"Only {error_free}/{len(db_raw)} ({rate:.1%}) error-free, "
-            f"need >= 95%"
-        )
+
+@pytest.mark.parametrize("db", SHIPPED_DBS, ids=lambda p: p.name)
+class TestShippedDatabaseHygiene:
+    """What CI also enforces with horn-validate-drivers, as direct checks."""
+
+    def test_validator_reports_no_errors(self, db):
+        from horn_drivers.validator import validate_database
+        errors = [(r.driver_id, e) for r in validate_database(str(db)) for e in r.errors]
+        assert errors == [], errors[:10]
+
+    def test_loader_rejects_no_record(self, db):
+        raw = load_drivers_raw(str(db))
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            loaded = load_drivers(str(db))
+        rejected = [str(w.message) for w in caught if "Rejected driver" in str(w.message)]
+        assert rejected == [] and len(loaded) == len(raw), rejected[:10]
+
+    def test_no_copied_pages(self, db):
+        """A wedged origin once served one page for every URL: 376 records
+        shared three parameter tuples. Distinct tuples must track the record
+        count, with only small variant families sharing values."""
+        raw = load_drivers_raw(str(db))
+        assert find_duplicate_groups(raw) == []
+        keys = {tuple(d["parameters"].get(k) for k in ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg"))
+                for d in raw}
+        assert len(keys) >= 0.97 * len(raw), f"{len(keys)} distinct tuples for {len(raw)} records"
+
+    def test_no_synthetic_seed_records(self, db):
+        seeds = json.loads(SEED_FIXTURE.read_text())["drivers"]
+        seed_params = {json.dumps(s["parameters"], sort_keys=True) for s in seeds}
+        copies = [d["driver_id"] for d in load_drivers_raw(str(db))
+                  if json.dumps(d["parameters"], sort_keys=True) in seed_params]
+        assert copies == []
+
+    def test_every_record_has_provenance(self, db):
+        missing = []
+        for d in load_drivers_raw(str(db)):
+            provenance = d.get("provenance") or {}
+            if not (str(d.get("parameter_source", "")).startswith("http")
+                    and provenance.get("retrieved_on")
+                    and d.get("record_schema_version") == 1):
+                missing.append(d["driver_id"])
+        assert missing == [], missing[:10]
+
+    def test_no_mojibake_and_one_manufacturer_name_per_folder(self, db):
+        names = {}
+        for path in db.glob("*/*.json"):
+            d = json.loads(path.read_text())
+            assert "\u00ce\u00a9" not in d["model_name"] and "\u00c3" not in d["model_name"], d["model_name"]
+            names.setdefault(path.parent.name, set()).add(d["manufacturer"])
+        assert {folder: n for folder, n in names.items() if len(n) > 1} == {}
+
+    def test_driver_categories_are_sourced(self, db):
+        """Sd alone once labelled small cones 'compression'."""
+        unsourced = [d["driver_id"] for d in load_drivers_raw(str(db))
+                     if d.get("driver_type") == "compression" and not d.get("type_source")]
+        assert unsourced == []
 
 
 # -----------------------------------------------------------------------
@@ -311,13 +367,19 @@ class TestDatabaseCoverage:
             f"{manufacturers}"
         )
 
-    def test_has_both_driver_types(self, db_raw):
-        """Database must contain both compression and cone drivers."""
+    def test_has_cone_drivers(self, db_raw):
         types = {d.get("driver_type") for d in db_raw}
-        assert "compression" in types, "No compression drivers in database"
         assert "cone" in types, "No cone drivers in database"
 
-    def test_compression_driver_count(self, db_raw):
-        """Should have at least 3 compression drivers."""
-        count = sum(1 for d in db_raw if d.get("driver_type") == "compression")
-        assert count >= 3, f"Need at least 3 compression drivers, got {count}"
+
+def test_curated_compression_drivers_are_sourced_with_exit_area():
+    """The scraped catalogue has no compression drivers (the source site lists
+    woofers only), so the sourced ones live in the curated set. Each must load
+    with its datasheet exit area as the throat, not Sd."""
+    drivers = [d for d in load_drivers(str(CURATED_PATH)) if d.driver_type == "compression"]
+    assert len(drivers) >= 3
+    for d in drivers:
+        assert d.parameter_source.startswith("http")
+        assert d.exit_area_m2 is not None and d.exit_area_m2 < d.sd_m2
+        assert d.effective_throat_area == d.exit_area_m2
+        assert d.usable_f_low_hz is not None and d.power_w is not None

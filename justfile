@@ -43,6 +43,13 @@ test-local:
     echo "Running horn-geometry tests..."
     .venv/bin/python -m pytest packages/horn-geometry/tests/ -v
 
+# Validate the shipped driver databases (CI requires zero errors)
+validate-drivers:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    .venv/bin/horn-validate-drivers --db data/drivers | tail -3
+    .venv/bin/horn-validate-drivers --db data/drivers-curated | tail -3
+
 # Run the Nextflow pipeline (single mode, default params)
 run *ARGS:
     python3 scripts/run_pipeline.py {{ARGS}}
