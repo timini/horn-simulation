@@ -392,3 +392,17 @@ def test_failed_discovery_clears_old_complete_progress(monkeypatch, tmp_path):
     progress = json.loads(state.read_text())['Test']
     assert progress['complete'] is False
     assert progress['failure_reason'] == 'Incomplete pagination'
+
+
+def test_refetch_drops_backfilled_legacy_provenance_notes(monkeypatch, tmp_path):
+    batch(monkeypatch)
+    s._save_driver(tmp_path, dict(
+        driver_id='test-model', manufacturer='Test', model_name='Model', driver_type='unknown',
+        parameters={**PARAMS, 'mms_kg': PARAMS['mmd_kg']}, parameter_source=ENTRY['url'],
+        record_schema_version=1,
+        provenance={'retrieved_on': '2026-02-26', 'retrieved_on_basis': 'commit date',
+                    'known_limitations': ['Band, power handling, Rms and sensitivity were not captured.']}))
+    assert s.scrape_all(db_dir=tmp_path, manufacturer_filter=['Test']) == 1
+    provenance = json.loads((tmp_path/'Test/test-model.json').read_text())['provenance']
+    assert 'retrieved_on_basis' not in provenance and 'known_limitations' not in provenance
+    assert provenance['retrieved_on'] != '2026-02-26'

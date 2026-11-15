@@ -119,6 +119,9 @@ def build_session():
     return session
 
 
+LEGACY_PROVENANCE_NOTES = ("retrieved_on_basis", "known_limitations")
+
+
 def _polite_sleep(delay: float, jitter: float = 0.35) -> None:
     """Sleep for *delay* with jitter, so requests are not perfectly periodic."""
     if delay <= 0:
@@ -910,6 +913,11 @@ def scrape_all(
             if band[0] is not None and (existing.get("usable_f_low_hz") is None or existing_band_from_site):
                 driver["usable_f_low_hz"], driver["usable_f_high_hz"] = band
             provenance = dict(existing.get("provenance") or {})
+            # Notes written when legacy records were back-filled describe the
+            # old capture (a reconstructed date, missing fields). A fresh fetch
+            # makes them wrong, so they go.
+            for key in LEGACY_PROVENANCE_NOTES:
+                provenance.pop(key, None)
             provenance.update({
                 "retrieved_on": time.strftime("%Y-%m-%d", time.gmtime()),
                 "source_kind": "third_party_aggregator",
