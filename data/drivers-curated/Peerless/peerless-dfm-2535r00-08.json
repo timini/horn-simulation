@@ -1,0 +1,63 @@
+{
+  "driver_id": "peerless-dfm-2535r00-08",
+  "manufacturer": "Peerless",
+  "model_name": "DFM-2535R00-08",
+  "driver_type": "compression",
+  "parameters": {
+    "fs_hz": 745.77,
+    "re_ohm": 6.46,
+    "bl_tm": 4.05,
+    "sd_m2": 0.00109,
+    "mms_kg": 0.0005,
+    "le_h": 3e-05,
+    "qms": 5.66,
+    "qes": 0.97,
+    "qts": 0.83,
+    "cms_m_per_n": 8.67e-05,
+    "xmax_m": 0.0001,
+    "nominal_impedance_ohm": 8.0,
+    "power_w": 25.0,
+    "sensitivity_db_1w1m": 106.3,
+    "exit_area_m2": 0.000506707479097
+  },
+  "type_source": "datasheet: https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/7466/dfmspecsheet.pdf",
+  "usable_f_low_hz": 1500.0,
+  "usable_f_high_hz": 15000.0,
+  "parameter_source": "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/7466/dfmspecsheet.pdf",
+  "interface_model": null,
+  "record_schema_version": 1,
+  "provenance": {
+    "retrieved_on": "2026-11-15",
+    "source_kind": "distributor_copy_of_manufacturer_datasheet",
+    "capture_method": "Entered with horn-add-driver from the datasheet values given on the command line.",
+    "supplied_fields": [
+      "bl_tm",
+      "cms_m_per_n",
+      "exit_diameter_mm",
+      "fs_hz",
+      "le_h",
+      "mms_kg",
+      "nominal_impedance_ohm",
+      "power_w",
+      "qes",
+      "qms",
+      "qts",
+      "re_ohm",
+      "sd_m2",
+      "sensitivity_db_1w1m",
+      "usable_f_high_hz",
+      "usable_f_low_hz",
+      "xmax_m"
+    ],
+    "derived_fields": [
+      "exit_area_m2"
+    ],
+    "exit_diameter_mm": 25.4,
+    "band_definition": "Test spectrum bandwidth of the rated noise power, as printed on the sheet. The sheet gives no separate frequency range; this is not a validated horn-loaded band.",
+    "notes": [
+      "Sheet is the Tymphany Driver Specification Sheet, watermarked PRELIMINARY.",
+      "Exit diameter is the nominal 1 inch exit from the product description; exit_area_m2 is pi*(25.4 mm/2)^2.",
+      "1.4 inch titanium diaphragm, 35.5 mm voice coil. Sheet last update 2018-01-05."
+    ]
+  }
+}

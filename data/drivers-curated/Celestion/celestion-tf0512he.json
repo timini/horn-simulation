@@ -25,6 +25,7 @@
   "usable_f_high_hz": 4000,
   "parameter_source": "https://celestion.com/product/tf0512he/",
   "interface_model": null,
+  "record_schema_version": 1,
   "provenance": {
     "retrieved_on": "2026-09-07",
     "capture_method": "Transcribed from retrieved manufacturer page. Raw source HTML is not archived.",
