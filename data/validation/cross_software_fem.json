@@ -1,0 +1,694 @@
+{
+ "tolerances": {
+  "low_ka": {
+   "ka_max": 1.5,
+   "db_median": 0.2,
+   "db_p95": 0.5,
+   "db_max": 1.0,
+   "phase_p95_deg": 3.0
+  },
+  "high_ka": "report only: plane-wave 1D models omit higher-order modes and wavefront curvature"
+ },
+ "results": [
+  {
+   "run": "results/20261116T154534Z-c3ed006e",
+   "fem_csv": "outputs/final_results.csv",
+   "profile": "conical",
+   "geometry": {
+    "throat_radius_m": 0.025,
+    "mouth_radius_m": 0.15,
+    "length_m": 0.3
+   },
+   "mesh_cells_max": 123803,
+   "frequency_hz": [
+    50.0,
+    5000.0
+   ],
+   "points": 161,
+   "air": {
+    "rho": 1.225,
+    "c": 343.0
+   },
+   "fem_vs_openwind": {
+    "low_ka": {
+     "points": 84,
+     "db_median": 0.6030963829870175,
+     "db_p95": 0.8872593015742696,
+     "db_max": 0.9359960733065175,
+     "phase_median_deg": 0.048984021605774655,
+     "phase_p95_deg": 3.723893340473614,
+     "phase_max_deg": 4.941288168426236
+    },
+    "high_ka_report_only": {
+     "points": 77,
+     "db_median": 0.3589261928397536,
+     "db_p95": 0.7579314899861165,
+     "db_max": 0.7811071668453007,
+     "phase_median_deg": 1.8811144644764115,
+     "phase_p95_deg": 3.8837811125827173,
+     "phase_max_deg": 4.231111296117744
+    },
+    "low_ka_checks": {
+     "db_median": false,
+     "db_p95": false,
+     "db_max": true,
+     "phase_p95_deg": false
+    },
+    "low_ka_pass": false
+   },
+   "fem_vs_tmm": {
+    "low_ka": {
+     "points": 84,
+     "db_median": 0.6031009615192564,
+     "db_p95": 0.8872599935498616,
+     "db_max": 0.935996037234744,
+     "phase_median_deg": 0.04898472119966191,
+     "phase_p95_deg": 3.72384675147142,
+     "phase_max_deg": 4.941244119891902
+    },
+    "high_ka_report_only": {
+     "points": 77,
+     "db_median": 0.35891061042035965,
+     "db_p95": 0.7579313127658566,
+     "db_max": 0.7811060912037622,
+     "phase_median_deg": 1.8808108581973508,
+     "phase_p95_deg": 3.8837160640266744,
+     "phase_max_deg": 4.230910961004465
+    },
+    "low_ka_checks": {
+     "db_median": false,
+     "db_p95": false,
+     "db_max": true,
+     "phase_p95_deg": false
+    },
+    "low_ka_pass": false
+   },
+   "tmm_vs_openwind": {
+    "low_ka": {
+     "points": 84,
+     "db_median": 4.3266709826495874e-06,
+     "db_p95": 4.953533851606869e-06,
+     "db_max": 5.0565548617287825e-06,
+     "phase_median_deg": 1.1357309513252566e-06,
+     "phase_p95_deg": 4.6817855915035186e-05,
+     "phase_max_deg": 5.050634578403524e-05
+    },
+    "high_ka_report_only": {
+     "points": 77,
+     "db_median": 3.682028219551523e-06,
+     "db_p95": 1.4466619571047384e-05,
+     "db_max": 1.9932846862865717e-05,
+     "phase_median_deg": 0.00020033511327949895,
+     "phase_p95_deg": 0.0006012265674031018,
+     "phase_max_deg": 0.0007388523822609704
+    },
+    "low_ka_checks": {
+     "db_median": true,
+     "db_p95": true,
+     "db_max": true,
+     "phase_p95_deg": true
+    },
+    "low_ka_pass": true
+   },
+   "fem_vs_openwind_spherical_waves": {
+    "low_ka": {
+     "points": 84,
+     "db_median": 0.13650962776914405,
+     "db_p95": 1.1130694087185924,
+     "db_max": 1.6047076278969628,
+     "phase_median_deg": 0.08187822040832615,
+     "phase_p95_deg": 6.546984096289014,
+     "phase_max_deg": 9.265316163968283
+    },
+    "high_ka_report_only": {
+     "points": 77,
+     "db_median": 0.4101487849640814,
+     "db_p95": 1.04723551830942,
+     "db_max": 1.1381105742728241,
+     "phase_median_deg": 2.357489539979241,
+     "phase_p95_deg": 6.048750534149445,
+     "phase_max_deg": 7.492463915605043
+    },
+    "low_ka_checks": {
+     "db_median": true,
+     "db_p95": false,
+     "db_max": false,
+     "phase_p95_deg": false
+    },
+    "low_ka_pass": false
+   },
+   "fem_vs_openwind_by_ka": [
+    {
+     "ka": [
+      0,
+      0.5
+     ],
+     "points": 45,
+     "db_median": 0.5964923679593377,
+     "db_p95": 0.6330141724405417,
+     "db_max": 0.6422665880454512,
+     "phase_median_deg": 0.03544046406590352,
+     "phase_p95_deg": 0.0559528410239806,
+     "phase_max_deg": 0.05626412580218628
+    },
+    {
+     "ka": [
+      0.5,
+      1
+     ],
+     "points": 24,
+     "db_median": 0.7368421069767301,
+     "db_p95": 0.9316875197639723,
+     "db_max": 0.9359960733065175,
+     "phase_median_deg": 0.20187401782736492,
+     "phase_p95_deg": 4.647980012534154,
+     "phase_max_deg": 4.941288168426236
+    },
+    {
+     "ka": [
+      1,
+      1.5
+     ],
+     "points": 15,
+     "db_median": 0.3332937437404635,
+     "db_p95": 0.6724370030764538,
+     "db_max": 0.6917973623194241,
+     "phase_median_deg": 0.732005406824901,
+     "phase_p95_deg": 4.036764661652147,
+     "phase_max_deg": 4.609222031694476
+    },
+    {
+     "ka": [
+      1.5,
+      2
+     ],
+     "points": 10,
+     "db_median": 0.7477795676179698,
+     "db_p95": 0.780273069468748,
+     "db_max": 0.7811071668453007,
+     "phase_median_deg": 1.7206909650803328,
+     "phase_p95_deg": 3.717056504700955,
+     "phase_max_deg": 3.8778447608472844
+    },
+    {
+     "ka": [
+      2,
+      3
+     ],
+     "points": 14,
+     "db_median": 0.42311882105755316,
+     "db_p95": 0.7185433759558449,
+     "db_max": 0.7241220321236641,
+     "phase_median_deg": 1.5881632276409943,
+     "phase_p95_deg": 3.685942369506761,
+     "phase_max_deg": 3.907526519524448
+    },
+    {
+     "ka": [
+      3,
+      5
+     ],
+     "points": 17,
+     "db_median": 0.3084161409240782,
+     "db_p95": 0.6850534700207985,
+     "db_max": 0.7380080947542276,
+     "phase_median_deg": 1.5777387795816287,
+     "phase_p95_deg": 4.1324233830772465,
+     "phase_max_deg": 4.231111296117744
+    },
+    {
+     "ka": [
+      5,
+      8
+     ],
+     "points": 17,
+     "db_median": 0.3420215064220279,
+     "db_p95": 0.5810269363211066,
+     "db_max": 0.5831632855897796,
+     "phase_median_deg": 1.8811144644764115,
+     "phase_p95_deg": 3.4682708456586884,
+     "phase_max_deg": 4.189689947177026
+    },
+    {
+     "ka": [
+      8,
+      15
+     ],
+     "points": 19,
+     "db_median": 0.2251890930336087,
+     "db_p95": 0.44478030322993845,
+     "db_max": 0.4761418516814983,
+     "phase_median_deg": 2.1050291650115653,
+     "phase_p95_deg": 3.392006523945025,
+     "phase_max_deg": 3.7403871488755427
+    }
+   ],
+   "fem_vs_openwind_spherical_by_ka": [
+    {
+     "ka": [
+      0,
+      0.5
+     ],
+     "points": 45,
+     "db_median": 0.08614875121894136,
+     "db_p95": 0.14407834095884653,
+     "db_max": 0.15936254294174665,
+     "phase_median_deg": 0.0026335538792265707,
+     "phase_p95_deg": 0.08567600548426073,
+     "phase_max_deg": 0.12099017769322634
+    },
+    {
+     "ka": [
+      0.5,
+      1
+     ],
+     "points": 24,
+     "db_median": 0.31717610181320666,
+     "db_p95": 0.9392521015405539,
+     "db_max": 1.3848453311935867,
+     "phase_median_deg": 1.307638379242194,
+     "phase_p95_deg": 8.858489636049166,
+     "phase_max_deg": 9.265316163968283
+    },
+    {
+     "ka": [
+      1,
+      1.5
+     ],
+     "points": 15,
+     "db_median": 0.4615618956099076,
+     "db_p95": 1.5991432277920805,
+     "db_max": 1.6047076278969628,
+     "phase_median_deg": 3.477623774384951,
+     "phase_p95_deg": 6.387165313259439,
+     "phase_max_deg": 6.566316380976106
+    },
+    {
+     "ka": [
+      1.5,
+      2
+     ],
+     "points": 10,
+     "db_median": 0.5461694478095971,
+     "db_p95": 0.6086661934641531,
+     "db_max": 0.613138801296138,
+     "phase_median_deg": 2.613767055882498,
+     "phase_p95_deg": 7.196106313562795,
+     "phase_max_deg": 7.492463915605043
+    },
+    {
+     "ka": [
+      2,
+      3
+     ],
+     "points": 14,
+     "db_median": 0.43672835016873235,
+     "db_p95": 1.0936230042884305,
+     "db_max": 1.1381105742728241,
+     "phase_median_deg": 3.112195985282177,
+     "phase_p95_deg": 6.403370195982038,
+     "phase_max_deg": 7.254829610725487
+    },
+    {
+     "ka": [
+      3,
+      5
+     ],
+     "points": 17,
+     "db_median": 0.2944874884182475,
+     "db_p95": 0.7023344083465889,
+     "db_max": 0.7129896145650759,
+     "phase_median_deg": 2.1910849177000284,
+     "phase_p95_deg": 5.0432536250141835,
+     "phase_max_deg": 6.030222665336752
+    },
+    {
+     "ka": [
+      5,
+      8
+     ],
+     "points": 17,
+     "db_median": 0.43342577174075964,
+     "db_p95": 1.1048728578067244,
+     "db_max": 1.1322327874466889,
+     "phase_median_deg": 2.7082403166836295,
+     "phase_p95_deg": 5.518377174204417,
+     "phase_max_deg": 6.122862009400215
+    },
+    {
+     "ka": [
+      8,
+      15
+     ],
+     "points": 19,
+     "db_median": 0.3752377708294483,
+     "db_p95": 0.8504508203480438,
+     "db_max": 1.0357227181045863,
+     "phase_median_deg": 1.99037895582632,
+     "phase_p95_deg": 4.927283986228898,
+     "phase_max_deg": 5.450859279646033
+    }
+   ]
+  },
+  {
+   "run": "results/20261116T160638Z-1f441625",
+   "fem_csv": "outputs/final_results.csv",
+   "profile": "exponential",
+   "geometry": {
+    "throat_radius_m": 0.025,
+    "mouth_radius_m": 0.15,
+    "length_m": 0.3
+   },
+   "mesh_cells_max": 85504,
+   "frequency_hz": [
+    50.0,
+    5000.0
+   ],
+   "points": 161,
+   "air": {
+    "rho": 1.225,
+    "c": 343.0
+   },
+   "fem_vs_openwind": {
+    "low_ka": {
+     "points": 84,
+     "db_median": 0.39972864093602567,
+     "db_p95": 1.2855438183418058,
+     "db_max": 1.5316702974441967,
+     "phase_median_deg": 0.02114537470880222,
+     "phase_p95_deg": 11.052785136525658,
+     "phase_max_deg": 13.77572274864057
+    },
+    "high_ka_report_only": {
+     "points": 77,
+     "db_median": 0.5389387451813492,
+     "db_p95": 1.3239294178616272,
+     "db_max": 1.5813522827648174,
+     "phase_median_deg": 3.7160838215020755,
+     "phase_p95_deg": 8.742819731322294,
+     "phase_max_deg": 10.235533973947687
+    },
+    "low_ka_checks": {
+     "db_median": false,
+     "db_p95": false,
+     "db_max": false,
+     "phase_p95_deg": false
+    },
+    "low_ka_pass": false
+   },
+   "fem_vs_tmm": {
+    "low_ka": {
+     "points": 84,
+     "db_median": 0.39972926913671,
+     "db_p95": 1.285541650379618,
+     "db_max": 1.5316665753714118,
+     "phase_median_deg": 0.021145158848097097,
+     "phase_p95_deg": 11.05274844377135,
+     "phase_max_deg": 13.775674526094575
+    },
+    "high_ka_report_only": {
+     "points": 77,
+     "db_median": 0.538934615542383,
+     "db_p95": 1.3239233849123166,
+     "db_max": 1.5813426727936086,
+     "phase_median_deg": 3.716015213956831,
+     "phase_p95_deg": 8.742735692243393,
+     "phase_max_deg": 10.235534683961044
+    },
+    "low_ka_checks": {
+     "db_median": false,
+     "db_p95": false,
+     "db_max": false,
+     "phase_p95_deg": false
+    },
+    "low_ka_pass": false
+   },
+   "tmm_vs_openwind": {
+    "low_ka": {
+     "points": 84,
+     "db_median": 9.79288995381889e-07,
+     "db_p95": 3.7189161567707727e-06,
+     "db_max": 4.214431593710308e-06,
+     "phase_median_deg": 2.15860705096426e-07,
+     "phase_p95_deg": 4.6615277242496986e-05,
+     "phase_max_deg": 5.411758695248681e-05
+    },
+    "high_ka_report_only": {
+     "points": 77,
+     "db_median": 5.36906163591258e-06,
+     "db_p95": 2.5940544246032263e-05,
+     "db_max": 3.562525455441762e-05,
+     "phase_median_deg": 6.352018920481912e-05,
+     "phase_p95_deg": 0.00029141634182947067,
+     "phase_max_deg": 0.00045496777947814297
+    },
+    "low_ka_checks": {
+     "db_median": true,
+     "db_p95": true,
+     "db_max": true,
+     "phase_p95_deg": true
+    },
+    "low_ka_pass": true
+   },
+   "fem_vs_openwind_spherical_waves": {
+    "low_ka": {
+     "points": 84,
+     "db_median": 0.02664287829125395,
+     "db_p95": 1.5016968254729346,
+     "db_max": 2.1596248067575923,
+     "phase_median_deg": 0.04658283849868451,
+     "phase_p95_deg": 9.811704037371676,
+     "phase_max_deg": 12.12016527421718
+    },
+    "high_ka_report_only": {
+     "points": 77,
+     "db_median": 0.38014511609338436,
+     "db_p95": 1.449999140472066,
+     "db_max": 1.6659241871344277,
+     "phase_median_deg": 2.420959608890396,
+     "phase_p95_deg": 8.694535885662214,
+     "phase_max_deg": 11.362444686605611
+    },
+    "low_ka_checks": {
+     "db_median": true,
+     "db_p95": false,
+     "db_max": false,
+     "phase_p95_deg": false
+    },
+    "low_ka_pass": false
+   },
+   "fem_vs_openwind_by_ka": [
+    {
+     "ka": [
+      0,
+      0.5
+     ],
+     "points": 45,
+     "db_median": 0.3537792456887775,
+     "db_p95": 0.4060387980219643,
+     "db_max": 0.4184271591151892,
+     "phase_median_deg": 0.0029286598631432497,
+     "phase_p95_deg": 0.02223485999367358,
+     "phase_max_deg": 0.032147562515127806
+    },
+    {
+     "ka": [
+      0.5,
+      1
+     ],
+     "points": 24,
+     "db_median": 0.5719562398685232,
+     "db_p95": 1.0360251068215962,
+     "db_max": 1.103718155562775,
+     "phase_median_deg": 0.28254621959742987,
+     "phase_p95_deg": 3.114070873828842,
+     "phase_max_deg": 4.254546535227747
+    },
+    {
+     "ka": [
+      1,
+      1.5
+     ],
+     "points": 15,
+     "db_median": 1.125319024382402,
+     "db_p95": 1.5176369567218717,
+     "db_max": 1.5316702974441967,
+     "phase_median_deg": 7.294353521784634,
+     "phase_p95_deg": 13.493081506316798,
+     "phase_max_deg": 13.77572274864057
+    },
+    {
+     "ka": [
+      1.5,
+      2
+     ],
+     "points": 10,
+     "db_median": 0.3684476315564952,
+     "db_p95": 0.840725506679563,
+     "db_max": 0.9093746688951143,
+     "phase_median_deg": 5.107871114986523,
+     "phase_p95_deg": 5.569167777850065,
+     "phase_max_deg": 5.575111382906247
+    },
+    {
+     "ka": [
+      2,
+      3
+     ],
+     "points": 14,
+     "db_median": 0.8969874946266425,
+     "db_p95": 1.1984891987006978,
+     "db_max": 1.3221926111397448,
+     "phase_median_deg": 4.637735332076957,
+     "phase_p95_deg": 8.372919428490098,
+     "phase_max_deg": 8.65123475030304
+    },
+    {
+     "ka": [
+      3,
+      5
+     ],
+     "points": 17,
+     "db_median": 0.8934526515417516,
+     "db_p95": 1.5474364319954992,
+     "db_max": 1.5813522827648174,
+     "phase_median_deg": 6.153170152645394,
+     "phase_p95_deg": 10.015864983394158,
+     "phase_max_deg": 10.235533973947687
+    },
+    {
+     "ka": [
+      5,
+      8
+     ],
+     "points": 17,
+     "db_median": 0.5739382238349132,
+     "db_p95": 0.909829566777382,
+     "db_max": 1.0669810275562877,
+     "phase_median_deg": 3.924606169007652,
+     "phase_p95_deg": 6.003542499499162,
+     "phase_max_deg": 6.211719901366198
+    },
+    {
+     "ka": [
+      8,
+      15
+     ],
+     "points": 19,
+     "db_median": 0.2289193571638366,
+     "db_p95": 0.5934042703596951,
+     "db_max": 0.6092327923939357,
+     "phase_median_deg": 1.3138981082395746,
+     "phase_p95_deg": 3.268603013855301,
+     "phase_max_deg": 3.289962506697303
+    }
+   ],
+   "fem_vs_openwind_spherical_by_ka": [
+    {
+     "ka": [
+      0,
+      0.5
+     ],
+     "points": 45,
+     "db_median": 0.008315197294570455,
+     "db_p95": 0.030845143268367473,
+     "db_max": 0.03922013347169678,
+     "phase_median_deg": 0.0029479087387323595,
+     "phase_p95_deg": 0.048689518644932026,
+     "phase_max_deg": 0.06779539576517943
+    },
+    {
+     "ka": [
+      0.5,
+      1
+     ],
+     "points": 24,
+     "db_median": 0.13420028445595167,
+     "db_p95": 0.3006111224442333,
+     "db_max": 0.3067214001623996,
+     "phase_median_deg": 0.5487021972078814,
+     "phase_p95_deg": 5.482592174038726,
+     "phase_max_deg": 6.996187093007692
+    },
+    {
+     "ka": [
+      1,
+      1.5
+     ],
+     "points": 15,
+     "db_median": 0.9892655550614411,
+     "db_p95": 2.1412117708197225,
+     "db_max": 2.1596248067575923,
+     "phase_median_deg": 9.267496560733294,
+     "phase_p95_deg": 11.8640565837894,
+     "phase_max_deg": 12.12016527421718
+    },
+    {
+     "ka": [
+      1.5,
+      2
+     ],
+     "points": 10,
+     "db_median": 1.2480298671598922,
+     "db_p95": 1.4611876085139377,
+     "db_max": 1.4755727817106303,
+     "phase_median_deg": 5.786876910670243,
+     "phase_p95_deg": 11.309410702989874,
+     "phase_max_deg": 11.362444686605611
+    },
+    {
+     "ka": [
+      2,
+      3
+     ],
+     "points": 14,
+     "db_median": 0.9128935109192977,
+     "db_p95": 1.637635483279396,
+     "db_max": 1.6659241871344277,
+     "phase_median_deg": 5.291520150230864,
+     "phase_p95_deg": 8.899910698933141,
+     "phase_max_deg": 9.789868223107181
+    },
+    {
+     "ka": [
+      3,
+      5
+     ],
+     "points": 17,
+     "db_median": 0.3315555408727938,
+     "db_p95": 0.7790783000807637,
+     "db_max": 0.9346396162261378,
+     "phase_median_deg": 2.8679348900166555,
+     "phase_p95_deg": 5.719277435569784,
+     "phase_max_deg": 7.229092761172179
+    },
+    {
+     "ka": [
+      5,
+      8
+     ],
+     "points": 17,
+     "db_median": 0.38014511609338436,
+     "db_p95": 1.0114924810698156,
+     "db_max": 1.1892731174003364,
+     "phase_median_deg": 2.420959608890396,
+     "phase_p95_deg": 5.968800228165203,
+     "phase_max_deg": 6.792335328835942
+    },
+    {
+     "ka": [
+      8,
+      15
+     ],
+     "points": 19,
+     "db_median": 0.19286350342565078,
+     "db_p95": 0.37860900175795115,
+     "db_max": 0.7392711821778366,
+     "phase_median_deg": 0.6611209297944578,
+     "phase_p95_deg": 2.6362948758694196,
+     "phase_max_deg": 3.8108697148095527
+    }
+   ]
+  }
+ ]
+}
