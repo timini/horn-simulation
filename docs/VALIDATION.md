@@ -95,7 +95,7 @@ Most records were made with earlier source revisions. Each record or manifest na
 | Suite | Command | Last local result (2026-11-16) |
 | --- | --- | --- |
 | Local package tests | `just test-local` | 745 passed, 1 skipped |
-| Script tests, including these docs | `.venv/bin/python -m pytest scripts/tests` | see [STATUS](STATUS.md) |
+| Script tests, including the documentation checks | `.venv/bin/python -m pytest scripts/tests` | 190 passed |
 | Docker package tests | `just test` | 458 passed, 5 skipped |
 | Nextflow workflow tests | `just test-nextflow` | 22 tests passed |
 | Driver databases | `just validate-drivers` | 0 errors |

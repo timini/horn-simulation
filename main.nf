@@ -3,7 +3,7 @@
 // ========================================================================
 // Mode: "single" (default) runs one horn profile; "auto" explores a grid
 // of profiles and geometry, ranking driver-horn combinations.
-// "fullauto" is an alias for "auto" with all geometry derived.
+// "fullauto" is an alias of "auto", kept for older commands.
 // ========================================================================
 params.mode = "single"
 

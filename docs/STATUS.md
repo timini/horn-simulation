@@ -38,11 +38,12 @@ On 2026-11-16, at the merge of the cross-software, Hajicek and CI work:
 | Check | Result |
 | --- | --- |
 | `just test-local` | 745 passed, 1 skipped |
-| `pytest scripts/tests` | 139 passed before the documentation tests were added |
+| `pytest scripts/tests` | 139 passed; 190 with the documentation checks added later the same day |
 | `just test` (Docker) | 458 passed, 5 skipped |
 | `just test-nextflow` | 22 tests passed |
 | `just validate-drivers` | 0 errors on both databases |
 | Image source labels | match the checkout for all three images |
+| README quick start from a fresh clone | `just build`, the single and auto commands, `just latest-run`, `uv sync` and `just test-local` all ran as written; the auto run reproduced the [worked example](WORKED_EXAMPLE.md) to the printed digits |
 
 The full openwind and bempp-cl comparison was not rerun at that merge (about 90 and 40 minutes); its committed results are from earlier the same day.
 

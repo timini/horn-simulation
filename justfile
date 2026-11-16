@@ -32,7 +32,7 @@ test-package pkg:
     docker build -t "{{pkg}}:test" --target test -f "./packages/{{pkg}}/Dockerfile" .
     docker run --rm "{{pkg}}:test" pytest "/app/packages/{{pkg}}/tests" -v
 
-# Run tests locally (no Docker — works for horn-core, horn-geometry, horn-analysis)
+# Run the tests that need no Docker (horn-drivers, horn-core, horn-analysis, horn-geometry, solver meshing)
 test-local:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -54,17 +54,15 @@ validate-drivers:
     .venv/bin/horn-validate-drivers --db data/drivers | tail -3
     .venv/bin/horn-validate-drivers --db data/drivers-curated | tail -3
 
-# Run the Nextflow pipeline (single mode, default params)
+# Run the pipeline through the launcher in single mode: just run --throat_radius 0.025 --mouth_radius 0.1 --length 0.2
 run *ARGS:
     python3 scripts/run_pipeline.py {{ARGS}}
 
-# Run auto mode (unified optimizer): just run-auto --target_f_low 250 --target_f_high 6500
-# Fixed geometry: --mouth_radius 0.15 --length 0.3 (only varies profile)
-# Free geometry: omit mouth_radius/length to derive from frequency band
+# Run auto mode (band search and driver ranking): just run-auto --target_f_low 800 --target_f_high 1600
 run-auto *ARGS:
     python3 scripts/run_pipeline.py --mode auto {{ARGS}}
 
-# Alias for auto mode with all geometry derived (backward compat)
+# Same as run-auto; kept for older commands
 run-fullauto *ARGS:
     python3 scripts/run_pipeline.py --mode auto {{ARGS}}
 
