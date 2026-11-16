@@ -1,6 +1,6 @@
 # Acoustic contract, version 2
 
-The supported automatic path is an experimental, linear, rigid-wall interior FEM model with a local mouth impedance and a uniform circular baffled-piston observation approximation. It does not yet establish the accuracy of a free-standing horn, its complete exterior field, or a particular commercial driver's phase plug.
+The supported automatic path is an experimental, linear, rigid-wall interior FEM model. Generated horns use the modal infinite-baffle aperture model (`modal_baffled`) at the mouth; imported STEP files, wall losses and P2 elements use a local mouth impedance. The listener level is the on-axis pressure in an infinite baffle. It does not yet establish the accuracy of a free-standing horn, its complete exterior field, or a particular commercial driver's phase plug.
 
 ## Quantities and conventions
 
@@ -13,13 +13,13 @@ The supported automatic path is an experimental, linear, rigid-wall interior FEM
 
 ## Driver and observer
 
-The motor equations are `V = Ze I + BL v` and `BL I = (Zm + Z_specific Sd²/Sthroat) v`. A force-balance test checks these independently and checks electrical input against resistive, mechanical and acoustic power. Defaults are 2.83 V RMS and 1 m from the mouth plane. **2.83 V is only 1 W for a purely resistive 8 Ω load.**
+Without chambers, the motor equations are `V = Ze I + BL v` and `BL I = (Zm + Z_specific Sd²/Sthroat) v`. A front chamber (supplied, or estimated for cone drivers) and a sealed rear chamber change the load; see `horn_core.driver_interface` and [DRIVERS](DRIVERS.md#front-and-rear-chambers). A force-balance test checks these independently and checks electrical input against resistive, mechanical and acoustic power. Defaults are 2.83 V RMS and 1 m from the mouth plane. **2.83 V is only 1 W for a purely resistive 8 Ω load.**
 
-Both the analytical screen and final FEM ranking use mouth volume velocity, then the on-axis Rayleigh result for a uniformly vibrating circular piston:
+The analytical screen, and the final FEM ranking with a local mouth model, use mouth volume velocity, then the on-axis Rayleigh result for a uniformly vibrating circular piston:
 
 `p(r) = ρ c (U/A) [exp(-ikr) − exp(-ik√(r²+A/π))]`.
 
-This establishes a common, dimensionally defined observable. Applying it to a nonuniform horn aperture or an unbaffled assembly remains an approximation. It is not an exterior-wave solver or a directivity prediction. See the [COMSOL baffled-piston reference](https://doc.comsol.com/6.3/doc/com.comsol.help.models.aco.baffled_piston_radiation/baffled_piston_radiation.html) and [impedance boundary definition](https://doc.comsol.com/6.3/doc/com.comsol.help.aco/aco_ug_pressure.05.023.html).
+With `modal_baffled`, the final ranking instead integrates the 16 mouth velocity modes on axis, so a nonuniform mouth velocity is included (`output_metric` records which was used). The uniform piston establishes a common, dimensionally defined observable. Applying it to a nonuniform horn aperture or an unbaffled assembly remains an approximation. It is not an exterior-wave solver or a directivity prediction. See the [COMSOL baffled-piston reference](https://doc.comsol.com/6.3/doc/com.comsol.help.models.aco.baffled_piston_radiation/baffled_piston_radiation.html) and [impedance boundary definition](https://doc.comsol.com/6.3/doc/com.comsol.help.aco/aco_ug_pressure.05.023.html).
 
 When available, diaphragm-only mass and rear air-load mass are separate inputs. Legacy Mms coupling remains experimental: no guessed air-mass subtraction is applied. Missing driver operating band, parameter provenance, interface model, separated mass or maximum-output data remain evidence gaps. A feasible model response is not a verified driver recommendation.
 
