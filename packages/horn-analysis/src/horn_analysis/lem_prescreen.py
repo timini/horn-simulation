@@ -23,7 +23,7 @@ from horn_core.webster import compute_horn_transfer_tmm
 from horn_core.acoustics import baffled_piston_on_axis, pressure_level
 from horn_analysis.evaluation import evaluate_response, radiation_domain_rejection
 from horn_analysis.kpi import extract_kpis_from_arrays
-from horn_analysis.scoring import TargetSpec, compute_selection_score
+from horn_analysis.scoring import TargetSpec
 from horn_analysis.transfer_function import compute_driver_response, compute_driver_operating_point
 
 
@@ -57,7 +57,7 @@ def lem_prescreen_candidates(
     1. get_radius_func() → compute_throat_impedance_tmm() → z_real, z_imag
     2. compute_driver_response(driver, freq, z_real, z_imag, throat_area) → p_throat
     3. SPL = 20·log₁₀(|p_throat| / 20µPa)
-    4. extract_kpis_from_arrays() → compute_selection_score() → composite score
+    4. evaluate_response() → constraints, f3 extension and composite score
 
     Ranks all scores, collects unique top-N candidate_ids.
 
@@ -201,6 +201,8 @@ def main():
     parser.add_argument("--radiation-model", default="flanged_piston")
     parser.add_argument("--loss-model", choices=["lossless", "boundary_layer"], default="lossless")
     parser.add_argument("--flange-width", type=float, default=0.)
+    parser.add_argument("--min-output", type=float, default=None, help="Minimum target-band level (dB).")
+    parser.add_argument("--score-weights", default=None, help="e.g. sensitivity=0.625,ripple=0.25,extension=0.125,size=0")
     parser.add_argument("--top-n", type=int, default=10, help="Number of top candidates for FEM.")
     parser.add_argument("--num-frequencies", type=int, default=100, help="Frequency points for TMM.")
     parser.add_argument("--output", required=True, help="Output LEM results JSON.")
@@ -234,7 +236,7 @@ def main():
         num_frequencies=args.num_frequencies,
         top_n=args.top_n,
         radiation_model=args.radiation_model, loss_model=args.loss_model, flange_width=args.flange_width,
-        target=TargetSpec(args.target_f_low,args.target_f_high,voltage_rms=args.voltage,observation_distance_m=args.distance,max_ripple_db=args.max_ripple,max_compression_ratio=args.max_compression),
+        target=TargetSpec(args.target_f_low,args.target_f_high,voltage_rms=args.voltage,observation_distance_m=args.distance,max_ripple_db=args.max_ripple,max_compression_ratio=args.max_compression,min_output_db=args.min_output,score_weights=args.score_weights),
     )
 
     # Write outputs

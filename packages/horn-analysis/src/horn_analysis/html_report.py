@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 
 from horn_core.parameters import DriverParameters
-from horn_analysis.scoring import TargetSpec
+from horn_analysis.scoring import TargetSpec, describe_scoring
 from horn_analysis import plot_theme
 from horn_analysis.horn_render import fig_to_b64_3d
 
@@ -267,8 +267,9 @@ def _render_rankings_rows(
     rows = []
     for rank, r in enumerate(ranked_results, 1):
         kpi = r.get("kpi", {})
-        f3l = format_kpi(kpi, "f3_low_hz")
-        f3h = format_kpi(kpi, "f3_high_hz")
+        # f3 relative to the target-band mean, like the ripple and mean columns.
+        f3l = format_kpi(r, "f3_low_hz")
+        f3h = format_kpi(r, "f3_high_hz")
         drv = drivers.get(r.get("driver_id", ""))
         drv_type = html.escape(drv.driver_type or "—") if drv else "—"
         drv_size = html.escape(drv.nominal_diameter or "—") if drv else "—"
@@ -293,7 +294,7 @@ def _render_rankings_rows(
             f"<td>{_profile_badge(r.get('profile') or r.get('horn_label', ''))}</td>"
             f"{geom_cols}"
             f"<td><strong>{_fmt(r.get('composite_score'), '.3f')}</strong>{' (near tie)' if r.get('comparison_status') == 'near_tie' else ''}</td>"
-            f"<td>{_fmt(r.get('bandwidth_coverage'), '.1%')}</td>"
+            f"<td>{_fmt(r.get('extension_octaves'), '+.2f')}</td>"
             f"<td>{_fmt(r.get('passband_ripple_db'), '.1f')}</td>"
             f"<td>{_fmt(r.get('avg_sensitivity_db'), '.1f')}</td>"
             f"<td>{f3l} \u2014 {f3h}</td>"
@@ -399,7 +400,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
   <div class="card"><div class="label">Candidates scored</div><div class="value">{n_scored}</div></div>
   <div class="card"><div class="label">Top shown</div><div class="value">{n_top}</div></div>
   <div class="card"><div class="label">Best score</div><div class="value">{best_score}</div></div>
-  <div class="card"><div class="label">Best BW coverage</div><div class="value">{best_bw}</div></div>
+  <div class="card"><div class="label">Best extension (oct)</div><div class="value">{best_bw}</div></div>
   <div class="card"><div class="label">Best mean output</div><div class="value">{best_sens}</div></div>
   <div class="card"><div class="label">Lowest ripple</div><div class="value">{best_ripple}</div></div>
 </div>
@@ -409,6 +410,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
 {geometry_section}
 
 <h2>Rankings</h2>
+{scoring_section}
 <div class="table-wrap">
 <table>
 <thead>
@@ -416,7 +418,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
   <th>#</th><th>Manufacturer</th><th>Model</th><th>Type</th><th>Size</th><th>Power (W)</th><th>Profile</th>
   {geometry_header_cols}
   <th>Score</th>
-  <th>BW Cov.</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz; ≤/≥ = sweep bound)</th><th>Peak (dB)</th>
+  <th>Extension (oct)</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz; ≤/≥ = sweep bound)</th><th>Peak (dB)</th>
 </tr>
 </thead>
 <tbody>
@@ -461,6 +463,39 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
 
 
 # -- Public entry point -----------------------------------------------------
+
+_BOUND_SOURCE_LABELS = {
+    "user_fixed": "set by user",
+    "heuristic_with_user_limit": "heuristic range with a user limit",
+    "heuristic": "heuristic range",
+    "driver_prescreen": "from driver prescreen",
+}
+
+
+def _render_scoring(scoring: dict) -> str:
+    """State the score formula, weights, exchange rates and bound origins."""
+    weights = ", ".join(f"{html.escape(k)} {v:.3f}" for k, v in scoring["weights"].items())
+    rates = scoring["exchange_rates"]
+    rate_text = html.escape(rates["note"]) if "note" in rates else (
+        f"1 dB less ripple is worth {rates['sensitivity_db_per_db_of_ripple']:.2f} dB of sensitivity; "
+        f"1 octave more extension is worth {rates['sensitivity_db_per_octave_of_extension']:.2f} dB; "
+        f"halving the horn volume is worth {rates['sensitivity_db_per_doubling_of_horn_volume']:.2f} dB.")
+    bounds = "; ".join(
+        f"{html.escape(k)}: {_BOUND_SOURCE_LABELS.get(v['source'], html.escape(v['source']))}"
+        + (f" {_fmt(min(v['searched_range']), '.4f')} to {_fmt(max(v['searched_range']), '.4f')}" if v.get("searched_range") else "")
+        for k, v in scoring["geometry_bounds"].items())
+    constraints = "; ".join(
+        f"{html.escape(k)} {html.escape(str(v['value']))} ({html.escape(v['source'].replace('_', ' '))})"
+        for k, v in scoring["constraints"].items())
+    return (
+        '<div class="design-summary">'
+        f'<p><strong>Score.</strong> {html.escape(scoring["formula"])}</p>'
+        f'<p><strong>Weights</strong> ({html.escape(scoring["weights_source"].replace("_", " "))}): {weights}. {rate_text}</p>'
+        f'<p><strong>Constraints:</strong> {constraints}.</p>'
+        f'<p><strong>Geometry bounds:</strong> {bounds}.</p>'
+        '</div>'
+    )
+
 
 def _render_design_summary(derived_geometry: dict) -> str:
     """Render the Design Summary section with optimization parameters."""
@@ -525,6 +560,7 @@ def generate_html_report(
     total_scored: Optional[int] = None,
     lem_results: Optional[dict] = None,
     no_feasible_reason: Optional[str] = None,
+    scoring: Optional[dict] = None,
 ) -> str:
     """Generate a self-contained HTML report string.
 
@@ -551,7 +587,7 @@ def generate_html_report(
     # Summary card values
     best_score = _fmt(top_results[0]["composite_score"], ".3f") if top_results else "\u2014"
     best_bw = _fmt(
-        max((r.get("bandwidth_coverage", 0) for r in top_results), default=None), ".1%"
+        max((r.get("extension_octaves") for r in top_results if r.get("extension_octaves") is not None), default=None), "+.2f"
     ) if top_results else "\u2014"
     best_sens = _fmt(
         max((r.get("avg_sensitivity_db", 0) for r in top_results), default=None), ".1f"
@@ -708,6 +744,7 @@ def generate_html_report(
         "geometry_header_cols": geometry_header_cols,
         "geometry_section": geometry_section,
         "rankings_rows": rankings_rows,
+        "scoring_section": _render_scoring(scoring or describe_scoring(target, derived_geometry)),
         "plot_coupled_spl": plot_coupled_spl,
         "plot_raw_spl": plot_raw_spl,
         "plot_impedance": plot_impedance,

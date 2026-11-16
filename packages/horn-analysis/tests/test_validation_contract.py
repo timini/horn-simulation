@@ -41,7 +41,7 @@ def test_internal_notch_cannot_be_hidden_by_outer_cutoffs():
     result = evaluate_response(np.array([100, 250, 500, 750, 1000]), np.array([90,90,60,90,90]), target)
     assert not result["model_feasible"]
     assert result["composite_score"] == 0
-    assert result["bandwidth_coverage"] < 1
+    assert result["target_min_level_db"] == 60
     assert result["passband_ripple_db"] == 30
 
 
@@ -56,6 +56,9 @@ def test_incomplete_band_is_an_error():
         evaluate_response(np.array([200,500,1000]), np.array([90,90,90]), TargetSpec(100,1000))
 
 
+EDGE = float(np.sqrt(100*1000))  # geometric join of two bands over 100-1000 Hz
+
+
 def write_band(tmp_path, index, low, high):
     f = np.geomspace(low,high,3)
     frame = pd.DataFrame({"frequency":f,"spl":94.,"z_real":420.,"z_imag":0.,
@@ -68,11 +71,11 @@ def write_band(tmp_path, index, low, high):
 
 
 def test_merger_rejects_missing_band_and_deduplicates_valid_endpoints(tmp_path):
-    p0 = write_band(tmp_path,0,100,550)
+    p0 = write_band(tmp_path,0,100,EDGE)
     args = dict(num_bands=2,min_freq=100,max_freq=1000,points_per_band=3,output=tmp_path/'out.csv')
     with pytest.raises(ValueError, match="Incomplete simulation"):
         merge_bands([p0],**args)
-    p1 = write_band(tmp_path,1,550,1000)
+    p1 = write_band(tmp_path,1,EDGE,1000)
     result = merge_bands([p1,p0],**args)
     assert len(result) == 5
     assert np.all(np.diff(result.frequency)>0)
@@ -89,7 +92,7 @@ def test_bad_targets_fail_before_simulation(low,high):
 
 @pytest.mark.parametrize('prefix,value', [('z',-420+0j),('mouth_p',1j),('mouth_u',-.0001+0j)])
 def test_overlap_rejects_complex_disagreement_even_when_spl_matches(tmp_path,prefix,value):
-    p0=write_band(tmp_path,0,100,550);p1=write_band(tmp_path,1,550,1000)
+    p0=write_band(tmp_path,0,100,EDGE);p1=write_band(tmp_path,1,EDGE,1000)
     frame=pd.read_csv(p1)
     frame.loc[0,prefix+'_real']=value.real;frame.loc[0,prefix+'_imag']=value.imag
     frame.to_csv(p1,index=False)
@@ -99,7 +102,7 @@ def test_overlap_rejects_complex_disagreement_even_when_spl_matches(tmp_path,pre
 
 
 def test_overlap_allows_small_complex_mesh_error_near_zero(tmp_path):
-    p0=write_band(tmp_path,0,100,550);p1=write_band(tmp_path,1,550,1000)
+    p0=write_band(tmp_path,0,100,EDGE);p1=write_band(tmp_path,1,EDGE,1000)
     frame=pd.read_csv(p1);frame.loc[0,'z_imag']=.01;frame.loc[0,'mouth_u_imag']=1e-9;frame.to_csv(p1,index=False)
     assert len(merge_bands([p0,p1],num_bands=2,min_freq=100,max_freq=1000,points_per_band=3,output=tmp_path/'out.csv'))==5
 
@@ -138,3 +141,21 @@ def test_imported_coupling_labels_only_the_actual_area(tmp_path, monkeypatch):
     assert result['inlet_area_m2'] == pytest.approx(pd.read_csv(csv).inlet_area_m2.iloc[0])
     assert any('Inlet area' in title for title in titles)
     assert all('Throat radius' not in title for title in titles)
+
+
+@pytest.mark.parametrize("low,high,bands,intervals", [(353.5533905932738, 5656.854249492381, 8, 100), (100., 1000., 3, 9)])
+def test_merged_solver_bands_are_uniform_in_log_frequency(tmp_path, low, high, bands, intervals):
+    from horn_core.frequency_grid import band_grids, points_per_band
+    paths = []
+    for index, (band_low, band_high, f) in enumerate(band_grids(low, high, bands, intervals)):
+        # The solver samples each band with np.geomspace(band_low, band_high, points).
+        frame = pd.read_csv(write_band(tmp_path, index, band_low, band_high)).iloc[[0]*len(f)].reset_index(drop=True)
+        frame["frequency"] = np.geomspace(band_low, band_high, len(f))
+        path = tmp_path/f"results_c_{index}.csv"
+        frame.to_csv(path, index=False)
+        paths.append(path)
+    merged = merge_bands(paths, num_bands=bands, min_freq=low, max_freq=high,
+                         points_per_band=points_per_band(low, high, bands, intervals), output=tmp_path/"out.csv")
+    steps = np.diff(np.log(merged.frequency.to_numpy()))
+    assert np.max(np.abs(steps-steps.mean())) < 1e-9
+    assert merged.frequency.iloc[0] == pytest.approx(low) and merged.frequency.iloc[-1] == pytest.approx(high)

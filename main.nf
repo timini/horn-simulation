@@ -19,6 +19,7 @@ params.num_sections = 20   // Minimum profile points in the revolved horn wall
 params.min_freq = 500      // Minimum frequency for the sweep in Hz
 params.max_freq = 8000     // Maximum frequency for the sweep in Hz
 params.num_intervals = 100 // Number of frequency steps in the sweep
+params.min_points_per_octave = 24 // Lower limit on log-spaced solver points per octave (0 disables)
 params.mesh_size = 0.01    // Target mesh element size in meters
 
 // Radiation impedance model at the horn mouth
@@ -60,6 +61,8 @@ params.voltage_rms = 2.83
 params.observation_distance = 1.0
 params.max_ripple_db = 6.0
 params.max_compression_ratio = 10.0
+params.min_output_db = null  // Optional: minimum observer level anywhere in the target band (dB)
+params.score_weights = null  // Optional: e.g. "sensitivity=0.625,ripple=0.25,extension=0.125,size=0" (normalised)
 params.lem_top_n = 10       // Number of top candidates to pass from LEM prescreen to FEM
 params.min_diameter = null  // Optional: minimum driver nominal diameter (inches)
 params.max_diameter = null  // Optional: maximum driver nominal diameter (inches)
@@ -68,6 +71,36 @@ params.max_length = null    // Optional cap/extension of derived length range up
 params.min_length = null    // Optional override of derived length range lower bound (m)
 params.max_mouth_radius = null // Optional cap/extension of derived mouth radius upper bound (m)
 params.min_mouth_radius = null // Optional override of derived mouth radius lower bound (m)
+
+// Solver band edges and point counts come from horn_core.frequency_grid
+// (equal log-width bands), so every process uses the same grid.
+def bandGridShell(min_f, max_f, band_index) {
+    return "band_grid=\$(python3 -m horn_core.frequency_grid --min-freq ${min_f} --max-freq ${max_f} --num-bands ${params.num_bands} --num-intervals ${params.num_intervals} --min-points-per-octave ${params.min_points_per_octave} --band ${band_index})\n" +
+        "    read -r band_low band_high band_points <<< \"\$band_grid\""
+}
+
+def gridFlags() {
+    return "--num-intervals ${params.num_intervals} --min-points-per-octave ${params.min_points_per_octave}"
+}
+
+// Score weights and output floor for every TargetSpec built in Python.
+def scoringTargetArgs() {
+    def weights = params.score_weights == null ? 'None' : "dict(${params.score_weights.toString().replaceAll(/\s/, '')})"
+    def minimum = params.min_output_db == null ? 'None' : params.min_output_db
+    return "min_output_db=${minimum}, score_weights=${weights}"
+}
+
+def scoringCliFlags() {
+    def flags = params.min_output_db == null ? '' : "--min-output ${params.min_output_db}"
+    if (params.score_weights != null) flags += " --score-weights ${params.score_weights.toString().replaceAll(/\s/, '')}"
+    return flags
+}
+
+def userBoundsArgs() {
+    return 'dict(' + ['throat_radius', 'mouth_radius', 'length', 'min_length', 'max_length', 'min_mouth_radius', 'max_mouth_radius'].collect { key ->
+        "${key}=${params[key] == null ? 'None' : params[key]}"
+    }.join(', ') + ')'
+}
 
 // ========================================================================
 // Shared processes
@@ -107,18 +140,15 @@ process run_simulation {
 
     script:
     def sim_length = params.length ?: 0.5
-    def band_width = (params.max_freq - params.min_freq) / (params.num_bands as double)
-    def min_f = params.min_freq + band_width * band_index
-    def max_f = params.min_freq + band_width * (band_index + 1)
-    def num_intervals_per_band = Math.max(2, Math.ceil(params.num_intervals / (params.num_bands as double)) as int)
     """
-    echo "Running band ${band_index}: ${min_f} Hz to ${max_f} Hz"
+    ${bandGridShell(params.min_freq, params.max_freq, band_index)}
+    echo "Running band ${band_index}: \${band_low} Hz to \${band_high} Hz"
     python3 -m horn_solver.solver \
         --step-file ${horn_step} \
         --output-file results_${band_index}.csv \
-        --min-freq ${min_f} \
-        --max-freq ${max_f} \
-        --num-intervals ${num_intervals_per_band} \
+        --min-freq \${band_low} \
+        --max-freq \${band_high} \
+        --num-intervals \${band_points} \
         --length ${sim_length} \
         --mesh-size ${params.mesh_size} \
         --radiation-model ${params.radiation_model} \
@@ -140,7 +170,7 @@ process merge_results {
     """
     python3 -m horn_analysis.merge --files results_*.csv \
         --num-bands ${params.num_bands} --min-freq ${params.min_freq} --max-freq ${params.max_freq} \
-        --points-per-band ${Math.max(2, Math.ceil(params.num_intervals / (params.num_bands as double)) as int)} \
+        ${gridFlags()} \
         --output final_results.csv
     """
 }
@@ -283,18 +313,15 @@ process run_simulation_directivity {
 
     script:
     def sim_length = params.length ?: 0.5
-    def band_width = (params.max_freq - params.min_freq) / (params.num_bands as double)
-    def min_f = params.min_freq + band_width * band_index
-    def max_f = params.min_freq + band_width * (band_index + 1)
-    def num_intervals_per_band = Math.max(2, Math.ceil(params.num_intervals / (params.num_bands as double)) as int)
     """
-    echo "Running directivity band ${band_index}: ${min_f} Hz to ${max_f} Hz"
+    ${bandGridShell(params.min_freq, params.max_freq, band_index)}
+    echo "Running directivity band ${band_index}: \${band_low} Hz to \${band_high} Hz"
     python3 -m horn_solver.solver \
         --step-file ${horn_step} \
         --output-file solver_directivity_${band_index}.csv \
-        --min-freq ${min_f} \
-        --max-freq ${max_f} \
-        --num-intervals ${num_intervals_per_band} \
+        --min-freq \${band_low} \
+        --max-freq \${band_high} \
+        --num-intervals \${band_points} \
         --length ${sim_length} \
         --mesh-size ${params.mesh_size} \
         --radiation-model bem \
@@ -504,15 +531,15 @@ process report_no_drivers {
 import json
 from pathlib import Path
 from horn_analysis.auto_report import generate_auto_report
-from horn_analysis.scoring import TargetSpec
-target = TargetSpec(${params.target_f_low}, ${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio})
+from horn_analysis.scoring import TargetSpec, describe_scoring
+target = TargetSpec(${params.target_f_low}, ${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio}, ${scoringTargetArgs()})
 reasons = {"no_drivers_passed_prescreen": "No drivers passed the initial screening for this request.", "size_constraints_exclude_search_range": "No geometry remains within the requested size limits and current search range.", "no_mouth_larger_than_throat": "The searched mouth sizes are no larger than the throat.", "profile_geometry_infeasible": "Every searched geometry is impossible for its profile, for example a tractrix shorter than its natural length.", "no_geometry_in_radiation_domain": "No searched geometry lies within the selected radiation model domain."}
 metadata = json.loads(Path("${empty_metadata}").read_text())
 rejected = metadata.get("rankings", [])
 count = metadata.get("total_evaluated", 0)
 scored = metadata.get("total_pairs", 0)
 generate_auto_report([], {}, {}, None, target, "report", total_candidates=0, total_scored=0, lem_results=metadata if "rankings" in metadata else None, no_feasible_reason=reasons["${empty_reason}"])
-Path("ranked_results.json").write_text(json.dumps({"status":"no_feasible_design", "reason":"${empty_reason}", "results":[], "rejected":rejected, "total_candidates":0, "total_scored":0, "analytical_candidates_evaluated":count, "analytical_pairs_evaluated":scored, "validation_status":"independent_validation_pending"}, indent=2))
+Path("ranked_results.json").write_text(json.dumps({"status":"no_feasible_design", "reason":"${empty_reason}", "results":[], "rejected":rejected, "total_candidates":0, "total_scored":0, "analytical_candidates_evaluated":count, "analytical_pairs_evaluated":scored, "validation_status":"independent_validation_pending", "scoring":describe_scoring(target, None, ${userBoundsArgs()})}, indent=2))
 '
     """
 }
@@ -576,7 +603,7 @@ process lem_prescreen {
         --target-f-high ${params.target_f_high} \
         --radiation-model ${params.radiation_model} --loss-model ${params.loss_model} --flange-width ${params.flange_width} \
         --voltage ${params.voltage_rms} --distance ${params.observation_distance} \
-        --max-ripple ${params.max_ripple_db} --max-compression ${params.max_compression_ratio} \
+        --max-ripple ${params.max_ripple_db} --max-compression ${params.max_compression_ratio} ${scoringCliFlags()} \
         --top-n ${params.lem_top_n} \
         --output lem_results.json \
         --filtered-csv lem_filtered_candidates.csv
@@ -613,18 +640,15 @@ process run_candidate_simulation {
     tuple val(candidate_id), path("results_${candidate_id}_${band_index}.csv")
 
     script:
-    def band_width = (sim_max_freq - sim_min_freq) / (params.num_bands as double)
-    def min_f = sim_min_freq + band_width * band_index
-    def max_f = sim_min_freq + band_width * (band_index + 1)
-    def num_intervals_per_band = Math.max(2, Math.ceil(params.num_intervals / (params.num_bands as double)) as int)
     """
-    echo "Running ${candidate_id} band ${band_index}: ${min_f} Hz to ${max_f} Hz"
+    ${bandGridShell(sim_min_freq, sim_max_freq, band_index)}
+    echo "Running ${candidate_id} band ${band_index}: \${band_low} Hz to \${band_high} Hz"
     python3 -m horn_solver.solver \
         --step-file ${horn_step} \
         --output-file results_${candidate_id}_${band_index}.csv \
-        --min-freq ${min_f} \
-        --max-freq ${max_f} \
-        --num-intervals ${num_intervals_per_band} \
+        --min-freq \${band_low} \
+        --max-freq \${band_high} \
+        --num-intervals \${band_points} \
         --length ${length} \
         --mesh-size ${params.mesh_size} \
         --radiation-model ${params.radiation_model} \
@@ -648,7 +672,7 @@ process merge_candidate_results {
         --num-bands ${params.num_bands} \
         --min-freq ${params.target_f_low / Math.sqrt(2)} \
         --max-freq ${params.target_f_high * Math.sqrt(2)} \
-        --points-per-band ${Math.max(2, Math.ceil(params.num_intervals / (params.num_bands as double)) as int)} \
+        ${gridFlags()} \
         --output ${candidate_id}_results.csv
     """
 }
@@ -661,6 +685,7 @@ process score_and_rank {
     path prescreen_json
     path drivers_db, stageAs: 'driver_database'
     path candidates_csv
+    path design_json
 
     output:
     path "ranked_results.json"
@@ -672,11 +697,11 @@ import json, glob, csv
 from pathlib import Path
 from horn_drivers.loader import load_drivers
 from horn_analysis.rank_pipeline import rank_horn_drivers
-from horn_analysis.scoring import TargetSpec
+from horn_analysis.scoring import TargetSpec, describe_scoring
 
 prescreen = json.loads(Path('${prescreen_json}').read_text())
 throat_radius = prescreen['throat_radius_m']
-target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio})
+target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio}, ${scoringTargetArgs()})
 
 # Load only pre-screened drivers
 all_drivers = load_drivers('${drivers_db}')
@@ -704,6 +729,7 @@ for csv_path in csv_files:
         drivers=drivers,
         target=target,
         top_n=max(1, len(drivers)),
+        length=float(cand['length']) if cand.get('length') else None,
     )
     # Annotate each result with geometry info
     for r in results:
@@ -728,6 +754,7 @@ output = {
     'rejected': rejected,
     'status': 'experimental_candidates' if all_results else 'no_feasible_design',
     'validation_status': 'independent_validation_pending',
+    'scoring': describe_scoring(target, json.loads(Path('${design_json}').read_text()), ${userBoundsArgs()}),
 }
 Path('ranked_results.json').write_text(json.dumps(output, indent=2))
 print(f'Ranked {total_scored} driver-horn combinations ({total_candidates} geometries)')
@@ -754,12 +781,12 @@ process refine_ranked_candidates {
         --ranked-json ${ranked_json} --solver-csvs ${solver_csvs instanceof List ? solver_csvs.join(' ') : solver_csvs} \
         --drivers-db ${drivers_db} --prescreen-json ${prescreen_json} --design-json ${design_json} \
         --budget ${params.refinement_budget} --top-n ${params.top_n} --num-frequencies ${params.num_intervals} \
-        --num-bands ${params.num_bands} --num-sections ${params.num_sections} \
+        --num-bands ${params.num_bands} --min-points-per-octave ${params.min_points_per_octave} --num-sections ${params.num_sections} \
         --mesh-size ${params.mesh_size} --radiation-model ${params.radiation_model} \
         --loss-model ${params.loss_model} --flange-width ${params.flange_width} \
         --element-degree ${params.element_degree} ${params.minimum_wall_scale != null ? "--minimum-wall-scale " + params.minimum_wall_scale : ""} \
         --voltage ${params.voltage_rms} --distance ${params.observation_distance} \
-        --max-ripple ${params.max_ripple_db} --max-compression ${params.max_compression_ratio} \
+        --max-ripple ${params.max_ripple_db} --max-compression ${params.max_compression_ratio} ${scoringCliFlags()} \
         --output-dir refinement
     """
 }
@@ -812,7 +839,7 @@ driver_list = load_drivers('${drivers_db}')
 driver_ids = set(prescreen['drivers'])
 drivers = {d.driver_id: d for d in driver_list if d.driver_id in driver_ids}
 
-target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio})
+target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio}, ${scoringTargetArgs()})
 
 generate_auto_report(
     all_ranked=all_ranked,
@@ -826,6 +853,7 @@ generate_auto_report(
     total_candidates=total_candidates,
     total_scored=total_scored,
     lem_results=lem_results,
+    scoring=ranked_data.get('scoring'),
 )
 "
     """
@@ -1028,6 +1056,7 @@ workflow auto {
         ch_prescreen,
         ch_drivers_db,
         ch_filtered_csv,
+        ch_design_json,
     )
 
     // 10. Refine promising geometries inside the solver container.
@@ -1073,6 +1102,9 @@ workflow {
     }
     if (params.num_intervals < 2 || params.num_sections < 2) error "At least two frequency points and geometry sections are required"
     if (params.refinement_budget < 0) error "Refinement budget must be nonnegative"
+    if (!(params.min_points_per_octave >= 0 && Double.isFinite(params.min_points_per_octave as double))) error "min_points_per_octave must be finite and nonnegative"
+    if (params.min_output_db != null && !Double.isFinite(params.min_output_db as double)) error "min_output_db must be finite"
+    if (params.score_weights != null && !(params.score_weights.toString().replaceAll(/\s/, '') ==~ /(sensitivity|ripple|extension|size)=[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?(,(sensitivity|ripple|extension|size)=[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)*/)) error "score_weights must look like sensitivity=0.625,ripple=0.25,extension=0.125,size=0"
     for (key in ['throat_radius', 'mouth_radius', 'length', 'min_length', 'max_length', 'min_mouth_radius', 'max_mouth_radius']) {
         if (params[key] != null && !(params[key] > 0 && Double.isFinite(params[key] as double))) error "${key} must be finite and positive"
     }

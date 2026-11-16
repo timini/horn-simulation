@@ -33,6 +33,7 @@ def generate_auto_report(
     total_scored: int | None = None,
     lem_results: Optional[dict] = None,
     no_feasible_reason: Optional[str] = None,
+    scoring: Optional[dict] = None,
 ) -> Path:
     """Generate the auto-select report with rankings, plots, and CSVs.
 
@@ -49,12 +50,17 @@ def generate_auto_report(
         derived_geometry: Optional dict from geometry_designer (fullauto mode).
         total_candidates: Total number of geometry candidates simulated.
         total_scored: Total number of driver-horn combinations scored.
+        scoring: Score formula, weights and bound origins (``describe_scoring``).
+            Derived from ``target`` when not given.
 
     Returns:
         Path to the output directory.
     """
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
+    if scoring is None:
+        from horn_analysis.scoring import describe_scoring
+        scoring = describe_scoring(target, derived_geometry)
 
     # Sort all results by composite score
     all_ranked.sort(key=lambda r: r["composite_score"], reverse=True)
@@ -117,7 +123,7 @@ def generate_auto_report(
         "Horn Driver Auto-Select Results — experimental predictions",
         "Status: experimental_candidates" if all_ranked else "Status: no_feasible_design",
         "No recommendation is physically validated. See evidence gaps in ranking JSON.",
-        "Cutoff ≤ / ≥ values are sweep bounds. KPI bandwidth/ripple describe the contiguous peak lobe, not the target band.",
+        "f3 is 3 dB below the target-band mean level, searched outward from the band edges over the full sweep; ≤ / ≥ values are sweep bounds.",
         "Scores within 0.02 are near-ties for comparison; physical uncertainty is not quantified.",
         "=" * 40,
         f"Target: {target.f_low_hz:.0f} Hz - {target.f_high_hz:.0f} Hz",
@@ -125,6 +131,14 @@ def generate_auto_report(
         f"Profiles evaluated: {', '.join(solver_csvs.keys())}",
         f"Total candidates scored: {scored_display}",
     ]
+
+    weights = scoring["weights"]
+    lines.extend(["", "Score: " + scoring["formula"],
+                  "Weights: " + ", ".join(f"{k} {v:.3f}" for k, v in weights.items()) + f" ({scoring['weights_source']})"])
+    lines.extend(f"  {k.replace('_', ' ')}: {v:.2f}" for k, v in scoring["exchange_rates"].items() if isinstance(v, float))
+    lines.extend(f"Bound {k}: {v['source']}" + (f" {v['searched_range']}" if v.get("searched_range") else "")
+                 for k, v in scoring["geometry_bounds"].items())
+    lines.extend(f"Constraint {k}: {v['value']} ({v['source']})" for k, v in scoring["constraints"].items())
 
     if lem_results:
         lines.extend([
@@ -147,15 +161,15 @@ def generate_auto_report(
             f"+ {result['horn_label']}"
         )
         lines.append(f"     Score: {result['composite_score']:.3f}  "
-                      f"BW coverage: {result['bandwidth_coverage']:.1%}  "
+                      f"Extension: {result['extension_octaves']:+.2f} oct  "
                       f"Ripple: {result['passband_ripple_db']:.1f} dB  "
                       f"Mean output level: {result['avg_sensitivity_db']:.1f} dB")
         if all(result.get(key) is not None for key in ("throat_radius", "mouth_radius", "length")):
             lines.append(f"     Throat radius: {result['throat_radius']:.6f} m; mouth radius: {result['mouth_radius']:.6f} m; length: {result['length']:.6f} m")
         if "kpi" in result:
             kpi = result["kpi"]
-            f3l = format_kpi(kpi, "f3_low_hz")
-            f3h = format_kpi(kpi, "f3_high_hz")
+            f3l = format_kpi(result, "f3_low_hz")
+            f3h = format_kpi(result, "f3_high_hz")
             lines.append(f"     f3: {f3l} - {f3h} Hz  "
                           f"Peak: {kpi['peak_spl_db']:.1f} dB @ {kpi['peak_frequency_hz']:.0f} Hz")
         lines.append("")
@@ -180,6 +194,7 @@ def generate_auto_report(
         total_scored=total_scored,
         lem_results=lem_results,
         no_feasible_reason=no_feasible_reason,
+        scoring=scoring,
     )
     (out / "auto_report.html").write_text(html_report)
 

@@ -1,24 +1,86 @@
-"""Scoring and ranking for driver–horn selection.
+"""Target specification and the preference score used to rank feasible designs.
 
-Scores each driver–horn combination on bandwidth coverage, passband
-ripple, and average sensitivity, then ranks candidates for Phase B
-refinement.
+Hard constraints (ripple limit, minimum output, size caps, driver limits)
+decide feasibility in ``evaluation.evaluate_response``. Infeasible designs
+score 0. Feasible designs are ordered by a weighted sum of four terms, each
+mapped linearly onto [0, 1] with fixed reference scales:
+
+* sensitivity: ``clip((L_mean - 60 dB) / 60 dB, 0, 1)``, where ``L_mean`` is
+  the log-frequency mean observer level over the target band;
+* ripple: ``clip(1 - ripple / 12 dB, 0, 1)``, peak-to-peak level over the
+  target band;
+* extension: ``clip(0.5 + E / 2 octaves, 0, 1)``, where
+  ``E = log2(f_low / f3_low) + log2(f3_high / f_high)`` and the f3 points are
+  3 dB below ``L_mean``, searched outward from the band edges over the full
+  simulated sweep (negative E means the response is already 3 dB down
+  inside the band);
+* size: ``clip(0.5 - log2(V / V_ref) / 8, 0, 1)`` with ``V = pi r_mouth^2 L``
+  and ``V_ref = pi (c / (2 pi f_low))^2 * c / (4 f_low)``, the cylinder of a
+  ka = 1 mouth and a quarter-wave length at f_low.
+
+The weights are normalised to sum to 1. Because every term is linear in its
+quantity, the weights set fixed exchange rates. With the defaults
+(sensitivity 0.625, ripple 0.25, extension 0.125, size 0):
+
+* 1 dB less ripple is worth 2 dB of sensitivity;
+* 1 octave more extension is worth 6 dB of sensitivity;
+* size does not affect the order.
+
+So a design 15 dB more sensitive is not beaten by one that is 1 dB (or even
+3 dB) flatter. ``exchange_rates`` reports the rates for any weights.
 """
-
-import argparse
-import json
-from dataclasses import dataclass, asdict
-from pathlib import Path
-from typing import List, Optional
+from dataclasses import dataclass, field
+import math
+from typing import Optional
 
 import numpy as np
 
-from horn_analysis.kpi import HornKPI
+SENSITIVITY_FLOOR_DB = 60.0
+SENSITIVITY_SPAN_DB = 60.0
+RIPPLE_SPAN_DB = 12.0
+EXTENSION_SPAN_OCTAVES = 2.0
+SIZE_SPAN_DOUBLINGS = 8.0
+SPEED_OF_SOUND_M_S = 343.0
+
+DEFAULT_SCORE_WEIGHTS = {"sensitivity": 0.625, "ripple": 0.25, "extension": 0.125, "size": 0.0}
+
+SCORE_FORMULA = (
+    "score = w_sensitivity*clip((L_mean-60)/60,0,1) + w_ripple*clip(1-ripple/12,0,1)"
+    " + w_extension*clip(0.5+E/2,0,1) + w_size*clip(0.5-log2(V/V_ref)/8,0,1); weights sum to 1;"
+    " infeasible designs score 0. L_mean: log-frequency mean level over the target band (dB);"
+    " ripple: its peak-to-peak range (dB); E = log2(f_low/f3_low)+log2(f3_high/f_high) (octaves),"
+    " f3 3 dB below L_mean searched outward from the band edges over the full sweep;"
+    " V = pi*r_mouth^2*L; V_ref = pi*(c/(2*pi*f_low))^2*c/(4*f_low)."
+)
+
+
+def parse_score_weights(weights):
+    """Return complete, normalised weights from None, a dict or 'key=value,...'."""
+    if weights is None:
+        return dict(DEFAULT_SCORE_WEIGHTS)
+    if isinstance(weights, str):
+        parsed = {}
+        for item in filter(None, (part.strip() for part in weights.split(","))):
+            key, sep, value = item.partition("=")
+            if not sep:
+                raise ValueError(f"Score weight '{item}' must be written key=value")
+            parsed[key.strip()] = float(value)
+        weights = parsed
+    unknown = set(weights) - set(DEFAULT_SCORE_WEIGHTS)
+    if unknown:
+        raise ValueError(f"Unknown score weight(s): {sorted(unknown)}; use {sorted(DEFAULT_SCORE_WEIGHTS)}")
+    merged = {**DEFAULT_SCORE_WEIGHTS, **{k: float(v) for k, v in weights.items()}}
+    if any(not np.isfinite(v) or v < 0 for v in merged.values()):
+        raise ValueError("Score weights must be finite and nonnegative")
+    total = sum(merged.values())
+    if total <= 0:
+        raise ValueError("At least one score weight must be positive")
+    return {k: v / total for k, v in merged.items()}
 
 
 @dataclass
 class TargetSpec:
-    """User-specified target frequency range and geometry constraints."""
+    """User-specified target band, constraints and score weights."""
     f_low_hz: float
     f_high_hz: float
     max_length_m: Optional[float] = None
@@ -28,6 +90,7 @@ class TargetSpec:
     max_ripple_db: float = 6.0
     max_compression_ratio: float = 10.0
     min_output_db: Optional[float] = None
+    score_weights: Optional[dict] = field(default=None)
 
     def __post_init__(self):
         from horn_core.acoustics import validate_band
@@ -38,123 +101,81 @@ class TargetSpec:
                 raise ValueError(f"{name} must be finite and positive")
         if self.min_output_db is not None and not np.isfinite(self.min_output_db):
             raise ValueError("Minimum output must be finite")
+        self.score_weights = parse_score_weights(self.score_weights)
 
 
-@dataclass
-class SelectionScore:
-    """Composite score for a single driver-horn combination."""
-    driver_id: str
-    horn_label: str
-    bandwidth_coverage: float       # 0-1: fraction of target range covered
-    passband_ripple_db: float       # ripple in dB (lower is better)
-    avg_sensitivity_db: float       # mean SPL in passband
-    composite_score: float          # weighted combination, 0-1
-
-    def to_dict(self) -> dict:
-        return asdict(self)
+def reference_volume_m3(f_low_hz):
+    """Cylinder of a ka = 1 mouth and quarter-wave length at f_low."""
+    radius = SPEED_OF_SOUND_M_S / (2 * math.pi * f_low_hz)
+    return math.pi * radius**2 * SPEED_OF_SOUND_M_S / (4 * f_low_hz)
 
 
-def compute_selection_score(
-    kpi: HornKPI,
-    target: TargetSpec,
-    driver_id: str = "",
-    horn_label: str = "",
-    weights: Optional[dict] = None,
-) -> SelectionScore:
-    """Score a single driver-horn combination against a target specification.
-
-    Args:
-        kpi: Extracted KPIs for the coupled response.
-        target: User's target frequency range.
-        driver_id: Identifier for the driver.
-        horn_label: Identifier for the horn geometry.
-        weights: Optional dict with keys ``bandwidth``, ``ripple``,
-                 ``sensitivity``.  Defaults to 0.50/0.25/0.25.
-
-    Returns:
-        SelectionScore with composite score in [0, 1].
-    """
-    if weights is None:
-        weights = {"bandwidth": 0.50, "ripple": 0.25, "sensitivity": 0.25}
-
-    target_width = target.f_high_hz - target.f_low_hz
-
-    # --- Bandwidth coverage ---
-    if kpi.f3_low_hz is not None and kpi.f3_high_hz is not None:
-        overlap_low = max(kpi.f3_low_hz, target.f_low_hz)
-        overlap_high = min(kpi.f3_high_hz, target.f_high_hz)
-        overlap = max(0.0, overlap_high - overlap_low)
-        bandwidth_coverage = overlap / target_width if target_width > 0 else 0.0
-    else:
-        bandwidth_coverage = 0.0
-
-    bandwidth_coverage = min(bandwidth_coverage, 1.0)
-
-    # --- Ripple score ---
-    ripple_db = kpi.passband_ripple_db if kpi.passband_ripple_db is not None else 6.0
-    ripple_score = max(0.0, 1.0 - ripple_db / 6.0)
-
-    # --- Sensitivity score ---
-    avg_sens = kpi.average_sensitivity_db if kpi.average_sensitivity_db is not None else 80.0
-    sensitivity_score = np.clip((avg_sens - 80.0) / 40.0, 0.0, 1.0)
-
-    # --- Composite ---
-    composite = (
-        weights["bandwidth"] * bandwidth_coverage
-        + weights["ripple"] * ripple_score
-        + weights["sensitivity"] * float(sensitivity_score)
-    )
-
-    # --- Bandwidth floor: non-functional combos score zero ---
-    if bandwidth_coverage < 0.10:
-        composite = 0.0
-
-    return SelectionScore(
-        driver_id=driver_id,
-        horn_label=horn_label,
-        bandwidth_coverage=bandwidth_coverage,
-        passband_ripple_db=ripple_db,
-        avg_sensitivity_db=avg_sens,
-        composite_score=composite,
-    )
+def score_terms(target, average_db, ripple_db, extension_octaves, mouth_radius=None, length=None):
+    """Each preference term on [0, 1]; size is neutral (0.5) when unknown."""
+    terms = {
+        "sensitivity": float(np.clip((average_db - SENSITIVITY_FLOOR_DB) / SENSITIVITY_SPAN_DB, 0, 1)),
+        "ripple": float(np.clip(1 - ripple_db / RIPPLE_SPAN_DB, 0, 1)),
+        "extension": float(np.clip(0.5 + extension_octaves / EXTENSION_SPAN_OCTAVES, 0, 1)),
+        "size": 0.5,
+    }
+    if mouth_radius is not None and length is not None and mouth_radius > 0 and length > 0:
+        ratio = math.pi * mouth_radius**2 * length / reference_volume_m3(target.f_low_hz)
+        terms["size"] = float(np.clip(0.5 - math.log2(ratio) / SIZE_SPAN_DOUBLINGS, 0, 1))
+    return terms
 
 
-def rank_candidates(
-    scores: List[SelectionScore],
-    top_n: int = 5,
-) -> List[SelectionScore]:
-    """Rank candidates by composite score and return the top N."""
-    return sorted(scores, key=lambda s: s.composite_score, reverse=True)[:top_n]
+def weighted_score(target, terms):
+    return float(sum(target.score_weights[k] * terms[k] for k in DEFAULT_SCORE_WEIGHTS))
 
 
-def main():
-    """CLI for scoring a single KPI JSON against a target spec."""
-    parser = argparse.ArgumentParser(description="Score a horn-driver combination.")
-    parser.add_argument("--kpi-json", required=True, help="KPI JSON file.")
-    parser.add_argument("--target-f-low", type=float, required=True, help="Target low freq (Hz).")
-    parser.add_argument("--target-f-high", type=float, required=True, help="Target high freq (Hz).")
-    parser.add_argument("--driver-id", type=str, default="", help="Driver identifier.")
-    parser.add_argument("--horn-label", type=str, default="", help="Horn geometry label.")
-    parser.add_argument("--output", type=str, default=None, help="Output JSON file.")
-    args = parser.parse_args()
-
-    kpi_data = json.loads(Path(args.kpi_json).read_text())
-    kpi = HornKPI(**kpi_data)
-    target = TargetSpec(f_low_hz=args.target_f_low, f_high_hz=args.target_f_high)
-
-    score = compute_selection_score(
-        kpi, target,
-        driver_id=args.driver_id,
-        horn_label=args.horn_label,
-    )
-
-    result = json.dumps(score.to_dict(), indent=2)
-    if args.output:
-        Path(args.output).write_text(result)
-        print(f"Score written to {args.output}")
-    else:
-        print(result)
+def exchange_rates(weights):
+    """Score-equivalent dB of sensitivity per unit of each other quantity."""
+    per_db = weights["sensitivity"] / SENSITIVITY_SPAN_DB
+    if per_db == 0:
+        return {"note": "sensitivity weight is zero; no dB exchange rate is defined"}
+    return {
+        "sensitivity_db_per_db_of_ripple": weights["ripple"] / RIPPLE_SPAN_DB / per_db,
+        "sensitivity_db_per_octave_of_extension": weights["extension"] / EXTENSION_SPAN_OCTAVES / per_db,
+        "sensitivity_db_per_doubling_of_horn_volume": weights["size"] / SIZE_SPAN_DOUBLINGS / per_db,
+    }
 
 
-if __name__ == "__main__":
-    main()
+_PIPELINE_DEFAULTS = {"max_ripple_db": 6.0, "max_compression_ratio": 10.0}
+_BOUND_KEYS = {
+    "throat_radius_m": ("throat_radius", None, None, "throat_radius_range"),
+    "mouth_radius_m": ("mouth_radius", "min_mouth_radius", "max_mouth_radius", "mouth_radius_range"),
+    "length_m": ("length", "min_length", "max_length", "length_range"),
+}
+
+
+def describe_scoring(target, design=None, user_bounds=None):
+    """Record the formula, weights and the origin of every bound for outputs."""
+    user_bounds = {k: v for k, v in (user_bounds or {}).items() if v is not None}
+    constraints = {}
+    for name in ("max_ripple_db", "max_compression_ratio"):
+        value = getattr(target, name)
+        constraints[name] = {"value": value, "source": "pipeline_default" if value == _PIPELINE_DEFAULTS[name] else "user"}
+    constraints["min_output_db"] = {"value": target.min_output_db,
+                                    "source": "user" if target.min_output_db is not None else "not_set"}
+    bounds = {}
+    for label, (fixed, low, high, design_key) in _BOUND_KEYS.items():
+        searched = (design or {}).get(design_key) or None
+        if fixed in user_bounds:
+            source = "user_fixed"
+        elif (low and low in user_bounds) or (high and high in user_bounds):
+            source = "heuristic_with_user_limit"
+        elif label == "throat_radius_m":
+            source = "driver_prescreen"
+        else:
+            source = "heuristic"
+        bounds[label] = {"searched_range": searched, "source": source,
+                         "user_values": {k: user_bounds[k] for k in (fixed, low, high) if k and k in user_bounds}}
+    return {
+        "formula": SCORE_FORMULA,
+        "weights": dict(target.score_weights),
+        "weights_source": "pipeline_default" if target.score_weights == parse_score_weights(None) else "user",
+        "exchange_rates": exchange_rates(target.score_weights),
+        "target_band_hz": [target.f_low_hz, target.f_high_hz],
+        "constraints": constraints,
+        "geometry_bounds": bounds,
+    }
