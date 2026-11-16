@@ -5,12 +5,14 @@ local_packages := "horn-core horn-geometry horn-analysis"
 default:
     @just --list
 
-# Build all Docker images
-build:
+# Build all Docker images, labelled with the hash of their sources: just build [tag]
+build tag="latest":
     #!/usr/bin/env bash
     set -euo pipefail
     for pkg in {{docker_packages}}; do
-        docker build -t "$pkg:latest" --target production -f "./packages/$pkg/Dockerfile" .
+        docker build -t "$pkg:{{tag}}" --target production \
+            --label "horn.source_sha256=$(python3 scripts/image_source.py "$pkg")" \
+            -f "./packages/$pkg/Dockerfile" .
     done
 
 # Run all package tests in Docker (build then test)

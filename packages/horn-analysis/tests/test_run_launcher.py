@@ -61,6 +61,7 @@ def test_resume_rejects_changed_engine_before_launch(tmp_path, monkeypatch, caps
     old_engine = dict(executable='/old/nextflow', launcher_sha256='old', version='24.10.5',build='5935')
     (tmp_path/'manifest.json').write_text(json.dumps({'nextflow_engine':old_engine}))
     monkeypatch.setattr(launcher, 'inspect_images', lambda: {})
+    monkeypatch.setattr(launcher, 'image_sources', lambda: {})
     monkeypatch.setattr(launcher, 'source_hashes', lambda *_: {})
     monkeypatch.setattr(launcher, 'java_environment', lambda: {})
     monkeypatch.setattr(launcher, 'nextflow_identity', lambda _: {**old_engine, 'version':'25.10.0'})
@@ -92,6 +93,7 @@ def test_resume_preserves_original_seal_and_rejects_changed_outputs(tmp_path, mo
     original = json.dumps(manifest)
     path.write_text(original)
     monkeypatch.setattr(launcher, 'inspect_images', lambda: {})
+    monkeypatch.setattr(launcher, 'image_sources', lambda: {})
     monkeypatch.setattr(launcher, 'source_hashes', lambda *_: {})
     monkeypatch.setattr(launcher, 'java_environment', lambda: {})
     monkeypatch.setattr(launcher, 'nextflow_identity', lambda _: engine)
@@ -129,6 +131,7 @@ def test_unchanged_resume_retains_seal_while_running_and_after_completion(tmp_pa
     path = tmp_path/'manifest.json'; path.write_text(json.dumps(manifest))
     monkeypatch.setattr(launcher, 'ROOT', tmp_path)
     monkeypatch.setattr(launcher, 'inspect_images', lambda: images)
+    monkeypatch.setattr(launcher, 'image_sources', lambda: {})
     monkeypatch.setattr(launcher, 'source_hashes', lambda *_: {})
     monkeypatch.setattr(launcher, 'java_environment', lambda: {})
     monkeypatch.setattr(launcher, 'nextflow_identity', lambda _: engine)
@@ -143,3 +146,52 @@ def test_unchanged_resume_retains_seal_while_running_and_after_completion(tmp_pa
     assert launcher.main() == 0
     completed = json.loads(path.read_text())
     assert completed['status'] == 'completed' and completed['output_sha256'] == seal
+
+
+def test_params_file_and_its_inputs_are_hashed(tmp_path, monkeypatch):
+    launcher = _launcher_module()
+    monkeypatch.setattr(launcher, 'ROOT', tmp_path)
+    for name in ('default_db', 'file_db', 'cli_db'):
+        (tmp_path/name).mkdir()
+        (tmp_path/name/'drivers.json').write_text(name)
+    (tmp_path/'params.yaml').write_text("drivers_db: 'file_db'  # from file\nmode: auto\n")
+    (tmp_path/'params.json').write_text('{"drivers_db": "file_db"}')
+    for params in ('params.yaml', 'params.json'):
+        hashes = launcher.input_file_hashes(['-params-file', params])
+        assert list(hashes['-params-file']) == [str(tmp_path/params)]
+        assert list(hashes['--drivers_db']) == [str(tmp_path/'file_db'/'drivers.json')]
+    # A command-line parameter overrides the params file, as in Nextflow.
+    hashes = launcher.input_file_hashes(['-params-file', 'params.yaml', '--drivers_db', 'cli_db'])
+    assert list(hashes['--drivers_db']) == [str(tmp_path/'cli_db'/'drivers.json')]
+    before = hashes['-params-file']
+    (tmp_path/'params.yaml').write_text("drivers_db: cli_db\n")
+    assert launcher.input_file_hashes(['-params-file', 'params.yaml'])['-params-file'] != before
+
+
+def test_image_source_hash_follows_package_sources(tmp_path):
+    launcher = _launcher_module()
+    import sys
+    sys.path.insert(0, str(Path(launcher.__file__).parent))
+    import image_source
+    subprocess.run(['git', 'init', str(tmp_path)], check=True, capture_output=True)
+    for name in ('pyproject.toml', 'uv.lock', 'packages/horn-geometry/Dockerfile',
+                 'packages/horn-geometry/src/geo.py', 'packages/horn-core/src/core.py',
+                 'packages/horn-analysis/src/plot.py'):
+        (tmp_path/name).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path/name).write_text(name)
+    first = image_source.image_source_hash('horn-geometry', tmp_path)
+    (tmp_path/'packages/horn-analysis/src/plot.py').write_text('unrelated change')
+    assert image_source.image_source_hash('horn-geometry', tmp_path) == first
+    (tmp_path/'packages/horn-core/src/core.py').write_text('shared change')
+    assert image_source.image_source_hash('horn-geometry', tmp_path) != first
+
+
+def test_stale_or_unlabelled_images_are_reported():
+    launcher = _launcher_module()
+    sources = {'horn-solver': dict(built_from='a', current='a', stale=False),
+               'horn-analysis': dict(built_from='a', current='b', stale=True),
+               'horn-geometry': dict(built_from=None, current='b', stale=True)}
+    warnings = launcher.stale_image_warnings(sources)
+    assert len(warnings) == 2
+    assert 'horn-analysis' in warnings[0] and 'other sources' in warnings[0]
+    assert 'horn-geometry' in warnings[1] and 'no source label' in warnings[1]
