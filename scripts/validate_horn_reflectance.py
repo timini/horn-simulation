@@ -148,6 +148,22 @@ def impedance_metrics(predicted, measured):
             'p95_scaled_complex_error': float(np.percentile(np.abs(predicted-measured)/(1+np.abs(measured)), 95))}
 
 
+def peak_frequencies(frequency, z, band):
+    """Impedance maxima with at least 20 dB prominence inside the band."""
+    from scipy.signal import find_peaks
+    mask = band_mask(frequency, band)
+    index, _ = find_peaks(20*np.log10(np.abs(z[mask])), prominence=20)
+    return frequency[mask][index]
+
+
+def peak_shift(frequency, predicted, measured):
+    """Post-hoc diagnostic added after the first run; not a gate."""
+    m, q = peak_frequencies(frequency, measured, BAND), peak_frequencies(frequency, predicted, BAND)
+    n = min(len(m), len(q))
+    return {'measured_hz': m[:n].tolist(), 'predicted_hz': q[:n].tolist(),
+            'relative_shift_percent': (100*(q[:n]/m[:n]-1)).tolist()}
+
+
 def gate(metrics, limits):
     return all(metrics[k] <= v for k, v in limits.items())
 
@@ -280,7 +296,8 @@ def main():
             row['untruncated_capped_estimated_probe_plane'] = reflectance_metrics(reflectance(z_window_model[band]), rm[band])
             for label, zp in (('nominal', z_nominal), ('estimated', z_window_model)):
                 m = impedance_metrics(zp[band], zm[band])
-                row[f'impedance_{label}_probe_plane'] = {**m, 'passed': gate({'median': m['median_db'], 'p95': m['p95_db']}, LIMITS['impedance_magnitude_db'])}
+                row[f'impedance_{label}_probe_plane'] = {**m, 'passed': gate({'median': m['median_db'], 'p95': m['p95_db']}, LIMITS['impedance_magnitude_db']),
+                                                         'post_hoc_peak_shift': peak_shift(frequency, zp, zm)}
         else:
             zo = predictions['tmm-open-nominal'][open_band]
             row['open_mouth_diagnostic'] = {'band_hz': OPEN_BAND,
