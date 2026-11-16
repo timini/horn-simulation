@@ -44,7 +44,9 @@ RELATIVE_CASES = {
 }
 PROTOCOL_VERSION = 2
 PRODUCTION_ELEMENTS_PER_WAVELENGTH = 10.
-# Refined meshes must not be coarsened by the production node limit.
+# Refined meshes must not be coarsened by the production node limit. So no
+# case here solves a node-limit-coarsened production mesh; that mesh is only
+# checked through the original_ranking vs mesh_10 'frequency' comparison.
 STUDY_MAX_MESH_NODES = 3_000_000
 LIMITS = dict(mesh_spl_db=.5, mesh_impedance_db=.5, mesh_phase_deg=5.,
               loft_spl_db=.5, loft_impedance_db=.5, loft_phase_deg=5.,

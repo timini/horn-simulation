@@ -635,7 +635,8 @@ with open('${candidates_csv}') as f:
         candidates_lookup[row['candidate_id']] = row
 
 csv_files = sorted(glob.glob('*_results.csv'))
-total_candidates = len(csv_files)
+# Geometries the solver rejected before a response still count as simulated candidates
+total_candidates = len(csv_files) + len(glob.glob('*_rejected.json'))
 
 all_results = []
 for csv_path in csv_files:
@@ -700,7 +701,7 @@ process refine_ranked_candidates {
     path design_json
     output:
     path "refinement/ranked_results.json"
-    path "refinement/*_results.csv"
+    path "refinement/*_{results.csv,rejected.json}"
     path "refinement/search_audit.json"
     path "refinement/*.step", optional: true
     script:

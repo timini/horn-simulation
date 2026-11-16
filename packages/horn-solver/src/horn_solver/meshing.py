@@ -14,13 +14,16 @@ The basis is the dispersion (pollution) error of a Helmholtz finite element
 solve. For degree p the relative phase-speed error per wavelength is about
 (kh)^(2p) times 1/24 (p=1) or 1/1440 (p=2). That gives:
 
-=============  =====  ======================
-degree, size   kh     phase error per lambda
-=============  =====  ======================
-P1, lambda/6   1.05   4.6 %
-P1, lambda/10  0.63   1.6 %
-P2, lambda/6   1.05   0.08 %
-=============  =====  ======================
+=============  =====  ========================  =====================
+degree, size   kh     relative phase-speed err  phase lag per lambda
+=============  =====  ========================  =====================
+P1, lambda/6   1.05   4.6 %                     16.5 degrees
+P1, lambda/10  0.63   1.6 %                     5.9 degrees
+P2, lambda/6   1.05   0.08 %                    0.3 degrees
+=============  =====  ========================  =====================
+
+The phase lag column is 360 degrees times the relative error, so it adds up
+over every wavelength of horn length.
 
 On the default single-mode horn (conical, 50/200/500 mm) at 8 kHz, gmsh gives
 about 61k nodes at P1 lambda/6, 266k at P1 lambda/10 and 475k P2 nodes at
@@ -38,12 +41,15 @@ show it. If even lambda/6 does not fit, the candidate is rejected with reason
 
 Throat
 ------
-A gmsh Distance/Threshold field caps the element size at r_t/4 within one
+A gmsh Distance/Threshold field caps the element size at r_t/5 within one
 throat radius of the throat disk, grading to the bulk size over two more
 throat radii. The faceted mesh area of the throat disk must then be within
 1 % of the CAD area, because the Dirichlet throat flux is integrated over the
-mesh disk. A failure is retried once with a finer throat cap, then rejected
-with reason ``throat_area_guard_failed``.
+mesh disk. At r_t/5 the throat circle gets about 32 chords, an inscribed
+polygon area ratio of about 0.9936. r_t/4 gives about 26 chords and 0.9903,
+which passes by only 0.03 % and fails at 25 chords, so it would send many
+meshes through the retry. A failure is retried once (and logged) with the cap
+halved to r_t/10, then rejected with reason ``throat_area_guard_failed``.
 """
 import math
 import os
@@ -53,7 +59,7 @@ import numpy as np
 ELEMENTS_PER_WAVELENGTH = {1: 10.0, 2: 6.0}
 # Coarsest size allowed when the node limit forces P1 coarsening.
 MINIMUM_ELEMENTS_PER_WAVELENGTH = 6.0
-THROAT_SIZE_FRACTION = 0.25
+THROAT_SIZE_FRACTION = 0.2
 THROAT_AREA_TOLERANCE = 0.01
 DEFAULT_MAX_MESH_NODES = 100_000
 _DISPERSION_CONSTANT = {1: 1 / 24, 2: 1 / 1440}
@@ -192,6 +198,8 @@ def generate_qualified_mesh(gmsh, inlet_surfaces, cad_inlet_area, *, user_size, 
                 raise ThroatAreaGuardError(
                     f"Faceted throat area is {100 * (ratio - 1):+.2f} % from CAD "
                     f"(limit {100 * THROAT_AREA_TOLERANCE:g} %) with throat size {throat_size:.4g} m")
+            print(f"Throat area guard: faceted throat area is {100 * (ratio - 1):+.2f} % from CAD "
+                  f"at throat size {throat_size:.4g} m; remeshing with the throat cap halved")
             area_retried, fraction = True, fraction / 2
             continue
         if degree == 2:

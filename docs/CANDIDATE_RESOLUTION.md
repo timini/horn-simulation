@@ -22,6 +22,8 @@ The solver now meshes P1 at λ/10 of each band's top frequency, with a throat re
 
 Refined meshes are solved with a node limit of 3,000,000 so the production limit cannot coarsen them, and a response whose mesh was coarsened for the node limit fails the health check. A 0.4 h0 mesh has about 15 times the nodes of the production mesh, so large low-band horns can need several GB of memory for the direct solve.
 
+Because every harness case runs under the 3,000,000 node limit, the harness never solves a mesh that the production node limit has coarsened (down to about 6.9 elements per wavelength for the default horn's top band). The only check of that production mesh is the `frequency` comparison between `original_ranking` (the response the ranking used, on whatever mesh production built) and `mesh_10`. If production coarsened the candidate, a failure caused by that coarsening shows up there as a `frequency` gate failure, not a `mesh` one. Read the `mesh_coarsened_for_node_limit` and `mesh_elements_per_wavelength` columns of the originating CSV before blaming the frequency grid.
+
 Archived protocol-1 studies keep their absolute sizes (`protocol_version` absent means 1) and are still verified against the protocol-1 case table.
 
 ## Run a study

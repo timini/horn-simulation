@@ -77,17 +77,30 @@ def longest_inlet_edge():
     return longest
 
 
-def test_throat_is_refined_to_a_quarter_radius_and_area_guarded(small_throat_horn):
+def test_throat_is_refined_to_a_fifth_radius_and_area_guarded(small_throat_horn, capsys):
     with Model(small_throat_horn, 0.08) as model:
         info = meshing.generate_qualified_mesh(gmsh, model.inlet, model.area, user_size=0.01,
                                                c=C, f_max=1000., degree=1, max_nodes=10**6)
         edge = longest_inlet_edge()
-    assert info["throat_mesh_size_m"] == pytest.approx(0.0127 / 4)
+    # The first attempt is the documented rule, not the retry.
+    assert info["throat_mesh_size_m"] == pytest.approx(0.0127 / 5)
+    assert "remeshing with the throat cap halved" not in capsys.readouterr().out
     assert info["mesh_size_m"] == pytest.approx(0.01)
     # gmsh edges can exceed the target size somewhat; a uniform 10 mm mesh
     # would put edges near 10 mm across a 25 mm throat.
-    assert edge < 1.5 * 0.0127 / 4
+    assert edge < 1.5 * 0.0127 / 5
+    # Margin inside the 1 % guard: r_t/4 gives about 0.990, a 0.03 % margin.
+    assert info["throat_area_ratio"] >= 0.993
     assert abs(info["throat_area_ratio"] - 1) <= meshing.THROAT_AREA_TOLERANCE
+
+
+def test_throat_area_retry_is_logged(small_throat_horn, monkeypatch, capsys):
+    monkeypatch.setattr(meshing, "THROAT_AREA_TOLERANCE", 0.0)
+    with Model(small_throat_horn, 0.08) as model:
+        with pytest.raises(meshing.ThroatAreaGuardError):
+            meshing.generate_qualified_mesh(gmsh, model.inlet, model.area, user_size=0.01,
+                                            c=C, f_max=1000., degree=1, max_nodes=10**6)
+    assert "remeshing with the throat cap halved" in capsys.readouterr().out
 
 
 def test_coarse_throat_fails_the_one_percent_area_guard(small_throat_horn, monkeypatch):
