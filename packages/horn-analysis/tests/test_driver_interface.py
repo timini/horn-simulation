@@ -283,10 +283,17 @@ def test_auto_report_writes_electrical_csv_for_ranked_candidates(tmp_path):
 
     root = Path(__file__).resolve().parents[3]
     example = root / "examples/800-1600-modal"
-    ranked = json.loads((example / "ranking.json").read_text())[:1]
-    driver = load_driver(str(root / "data/drivers-curated"), ranked[0]["driver_id"])
-    label = ranked[0]["horn_label"]
+    from horn_analysis.rank_pipeline import rank_horn_drivers
+    # The preserved ranking predates the current score; rank the preserved FEM
+    # response again so the rows carry the current fields.
+    preserved = json.loads((example / "ranking.json").read_text())[0]
+    driver = load_driver(str(root / "data/drivers-curated"), preserved["driver_id"])
+    label = preserved["horn_label"]
     target = TargetSpec(800, 1600, test_power_w=50.)
+    ranked = rank_horn_drivers(str(example / "horn-impedance.csv"), label, preserved["throat_radius"],
+                               [driver], target, top_n=1, length=preserved["length"])
+    for key in ("profile", "throat_radius", "mouth_radius", "length"):
+        ranked[0][key] = preserved[key]
     generate_auto_report(ranked, {label: str(example / "horn-impedance.csv")}, {driver.driver_id: driver},
                          ranked[0]["throat_radius"], target, str(tmp_path), top_n=1)
     table = pd.read_csv(tmp_path / f"coupled_01_{driver.driver_id}_{label}.csv")
