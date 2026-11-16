@@ -1,0 +1,28 @@
+ID=0.00
+Comment=horn-simulation cross-software check: scaled_tractrix (scaled_tractrix)
+
+|RADIATION, SOURCE AND MOUTH PARAMETER VALUES:
+
+Ang=2.0 x Pi
+Eg=2.83
+Rg=0.00
+Cir=0.00
+
+|HORN PARAMETER VALUES:
+
+S1=19.63
+S2=158.92
+Exp=20.00
+F12=286.21
+S2=158.92
+S3=379.93
+Exp=7.00
+F23=340.85
+S3=379.93
+S4=590.19
+Exp=2.50
+F34=482.31
+S4=590.19
+S5=706.86
+Exp=0.50
+F45=987.58

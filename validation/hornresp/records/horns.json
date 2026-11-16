@@ -1,0 +1,211 @@
+{
+ "air": {
+  "c": 344.0,
+  "rho": 1.205
+ },
+ "horns": [
+  {
+   "id": "conical",
+   "profile": "conical",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "geometry_note": "exact",
+   "max_radius_error": 0.0,
+   "segments": [
+    {
+     "flare": "Con",
+     "s_in": 19.634954084936208,
+     "s_out": 706.8583470577034,
+     "length_cm": 30.0
+    }
+   ]
+  },
+  {
+   "id": "exponential",
+   "profile": "exponential",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "geometry_note": "exact",
+   "max_radius_error": 0.0,
+   "segments": [
+    {
+     "flare": "Exp",
+     "s_in": 19.634954084936208,
+     "s_out": 706.8583470577034,
+     "length_cm": 30.0,
+     "cutoff_hz": 326.9919248920612
+    }
+   ]
+  },
+  {
+   "id": "hyperbolic",
+   "profile": "hyperbolic",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "geometry_note": "exact: Hornresp Hyp with T = 0 is S = S1 cosh^2(x / x0), F12 = c / (2 pi x0)",
+   "max_radius_error": 0.0,
+   "segments": [
+    {
+     "flare": "Hyp",
+     "s_in": 19.634954084936208,
+     "s_out": 706.8583470577034,
+     "length_cm": 30.0,
+     "cutoff_hz": 452.20891503615394,
+     "T": 0.0
+    }
+   ]
+  },
+  {
+   "id": "tractrix",
+   "profile": "tractrix",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.22378131496578088,
+   "geometry_note": "exact if Hornresp's tractrix length for S1, S2, F12 equals the length given here",
+   "max_radius_error": 0.0,
+   "segments": [
+    {
+     "flare": "Tra",
+     "s_in": 19.634954084936208,
+     "s_out": 706.8583470577034,
+     "length_cm": 22.37813149657809,
+     "cutoff_hz": 364.9953361574133
+    }
+   ]
+  },
+  {
+   "id": "os",
+   "profile": "os",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "geometry_note": "approximated by 4 segments, max radius error 1.30 %",
+   "max_radius_error": 0.013008875212903772,
+   "segments": [
+    {
+     "flare": "Exp",
+     "s_in": 19.634954084936208,
+     "s_out": 20.398535632683732,
+     "length_cm": 1.0,
+     "cutoff_hz": 104.43912482374887
+    },
+    {
+     "flare": "Exp",
+     "s_in": 20.398535632683732,
+     "s_out": 22.689280275926286,
+     "length_cm": 1.0,
+     "cutoff_hz": 291.3469317659674
+    },
+    {
+     "flare": "Exp",
+     "s_in": 22.689280275926286,
+     "s_out": 95.99310885968814,
+     "length_cm": 8.0,
+     "cutoff_hz": 493.5594094549394
+    },
+    {
+     "flare": "Con",
+     "s_in": 95.99310885968814,
+     "s_out": 706.8583470577034,
+     "length_cm": 20.0
+    }
+   ]
+  },
+  {
+   "id": "scaled_tractrix",
+   "profile": "scaled_tractrix",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "geometry_note": "approximated by 4 segments, max radius error 1.36 %",
+   "max_radius_error": 0.013640385616764535,
+   "segments": [
+    {
+     "flare": "Exp",
+     "s_in": 19.634954084936208,
+     "s_out": 158.9165133789251,
+     "length_cm": 20.0,
+     "cutoff_hz": 286.2112262949009
+    },
+    {
+     "flare": "Exp",
+     "s_in": 158.9165133789251,
+     "s_out": 379.92527374822686,
+     "length_cm": 7.000000000000001,
+     "cutoff_hz": 340.85177878803376
+    },
+    {
+     "flare": "Exp",
+     "s_in": 379.92527374822686,
+     "s_out": 590.1918897569643,
+     "length_cm": 2.4999999999999964,
+     "cutoff_hz": 482.3119205310274
+    },
+    {
+     "flare": "Exp",
+     "s_in": 590.1918897569643,
+     "s_out": 706.8583470577034,
+     "length_cm": 0.5000000000000004,
+     "cutoff_hz": 987.5819360400296
+    }
+   ]
+  },
+  {
+   "id": "cd",
+   "profile": "cd",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "geometry_note": "exact",
+   "max_radius_error": 0.0,
+   "segments": [
+    {
+     "flare": "Exp",
+     "s_in": 19.634954084936208,
+     "s_out": 90.92593682213818,
+     "length_cm": 9.0,
+     "cutoff_hz": 466.2006177492063
+    },
+    {
+     "flare": "Con",
+     "s_in": 90.92593682213818,
+     "s_out": 706.8583470577034,
+     "length_cm": 21.0
+    }
+   ]
+  },
+  {
+   "id": "example_800_1600",
+   "profile": "hyperbolic",
+   "throat_radius_m": 0.032498,
+   "mouth_radius_m": 0.08870898640584517,
+   "length_m": 0.11790625,
+   "geometry_note": "exact: Hornresp Hyp with T = 0 is S = S1 cosh^2(x / x0), F12 = c / (2 pi x0)",
+   "max_radius_error": 0.0,
+   "segments": [
+    {
+     "flare": "Hyp",
+     "s_in": 33.17898845875623,
+     "s_out": 247.22085648978972,
+     "length_cm": 11.790625,
+     "cutoff_hz": 771.7203997015546,
+     "T": 0.0
+    }
+   ],
+   "driver": {
+    "Sd_cm2": 130.0,
+    "Bl_Tm": 9.0,
+    "Cms_m_per_N": 0.0002462838688437962,
+    "Rms_Ns_per_m": 2.1758438008195977,
+    "Mmd_g": 8.5,
+    "Le_mH": 0.1,
+    "Re_ohm": 5.3,
+    "note": "Cms and Rms derived from fs, Mms and Qms as in this project. Enter Mms as Mmd: our model uses the published Mms as the whole moving mass with no rear chamber (Vrc = 0, open back) and an ideal area transformer (Vtc = 0)."
+   },
+   "driver_response_reference": "examples/800-1600-modal/response.csv (modal_baffled FEM, ideal transformer)"
+  }
+ ]
+}

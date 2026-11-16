@@ -88,3 +88,20 @@ latest-run *args:
 # Read-only inventory of completed, failed, running and historical folders.
 runs *args:
     python3 scripts/runs.py list {{args}}
+
+# Cross-software checks (openwind, bempp-cl, Hornresp sheets); see docs/CROSS_SOFTWARE_VALIDATION.md
+validate-cross-software:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ ! -x .venv-cross-software/bin/python ]; then
+        uv venv .venv-cross-software --python 3.12
+        VIRTUAL_ENV=.venv-cross-software uv pip install -r validation/cross_software/requirements.txt
+    fi
+    export PYTHONPATH=packages/horn-core/src NUMBA_NUM_THREADS="${NUMBA_NUM_THREADS:-4}"
+    .venv-cross-software/bin/python -W ignore validation/cross_software/openwind_compare.py
+    .venv-cross-software/bin/python -W ignore validation/cross_software/bempp_compare.py
+    .venv/bin/python validation/hornresp/hornresp_records.py
+
+# Compare archived horn-solver FEM runs with openwind: just validate-cross-software-fem results/<conical-run> results/<exponential-run>
+validate-cross-software-fem *RUNS:
+    PYTHONPATH=packages/horn-core/src .venv-cross-software/bin/python -W ignore validation/cross_software/fem_compare.py {{RUNS}}

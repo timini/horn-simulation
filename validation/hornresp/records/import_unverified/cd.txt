@@ -1,0 +1,20 @@
+ID=0.00
+Comment=horn-simulation cross-software check: cd (cd)
+
+|RADIATION, SOURCE AND MOUTH PARAMETER VALUES:
+
+Ang=2.0 x Pi
+Eg=2.83
+Rg=0.00
+Cir=0.00
+
+|HORN PARAMETER VALUES:
+
+S1=19.63
+S2=90.93
+Exp=9.00
+F12=466.20
+S2=90.93
+S3=706.86
+Con=21.00
+F23=0.00

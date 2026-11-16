@@ -1,0 +1,24 @@
+Hornresp input sheet: example_800_1600  (hyperbolic)
+Geometry: throat radius 32.498 mm, mouth radius 88.709 mm, length 117.906 mm
+Geometry match: exact: Hornresp Hyp with T = 0 is S = S1 cosh^2(x / x0), F12 = c / (2 pi x0)
+
+Radiation and source
+  Ang = 2.0 x Pi   (half space: horn mouth in an infinite baffle)
+  Eg  = 2.83 V     Rg = 0
+  Cir = 0
+  Air (Tools > Options): c = 344 m/s, rho = 1.205 kg/m3
+
+Horn
+  S1 = 33.18 cm2
+  L12 = 11.79 cm, flare Hyp, F12 = 771.72 Hz, T = 0.00
+  S2 = 247.22 cm2
+
+Driver (18Sound 6NMB420, from data/drivers-curated)
+  Sd = 130.00 cm2   Bl = 9.00 Tm
+  Cms = 2.4628E-04 m/N   Rms = 2.176 Ns/m
+  Mmd = 8.50 g   Le = 0.100 mH   Re = 5.30 ohm
+  Vrc = 0, Lrc = 0, Vtc = 0, Atc = S1
+  Note: Cms and Rms derived from fs, Mms and Qms as in this project. Enter Mms as Mmd: our model uses the published Mms as the whole moving mass with no rear chamber (Vrc = 0, open back) and an ideal area transformer (Vtc = 0).
+
+Export: Tools > Export (chart data, text) over the default 10 Hz to 20 kHz range,
+then run validation/hornresp/compare_hornresp.py with the exported file.

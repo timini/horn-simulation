@@ -23,6 +23,8 @@ The [measured exponential-horn comparison](docs/POST_HIXSON_VALIDATION.md) passe
 
 Optional thermoviscous losses and finite-flange pipe radiation now have independent impedance checks; see [the measured results and remaining failures](docs/LOSS_PHYSICS_VALIDATION.md). Generated horns use the `modal_baffled` radiation model by default, which passes the independent infinite-baffle reference; an imported STEP falls back to `flanged_piston`, whose known 1.05 dB / 5.7 degree throat-impedance error is printed in the report. Auto reports add an experimental infinite-baffle beamwidth plot for modal horns. The old FEM-BEM coupling has been removed.
 
+The Webster prescreen, the FEM throat loading and the directivity formula are also compared with independent open-source tools (openwind and bempp-cl), with a Hornresp kit for a manual run; see [cross-software validation](docs/CROSS_SOFTWARE_VALIDATION.md).
+
 See [acoustic assumptions](docs/ACOUSTIC_CONTRACT.md), [existing measurement sources and importer](docs/VALIDATION_DATA.md), and [implementation/validation status](docs/IMPLEMENTATION_STATUS.md). Resume only an unchanged source/data/container/Nextflow snapshot with `python scripts/run_pipeline.py --run-dir results/<run-id> -resume`.
 
 
