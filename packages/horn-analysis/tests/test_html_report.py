@@ -182,6 +182,14 @@ def test_rankings_use_profile_metadata_with_legacy_label_fallback(report_inputs)
     assert '>Conical</span>' in _render_rankings_rows([row], report_inputs['drivers'])
 
 
+def test_design_summary_names_the_scaled_tractrix_profile():
+    """The old "lecleach" profile is an axially scaled tractrix, not a Le Cleac'h horn."""
+    from horn_analysis.html_report import _render_design_summary
+    text = _render_design_summary({})
+    assert "axially scaled tractrix" in text
+    assert "Cl&eacute;ac" not in text
+
+
 def test_imported_report_uses_cad_areas_without_parametric_dimensions(tmp_path):
     from horn_analysis.single_report import generate_single_report
     import base64

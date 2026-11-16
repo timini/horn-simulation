@@ -543,7 +543,7 @@ def _render_design_summary(derived_geometry: dict) -> str:
         f'(from c&#8320;/2&pi;f<sub>low</sub>)</dd>'
         f'<dt>Simulation freq range</dt><dd>{_fmt(sr[0] if sr else None, ".0f")} — '
         f'{_fmt(sr[1] if len(sr) > 1 else None, ".0f")} Hz (&plusmn;0.5 octave)</dd>'
-        f'<dt>Profiles</dt><dd>7 (conical, exponential, hyperbolic, tractrix, OS, Le Cl&eacute;ac&#8217;h, CD)</dd>'
+        f'<dt>Profiles</dt><dd>7 (conical, exponential, hyperbolic, tractrix, OS, axially scaled tractrix, CD)</dd>'
         f'<dt>Geometry candidates</dt><dd>{derived_geometry.get("candidate_count", "—")}</dd>'
         '</dl></div>'
     )
