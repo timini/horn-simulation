@@ -36,6 +36,10 @@ COPY ./data/validation/boundary_lab_reference.json /app/data/validation/boundary
 # The electrical output tests re-rank the preserved 800-1600 Hz example with a curated driver.
 COPY ./data/drivers-curated /app/data/drivers-curated
 COPY ./examples/800-1600-modal/ranking.json ./examples/800-1600-modal/horn-impedance.csv /app/examples/800-1600-modal/
+# The chamber-policy tests screen a horn with the 6NMB420 example driver record.
+COPY ./examples/6nmb420-320-5000/driver-database.json /app/examples/6nmb420-320-5000/
+# The refinement-output test reads the refine process outputs from main.nf.
+COPY ./main.nf /app/main.nf
 WORKDIR /app
 ENV PYTHONPATH /app
 
