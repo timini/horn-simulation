@@ -1,22 +1,21 @@
 """Couple a single driver with a single horn FEM result.
 
-Reads the merged solver CSV (frequency, spl, z_real, z_imag) produced by
-single-mode FEM, plus a driver from the drivers DB, and produces:
+Reads the merged solver CSV produced by single-mode FEM, plus a driver from
+the drivers DB, and produces:
 
-  * coupled_spl.csv        — frequency, coupled_spl, horn_only_spl
-  * coupled_spl.png        — plot comparing horn-only vs driver+horn
-  * driver_horn_kpis.json  — KPIs computed on the coupled SPL
+  * coupled_spl.csv        : frequency, coupled_spl, horn_only_spl and the
+                             electrical columns of electrical_output
+  * coupled_spl.png        : plot comparing horn-only vs driver+horn
+  * driver_horn_kpis.json  : evaluate_response KPIs on the coupled level
 
-This lets `nextflow run main.nf --mode single --driver_id …` give an
-end-to-end driver+horn frequency response without going through auto mode.
+It uses the same observer path (evaluation.coupled_observer) and the same
+assessment (evaluate_response through assess_with_chamber_policy) as auto
+mode, so the same STEP response and driver give the same levels and KPIs.
 """
-from horn_core.acoustics import inlet_area_from_frame
-
 from horn_analysis.kpi import format_kpi
 
 import argparse
 import json
-import math
 from pathlib import Path
 
 import numpy as np
@@ -24,7 +23,40 @@ import pandas as pd
 
 from horn_drivers.loader import load_driver
 from horn_analysis.kpi import extract_kpis_from_arrays
-from horn_analysis.transfer_function import compute_driver_response, scale_solver_spl
+from horn_analysis.scoring import TargetSpec
+
+
+def single_assessment(df, drv, target, legacy_radius=None, length=None):
+    """Coupled levels, electrical table and auto-mode KPIs for one driver on one horn.
+
+    The target band is clipped to the simulated sweep when the sweep does not
+    bracket it; ``target_band_clipped_to_sweep`` records that.
+    """
+    from dataclasses import replace
+    from horn_analysis.electrical_output import electrical_table
+    from horn_analysis.evaluation import assess_with_chamber_policy, coupled_observer, evaluate_response
+    from horn_analysis.transfer_function import compute_driver_operating_point
+
+    f = df["frequency"].to_numpy(dtype=float)
+    low, high = max(target.f_low_hz, f.min()), min(target.f_high_hz, f.max())
+    clipped = (low, high) != (target.f_low_hz, target.f_high_hz)
+    if clipped:
+        target = replace(target, f_low_hz=low, f_high_hz=high)
+    observed = coupled_observer(df, drv, target, legacy_radius)
+    mouth_radius = float(np.sqrt(df.mouth_area_m2.iloc[0] / np.pi)) if "mouth_area_m2" in df else None
+
+    def evaluate(model):
+        levels = observed["levels"] if model is drv else coupled_observer(df, model, target, legacy_radius)["levels"]
+        point = compute_driver_operating_point(model, f, df["z_real"].to_numpy(), df["z_imag"].to_numpy(),
+                                               observed["area"], target.voltage_rms)
+        return evaluate_response(f, levels, target, model, observed["area"], length=length,
+                                 mouth_radius=mouth_radius, operating_point=point)
+
+    assessment = assess_with_chamber_policy(drv, evaluate, target)
+    assessment.update(target_band_hz=[target.f_low_hz, target.f_high_hz], target_band_clipped_to_sweep=clipped,
+                      output_metric=observed["metric"], inlet_area_m2=observed["area"])
+    table = electrical_table(df, drv, target, legacy_radius, length)
+    return observed["levels"], table, assessment
 
 
 def couple(
@@ -38,6 +70,8 @@ def couple(
     output_png: str = "coupled_spl.png",
     output_kpis: str = "driver_horn_kpis.json",
     imported_geometry: bool = False,
+    target: TargetSpec | None = None,
+    length: float | None = None,
 ):
     """Compute and write the coupled driver+horn response."""
     drv = load_driver(drivers_db, driver_id)
@@ -49,24 +83,26 @@ def couple(
         raise ValueError("Single-driver coupling requires a unit-pressure Dirichlet transfer run")
     freq = df["frequency"].values
     solver_spl = df["spl"].values
-    z_real = df["z_real"].values
-    z_imag = df["z_imag"].values
+    if target is None:
+        target = TargetSpec(float(freq.min()), float(freq.max()), voltage_rms=voltage)
+    elif target.voltage_rms != voltage:
+        from dataclasses import replace
+        target = replace(target, voltage_rms=voltage)
 
-    throat_area = inlet_area_from_frame(df, None if imported_geometry else throat_radius)
+    coupled_spl, table, assessment = single_assessment(
+        df, drv, target, None if imported_geometry else throat_radius, length)
+    throat_area = assessment["inlet_area_m2"]
 
-    p_throat = compute_driver_response(drv, freq, z_real, z_imag, throat_area, voltage)
-    coupled_spl = scale_solver_spl(solver_spl, p_throat)
-
-    out = pd.DataFrame({
-        "frequency": freq,
-        "coupled_spl": coupled_spl,
-        "horn_only_spl": solver_spl,
-    })
+    out = pd.DataFrame({"frequency": freq, "coupled_spl": coupled_spl, "horn_only_spl": solver_spl})
+    out = pd.concat([out, table.drop(columns=["frequency", "spl"])], axis=1)
     out.to_csv(output_csv, index=False)
 
     kpi = extract_kpis_from_arrays(freq, coupled_spl)
     kpi_payload = {
         **kpi.to_dict(),
+        # Band-referenced KPIs, f3 and ripple from evaluate_response, as in auto mode.
+        **assessment,
+        "average_sensitivity_db": assessment["avg_sensitivity_db"],
         "driver_id": drv.driver_id,
         "manufacturer": drv.manufacturer,
         "model_name": drv.model_name,
@@ -77,7 +113,6 @@ def couple(
         "mms_kg": drv.mms_kg,
         "sd_m2": drv.sd_m2,
         "throat_radius_m": None if imported_geometry else throat_radius,
-        "inlet_area_m2": throat_area,
         "drive_voltage_v": voltage,
     }
     Path(output_kpis).write_text(json.dumps(kpi_payload, indent=2))
@@ -94,13 +129,15 @@ def couple(
                 linewidth=1.0, color="#888888", linestyle="--")
 
     # Mark KPI points
-    if kpi.f3_low_hz and not kpi.f3_low_is_bound:
-        ax.axvline(kpi.f3_low_hz, color="green", alpha=0.4, linestyle=":", label=f"f3 low {kpi.f3_low_hz:.0f} Hz")
-    if kpi.f3_high_hz and not kpi.f3_high_is_bound:
-        ax.axvline(kpi.f3_high_hz, color="red", alpha=0.4, linestyle=":", label=f"f3 high {kpi.f3_high_hz:.0f} Hz")
+    if not assessment["f3_low_is_bound"]:
+        ax.axvline(assessment["f3_low_hz"], color="green", alpha=0.4, linestyle=":", label=f"f3 low {assessment['f3_low_hz']:.0f} Hz")
+    if not assessment["f3_high_is_bound"]:
+        ax.axvline(assessment["f3_high_hz"], color="red", alpha=0.4, linestyle=":", label=f"f3 high {assessment['f3_high_hz']:.0f} Hz")
+    ax.axvspan(*assessment["target_band_hz"], color="#94a3b8", alpha=0.12, label="Target band")
 
     ax.set_xlabel("Frequency (Hz)")
-    ax.set_ylabel("Mouth-plane pressure level (dB re 20 µPa)")
+    ax.set_ylabel("Mouth-plane pressure level (dB re 20 µPa)" if assessment["output_metric"] == "legacy_mouth_pressure"
+                  else f"On-axis level at {target.observation_distance_m:g} m (dB re 20 µPa)")
     interface_label = (f"Inlet area {throat_area:.8g} m²" if imported_geometry or throat_radius is None
                        else f"Throat radius {throat_radius * 1000:.1f} mm")
     ax.set_title(
@@ -114,12 +151,13 @@ def couple(
     plt.savefig(output_png, dpi=120)
     plt.close()
 
-    f3lo = format_kpi(kpi, "f3_low_hz")
-    f3hi = format_kpi(kpi, "f3_high_hz")
-    rip = f"{kpi.passband_ripple_db:.2f}" if kpi.passband_ripple_db else "n/a"
+    f3lo = format_kpi(assessment, "f3_low_hz")
+    f3hi = format_kpi(assessment, "f3_high_hz")
+    rip = f"{assessment['passband_ripple_db']:.2f}"
     print(f"Wrote {output_csv}, {output_png}, {output_kpis}")
     print(f"Driver: {drv.manufacturer} {drv.model_name}  Fs={drv.fs_hz} Hz  Le={drv.le_h*1000:.2f} mH  Bl={drv.bl_tm}")
-    print(f"KPI: f3 {f3lo}-{f3hi} Hz  peak {kpi.peak_spl_db:.1f} dB @ {kpi.peak_frequency_hz:.0f} Hz  ripple {rip} dB")
+    print(f"KPI: f3 {f3lo}-{f3hi} Hz  peak {kpi.peak_spl_db:.1f} dB @ {kpi.peak_frequency_hz:.0f} Hz  ripple {rip} dB  "
+          f"status {assessment['eligibility_status']}" + (" (estimated front chamber)" if assessment["front_chamber_estimated"] else ""))
 
 
 def main():
@@ -131,11 +169,23 @@ def main():
     parser.add_argument("--imported-geometry", action="store_true")
     parser.add_argument("--profile", default="horn", help="Horn profile label (cosmetic).")
     parser.add_argument("--voltage", type=float, default=2.83, help="Drive voltage (V).")
+    parser.add_argument("--target-f-low", type=float, default=None, help="Target band low edge (Hz); default sweep start.")
+    parser.add_argument("--target-f-high", type=float, default=None, help="Target band high edge (Hz); default sweep end.")
+    parser.add_argument("--distance", type=float, default=1.0, help="On-axis observer distance (m).")
+    parser.add_argument("--max-ripple", type=float, default=6.0)
+    parser.add_argument("--max-compression", type=float, default=10.0)
+    parser.add_argument("--test-power", type=float, default=None)
+    parser.add_argument("--length", type=float, default=None, help="Horn length (m), for time of flight and the size term.")
     parser.add_argument("--output-csv", default="coupled_spl.csv")
     parser.add_argument("--output-png", default="coupled_spl.png")
     parser.add_argument("--output-kpis", default="driver_horn_kpis.json")
     args = parser.parse_args()
 
+    target = None
+    if args.target_f_low is not None and args.target_f_high is not None:
+        target = TargetSpec(args.target_f_low, args.target_f_high, voltage_rms=args.voltage,
+                            observation_distance_m=args.distance, max_ripple_db=args.max_ripple,
+                            max_compression_ratio=args.max_compression, test_power_w=args.test_power)
     couple(
         solver_csv=args.solver_csv,
         drivers_db=args.drivers_db,
@@ -147,6 +197,8 @@ def main():
         output_png=args.output_png,
         output_kpis=args.output_kpis,
         imported_geometry=args.imported_geometry,
+        target=target,
+        length=args.length,
     )
 
 

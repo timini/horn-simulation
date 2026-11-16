@@ -130,8 +130,11 @@ def electrical_table(frame, driver, target, legacy_radius=None, horn_length_m=No
     return pd.DataFrame(table)
 
 
-def plot_electrical(tables, output_png):
-    """|Ze|, excursion (with Xmax) and group delay for the ranked candidates."""
+def electrical_figure(tables):
+    """|Ze|, excursion (with Xmax) and group delay for the ranked candidates.
+
+    tables holds (legend label, electrical_table frame, Xmax in m or None).
+    """
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -153,5 +156,12 @@ def plot_electrical(tables, output_png):
         ax.grid(True, which="both", alpha=0.3)
     axes[0].legend(fontsize=8)
     fig.tight_layout()
+    return fig
+
+
+def plot_electrical(tables, output_png):
+    """Write electrical_figure to a PNG."""
+    import matplotlib.pyplot as plt
+    fig = electrical_figure(tables)
     fig.savefig(output_png, dpi=110)
     plt.close(fig)

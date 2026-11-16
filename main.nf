@@ -275,6 +275,11 @@ process couple_with_driver {
         --driver-id ${driver_id_arg} \
         --voltage ${params.voltage_rms} \
         ${throat_flag} \
+        --target-f-low ${params.target_f_low} --target-f-high ${params.target_f_high} \
+        --distance ${params.observation_distance} --max-ripple ${params.max_ripple_db} \
+        --max-compression ${params.max_compression_ratio} \
+        ${params.test_power_w ? "--test-power " + params.test_power_w : ""} \
+        --length ${params.length ?: 0.5} \
         --profile ${profile} \
         --output-csv coupled_spl.csv \
         --output-png coupled_spl.png \
@@ -539,8 +544,9 @@ metadata = json.loads(Path("${empty_metadata}").read_text())
 rejected = metadata.get("rankings", [])
 count = metadata.get("total_evaluated", 0)
 scored = metadata.get("total_pairs", 0)
-generate_auto_report([], {}, {}, None, target, "report", total_candidates=0, total_scored=0, lem_results=metadata if "rankings" in metadata else None, no_feasible_reason=reasons["${empty_reason}"])
-Path("ranked_results.json").write_text(json.dumps({"status":"no_feasible_design", "reason":"${empty_reason}", "results":[], "rejected":rejected, "total_candidates":0, "total_scored":0, "analytical_candidates_evaluated":count, "analytical_pairs_evaluated":scored, "validation_status":"independent_validation_pending", "scoring":describe_scoring(target, None, ${userBoundsArgs()})}, indent=2))
+scoring = describe_scoring(target, None, ${userBoundsArgs()})
+generate_auto_report([], {}, {}, None, target, "report", total_candidates=0, total_scored=0, lem_results=metadata if "rankings" in metadata else None, no_feasible_reason=reasons["${empty_reason}"], scoring=scoring, rejected=rejected, rejection_stage="analytical prescreen" if rejected else None)
+Path("ranked_results.json").write_text(json.dumps({"status":"no_feasible_design", "reason":"${empty_reason}", "results":[], "rejected":rejected, "total_candidates":0, "total_scored":0, "analytical_candidates_evaluated":count, "analytical_pairs_evaluated":scored, "validation_status":"independent_validation_pending", "scoring":scoring}, indent=2))
 '
     """
 }
@@ -812,6 +818,8 @@ process generate_auto_report {
     path "report/auto_report.html"
     path "report/coupled_*.csv", optional: true
     path "report/auto_electrical.png", optional: true
+    path "report/profile_*.csv", optional: true
+    path "report/auto_rejections.json"
 
     script:
     """
@@ -845,6 +853,9 @@ drivers = {d.driver_id: d for d in driver_list if d.driver_id in driver_ids}
 
 target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio}, ${scoringTargetArgs()}, test_power_w=${params.test_power_w ?: 'None'})
 
+# Published STEP locations, relative to the run output directory.
+step_files = {cid: (f'auto/refinement/{cid}.step' if cid.startswith('refine_') else f'auto/geometry/horn_{cid}.step') for cid in solver_csvs}
+
 generate_auto_report(
     all_ranked=all_ranked,
     solver_csvs=solver_csvs,
@@ -858,6 +869,9 @@ generate_auto_report(
     total_scored=total_scored,
     lem_results=lem_results,
     scoring=ranked_data.get('scoring'),
+    rejected=ranked_data.get('rejected', []),
+    rejection_stage='FEM',
+    step_files=step_files,
 )
 "
     """

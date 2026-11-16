@@ -196,6 +196,26 @@ def _diagnostics_section(df) -> str:
             '<p>These numerical checks do not establish physical model accuracy.</p></div>')
 
 
+def _coupled_status(ck: dict) -> str:
+    """Experimental-prediction label, target band, evidence status and chamber for the coupled result."""
+    if "eligibility_status" not in ck:
+        return ""
+    band = ck.get("target_band_hz") or []
+    interface = ck.get("driver_interface") or {}
+    chamber = interface.get("front_chamber_source", "not recorded")
+    volume = interface.get("front_chamber_volume_cm3")
+    text = (f"<strong>Experimental prediction.</strong> Same observer path and KPIs as auto mode. "
+            f"Target band {_fmt(band[0] if band else None, '.0f')} to {_fmt(band[1] if len(band) > 1 else None, '.0f')} Hz"
+            + (" (clipped to the sweep)" if ck.get("target_band_clipped_to_sweep") else "")
+            + f". Evidence status: {html.escape(str(ck['eligibility_status']).replace('_', ' '))}"
+            + (f"; rejected: {html.escape(', '.join(ck['rejection_reasons']))}" if ck.get("rejection_reasons") else "")
+            + f". Front chamber: {html.escape(chamber)}" + (f" {volume:.1f} cm3" if volume else "")
+            + (" (front_chamber_estimated; over the limit only because of the estimate: "
+               + html.escape(", ".join(ck["estimated_chamber_reasons"])) + ")" if ck.get("estimated_chamber_reasons") else "")
+            + ".")
+    return f'<div class="design-summary" style="margin-bottom:12px;">{text}</div>'
+
+
 def generate_single_report(
     throat_radius: float,
     mouth_radius: float,
@@ -261,8 +281,9 @@ def generate_single_report(
   <div class="card"><div class="label">f3 Low (Hz; ≤ = sweep bound)</div><div class="value">{format_kpi(ck, 'f3_low_hz')}</div></div>
   <div class="card"><div class="label">f3 High (Hz; ≥ = sweep bound)</div><div class="value">{format_kpi(ck, 'f3_high_hz')}</div></div>
   <div class="card"><div class="label">Ripple (dB)</div><div class="value">{_fmt(ck.get('passband_ripple_db'), '.1f')}</div></div>
-  <div class="card"><div class="label">Mean mouth level (dB)</div><div class="value">{_fmt(ck.get('average_sensitivity_db'), '.1f')}</div></div>
+  <div class="card"><div class="label">{"Mean mouth level (dB)" if ck.get("output_metric", "legacy_mouth_pressure") == "legacy_mouth_pressure" else "Mean on-axis level (dB)"}</div><div class="value">{_fmt(ck.get('average_sensitivity_db'), '.1f')}</div></div>
 </div>
+{_coupled_status(ck)}
 <div class="plot"><img src="{_img_b64(coupled_png)}" alt="Coupled SPL response"></div>
 <p class="subtitle"><strong>Note:</strong> the FEM models acoustic horn loading only; cone-breakup
 above the driver's published linear range is not modelled. Real high-frequency response
