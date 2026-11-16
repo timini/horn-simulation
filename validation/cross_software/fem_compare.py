@@ -2,9 +2,14 @@
 """Compare horn-solver FEM throat impedance with openwind and our TMM.
 
 Each argument is a run directory from scripts/run_pipeline.py (single mode,
---radiation_model flanged_piston --loss_model lossless). The FEM, openwind and
-the TMM then share the same baffled-piston mouth load, so differences come
-from the 3D interior field: curved wavefronts and, at high ka, higher modes.
+--radiation_model flanged_piston --loss_model lossless). All three codes then
+use the exact baffled-piston impedance at the mouth, but not in the same way:
+the FEM applies it pointwise as a local Robin condition on the flat mouth disc,
+the 1D codes as a lumped load on the mean mouth velocity. The FEM also drives
+a flat throat disc at uniform pressure and has a curved interior field.
+
+--refinement COARSE FINE compares two FEM runs of one horn at their common
+frequencies, to test whether the FEM mesh explains the difference.
 
 Lossless Z/Zc depends on frequency only through k, so openwind (which fixes
 its own air from temperature) is evaluated at f * c_openwind / c_fem.
@@ -23,10 +28,17 @@ from horn_core.webster import compute_horn_transfer_tmm
 
 ROOT = Path(__file__).resolve().parents[2]
 
-# Frozen before the first FEM run finished. FEM is 3D, the others are 1D.
+# Written before this script was first run; committed (a7de55e, 16:08 UTC)
+# after the conical FEM run had finished (16:01 UTC) and before the
+# exponential run finished. FEM is 3D, the others are 1D.
 TOLERANCES = {
     "low_ka": {"ka_max": 1.5, "db_median": 0.2, "db_p95": 0.5, "db_max": 1.0, "phase_p95_deg": 3.0},
     "high_ka": "report only: plane-wave 1D models omit higher-order modes and wavefront curvature",
+    # Review fix pass, frozen before the refined run finished: the mesh is
+    # ruled out as the cause if refining changes |Z| by at most 0.1 dB and
+    # 1 degree for ka <= 1.5 (the BEM refinement limit), far below the
+    # 0.4 to 1.6 dB FEM against 1D differences.
+    "mesh_refinement": {"ka_max": 1.5, "db_max": 0.1, "phase_max_deg": 1.0},
 }
 
 
@@ -44,7 +56,68 @@ def stats(z, ref, mask):
             "phase_p95_deg": float(np.percentile(ph, 95)), "phase_max_deg": float(ph.max())}
 
 
-def compare(run_dir, plot_dir):
+def provenance(run_dir):
+    """Source revision, container image ids and mesh settings of a run."""
+    path = run_dir / "manifest.json"
+    if not path.exists():
+        return None
+    m = json.loads(path.read_text())
+    spec = json.loads((run_dir / "outputs/resolved_specification.json").read_text())["parameters"]
+    return {"source_revision": m.get("source_revision"), "started_at": m.get("started_at"),
+            "finished_at": m.get("finished_at"), "arguments": m.get("arguments"),
+            "container_image_ids": {k: v.get("id") for k, v in (m.get("containers") or {}).items()},
+            "mesh_size_m": spec.get("mesh_size"), "element_degree": spec.get("element_degree"),
+            "max_mesh_nodes": spec.get("max_mesh_nodes")}
+
+
+def fem_impedance(run_dir):
+    _, _, rows = load_fem(run_dir)
+    rho, c = float(rows[0].get("air_rho_kg_m3", 1.225)), float(rows[0].get("air_c_m_s", 343.0))
+    f = np.array([float(r["frequency"]) for r in rows])
+    z = np.array([float(r["z_real"]) + 1j * float(r["z_imag"]) for r in rows]) / (rho * c)
+    cells = np.array([int(float(r.get("mesh_cells", 0))) for r in rows])
+    return f, z, cells, c
+
+
+def refinement(coarse_dir, fine_dir):
+    """FEM against FEM on a finer mesh, at the frequencies both runs share."""
+    fc, zc, cc, c = fem_impedance(coarse_dir)
+    ff, zf, cf, _ = fem_impedance(fine_dir)
+    pc = json.loads((coarse_dir / "outputs/resolved_specification.json").read_text())["parameters"]
+    pf = json.loads((fine_dir / "outputs/resolved_specification.json").read_text())["parameters"]
+    for key in ("profile", "throat_radius", "mouth_radius", "length", "radiation_model", "loss_model"):
+        if str(pc.get(key)) != str(pf.get(key)):
+            raise ValueError(f"refinement runs differ in {key}")
+    ic, jf = [], []
+    for i, f in enumerate(fc):
+        j = int(np.argmin(np.abs(ff - f)))
+        if abs(ff[j] - f) <= 1e-6 * f:
+            ic.append(i)
+            jf.append(j)
+    ic, jf = np.array(ic), np.array(jf)
+    f = fc[ic]
+    ka = 2 * np.pi * f / c * float(pc["mouth_radius"])
+    tol = TOLERANCES["mesh_refinement"]
+    low = ka <= tol["ka_max"]
+    lo = stats(zf[jf], zc[ic], low)
+    edges = [0, 0.5, 1, 1.5, 2, 3]
+    return {"profile": pc["profile"], "coarse_run": _rel(coarse_dir), "fine_run": _rel(fine_dir),
+            "coarse": provenance(coarse_dir), "fine": provenance(fine_dir),
+            "coarse_mesh_cells_in_shared_band": [int(cc[ic].min()), int(cc[ic].max())],
+            "fine_mesh_cells_in_shared_band": [int(cf[jf].min()), int(cf[jf].max())],
+            "shared_points": len(f), "frequency_hz": [float(f[0]), float(f[-1])],
+            "ka_max_shared": float(ka.max()),
+            "fine_vs_coarse_low_ka": lo,
+            "checks": {"db_max": lo["db_max"] <= tol["db_max"], "phase_max_deg": lo["phase_max_deg"] <= tol["phase_max_deg"]},
+            "fine_vs_coarse_by_ka": [{"ka": [a, b], **stats(zf[jf], zc[ic], (ka > a) & (ka <= b))}
+                                     for a, b in zip(edges[:-1], edges[1:]) if ((ka > a) & (ka <= b)).any()]}
+
+
+def _rel(run_dir):
+    return str(run_dir.relative_to(ROOT)) if run_dir.is_relative_to(ROOT) else str(run_dir)
+
+
+def compare(run_dir, plot_dir, plot=True):
     path, p, rows = load_fem(run_dir)
     profile, r_t, r_m, L = p["profile"], float(p["throat_radius"]), float(p["mouth_radius"]), float(p["length"])
     f = np.array([float(r["frequency"]) for r in rows])
@@ -71,7 +144,7 @@ def compare(run_dir, plot_dir):
     ka = 2 * np.pi * f / c * r_m
     tol = TOLERANCES["low_ka"]
     low, high = ka <= tol["ka_max"], ka > tol["ka_max"]
-    out = {"run": str(run_dir.relative_to(ROOT)) if run_dir.is_relative_to(ROOT) else str(run_dir),
+    out = {"run": _rel(run_dir), "provenance": provenance(run_dir),
            "fem_csv": str(path.relative_to(run_dir)), "profile": profile,
            "geometry": {"throat_radius_m": r_t, "mouth_radius_m": r_m, "length_m": L},
            "mesh_cells_max": max(int(float(r.get("mesh_cells", 0))) for r in rows),
@@ -90,6 +163,8 @@ def compare(run_dir, plot_dir):
     for key, ref in (("fem_vs_openwind_by_ka", z_ow), ("fem_vs_openwind_spherical_by_ka", z_ow_sph)):
         out[key] = [{"ka": [a, b], **stats(z_fem, ref, (ka > a) & (ka <= b))}
                     for a, b in zip(edges[:-1], edges[1:]) if ((ka > a) & (ka <= b)).any()]
+    if not plot:
+        return out
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -118,6 +193,8 @@ def compare(run_dir, plot_dir):
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("runs", nargs="+", type=Path)
+    parser.add_argument("--refinement", nargs=2, type=Path, action="append", default=[],
+                        metavar=("COARSE", "FINE"), help="Two runs of one horn, the second on a finer mesh")
     parser.add_argument("--output", type=Path, default=ROOT / "data/validation/cross_software_fem.json")
     parser.add_argument("--plot-dir", type=Path, default=ROOT / "docs/validation/cross_software")
     args = parser.parse_args()
@@ -126,7 +203,14 @@ def main():
         s = r["fem_vs_openwind"]
         print(r["profile"], "low ka", json.dumps(s["low_ka"]), "pass", s.get("low_ka_pass"))
         print(r["profile"], "high ka", json.dumps(s["high_ka_report_only"]))
-    args.output.write_text(json.dumps({"tolerances": TOLERANCES, "results": results}, indent=1) + "\n")
+    refined = []
+    for coarse, fine in args.refinement:
+        r = refinement(coarse.resolve(), fine.resolve())
+        r["fine_vs_1d"] = compare(fine.resolve(), args.plot_dir, plot=False)
+        refined.append(r)
+        print(r["profile"], "refinement", json.dumps(r["fine_vs_coarse_low_ka"]), json.dumps(r["checks"]))
+    args.output.write_text(json.dumps({"tolerances": TOLERANCES, "results": results, "mesh_refinement": refined},
+                                      indent=1) + "\n")
 
 
 if __name__ == "__main__":
