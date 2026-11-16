@@ -442,6 +442,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
   <div class="plot"><img src="{plot_impedance}" alt="Throat impedance"></div>
   <div class="plot"><img src="{plot_phase}" alt="Phase response"></div>
 </div>
+{electrical_section}
 
 <h2>Pre-Screened Drivers</h2>
 <div class="table-wrap">
@@ -549,6 +550,17 @@ def _render_design_summary(derived_geometry: dict) -> str:
     )
 
 
+def _render_electrical_section(electrical_png: Optional[str]) -> str:
+    if not electrical_png:
+        return ""
+    import base64
+    with open(electrical_png, "rb") as handle:
+        encoded = base64.b64encode(handle.read()).decode("ascii")
+    return ('<h2>Electrical impedance, excursion and group delay</h2>\n'
+            f'<div class="plot"><img src="data:image/png;base64,{encoded}" '
+            'alt="Electrical impedance, excursion and group delay of the top candidates"></div>\n')
+
+
 def generate_html_report(
     all_ranked: List[dict],
     solver_csvs: Dict[str, str],
@@ -565,6 +577,7 @@ def generate_html_report(
     lem_results: Optional[dict] = None,
     no_feasible_reason: Optional[str] = None,
     scoring: Optional[dict] = None,
+    electrical_png: Optional[str] = None,
 ) -> str:
     """Generate a self-contained HTML report string.
 
@@ -581,6 +594,8 @@ def generate_html_report(
         derived_geometry: Optional dict from geometry_designer (fullauto mode).
         total_candidates: Total geometry candidates simulated.
         total_scored: Total driver-horn combinations scored (before top-N).
+        electrical_png: Optional path to the electrical plot (|Ze|, excursion,
+            group delay) of the top candidates; embedded when given.
 
     Returns:
         Complete HTML document as a string.
@@ -753,5 +768,6 @@ def generate_html_report(
         "plot_raw_spl": plot_raw_spl,
         "plot_impedance": plot_impedance,
         "plot_phase": plot_phase,
+        "electrical_section": _render_electrical_section(electrical_png),
         "drivers_rows": drivers_rows,
     })

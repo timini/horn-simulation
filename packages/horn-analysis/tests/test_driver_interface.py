@@ -305,3 +305,11 @@ def test_auto_report_writes_electrical_csv_for_ranked_candidates(tmp_path):
     assert (table.ze_mag_ohm > driver.re_ohm).all()
     assert table.time_of_flight_removed_ms.iloc[0] == pytest.approx((ranked[0]["length"] + 1.) / C0 * 1e3)
     assert (tmp_path / "auto_electrical.png").stat().st_size > 0
+
+
+def test_auto_report_html_shows_the_electrical_plot(tmp_path):
+    """The HTML report carries the |Ze|, excursion and group delay plot it writes beside it."""
+    import base64
+    test_auto_report_writes_electrical_csv_for_ranked_candidates(tmp_path)
+    encoded = base64.b64encode((tmp_path / "auto_electrical.png").read_bytes()).decode("ascii")
+    assert encoded in (tmp_path / "auto_report.html").read_text()

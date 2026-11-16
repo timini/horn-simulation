@@ -219,3 +219,22 @@ def test_report_states_score_formula_weights_and_band_referenced_f3(report_input
     assert "size 0.167" in text
     assert "heuristic range with a user limit" in text
     assert "min_output_db 90.0 (user)" in text
+
+
+def test_report_embeds_the_electrical_plot_when_one_is_written(report_inputs, tmp_path):
+    import base64
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.plot([1, 2], [3, 4])
+    png = tmp_path / "auto_electrical.png"
+    fig.savefig(png)
+    plt.close(fig)
+    text = generate_html_report(**report_inputs, electrical_png=str(png))
+    encoded = base64.b64encode(png.read_bytes()).decode("ascii")
+    assert f'<img src="data:image/png;base64,{encoded}"' in text
+    assert "Electrical impedance, excursion and group delay" in text
+    # Without an electrical plot the section is left out, not shown empty.
+    plain = generate_html_report(**report_inputs)
+    assert "Electrical impedance, excursion and group delay" not in plain

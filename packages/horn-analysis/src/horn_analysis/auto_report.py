@@ -204,6 +204,7 @@ def generate_auto_report(
         lem_results=lem_results,
         no_feasible_reason=no_feasible_reason,
         scoring=scoring,
+        electrical_png=str(out / "auto_electrical.png") if electrical_tables else None,
     )
     (out / "auto_report.html").write_text(html_report)
 
