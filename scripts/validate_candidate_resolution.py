@@ -29,6 +29,25 @@ CASES = {
     'loft_80': dict(mesh_size=.004, sections=80, points=201),
     'frequency_101': dict(mesh_size=.004, sections=80, points=101),
 }
+# Protocol 2: the solver now meshes P1 at lambda/10 of the band top, so fixed
+# 10/6/4 mm sizes collapse above about 2.4 kHz. The spatial cases instead
+# scale the production size h0 = min(0.01 m, c/(10 f_max)) by 1, 0.6 and 0.4,
+# the same ratios as protocol 1. The case names are kept so comparisons and
+# archived protocol-1 studies read the same way.
+RELATIVE_CASES = {
+    'mesh_10': dict(mesh_scale=1.0, sections=20, points=201),
+    'mesh_6': dict(mesh_scale=.6, sections=20, points=201),
+    'mesh_4': dict(mesh_scale=.4, sections=20, points=201),
+    'loft_40': dict(mesh_scale=.4, sections=40, points=201),
+    'loft_80': dict(mesh_scale=.4, sections=80, points=201),
+    'frequency_101': dict(mesh_scale=.4, sections=80, points=101),
+}
+PROTOCOL_VERSION = 2
+PRODUCTION_ELEMENTS_PER_WAVELENGTH = 10.
+# Refined meshes must not be coarsened by the production node limit. So no
+# case here solves a node-limit-coarsened production mesh; that mesh is only
+# checked through the original_ranking vs mesh_10 'frequency' comparison.
+STUDY_MAX_MESH_NODES = 3_000_000
 LIMITS = dict(mesh_spl_db=.5, mesh_impedance_db=.5, mesh_phase_deg=5.,
               loft_spl_db=.5, loft_impedance_db=.5, loft_phase_deg=5.,
               frequency_spl_db=.2, frequency_impedance_db=.2,
@@ -68,8 +87,25 @@ def clean_source_revision():
     return git('rev-parse', 'HEAD').strip()
 
 
+def cases_for(protocol):
+    return CASES if protocol.get('protocol_version', 1) == 1 else RELATIVE_CASES
+
+
+def production_mesh_size(simulation_high, user_size=.01):
+    """Production P1 element size for a band whose top is simulation_high."""
+    return min(user_size, 343.0/(PRODUCTION_ELEMENTS_PER_WAVELENGTH*simulation_high))
+
+
+def case_mesh_size(protocol, name):
+    case = cases_for(protocol)[name]
+    if 'mesh_size' in case:
+        return case['mesh_size']
+    return case['mesh_scale']*protocol['production_mesh_size_m']
+
+
 def check_mesh_schedule(high):
-    # The production solver uses c/(6*f_max); preserve all three refinements.
+    # Protocol 1 only: the solver then used c/(6*f_max) for P1. Preserve all
+    # three refinements.
     cap = 343.0 / (6.0 * high * np.sqrt(2))
     effective = [min(CASES[name]['mesh_size'], cap) for name in ('mesh_10', 'mesh_6', 'mesh_4')]
     if not effective[0] > effective[1] > effective[2]:
@@ -176,7 +212,6 @@ def prepare(out, ranking, driver, low, high, index, run_dir=None):
         if not np.isfinite(candidate[key]) or candidate[key] <= 0:
             raise ValueError(f'Invalid candidate {key}')
     origin=origin_files(run_dir,ranking,driver,candidate,low,high)
-    check_mesh_schedule(high)
     revision = clean_source_revision()
     solver_image=json.loads(origin['origin_manifest'].read_text())['containers']['horn-solver']['id']
     inspected=inspect_image(solver_image)
@@ -193,7 +228,9 @@ def prepare(out, ranking, driver, low, high, index, run_dir=None):
         solver_image_id=solver_image,
         source=source_identity(), inputs={p:sha(out/p) for p in ('ranking.json','driver.json',*origin)},
         candidate_index=index, candidate=candidate, target_band_hz=[low,high],
-        simulation_band_hz=[low/np.sqrt(2),high*np.sqrt(2)], cases=CASES, limits=LIMITS,
+        simulation_band_hz=[low/np.sqrt(2),high*np.sqrt(2)], cases=RELATIVE_CASES, limits=LIMITS,
+        protocol_version=PROTOCOL_VERSION, production_mesh_size_m=production_mesh_size(high*np.sqrt(2)),
+        study_max_mesh_nodes=STUDY_MAX_MESH_NODES,
         scope='Numerical resolution of this fixed ideal candidate; no physical qualification'))
 
 
@@ -210,7 +247,7 @@ def verify(out, *, analysis_only=False):
                 raise ValueError('Original study harness source is not preserved')
     elif p['source'] != current:
         raise ValueError('Source or fixed protocol changed; prepare a fresh study')
-    if p['cases'] != CASES or p['limits'] != LIMITS:
+    if p['cases'] != cases_for(p) or p['limits'] != LIMITS:
         raise ValueError('Source or fixed protocol changed; prepare a fresh study')
     if any(sha(out/name) != digest for name,digest in p['inputs'].items()):
         raise ValueError('Frozen input changed')
@@ -230,7 +267,7 @@ def solve_case(arguments):
     bind_source()
     from horn_geometry.generator import create_horn
     from horn_solver.solver import run_simulation_from_step
-    p=verify(out);c=p['candidate'];case=CASES[name]
+    p=verify(out);c=p['candidate'];case=cases_for(p)[name]
     runtime=runtime_identity()
     if runtime['petsc_scalar']!='complex128':raise ValueError('Complex double PETSc is required')
     directory=out/name
@@ -243,7 +280,8 @@ def solve_case(arguments):
                     num_sections=case['sections'])
     run_simulation_from_step(str(step),tuple(p['simulation_band_hz']),case['points'],
         {'length':c['length']},str(directory/'response.csv'),max(p['simulation_band_hz']),
-        mesh_size=case['mesh_size'],element_degree=1,radiation_model=c['radiation_model'],loss_model='lossless')
+        mesh_size=case_mesh_size(p,name),element_degree=1,radiation_model=c['radiation_model'],loss_model='lossless',
+        **({} if p.get('protocol_version',1)==1 else {'max_mesh_nodes':p['study_max_mesh_nodes']}))
     verify(out)
     print('Completed resolution case:',name,flush=True)
     return runtime
@@ -298,12 +336,12 @@ def solve(out,jobs=1):
 
 
 def solve_in_container(out, jobs=1):
-    if not isinstance(jobs,int) or not 1<=jobs<=len(CASES):
-        raise ValueError('Jobs must be between one and the number of cases')
     p=verify(out)
+    if not isinstance(jobs,int) or not 1<=jobs<=len(cases_for(p)):
+        raise ValueError('Jobs must be between one and the number of cases')
     if os.environ.get('HORN_STUDY_IMAGE_ID')!=p['solver_image_id']:
         raise ValueError('Use the host solve command to enforce the frozen image')
-    arguments=[(out,name) for name in CASES]
+    arguments=[(out,name) for name in cases_for(p)]
     if jobs==1:
         runtimes=[solve_case(argument) for argument in arguments]
     else:
@@ -340,6 +378,8 @@ def check_frame(frame, band, count, *, expected=None, radiation_model='flanged_p
             or (frame.converged_reason<=0).any() or (frame.z_real<0).any()
             or (incoming<0).any() or (outgoing<0).any() or np.max(balance)>1e-7):
         raise ValueError('Failed numerical health or power balance')
+    if 'mesh_coarsened_for_node_limit' in frame and frame.mesh_coarsened_for_node_limit.astype(bool).any():
+        raise ValueError('Mesh was coarsened for the node limit; the refinement is not what was requested')
     return dict(mesh_cells=int(frame.mesh_cells.iloc[0]),max_residual=float(frame.relative_residual.max()),
                 max_relative_power_balance_error=float(np.max(balance)))
 
@@ -388,7 +428,8 @@ def compare(out, *, reanalyze=False):
             or evidence.get('solver_image_id')!=p['solver_image_id']
             or evidence.get('runtime',{}).get('petsc_scalar')!='complex128'):
         raise ValueError('Missing or changed solver runtime/execution identity')
-    expected={f'{name}/{file}' for name in CASES for file in ('horn.step','response.csv')}
+    cases=cases_for(p)
+    expected={f'{name}/{file}' for name in cases for file in ('horn.step','response.csv')}
     if (set(evidence['files'])!=expected or evidence['protocol_sha256']!=sha(out/'protocol.json')
             or any(sha(out/name)!=digest for name,digest in evidence['files'].items())):
         raise ValueError('Solve evidence changed or is incomplete')
@@ -410,13 +451,14 @@ def compare(out, *, reanalyze=False):
         if not np.isclose(metrics[key],candidate[key],atol=1e-8,rtol=0):
             raise ValueError('Original response/driver does not reproduce ranking metrics')
     curves['original_ranking']=dict(frequency=original.frequency.to_numpy(),spl=original_levels,z=(original.z_real+1j*original.z_imag).to_numpy())
-    for name,case in CASES.items():
+    for name,case in cases.items():
         frame=pd.read_csv(out/name/'response.csv')
         health[name]=check_frame(frame,p['simulation_band_hz'],case['points'],radiation_model=candidate['radiation_model'])
         levels,_,_=coupled_output(frame,driver,target)
         curves[name]=dict(frequency=frame.frequency.to_numpy(),spl=levels,
                          z=frame.z_real.to_numpy()+1j*frame.z_imag.to_numpy())
-    check_mesh_schedule(p['target_band_hz'][1])
+    if p.get('protocol_version',1)==1:
+        check_mesh_schedule(p['target_band_hz'][1])
     counts = [health[name]['mesh_cells'] for name in ('mesh_10', 'mesh_6', 'mesh_4')]
     if not counts[0] < counts[1] < counts[2]:
         raise ValueError('Mesh cases did not produce strictly increasing cell counts')

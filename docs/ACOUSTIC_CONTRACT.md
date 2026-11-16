@@ -29,7 +29,7 @@ Target bounds must be finite and increasing. All target-band samples, including 
 
 Schema-2 band merging requires every expected band, frequency sample, convention and area. It rejects missing/nonfinite data and mouth-level discontinuities greater than 0.5 dB at overlapping endpoints. The production tube tests additionally check complex impedance, phase, passive loading, three mesh resolutions and split/unsplit sweeps. A finite 20-geometry benchmark compares screening against exhaustive FEM using synthetic motors; it does not validate real drivers.
 
-The optional BEM path remains experimental and is excluded from automatic optimization. Its current coupling code uses a whole-boundary trace rather than a verified aperture-only exterior model; backend sphere tests must not be mistaken for validation of that horn coupling. The [Bempp operator definitions](https://bempp.com/handbook/api/boundary_operators.html) define a mass matrix for the weak identity operator, not a coefficient-space identity.
+The legacy FEM-BEM coupling has been removed from the solver and the pipeline. It used a whole-boundary trace rather than a verified aperture-only exterior model. Exterior radiation now comes from the local boundaries or the modal infinite-baffle aperture model, whose far-field directivity is reported only as an experimental estimate.
 
 
 ## Losses and numerical acceptance

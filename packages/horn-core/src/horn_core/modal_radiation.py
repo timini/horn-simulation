@@ -86,3 +86,52 @@ def modal_baffled_on_axis(frequencies, velocities, radius, distance, *, rho=1.22
     k=2*np.pi*f/c
     integral=np.sum(velocity*np.exp(-1j*k[:,None]*travel)/travel*(radial*weights*radius/2),axis=1)
     return 1j*rho*c*k*integral
+
+
+def modal_baffled_far_field(frequencies, velocities, radius, angles_deg, *, rho=1.225, c=343.):
+    """Experimental infinite-baffle far-field pressure from modal mouth velocities.
+
+    Returns R * p(R, theta) * exp(+i k R), shape (frequencies, angles), for
+    polar angles theta from the axis (0 to 90 degrees, the front half-space).
+    The Rayleigh far field of the axisymmetric aperture velocity
+    v(r) = sum_n v_n J0(mu_n r/a)/J0(mu_n) is
+
+        R p exp(ikR) = i rho c k a^2 sum_n v_n S_n(k a sin theta)
+
+    where S_n(t) = t J1(t) / (t^2 - mu_n^2) is the same mode spectrum used for
+    the radiation impedance. A uniform velocity gives the piston pattern
+    2 J1(x)/x relative to the axis.
+
+    Limits: infinite rigid baffle, axisymmetric modes only, far field. A real
+    finite baffle or cabinet changes the pattern (see
+    docs/EXTERIOR_RADIATION_VALIDATION.md); the result is not validated
+    against a directivity measurement.
+    """
+    f=np.asarray(frequencies,dtype=float)
+    velocities=np.asarray(velocities,dtype=complex)
+    theta=np.radians(np.asarray(angles_deg,dtype=float))
+    if f.ndim!=1 or velocities.ndim!=2 or velocities.shape[0]!=len(f):
+        raise ValueError('One modal velocity row is required per frequency')
+    if not np.isfinite(f).all() or np.any(f<=0) or not np.isfinite(velocities).all():
+        raise ValueError('Frequency and modal velocity must be finite')
+    if theta.ndim!=1 or not np.isfinite(theta).all() or np.any(theta<0) or np.any(theta>np.pi/2+1e-12):
+        raise ValueError('Infinite-baffle angles must lie between 0 and 90 degrees')
+    if not np.isfinite([radius,rho,c]).all() or min(radius,rho,c)<=0:
+        raise ValueError('Positive finite geometry and air properties are required')
+    roots=radial_roots(velocities.shape[1])
+    k=2*np.pi*f/c
+    result=np.empty((len(f),len(theta)),dtype=complex)
+    for i,(wavenumber,row) in enumerate(zip(k,velocities)):
+        spectrum=mode_spectrum(wavenumber*radius*np.sin(theta),roots)
+        result[i]=1j*rho*c*wavenumber*radius**2*(row@spectrum)
+    return result
+
+
+def modal_baffled_directivity_db(frequencies, velocities, radius, angles_deg, *, rho=1.225, c=343.):
+    """Far-field level relative to the axis (dB), experimental, infinite baffle."""
+    angles=np.asarray(angles_deg,dtype=float)
+    pressure=modal_baffled_far_field(frequencies,velocities,radius,np.r_[0.,angles],rho=rho,c=c)
+    axis=np.abs(pressure[:,:1])
+    if np.any(axis<=0):
+        raise ValueError('On-axis far-field pressure is zero; a relative pattern is undefined')
+    return 20*np.log10(np.maximum(np.abs(pressure[:,1:])/axis,1e-15))

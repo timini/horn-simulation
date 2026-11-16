@@ -390,6 +390,7 @@ Raw horn plots show mouth-plane pressure. Legacy inputs contain mouth-plane leve
 <p>Drive: {drive_voltage} V RMS. Observer: {observer_distance} m on axis from mouth plane.
 Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume, not manufacturing walls.</p>
 <p>Acoustic models used: {physics_summary}. Scores within 0.02 are near-ties for comparison; physical uncertainty remains unquantified.</p>
+{radiation_caveat}
 {evidence_summary}</div>
 <p class="subtitle">
   Target: {target_low:.0f} Hz — {target_high:.0f} Hz &nbsp;|&nbsp;
@@ -444,6 +445,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
 </div>
 {electrical_section}
 
+{directivity_section}
 <h2>Pre-Screened Drivers</h2>
 <div class="table-wrap">
 <table>
@@ -561,6 +563,28 @@ def _render_electrical_section(electrical_png: Optional[str]) -> str:
             'alt="Electrical impedance, excursion and group delay of the top candidates"></div>\n')
 
 
+FLANGED_PISTON_CAVEAT = (
+    "Known radiation-model error: the flanged_piston mouth boundary misses the independent MMM "
+    "infinite-baffle reference by up to 1.05 dB and 5.7 degrees in throat impedance (limits 0.5 dB / 5 degrees), "
+    "which can change driver coupling and ranking. modal_baffled passes that reference and is the default "
+    "for generated axisymmetric horns.")
+
+
+def _render_directivity(directivity_tables, target, top_results) -> str:
+    if directivity_tables:
+        from horn_analysis.directivity import beamwidth_figure, DIRECTIVITY_LABEL
+        image = plot_theme.fig_to_b64(beamwidth_figure(directivity_tables, target))
+        return ('<h2>Directivity (' + html.escape(DIRECTIVITY_LABEL) + ')</h2>\n'
+                '<p>Far-field pattern from the solved axisymmetric mouth velocity, relative to the axis, '
+                'for an infinite rigid baffle. A finite baffle or cabinet changes it by several dB, and it has '
+                'not been compared with a measured polar. Use it to compare profiles, not as a coverage claim.</p>\n'
+                f'<div class="plot"><img src="{image}" alt="Beamwidth against frequency"></div>\n')
+    if top_results:
+        return ('<h2>Directivity</h2>\n<p>Not available: off-axis pressure needs the modal_baffled '
+                'radiation model.</p>\n')
+    return ""
+
+
 def generate_html_report(
     all_ranked: List[dict],
     solver_csvs: Dict[str, str],
@@ -578,6 +602,7 @@ def generate_html_report(
     no_feasible_reason: Optional[str] = None,
     scoring: Optional[dict] = None,
     electrical_png: Optional[str] = None,
+    directivity_tables: Optional[List[Tuple[str, "pd.DataFrame"]]] = None,
 ) -> str:
     """Generate a self-contained HTML report string.
 
@@ -596,6 +621,8 @@ def generate_html_report(
         total_scored: Total driver-horn combinations scored (before top-N).
         electrical_png: Optional path to the electrical plot (|Ze|, excursion,
             group delay) of the top candidates; embedded when given.
+        directivity_tables: (horn label, relative far-field table) pairs from
+            horn_analysis.directivity, shown as an experimental section.
 
     Returns:
         Complete HTML document as a string.
@@ -770,4 +797,7 @@ def generate_html_report(
         "plot_phase": plot_phase,
         "electrical_section": _render_electrical_section(electrical_png),
         "drivers_rows": drivers_rows,
+        "directivity_section": _render_directivity(directivity_tables, target, top_results),
+        "radiation_caveat": "<p>" + html.escape(FLANGED_PISTON_CAVEAT) + "</p>"
+                            if any(r.get("radiation_model") == "flanged_piston" for r in top_results) else "",
     })

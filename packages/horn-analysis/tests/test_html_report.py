@@ -238,3 +238,20 @@ def test_report_embeds_the_electrical_plot_when_one_is_written(report_inputs, tm
     # Without an electrical plot the section is left out, not shown empty.
     plain = generate_html_report(**report_inputs)
     assert "Electrical impedance, excursion and group delay" not in plain
+
+
+def test_single_report_states_flanged_piston_error_only_when_that_model_was_used(tmp_path):
+    from horn_analysis.single_report import generate_single_report
+    import base64
+    png = tmp_path/'image.png'
+    png.write_bytes(base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aGUcAAAAASUVORK5CYII='))
+    texts = {}
+    for model in ('flanged_piston', 'modal_baffled'):
+        csv = tmp_path/f'{model}.csv'
+        pd.DataFrame({'frequency':[100,200], 'inlet_area_m2':[.001,.001], 'mouth_area_m2':[.008,.008],
+                      'radiation_model':[model, model]}).to_csv(csv,index=False)
+        texts[model] = generate_single_report(.05,.2,.08,'conical',{},*[str(png)]*5,
+                                              final_csv=str(csv),imported_geometry=True)
+    assert 'Known radiation-model error' in texts['flanged_piston']
+    assert '1.05 dB' in texts['flanged_piston']
+    assert 'Known radiation-model error' not in texts['modal_baffled']

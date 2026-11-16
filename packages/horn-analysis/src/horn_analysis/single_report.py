@@ -196,6 +196,15 @@ def _diagnostics_section(df) -> str:
             '<p>These numerical checks do not establish physical model accuracy.</p></div>')
 
 
+def _radiation_caveat(df) -> str:
+    """State the known flanged_piston error when the solver used that mouth model."""
+    if "radiation_model" not in df or not (df.radiation_model.astype(str) == "flanged_piston").any():
+        return ""
+    from horn_analysis.html_report import FLANGED_PISTON_CAVEAT
+    return ('<h2>Radiation model</h2><div class="design-summary"><p>'
+            + html.escape(FLANGED_PISTON_CAVEAT) + '</p></div>')
+
+
 def generate_single_report(
     throat_radius: float,
     mouth_radius: float,
@@ -225,11 +234,13 @@ def generate_single_report(
     # Freq range from CSV if available
     freq_range = ""
     diagnostics_section = "<h2>Solver checks</h2><p>Solver diagnostics are not available for this result.</p>"
+    radiation_caveat = ""
     if final_csv:
         try:
             import pandas as pd
             df = pd.read_csv(final_csv)
             diagnostics_section = _diagnostics_section(df)
+            radiation_caveat = _radiation_caveat(df)
             fmin = df["frequency"].min()
             fmax = df["frequency"].max()
             freq_range = f"{fmin:.0f} \u2014 {fmax:.0f} Hz &nbsp;|&nbsp; "
@@ -347,7 +358,7 @@ will roll off according to the driver's diaphragm physics.</p>
         # Conditional sections
         "coupled_section": coupled_section,
         "directivity_section": directivity_section,
-        "diagnostics_section": diagnostics_section,
+        "diagnostics_section": radiation_caveat + diagnostics_section,
     })
 
 

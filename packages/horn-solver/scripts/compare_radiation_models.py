@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compare SPL curves from different radiation impedance models.
 
-Runs the horn solver with plane_wave, flanged_piston, and bem radiation
+Runs the horn solver with plane_wave, flanged_piston and modal_baffled radiation
 models on the same STEP geometry, then plots an overlay comparison.
 
 Usage:
@@ -22,7 +22,7 @@ import numpy as np
 import pandas as pd
 
 
-RADIATION_MODELS = ["plane_wave", "flanged_piston", "bem"]
+RADIATION_MODELS = ["plane_wave", "flanged_piston", "modal_baffled"]
 
 
 def run_model(
@@ -69,11 +69,11 @@ def plot_comparison(all_results: dict, output_dir: Path):
 
     fig, ax = plt.subplots(figsize=(10, 6))
 
-    colors = {"plane_wave": "blue", "flanged_piston": "orange", "bem": "red"}
+    colors = {"plane_wave": "blue", "flanged_piston": "orange", "modal_baffled": "red"}
     labels = {
         "plane_wave": "Plane Wave (Z=rho*c)",
         "flanged_piston": "Flanged Piston",
-        "bem": "BEM (nonlocal)",
+        "modal_baffled": "Modal aperture (infinite baffle)",
     }
 
     for model, df in all_results.items():

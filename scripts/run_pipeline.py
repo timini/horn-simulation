@@ -146,8 +146,8 @@ def main():
     config = run_dir/"containers.config"
     mappings = {
         "horn-geometry": "generate_geometry|generate_candidate_geometry",
-        "horn-solver": "run_simulation|run_candidate_simulation|run_simulation_directivity|refine_ranked_candidates",
-        "horn-analysis": "merge_results|extract_kpis|generate_plots|generate_impedance_plot|generate_phase_plot|generate_dashboard|couple_with_driver|render_horn_3d|merge_directivity_results|generate_directivity_plots|generate_single_report.*|prescreen_drivers|report_no_drivers|derive_auto_geometry|lem_prescreen|merge_candidate_results|score_and_rank|generate_auto_report",
+        "horn-solver": "run_simulation|run_candidate_simulation|refine_ranked_candidates",
+        "horn-analysis": "merge_results|extract_kpis|generate_plots|generate_impedance_plot|generate_phase_plot|generate_dashboard|couple_with_driver|render_horn_3d|generate_single_report.*|prescreen_drivers|report_no_drivers|derive_auto_geometry|lem_prescreen|merge_candidate_results|score_and_rank|generate_auto_report",
     }
     config.write_text("process {\n"+"\n".join(f"  withName: /{pattern}/ {{ container = '{images[name]['id']}' }}" for name,pattern in mappings.items())+"\n}\n")
     command = [engine["executable"], "-log", str(run_dir/"nextflow.log"), "run", str(ROOT/"main.nf"), "-profile", "docker", "-c", str(config), "-work-dir", str(run_dir/"work"), *forwarded, *resume_tokens, "--outdir", str(run_dir/"outputs")]

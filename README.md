@@ -17,11 +17,11 @@ Browse the [ready-to-open design examples](examples/README.md) for a generated r
 
 The solver container uses the conservative Nehalem OpenBLAS kernel on x86 to keep the pinned numerical environment consistent across host CPUs. This is a workaround under validation for intermittent CI geometry failures, not a confirmed diagnosis of the upstream cause. Independent basis/area checks and a gross mesh-to-CAD area guard catch corrupt geometry before reporting a response. An explicit `OPENBLAS_CORETYPE` override requires validating that alternative backend.
 
-Use `just run-auto --target_f_low 500 --target_f_high 4000` for an isolated run. The launcher writes a manifest, source snapshot and container hashes under a new `results/<run-id>/` directory. Defaults are 2.83 V RMS, 1 m from the mouth, 6 dB maximum band ripple, a uniform baffled-piston observer, ten screened geometries and six additional refinement evaluations. Override these with `--voltage_rms`, `--observation_distance`, `--max_ripple_db`, `--lem_top_n` and `--refinement_budget`. Add `--test_power_w 50` to check excursion at 50 W into the nominal impedance over the whole sweep, separately from the drive voltage used for SPL. Fix dimensions or set minimum/maximum search bounds when space is limited.
+Use `just run-auto --target_f_low 500 --target_f_high 4000` for an isolated run. The launcher writes a manifest, source snapshot and container hashes under a new `results/<run-id>/` directory. Defaults are 2.83 V RMS, 1 m from the mouth, 6 dB maximum band ripple, the modal infinite-baffle radiation model and on-axis observer, ten screened geometries and six additional refinement evaluations. Override these with `--voltage_rms`, `--observation_distance`, `--max_ripple_db`, `--lem_top_n` and `--refinement_budget`. Add `--test_power_w 50` to check excursion at 50 W into the nominal impedance over the whole sweep, separately from the drive voltage used for SPL. Fix dimensions or set minimum/maximum search bounds when space is limited.
 
 The [measured exponential-horn comparison](docs/POST_HIXSON_VALIDATION.md) passes its fixed input-impedance limits over `1 ≤ ka ≤ 5` (approximately 201–1,007 Hz at the simulated sound speed). This validates a bounded horn-loading comparison; complete driver/assembly qualification remains outstanding.
 
-Optional thermoviscous losses and finite-flange pipe radiation now have independent impedance checks; see [the measured results and remaining failures](docs/LOSS_PHYSICS_VALIDATION.md). Legacy FEM–BEM horn coupling and directivity are disabled pending a correct exterior model.
+Optional thermoviscous losses and finite-flange pipe radiation now have independent impedance checks; see [the measured results and remaining failures](docs/LOSS_PHYSICS_VALIDATION.md). Generated horns use the `modal_baffled` radiation model by default, which passes the independent infinite-baffle reference; an imported STEP falls back to `flanged_piston`, whose known 1.05 dB / 5.7 degree throat-impedance error is printed in the report. Auto reports add an experimental infinite-baffle beamwidth plot for modal horns. The old FEM-BEM coupling has been removed.
 
 See [acoustic assumptions](docs/ACOUSTIC_CONTRACT.md), [existing measurement sources and importer](docs/VALIDATION_DATA.md), and [implementation/validation status](docs/IMPLEMENTATION_STATUS.md). Resume only an unchanged source/data/container/Nextflow snapshot with `python scripts/run_pipeline.py --run-dir results/<run-id> -resume`.
 
@@ -168,7 +168,9 @@ just test-package horn-solver    # single package
 | `max_freq` | Maximum simulation frequency (Hz) | `8000` |
 | `num_intervals` | Number of frequency steps | `100` |
 | `min_points_per_octave` | Minimum log-spaced solver points per octave (0 disables) | `24` |
-| `mesh_size` | Target mesh element size (m) | `0.01` |
+| `mesh_size` | Largest element size (m); the finer of this and the wavelength rule is used | `0.01` |
+| `max_mesh_nodes` | Per-band node limit (see meshing below) | `100000` |
+| `radiation_model` | `modal_baffled`, `flanged_piston`, `unflanged_piston`, `finite_flange`, `plane_wave` or `closed` | `modal_baffled` for generated geometry with lossless P1, else `flanged_piston` |
 | `num_bands` | Parallel frequency band jobs | `8` |
 | `outdir` | Direct Nextflow output directory | Required for direct invocation; launcher chooses an isolated run |
 
@@ -249,17 +251,16 @@ The horn mesh has three tagged boundary regions, identified automatically by the
 
 The wall Neumann condition is natural (satisfied implicitly by the variational form). The inlet Dirichlet condition models a piston driver producing a uniform pressure at the throat. The outlet Robin condition (first-order Sommerfeld radiation condition) is implemented as `a -= jk ∫_outlet p·q ds`, which adds radiation damping and is accurate for ka < ~3.
 
-### Meshing and adaptive element sizing
+### Meshing and element sizing
 
-The STEP geometry is imported into gmsh's OpenCASCADE kernel, which generates a 3D tetrahedral mesh with uniform element size. To ensure accurate wave resolution, the solver enforces a **λ/6 rule**: the element size must not exceed one-sixth of the shortest wavelength being simulated:
+The STEP geometry is imported into gmsh's OpenCASCADE kernel and meshed with tetrahedra. Each frequency band gets its own mesh, sized for the band's highest frequency `f_max` (rules in `packages/horn-solver/src/horn_solver/meshing.py`):
 
-```
-h_adaptive = c₀ / (6 × f_max)
-```
+- **Wavelength rule by element degree**: P1 (the default) uses λ/10, P2 uses λ/6. The leading-order phase error per wavelength is about 4.6 % for P1 at λ/6, 1.6 % for P1 at λ/10 and 0.08 % for P2 at λ/6. P1 stays the default because the default `modal_baffled` model supports P1 only and all executed resolution evidence is P1. The size used is the finer of this rule and `mesh_size`.
+- **Throat refinement**: a gmsh Distance/Threshold field caps elements at r_t/5 within one throat radius of the throat, grading to the bulk size over two more throat radii. If the faceted throat area still misses the CAD area by more than 1 %, the mesh is regenerated once at r_t/10 (the solver logs this), then the candidate is rejected.
+- **Throat-area guard**: the faceted mesh area of the throat must be within 1 % of the CAD area (one retry with a finer throat cap).
+- **Node limit** (`max_mesh_nodes`, default 100,000): a P1 mesh that would exceed it is coarsened just enough to fit, but never beyond λ/6. Each response row records `mesh_elements_per_wavelength` and `mesh_coarsened_for_node_limit`. If even λ/6 does not fit, or the throat guard fails, an auto-mode candidate is listed as rejected (`mesh_node_limit_exceeded`, `throat_area_guard_failed`) and the run continues.
 
-The actual mesh size used is the finer of the user-specified `mesh_size` and `h_adaptive`. Since each frequency band has its own `f_max`, lower bands automatically get coarser (faster) meshes while higher bands get finer meshes.
-
-For example, at `f_max = 8000 Hz`: λ_min = 43 mm, so h_adaptive = 7.1 mm.
+For example, at `f_max = 8000 Hz`: λ_min = 43 mm, so the P1 target is 4.3 mm. The default single-mode horn (conical, 50/200/500 mm) needs about 266,000 nodes at that size, so its top band is coarsened to about λ/6.9 to stay within 100,000 nodes; the lower bands use the full λ/10.
 
 ### SPL calculation
 
@@ -288,7 +289,7 @@ Frequencies are logarithmically spaced, so every octave gets the same number of 
 ### Limitations
 
 - **Experimental driver recommendations**: driver/interface coupling and absolute listening-distance output still need matched assembly validation. Missing evidence is disclosed in reports.
-- **Restricted radiation models**: the optional [modal aperture model](docs/MODAL_APERTURE.md) accounts for nonuniform axisymmetric mouth velocity and passes an independent infinite-baffle comparison for one worked horn. The default local termination remains an approximation. Arbitrary exterior diffraction and directivity are not validated; legacy FEM–BEM horn coupling is disabled.
+- **Restricted radiation models**: the default [modal aperture model](docs/MODAL_APERTURE.md) accounts for nonuniform axisymmetric mouth velocity and passes an independent infinite-baffle comparison for one worked horn. The `flanged_piston` fallback (imported STEP, wall losses or P2) misses that reference by 1.05 dB / 5.7 degrees in throat impedance. Directivity is an experimental infinite-baffle far-field estimate, not compared with any measured polar; finite baffles and cabinets are not modelled.
 - **Rigid structure**: optional boundary-layer losses cover a restricted pipe regime, not flexible walls, porous materials or general damping. Measured-reference failures remain visible.
 - **Air and driver assumptions**: reference runs record air properties; direct motor coupling requires the default air properties. Nonlinear distortion and broadband thermal performance are not predicted.
 - **Profile qualification**: seven profiles are implemented, but validation of simple pipes and conical/exponential search grids does not qualify every profile or frequency band.

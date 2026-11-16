@@ -42,6 +42,8 @@ test-local:
     .venv/bin/python -m pytest packages/horn-analysis/tests/ -v
     echo "Running horn-geometry tests..."
     .venv/bin/python -m pytest packages/horn-geometry/tests/ -v
+    echo "Running horn-solver meshing tests (gmsh only, no dolfinx)..."
+    .venv/bin/python -m pytest packages/horn-solver/tests/test_meshing.py -v
 
 # Validate the shipped driver databases (CI requires zero errors)
 validate-drivers:

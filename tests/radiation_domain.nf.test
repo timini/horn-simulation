@@ -108,4 +108,16 @@ nextflow_pipeline {
             assert new File("${outputDir}/auto/report/auto_report.html").exists()
         }
     }
+    test("The removed BEM model is not accepted") {
+        when {
+            params {
+                radiation_model = "bem"
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.failed
+            assert workflow.stdout.toString().contains("Unknown radiation model")
+        }
+    }
 }

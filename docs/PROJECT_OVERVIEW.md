@@ -30,12 +30,12 @@ The pipeline consists of the following four stages:
 
 ### Stage 3: Solving (`horn-solver`)
 
--   **Responsibility:** Applies the principles of acoustics (using either the Boundary Element Method (BEM) or Finite Element Method (FEM)) to the mesh to calculate the horn's acoustic properties. It simulates how sound waves propagate through the horn.
+-   **Responsibility:** Applies the Finite Element Method (FEM) to the air volume, with an analytical or modal mouth radiation boundary, to calculate the horn's acoustic properties. It simulates how sound waves propagate through the horn.
 -   **Inputs:**
     -   The mesh from the Meshing stage.
     -   Parameters for the driver unit (e.g., Thiele/Small parameters like `Bl`, `Re`).
     -   A frequency range to simulate.
--   **Technology:** `FEniCSx/dolfinx` for the FEM/BEM calculations.
+-   **Technology:** `FEniCSx/dolfinx` for the FEM calculations.
 -   **Output:** A dataset containing the raw simulation results, likely frequency vs. Sound Pressure Level (SPL) and other acoustic metrics. This will be saved to a `.csv` or similar format.
 
 ### Stage 4: Analysis & Visualization (`horn-analysis`)
@@ -45,7 +45,7 @@ The pipeline consists of the following four stages:
 -   **Technology:** `pandas` for data manipulation, `matplotlib` or `plotly` for plotting.
 -   **Outputs:**
     -   Frequency response plot (SPL vs. Frequency).
-    -   Polar plots (sound dispersion).
+    -   Beamwidth against frequency for horns solved with `modal_baffled` (experimental: infinite baffle, far field, not compared with measured polars).
     -   Impedance plots.
     -   A summary report of key performance indicators (KPIs).
 

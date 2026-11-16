@@ -317,3 +317,48 @@ def test_overlapping_execution_cannot_launch_or_remove_another_container(tmp_pat
     with pytest.raises(FileExistsError):v.solve(tmp_path)
     assert not (tmp_path/'host-execution.json').exists()
     assert json.loads((tmp_path/'execution-claim.json').read_text())['invocation']=='already-running'
+
+
+def test_protocol_two_refines_relative_to_production_size_up_to_the_top_band():
+    for target_high in (1600., 4000., 8000.):
+        high = target_high*np.sqrt(2)
+        protocol = dict(protocol_version=2, cases=v.RELATIVE_CASES,
+                        production_mesh_size_m=v.production_mesh_size(high))
+        sizes = [v.case_mesh_size(protocol, name) for name in ('mesh_10', 'mesh_6', 'mesh_4')]
+        assert sizes[0] > sizes[1] > sizes[2]
+        assert sizes[0] == pytest.approx(min(.01, 343./(10*high)))
+        assert sizes[2]/sizes[0] == pytest.approx(.4)
+        # Loft and frequency cases use the finest spatial mesh, as in protocol 1.
+        assert v.case_mesh_size(protocol, 'loft_80') == pytest.approx(sizes[2])
+    # Archived protocol-1 studies keep their absolute sizes.
+    assert v.case_mesh_size(dict(cases=v.CASES), 'mesh_6') == .006
+    assert v.cases_for({}) is v.CASES
+
+
+def test_mesh_coarsened_by_the_node_limit_cannot_count_as_a_refinement():
+    good=frame();good['mesh_coarsened_for_node_limit']=False
+    assert v.check_frame(good,[1.,2.],2)['mesh_cells']==100
+    good['mesh_coarsened_for_node_limit']=True
+    with pytest.raises(ValueError,match='coarsened'):
+        v.check_frame(good,[1.,2.],2)
+
+
+def test_new_studies_freeze_protocol_two(tmp_path, monkeypatch):
+    monkeypatch.setattr(v, 'clean_source_revision', lambda: 'test-revision')
+    origin=tmp_path/'origin.json'
+    origin.write_text(json.dumps({'containers':{'horn-solver':{'id':'sha256:'+'0'*64}}}))
+    monkeypatch.setattr(v, 'origin_files', lambda *args: {'origin_manifest':origin})
+    monkeypatch.setattr(v, 'inspect_image', lambda value: {'Id':value})
+    candidate=dict(driver_id='test',loss_model='lossless',radiation_model='modal_baffled',
+        element_degree=1,throat_radius=.0125,mouth_radius=.05,length=.08,
+        drive_voltage_rms=2.83,observation_distance_m=1.,profile='os')
+    ranking=tmp_path/'ranking.json';ranking.write_text(json.dumps([candidate]))
+    driver=tmp_path/'driver.json';driver.write_text(json.dumps(dict(driver_id='test')))
+    # The 7-8 kHz band collapsed under protocol 1 and must prepare under protocol 2.
+    with pytest.raises(ValueError,match='collapses'):
+        v.check_mesh_schedule(8000.)
+    v.prepare(tmp_path/'study',ranking,driver,7000.,8000.,0)
+    p=v.verify(tmp_path/'study')
+    assert p['protocol_version']==2 and p['cases']==v.RELATIVE_CASES
+    assert p['production_mesh_size_m']==pytest.approx(343./(10*8000*np.sqrt(2)))
+    assert p['study_max_mesh_nodes']>=1_000_000
