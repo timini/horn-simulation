@@ -349,7 +349,7 @@ horn-add-driver --db data/drivers-curated --manufacturer Acme --model "AC10 8ohm
   --f-low-hz 50 --f-high-hz 3000 --source-url https://example.com/ac10.pdf
 ```
 
-Mms is derived from Vas, Sd and Fs when it is not given. Compression drivers take `--exit-diameter-mm`. The command converts to SI, runs the loader and validator and writes nothing if either fails. The loader also accepts `sd_cm2`, `vas_l`, `mms_g`, `le_mh`, `xmax_mm`, `exit_area_cm2`, `exit_diameter_mm` and `power_aes_watts` in hand-written JSON, and rejects values that are orders of magnitude off with a hint about the unit.
+Mms is derived from Vas, Sd and Fs when it is not given. Compression drivers take `--exit-diameter-mm`. Adapter or phase-plug air goes in `--front-chamber-cm3` (0 means none), with `--front-chamber-area-cm2` when it acts as a short duct; a sealed rear volume goes in `--rear-chamber-cm3`. The command converts to SI, runs the loader and validator and writes nothing if either fails. The loader also accepts `sd_cm2`, `vas_l`, `mms_g`, `le_mh`, `xmax_mm`, `exit_area_cm2`, `exit_diameter_mm`, `front_chamber_volume_cm3`, `front_chamber_area_cm2`, `rear_chamber_volume_cm3` and `power_aes_watts` in hand-written JSON, and rejects values that are orders of magnitude off with a hint about the unit.
 
 See the [independent solver protocol](docs/INDEPENDENT_SOLVER_VALIDATION.md) and [physical assembly reference audit](docs/PHYSICAL_REFERENCE_AUDIT.md) for the current qualification work.
 See [run locations, latest-run lookup, resume and cleanup](docs/RUN_MANAGEMENT.md).

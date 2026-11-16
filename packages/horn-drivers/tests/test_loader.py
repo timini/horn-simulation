@@ -261,3 +261,16 @@ def test_chamber_fields_load_in_si_or_convenience_units(v2_db):
     raw['parameters'].update(rear_chamber_volume_m3=-1.)
     with pytest.raises(ValueError, match='rear_chamber_volume_m3'):
         _driver_from_dict(raw)
+
+
+@pytest.mark.parametrize("field,value,hint", [
+    ("front_chamber_volume_m3", 139.0, "front_chamber_volume_cm3"),   # cm^3 typed under the m^3 key
+    ("front_chamber_area_m2", 30.0, "front_chamber_area_cm2"),
+    ("rear_chamber_volume_m3", 900.0, "rear_chamber_volume_cm3"),
+])
+def test_chamber_unit_mistakes_are_rejected_with_a_hint(field, value, hint):
+    from horn_drivers.loader import _driver_from_dict
+    record = _record(sd_m2=0.0346, mms_kg=0.04, front_chamber_volume_m3=1e-4)
+    record["parameters"][field] = value
+    with pytest.raises(ValueError, match=hint):
+        _driver_from_dict(record)

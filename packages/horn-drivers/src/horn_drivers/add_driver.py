@@ -47,7 +47,14 @@ PARAMETER_OPTIONS: List[Tuple[str, str, float, str]] = [
     ("power-w", "power_w", 1.0, "nominal / AES power, W"),
     ("peak-power-w", "peak_power_w", 1.0, "program or peak power, W"),
     ("sensitivity-db", "sensitivity_db_1w1m", 1.0, "sensitivity, dB at 1 W / 1 m"),
+    ("front-chamber-cm3", "front_chamber_volume_m3", 1e-6,
+     "air volume between diaphragm and throat (adapter or phase plug), cm^3; 0 means none"),
+    ("front-chamber-area-cm2", "front_chamber_area_m2", 1e-4,
+     "cross-section of the front chamber when it acts as a short duct, cm^2"),
+    ("rear-chamber-cm3", "rear_chamber_volume_m3", 1e-6, "sealed rear chamber volume, cm^3; omit for open back"),
 ]
+# Zero is a meaningful value for these: no front chamber at all.
+ZERO_ALLOWED = {"front_chamber_volume_m3"}
 RECORD_OPTIONS = [
     ("f-low-hz", "usable_f_low_hz", "lower limit of the manufacturer's frequency range, Hz"),
     ("f-high-hz", "usable_f_high_hz", "upper limit of the manufacturer's frequency range, Hz"),
@@ -69,7 +76,7 @@ def build_record(args: argparse.Namespace) -> Tuple[dict, List[str], List[str]]:
     for option, key, factor, _ in PARAMETER_OPTIONS:
         value = getattr(args, option.replace("-", "_"))
         if value is not None:
-            if not math.isfinite(value) or value <= 0:
+            if not math.isfinite(value) or value < 0 or (value == 0 and key not in ZERO_ALLOWED):
                 raise ValueError(f"--{option} must be finite and positive")
             params[key] = float(f"{value * factor:.12g}")
             supplied.append(key)

@@ -39,6 +39,9 @@ _GROSS_LIMITS = {
     "le_h": (0.05, "Le is in H; use le_mh for millihenries"),
     "xmax_m": (0.1, "Xmax is in m; use xmax_mm for millimetres"),
     "exit_area_m2": (0.1, "exit area is in m^2; use exit_area_cm2 or exit_diameter_mm"),
+    "front_chamber_volume_m3": (0.01, "front chamber volume is in m^3; use front_chamber_volume_cm3"),
+    "front_chamber_area_m2": (0.1, "front chamber area is in m^2; use front_chamber_area_cm2"),
+    "rear_chamber_volume_m3": (1.0, "rear chamber volume is in m^3; use rear_chamber_volume_cm3"),
 }
 
 RHO_AIR = 1.204   # kg/m^3, 20 C
@@ -118,7 +121,10 @@ def _driver_from_dict(d: dict) -> DriverParameters:
     power_w = _first(params, "power_w", "power_aes_w", "power_aes_watts")
 
     for name, value in (("sd_m2", sd_m2), ("mms_kg", mms_kg), ("le_h", le_h),
-                        ("xmax_m", xmax_m), ("exit_area_m2", exit_area_m2)):
+                        ("xmax_m", xmax_m), ("exit_area_m2", exit_area_m2),
+                        ("front_chamber_volume_m3", front_chamber_volume_m3),
+                        ("front_chamber_area_m2", front_chamber_area_m2),
+                        ("rear_chamber_volume_m3", rear_chamber_volume_m3)):
         limit, hint = _GROSS_LIMITS[name]
         if isinstance(value, (int, float)) and value > limit:
             raise ValueError(f"{driver_id}: {name}={value} is not a plausible driver value ({hint})")

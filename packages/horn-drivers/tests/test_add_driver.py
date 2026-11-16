@@ -58,3 +58,20 @@ def test_inconsistent_or_mis_scaled_values_write_nothing(tmp_path, capsys, extra
 def test_source_url_is_required():
     with pytest.raises(SystemExit):
         main([a for a in BASE if a not in ("--source-url", SOURCE)])
+
+
+def test_adapter_chambers_are_entered_in_cm3_and_reach_the_driver_model(tmp_path):
+    args = ["--db", str(tmp_path), *BASE, "--vas-l", "52",
+            "--front-chamber-cm3", "120", "--front-chamber-area-cm2", "30", "--rear-chamber-cm3", "900"]
+    assert main(args) == 0
+    driver = load_driver(str(tmp_path), "acme-ac10-8ohm")
+    assert driver.front_chamber_volume_m3 == pytest.approx(1.2e-4)
+    assert driver.front_chamber_area_m2 == pytest.approx(3e-3)
+    assert driver.rear_chamber_volume_m3 == pytest.approx(9e-4)
+
+
+def test_zero_front_chamber_means_direct_coupling(tmp_path, capsys):
+    assert main(["--db", str(tmp_path), *BASE, "--vas-l", "52", "--front-chamber-cm3", "0"]) == 0
+    assert load_driver(str(tmp_path), "acme-ac10-8ohm").front_chamber_volume_m3 == 0.
+    assert main(["--db", str(tmp_path / "x"), *BASE, "--vas-l", "52", "--rear-chamber-cm3", "0"]) == 2
+    assert "--rear-chamber-cm3 must be finite and positive" in capsys.readouterr().err
