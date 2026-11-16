@@ -416,7 +416,7 @@ def plot(path, piston, horn):
     for ax in axes:
         ax.set_xlabel("angle from axis (deg)")
         ax.set_ylabel("level re axis (dB)")
-        ax.set_ylim(-30, 3)
+        ax.set_ylim(-30, 8)
         ax.grid(alpha=.3)
         ax.legend(fontsize=7)
     fig.tight_layout()

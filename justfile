@@ -89,8 +89,7 @@ latest-run *args:
 runs *args:
     python3 scripts/runs.py list {{args}}
 
-# Cross-software checks: openwind (1D impedance) and bempp-cl (exterior BEM) in their own venv,
-# then the Hornresp sheets. Writes data/validation/cross_software_*.json and docs/validation/cross_software/*.png
+# Cross-software checks (openwind, bempp-cl, Hornresp sheets); see docs/CROSS_SOFTWARE_VALIDATION.md
 validate-cross-software:
     #!/usr/bin/env bash
     set -euo pipefail
