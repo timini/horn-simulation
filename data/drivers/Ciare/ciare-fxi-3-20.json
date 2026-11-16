@@ -2,7 +2,7 @@
     "driver_id": "ciare-fxi-3-20",
     "manufacturer": "Ciare",
     "model_name": "FXI_3.20",
-    "driver_type": "compression",
+    "driver_type": "unknown",
     "parameters": {
         "fs_hz": 110.0,
         "re_ohm": 5.1,
@@ -15,5 +15,18 @@
         "xmax_m": 0.003,
         "qms": 4.4,
         "qes": 0.53
+    },
+    "parameter_source": "https://loudspeakerdatabase.com/Ciare/FXI_3.20",
+    "record_schema_version": 1,
+    "provenance": {
+        "retrieved_on": "2026-02-26",
+        "retrieved_on_basis": "Date of commit 3f212b1, which wrote this record. The scrape date itself was not recorded.",
+        "source_kind": "third_party_aggregator",
+        "capture_method": "Legacy scrape of loudspeakerdatabase.com (before scraper schema 3). parameter_source was reconstructed from the manufacturer slug and model name.",
+        "known_limitations": [
+            "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
+            "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
+            "Band, power handling, Rms and sensitivity were not captured."
+        ]
     }
 }

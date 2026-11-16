@@ -23,6 +23,7 @@
   "usable_f_high_hz": 7000,
   "parameter_source": "https://www.eighteensound.it/es/products/lf-driver/6-5/8/6NMB420",
   "interface_model": null,
+  "record_schema_version": 1,
   "provenance": {
     "retrieved_on": "2026-09-07",
     "capture_method": "Transcribed from retrieved manufacturer page. Raw source HTML is not archived.",

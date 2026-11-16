@@ -115,6 +115,11 @@ class DriverParameters:
         if self.cms_m_per_n is None:
             self.cms_m_per_n = 1.0 / (self.mms_kg * omega_s ** 2)
 
+        # A supplied mechanical resistance fixes Qms directly. Deriving Qms
+        # from Qts and Qes instead is ill-conditioned when Qes is close to Qts.
+        if self.qms is None and self.rms_kg_per_s is not None and self.rms_kg_per_s > 0:
+            self.qms = omega_s * self.mms_kg / self.rms_kg_per_s
+
         # Derive Q factors — need at least two of three
         q_count = sum(x is not None for x in [self.qms, self.qes, self.qts])
         if q_count >= 2:

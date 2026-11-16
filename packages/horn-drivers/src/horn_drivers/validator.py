@@ -5,25 +5,46 @@ Three tiers of validation:
   Tier 2 — Cross-parameter consistency (10% tolerance)
   Tier 3 — Size-aware plausibility ranges per nominal diameter
 
+Database checks (validate_database) also catch records that are copies of
+another page (the same parameter tuple across unrelated models), mojibake in
+model names and records the loader would reject.
+
 Usage:
-    horn-validate-drivers [--db data/drivers.json]
+    horn-validate-drivers [--db data/drivers]
 """
 
 import argparse
 import json
 import math
 import sys
+import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
+from horn_drivers.loader import (
+    QMS_PLAUSIBLE_MAX,
+    Q_IDENTITY_TOLERANCE,
+    _driver_from_dict,
+    q_identity_error,
+)
+
 # Physical constants
 RHO = 1.204    # kg/m^3  air density at 20 °C
 C = 343.0      # m/s     speed of sound at 20 °C
 
 ESSENTIAL_FIELDS = ["fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg", "le_h"]
+
+# Supplied Qts within this relative distance of Qms*Qes/(Qms+Qes) is rounding.
+Q_IDENTITY_WARNING = 0.03
+# A parameter tuple shared by more than this many records is a copied page,
+# not a family of variants (impedance or cone variants share at most a few).
+MAX_SHARED_TUPLE = 3
+DUPLICATE_KEY_FIELDS = ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg")
+# UTF-8 text decoded as Latin-1, e.g. "Ω" -> "Î©".
+_MOJIBAKE = ("Î©", "Ã", "Â", "â€")
 
 # ---------------------------------------------------------------------------
 # Tier 3 — size-aware plausibility ranges
@@ -210,25 +231,48 @@ def validate_driver(driver: dict) -> ValidationResult:
 
     # --- Tier 1: Exact identities ---
 
-    # 1. Q factor consistency: 1/Qts = 1/Qms + 1/Qes
+    # 1. Q factor consistency: 1/Qts = 1/Qms + 1/Qes, as a relative error on
+    #    Qts so the tolerance means the same thing for low- and high-Q drivers.
     qms = params.get("qms")
     qes = params.get("qes")
     qts = params.get("qts")
     if qms and qes and qts and qms > 0 and qes > 0 and qts > 0:
-        reciprocal_sum = 1.0 / qms + 1.0 / qes
-        q_diff = abs(1.0 / qts - reciprocal_sum)
-        if q_diff > 0.1:
+        implied = qms * qes / (qms + qes)
+        q_error = q_identity_error(qms, qes, qts)
+        if q_error > Q_IDENTITY_TOLERANCE:
             result.errors.append(
-                f"Q factor identity violated: 1/Qts={1.0/qts:.4f} != "
-                f"1/Qms+1/Qes={reciprocal_sum:.4f} (diff={q_diff:.4f})"
+                f"Q factor identity violated: Qts={qts} but Qms*Qes/(Qms+Qes)="
+                f"{implied:.4f} ({q_error:.1%} apart, limit {Q_IDENTITY_TOLERANCE:.0%})"
             )
             penalties += 0.15
-        elif q_diff > 0.01:
+        elif q_error > Q_IDENTITY_WARNING:
             result.warnings.append(
-                f"Q factor rounding: 1/Qts={1.0/qts:.4f} vs "
-                f"1/Qms+1/Qes={reciprocal_sum:.4f} (diff={q_diff:.4f})"
+                f"Q factor rounding: Qts={qts} vs Qms*Qes/(Qms+Qes)={implied:.4f} "
+                f"({q_error:.1%} apart)"
             )
             penalties += 0.02
+
+    # Loader acceptance: a record the pipeline cannot load is an error here.
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)  # reported below instead
+            loaded = _driver_from_dict(driver)
+    except (KeyError, TypeError, ValueError, ZeroDivisionError, OverflowError) as error:
+        loaded = None
+        if "Q factors are inconsistent" not in str(error):  # already reported above
+            result.errors.append(f"Loader rejects record: {error}")
+            penalties += 0.2
+    if loaded is not None and loaded.qms is not None and loaded.qms > QMS_PLAUSIBLE_MAX:
+        result.warnings.append(
+            f"Qms={loaded.qms:.1f} above {QMS_PLAUSIBLE_MAX:g} is implausible"
+            + ("" if qms else " (derived; supply Qms or Rms)")
+        )
+        penalties += 0.05
+
+    model_name = driver.get("model_name") or ""
+    if any(marker in model_name for marker in _MOJIBAKE):
+        result.errors.append(f"model_name {model_name!r} contains mojibake (UTF-8 read as Latin-1)")
+        penalties += 0.05
 
     # 2. Cms = 1 / (Mms * omega_s^2) — this is a definition, always holds
     #    (just compute and store, no check needed as it's derived)
@@ -237,6 +281,17 @@ def validate_driver(driver: dict) -> ValidationResult:
 
     derived = compute_derived_params(params)
     result.computed = derived
+
+    # Supplied Cms must agree with Fs and Mms: fs = 1 / (2 pi sqrt(Mms Cms)).
+    cms_supplied = params.get("cms_m_per_n")
+    if cms_supplied and cms_supplied > 0 and params.get("mms_kg"):
+        fs_from_cms = 1.0 / (2.0 * math.pi * math.sqrt(params["mms_kg"] * cms_supplied))
+        if abs(fs_from_cms / params["fs_hz"] - 1.0) > 0.10:
+            result.warnings.append(
+                f"Cms cross-check: Mms and Cms give fs={fs_from_cms:.1f} Hz, "
+                f"stated fs={params['fs_hz']} Hz"
+            )
+            penalties += 0.05
 
     # 3. Qes cross-check
     if qes and qes > 0 and "Qes_computed" in derived:
@@ -327,6 +382,37 @@ def validate_driver(driver: dict) -> ValidationResult:
     return result
 
 
+def _parameter_key(driver: dict) -> Optional[tuple]:
+    params = driver.get("parameters", driver)
+    if not isinstance(params, dict):
+        return None
+    values = tuple(params.get(name) for name in DUPLICATE_KEY_FIELDS)
+    return values if all(isinstance(v, (int, float)) for v in values) else None
+
+
+def find_duplicate_groups(drivers: List[dict]) -> List[List[str]]:
+    """Groups of records that look like copies of one page.
+
+    A group is records sharing the exact (fs, Re, Bl, Sd, Mms) tuple, flagged
+    when it is larger than any real variant family (MAX_SHARED_TUPLE) or when
+    its members claim different nominal diameters (a 6-inch and an 18-inch
+    driver cannot share a motor and cone).
+    """
+    groups: Dict[tuple, List[dict]] = {}
+    for driver in drivers:
+        key = _parameter_key(driver)
+        if key is not None:
+            groups.setdefault(key, []).append(driver)
+    flagged = []
+    for members in groups.values():
+        if len(members) < 2:
+            continue
+        diameters = {m.get("nominal_diameter") for m in members if m.get("nominal_diameter")}
+        if len(members) > MAX_SHARED_TUPLE or len(diameters) > 1:
+            flagged.append(sorted(str(m.get("driver_id")) for m in members))
+    return flagged
+
+
 def validate_database(db_path: str) -> List[ValidationResult]:
     """Validate entire driver database. Returns list of ValidationResults.
 
@@ -338,9 +424,25 @@ def validate_database(db_path: str) -> List[ValidationResult]:
     print(f"Validating {len(drivers)} drivers from {db_path}\n")
 
     results = []
+    by_id: Dict[str, ValidationResult] = {}
     for driver in drivers:
         result = validate_driver(driver)
         results.append(result)
+        by_id[str(driver.get("driver_id"))] = result
+
+    for group in find_duplicate_groups(drivers):
+        for driver_id in group:
+            by_id[driver_id].errors.append(
+                f"Same (fs, Re, Bl, Sd, Mms) as {len(group) - 1} other record(s), "
+                f"e.g. {', '.join(i for i in group[:4] if i != driver_id)}: likely a copied page"
+            )
+
+    seen_ids: Dict[str, int] = {}
+    for driver in drivers:
+        seen_ids[str(driver.get("driver_id"))] = seen_ids.get(str(driver.get("driver_id")), 0) + 1
+    for driver_id, count in seen_ids.items():
+        if count > 1:
+            by_id[driver_id].errors.append(f"driver_id appears {count} times")
 
     errors = sum(len(r.errors) for r in results)
     warnings = sum(len(r.warnings) for r in results)

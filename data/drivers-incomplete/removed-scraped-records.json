@@ -1,0 +1,2399 @@
+{
+  "note": "Scraped records removed from data/drivers because their values could not be trusted. Nothing here is loaded. Re-fetch with horn-scrape-drivers or enter the datasheet values with horn-add-driver.",
+  "inconsistent_source_values": [
+    {
+      "driver_id": "18sound-15w1301",
+      "manufacturer": "18Sound",
+      "model_name": "15W1301",
+      "source_url": "https://loudspeakerdatabase.com/18Sound/15W1301",
+      "reason": "Q factor identity violated: Qts=0.32 but Qms*Qes/(Qms+Qes)=0.3546 (10.8% apart, limit 10%)",
+      "parameters_as_scraped": {
+        "fs_hz": 48.0,
+        "re_ohm": 5.5,
+        "bl_tm": 22.3,
+        "sd_m2": 0.09000000000000001,
+        "mms_kg": 0.099,
+        "le_h": 0.0015500000000000002,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.006,
+        "qms": 8.5,
+        "qes": 0.37
+      }
+    },
+    {
+      "driver_id": "beyma-18qlex1600fe-4",
+      "manufacturer": "Beyma",
+      "model_name": "18QLEX1600Fe_4Ω",
+      "source_url": "https://loudspeakerdatabase.com/Beyma/18QLEX1600Fe_4%CE%A9",
+      "reason": "Loader rejects record: beyma-18qlex1600fe-4: deriving qms requires qes > qts",
+      "parameters_as_scraped": {
+        "fs_hz": 36.0,
+        "re_ohm": 5.1,
+        "bl_tm": 26.4,
+        "sd_m2": 0.08800000000000001,
+        "mms_kg": 0.1458,
+        "le_h": 0.0015,
+        "qts": 0.304,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.011
+      }
+    },
+    {
+      "driver_id": "beyma-6p200fe-16",
+      "manufacturer": "Beyma",
+      "model_name": "6P200Fe_16Ω",
+      "source_url": "https://loudspeakerdatabase.com/Beyma/6P200Fe_16%CE%A9",
+      "reason": "Loader rejects record: beyma-6p200fe-16: deriving qms requires qes > qts",
+      "parameters_as_scraped": {
+        "fs_hz": 36.0,
+        "re_ohm": 5.1,
+        "bl_tm": 26.4,
+        "sd_m2": 0.08800000000000001,
+        "mms_kg": 0.1458,
+        "le_h": 0.0015,
+        "qts": 0.304,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.011
+      }
+    },
+    {
+      "driver_id": "dayton-ce30p-4",
+      "manufacturer": "Dayton",
+      "model_name": "CE30P-4",
+      "source_url": "https://loudspeakerdatabase.com/Dayton/CE30P-4",
+      "reason": "Q factor identity violated: Qts=0.8 but Qms*Qes/(Qms+Qes)=0.9201 (15.0% apart, limit 10%)",
+      "parameters_as_scraped": {
+        "fs_hz": 335.8,
+        "re_ohm": 3.4,
+        "bl_tm": 2.16,
+        "sd_m2": 0.00041,
+        "mms_kg": 0.0006500000000000001,
+        "le_h": 0.00017999999999999998,
+        "qts": 0.8,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0011,
+        "qms": 8.62,
+        "qes": 1.03
+      }
+    },
+    {
+      "driver_id": "dayton-ce30p-8",
+      "manufacturer": "Dayton",
+      "model_name": "CE30P-8",
+      "source_url": "https://loudspeakerdatabase.com/Dayton/CE30P-8",
+      "reason": "Q factor identity violated: Qts=0.8 but Qms*Qes/(Qms+Qes)=0.9201 (15.0% apart, limit 10%)",
+      "parameters_as_scraped": {
+        "fs_hz": 335.8,
+        "re_ohm": 3.4,
+        "bl_tm": 2.16,
+        "sd_m2": 0.00041,
+        "mms_kg": 0.0006500000000000001,
+        "le_h": 0.00017999999999999998,
+        "qts": 0.8,
+        "nominal_impedance_ohm": 4.0,
+        "xmax_m": 0.0011,
+        "qms": 8.62,
+        "qes": 1.03
+      }
+    },
+    {
+      "driver_id": "lavoce-waf102-50",
+      "manufacturer": "LaVoce",
+      "model_name": "WAF102.50",
+      "source_url": "https://loudspeakerdatabase.com/LaVoce/WAF102.50",
+      "reason": "Q factor identity violated: Qts=0.38 but Qms*Qes/(Qms+Qes)=0.1165 (69.3% apart, limit 10%)",
+      "parameters_as_scraped": {
+        "fs_hz": 74.0,
+        "re_ohm": 5.7,
+        "bl_tm": 14.62,
+        "sd_m2": 0.035,
+        "mms_kg": 0.0337,
+        "le_h": 0.00068,
+        "qts": 0.38,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.0050999999999999995,
+        "qms": 4.01,
+        "qes": 0.12
+      }
+    },
+    {
+      "driver_id": "sica-4c1-5cp",
+      "manufacturer": "SICA",
+      "model_name": "4C1,5CP",
+      "source_url": "https://loudspeakerdatabase.com/SICA/4C1%2C5CP",
+      "reason": "Q factor identity violated: Qts=0.32 but Qms*Qes/(Qms+Qes)=0.2531 (20.9% apart, limit 10%)",
+      "parameters_as_scraped": {
+        "fs_hz": 102.0,
+        "re_ohm": 5.1,
+        "bl_tm": 7.27,
+        "sd_m2": 0.00515,
+        "mms_kg": 0.0054,
+        "le_h": 0.00035,
+        "qts": 0.32,
+        "nominal_impedance_ohm": 8.0,
+        "xmax_m": 0.002,
+        "qms": 4.05,
+        "qes": 0.27
+      }
+    }
+  ],
+  "copied_pages_not_restored": [
+    {
+      "driver_id": "18sound-10mb600-16",
+      "manufacturer": "18Sound",
+      "model_name": "10MB600_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-10nmb420-16",
+      "manufacturer": "18Sound",
+      "model_name": "10NMB420_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-10ntlw2000-16",
+      "manufacturer": "18Sound",
+      "model_name": "10NTLW2000_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-10ntlw2500-16",
+      "manufacturer": "18Sound",
+      "model_name": "10NTLW2500_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-10ntlw2500-8",
+      "manufacturer": "18Sound",
+      "model_name": "10NTLW2500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-10ntlw3500-16",
+      "manufacturer": "18Sound",
+      "model_name": "10NTLW3500_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-10nw650-16",
+      "manufacturer": "18Sound",
+      "model_name": "10NW650_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-10nw750-16",
+      "manufacturer": "18Sound",
+      "model_name": "10NW750_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-10w650-16",
+      "manufacturer": "18Sound",
+      "model_name": "10W650_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12mb600-8",
+      "manufacturer": "18Sound",
+      "model_name": "12MB600_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12mb700-16",
+      "manufacturer": "18Sound",
+      "model_name": "12MB700_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12nd610-16",
+      "manufacturer": "18Sound",
+      "model_name": "12ND610_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12nd710-16",
+      "manufacturer": "18Sound",
+      "model_name": "12ND710_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12nd830-8",
+      "manufacturer": "18Sound",
+      "model_name": "12ND830_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12ntls3500-8",
+      "manufacturer": "18Sound",
+      "model_name": "12NTLS3500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12ntlw2500-16",
+      "manufacturer": "18Sound",
+      "model_name": "12NTLW2500_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12ntlw2500-8",
+      "manufacturer": "18Sound",
+      "model_name": "12NTLW2500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12ntlw3500-16",
+      "manufacturer": "18Sound",
+      "model_name": "12NTLW3500_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12ntlw3500-8",
+      "manufacturer": "18Sound",
+      "model_name": "12NTLW3500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12w500-8",
+      "manufacturer": "18Sound",
+      "model_name": "12W500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12w750-16",
+      "manufacturer": "18Sound",
+      "model_name": "12W750_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-12w750-8",
+      "manufacturer": "18Sound",
+      "model_name": "12W750_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15lw1401-8",
+      "manufacturer": "18Sound",
+      "model_name": "15LW1401_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15lw2400-8",
+      "manufacturer": "18Sound",
+      "model_name": "15LW2400_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15nd830-8",
+      "manufacturer": "18Sound",
+      "model_name": "15ND830_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15nd930-16",
+      "manufacturer": "18Sound",
+      "model_name": "15ND930_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15nd930-8",
+      "manufacturer": "18Sound",
+      "model_name": "15ND930_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15nd940-16",
+      "manufacturer": "18Sound",
+      "model_name": "15ND940_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15nd940-8",
+      "manufacturer": "18Sound",
+      "model_name": "15ND940_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15nlw4500-8",
+      "manufacturer": "18Sound",
+      "model_name": "15NLW4500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15nlw9401-8",
+      "manufacturer": "18Sound",
+      "model_name": "15NLW9401_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15nlw9500-8",
+      "manufacturer": "18Sound",
+      "model_name": "15NLW9500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15ntlw3500-8",
+      "manufacturer": "18Sound",
+      "model_name": "15NTLW3500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15tlw3000-8",
+      "manufacturer": "18Sound",
+      "model_name": "15TLW3000_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15w700-8",
+      "manufacturer": "18Sound",
+      "model_name": "15W700_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15w750-16",
+      "manufacturer": "18Sound",
+      "model_name": "15W750_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-15w750-8",
+      "manufacturer": "18Sound",
+      "model_name": "15W750_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-18lw1400-8",
+      "manufacturer": "18Sound",
+      "model_name": "18LW1400_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-18lw2400-8",
+      "manufacturer": "18Sound",
+      "model_name": "18LW2400_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-18lw2420-8",
+      "manufacturer": "18Sound",
+      "model_name": "18LW2420_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-18lw2600-8",
+      "manufacturer": "18Sound",
+      "model_name": "18LW2600_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-18nlw4100-8",
+      "manufacturer": "18Sound",
+      "model_name": "18NLW4100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-18nlw4500-8",
+      "manufacturer": "18Sound",
+      "model_name": "18NLW4500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-18nlw9000-8",
+      "manufacturer": "18Sound",
+      "model_name": "18NLW9000_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-18nlw9400-8",
+      "manufacturer": "18Sound",
+      "model_name": "18NLW9400_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-18nlw9601-8",
+      "manufacturer": "18Sound",
+      "model_name": "18NLW9601_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-18ntlw5000-8",
+      "manufacturer": "18Sound",
+      "model_name": "18NTLW5000_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-18tlw3000-8",
+      "manufacturer": "18Sound",
+      "model_name": "18TLW3000_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-21nlw4000-8",
+      "manufacturer": "18Sound",
+      "model_name": "21NLW4000_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-21nlw4100-8",
+      "manufacturer": "18Sound",
+      "model_name": "21NLW4100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-21nlw9001-8",
+      "manufacturer": "18Sound",
+      "model_name": "21NLW9001_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-21nlw9601-8",
+      "manufacturer": "18Sound",
+      "model_name": "21NLW9601_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-21ntlw5000-8",
+      "manufacturer": "18Sound",
+      "model_name": "21NTLW5000_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-6nd410-16",
+      "manufacturer": "18Sound",
+      "model_name": "6ND410_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-6nd430-16",
+      "manufacturer": "18Sound",
+      "model_name": "6ND430_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-6nd430-8",
+      "manufacturer": "18Sound",
+      "model_name": "6ND430_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-6nmb420-16",
+      "manufacturer": "18Sound",
+      "model_name": "6NMB420_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-6nmb900-16",
+      "manufacturer": "18Sound",
+      "model_name": "6NMB900_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-6ntlw2000-16",
+      "manufacturer": "18Sound",
+      "model_name": "6NTLW2000_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-8mb500-16",
+      "manufacturer": "18Sound",
+      "model_name": "8MB500_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-8mb500-8",
+      "manufacturer": "18Sound",
+      "model_name": "8MB500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-8nmb420-16",
+      "manufacturer": "18Sound",
+      "model_name": "8NMB420_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-8nmb420-8",
+      "manufacturer": "18Sound",
+      "model_name": "8NMB420_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-8nmb750-16",
+      "manufacturer": "18Sound",
+      "model_name": "8NMB750_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-8ntls2000-16",
+      "manufacturer": "18Sound",
+      "model_name": "8NTLS2000_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-8ntlw2000-16",
+      "manufacturer": "18Sound",
+      "model_name": "8NTLW2000_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "18sound-8nw650-16",
+      "manufacturer": "18Sound",
+      "model_name": "8NW650_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-10cla64-16",
+      "manufacturer": "BC",
+      "model_name": "10CLA64_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-10mbx64-16",
+      "manufacturer": "BC",
+      "model_name": "10MBX64_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-10nw76-16",
+      "manufacturer": "BC",
+      "model_name": "10NW76_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-10nw76-8",
+      "manufacturer": "BC",
+      "model_name": "10NW76_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12fg100-8",
+      "manufacturer": "BC",
+      "model_name": "12FG100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12fw76-8",
+      "manufacturer": "BC",
+      "model_name": "12FW76_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12nbx100-4",
+      "manufacturer": "BC",
+      "model_name": "12NBX100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12nbx100-8",
+      "manufacturer": "BC",
+      "model_name": "12NBX100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12ndl76-16",
+      "manufacturer": "BC",
+      "model_name": "12NDL76_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12ndl76-8",
+      "manufacturer": "BC",
+      "model_name": "12NDL76_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12ndl88-16",
+      "manufacturer": "BC",
+      "model_name": "12NDL88_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12ndl88-4",
+      "manufacturer": "BC",
+      "model_name": "12NDL88_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12nw100-4",
+      "manufacturer": "BC",
+      "model_name": "12NW100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12nw100-8",
+      "manufacturer": "BC",
+      "model_name": "12NW100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12nw76-4",
+      "manufacturer": "BC",
+      "model_name": "12NW76_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12nw76-8",
+      "manufacturer": "BC",
+      "model_name": "12NW76_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12sw115-8",
+      "manufacturer": "BC",
+      "model_name": "12SW115_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12tbx100-4",
+      "manufacturer": "BC",
+      "model_name": "12TBX100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-12tbx100-8",
+      "manufacturer": "BC",
+      "model_name": "12TBX100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-14cxn88-4",
+      "manufacturer": "BC",
+      "model_name": "14CXN88_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-14cxn88-8",
+      "manufacturer": "BC",
+      "model_name": "14CXN88_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-14ndl88-16",
+      "manufacturer": "BC",
+      "model_name": "14NDL88_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-14ndl88-4",
+      "manufacturer": "BC",
+      "model_name": "14NDL88_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15cl76-8",
+      "manufacturer": "BC",
+      "model_name": "15CL76_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15ds100-8",
+      "manufacturer": "BC",
+      "model_name": "15DS100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15ds115-4",
+      "manufacturer": "BC",
+      "model_name": "15DS115_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15ds115-8",
+      "manufacturer": "BC",
+      "model_name": "15DS115_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15nbx100-4",
+      "manufacturer": "BC",
+      "model_name": "15NBX100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15nbx100-8",
+      "manufacturer": "BC",
+      "model_name": "15NBX100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15ndl88-4",
+      "manufacturer": "BC",
+      "model_name": "15NDL88_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15nw100-4",
+      "manufacturer": "BC",
+      "model_name": "15NW100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15nw100-8",
+      "manufacturer": "BC",
+      "model_name": "15NW100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15nw76-4",
+      "manufacturer": "BC",
+      "model_name": "15NW76_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15nw76-8",
+      "manufacturer": "BC",
+      "model_name": "15NW76_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15rbx100-4",
+      "manufacturer": "BC",
+      "model_name": "15RBX100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15rbx100-8",
+      "manufacturer": "BC",
+      "model_name": "15RBX100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15sw100-4",
+      "manufacturer": "BC",
+      "model_name": "15SW100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15sw100-8",
+      "manufacturer": "BC",
+      "model_name": "15SW100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15sw115-4",
+      "manufacturer": "BC",
+      "model_name": "15SW115_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15sw115-8",
+      "manufacturer": "BC",
+      "model_name": "15SW115_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15tbw100-4",
+      "manufacturer": "BC",
+      "model_name": "15TBW100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15tbw100-8",
+      "manufacturer": "BC",
+      "model_name": "15TBW100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15tbx100-4",
+      "manufacturer": "BC",
+      "model_name": "15TBX100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-15tbx100-8",
+      "manufacturer": "BC",
+      "model_name": "15TBX100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18ds100-8",
+      "manufacturer": "BC",
+      "model_name": "18DS100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18ds115-4",
+      "manufacturer": "BC",
+      "model_name": "18DS115_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18ds115-8",
+      "manufacturer": "BC",
+      "model_name": "18DS115_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18nbx100-4",
+      "manufacturer": "BC",
+      "model_name": "18NBX100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18nbx100-8",
+      "manufacturer": "BC",
+      "model_name": "18NBX100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18nw100-4",
+      "manufacturer": "BC",
+      "model_name": "18NW100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18nw100-8",
+      "manufacturer": "BC",
+      "model_name": "18NW100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18ps100-8",
+      "manufacturer": "BC",
+      "model_name": "18PS100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18pzb100-8",
+      "manufacturer": "BC",
+      "model_name": "18PZB100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18rbx100-4",
+      "manufacturer": "BC",
+      "model_name": "18RBX100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18rbx100-8",
+      "manufacturer": "BC",
+      "model_name": "18RBX100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18sw100-4",
+      "manufacturer": "BC",
+      "model_name": "18SW100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18sw100-8",
+      "manufacturer": "BC",
+      "model_name": "18SW100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18sw115-4",
+      "manufacturer": "BC",
+      "model_name": "18SW115_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18sw115-8",
+      "manufacturer": "BC",
+      "model_name": "18SW115_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18tbw100-4",
+      "manufacturer": "BC",
+      "model_name": "18TBW100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18tbw100-8",
+      "manufacturer": "BC",
+      "model_name": "18TBW100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18tbx100-4",
+      "manufacturer": "BC",
+      "model_name": "18TBX100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-18tbx100-8",
+      "manufacturer": "BC",
+      "model_name": "18TBX100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-21ds115-4",
+      "manufacturer": "BC",
+      "model_name": "21DS115_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-21ds115-8",
+      "manufacturer": "BC",
+      "model_name": "21DS115_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-21sw115-4",
+      "manufacturer": "BC",
+      "model_name": "21SW115_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-21sw115-8",
+      "manufacturer": "BC",
+      "model_name": "21SW115_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-21sw152-8",
+      "manufacturer": "BC",
+      "model_name": "21SW152_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-320k-c-a-16",
+      "manufacturer": "BC",
+      "model_name": "320K_C-A_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-320k-c-a-8",
+      "manufacturer": "BC",
+      "model_name": "320K_C-A_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-4cxn36-16",
+      "manufacturer": "BC",
+      "model_name": "4CXN36_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-5fg44-16",
+      "manufacturer": "BC",
+      "model_name": "5FG44_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-5fg44-8",
+      "manufacturer": "BC",
+      "model_name": "5FG44_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-5mdn38-16",
+      "manufacturer": "BC",
+      "model_name": "5MDN38_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-5mdn38-8",
+      "manufacturer": "BC",
+      "model_name": "5MDN38_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-6mbx44-16",
+      "manufacturer": "BC",
+      "model_name": "6MBX44_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-6mbx44-8",
+      "manufacturer": "BC",
+      "model_name": "6MBX44_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-6md38-16",
+      "manufacturer": "BC",
+      "model_name": "6MD38_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-6md38-8",
+      "manufacturer": "BC",
+      "model_name": "6MD38_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-6mdn44-16",
+      "manufacturer": "BC",
+      "model_name": "6MDN44_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-6mdn44-8",
+      "manufacturer": "BC",
+      "model_name": "6MDN44_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-6ndl38-16",
+      "manufacturer": "BC",
+      "model_name": "6NDL38_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-6ndl38-4",
+      "manufacturer": "BC",
+      "model_name": "6NDL38_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-6ndl38-8",
+      "manufacturer": "BC",
+      "model_name": "6NDL38_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8cl51-16",
+      "manufacturer": "BC",
+      "model_name": "8CL51_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8cl51-8",
+      "manufacturer": "BC",
+      "model_name": "8CL51_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8fg64-16",
+      "manufacturer": "BC",
+      "model_name": "8FG64_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8fg64-8",
+      "manufacturer": "BC",
+      "model_name": "8FG64_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8fmb51-16",
+      "manufacturer": "BC",
+      "model_name": "8FMB51_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8mbx51-16",
+      "manufacturer": "BC",
+      "model_name": "8MBX51_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8mbx51-8",
+      "manufacturer": "BC",
+      "model_name": "8MBX51_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8mdn51-16",
+      "manufacturer": "BC",
+      "model_name": "8MDN51_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8mdn51-8",
+      "manufacturer": "BC",
+      "model_name": "8MDN51_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8ndl51-16",
+      "manufacturer": "BC",
+      "model_name": "8NDL51_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8ndl51-4",
+      "manufacturer": "BC",
+      "model_name": "8NDL51_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8ndl51-8",
+      "manufacturer": "BC",
+      "model_name": "8NDL51_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8ndl64-16",
+      "manufacturer": "BC",
+      "model_name": "8NDL64_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8ndl64-8",
+      "manufacturer": "BC",
+      "model_name": "8NDL64_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8nw51-16",
+      "manufacturer": "BC",
+      "model_name": "8NW51_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8nw51-4",
+      "manufacturer": "BC",
+      "model_name": "8NW51_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "bc-8nw51-8",
+      "manufacturer": "BC",
+      "model_name": "8NW51_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fe200-4",
+      "manufacturer": "Faital",
+      "model_name": "10FE200_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fe200-8",
+      "manufacturer": "Faital",
+      "model_name": "10FE200_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fe300-4",
+      "manufacturer": "Faital",
+      "model_name": "10FE300_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fe300-8",
+      "manufacturer": "Faital",
+      "model_name": "10FE300_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fe330-8",
+      "manufacturer": "Faital",
+      "model_name": "10FE330_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fe400-8",
+      "manufacturer": "Faital",
+      "model_name": "10FE400_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fh500-16",
+      "manufacturer": "Faital",
+      "model_name": "10FH500_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fh500-4",
+      "manufacturer": "Faital",
+      "model_name": "10FH500_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fh500-8",
+      "manufacturer": "Faital",
+      "model_name": "10FH500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fh520-16",
+      "manufacturer": "Faital",
+      "model_name": "10FH520_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fh520-8",
+      "manufacturer": "Faital",
+      "model_name": "10FH520_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fh530-16",
+      "manufacturer": "Faital",
+      "model_name": "10FH530_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10fh530-8",
+      "manufacturer": "Faital",
+      "model_name": "10FH530_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10hp1020-8",
+      "manufacturer": "Faital",
+      "model_name": "10HP1020_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10hx230-8",
+      "manufacturer": "Faital",
+      "model_name": "10HX230_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10hx240-8",
+      "manufacturer": "Faital",
+      "model_name": "10HX240_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10pr300-16",
+      "manufacturer": "Faital",
+      "model_name": "10PR300_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10pr300-4",
+      "manufacturer": "Faital",
+      "model_name": "10PR300_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10pr300-8",
+      "manufacturer": "Faital",
+      "model_name": "10PR300_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10pr310-16",
+      "manufacturer": "Faital",
+      "model_name": "10PR310_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10pr310-4",
+      "manufacturer": "Faital",
+      "model_name": "10PR310_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10pr310-8",
+      "manufacturer": "Faital",
+      "model_name": "10PR310_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10pr320-16",
+      "manufacturer": "Faital",
+      "model_name": "10PR320_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10pr320-8",
+      "manufacturer": "Faital",
+      "model_name": "10PR320_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10pr330-16",
+      "manufacturer": "Faital",
+      "model_name": "10PR330_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10pr330-8",
+      "manufacturer": "Faital",
+      "model_name": "10PR330_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10pr410-8",
+      "manufacturer": "Faital",
+      "model_name": "10PR410_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10rs350-4",
+      "manufacturer": "Faital",
+      "model_name": "10RS350_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10rs350-8",
+      "manufacturer": "Faital",
+      "model_name": "10RS350_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-10rs430-8",
+      "manufacturer": "Faital",
+      "model_name": "10RS430_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fe300-4",
+      "manufacturer": "Faital",
+      "model_name": "12FE300_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fe300-8",
+      "manufacturer": "Faital",
+      "model_name": "12FE300_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fe330-8",
+      "manufacturer": "Faital",
+      "model_name": "12FE330_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fe400-8",
+      "manufacturer": "Faital",
+      "model_name": "12FE400_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fh500-16",
+      "manufacturer": "Faital",
+      "model_name": "12FH500_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fh500-4",
+      "manufacturer": "Faital",
+      "model_name": "12FH500_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fh500-8",
+      "manufacturer": "Faital",
+      "model_name": "12FH500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fh510-4",
+      "manufacturer": "Faital",
+      "model_name": "12FH510_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fh510-8",
+      "manufacturer": "Faital",
+      "model_name": "12FH510_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fh520-16",
+      "manufacturer": "Faital",
+      "model_name": "12FH520_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fh520-4",
+      "manufacturer": "Faital",
+      "model_name": "12FH520_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fh520-8",
+      "manufacturer": "Faital",
+      "model_name": "12FH520_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fh530-8",
+      "manufacturer": "Faital",
+      "model_name": "12FH530_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12fx600-8",
+      "manufacturer": "Faital",
+      "model_name": "12FX600_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12hp1010-8",
+      "manufacturer": "Faital",
+      "model_name": "12HP1010_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12hp1020-8",
+      "manufacturer": "Faital",
+      "model_name": "12HP1020_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12hp1030-4",
+      "manufacturer": "Faital",
+      "model_name": "12HP1030_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12hp1030-8",
+      "manufacturer": "Faital",
+      "model_name": "12HP1030_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12hp1060-4",
+      "manufacturer": "Faital",
+      "model_name": "12HP1060_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12hp1060-8",
+      "manufacturer": "Faital",
+      "model_name": "12HP1060_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12hx230-16",
+      "manufacturer": "Faital",
+      "model_name": "12HX230_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12hx230-8",
+      "manufacturer": "Faital",
+      "model_name": "12HX230_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12hx240-8",
+      "manufacturer": "Faital",
+      "model_name": "12HX240_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12hx500-8",
+      "manufacturer": "Faital",
+      "model_name": "12HX500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12pr300-16",
+      "manufacturer": "Faital",
+      "model_name": "12PR300_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12pr300-4",
+      "manufacturer": "Faital",
+      "model_name": "12PR300_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12pr300-8",
+      "manufacturer": "Faital",
+      "model_name": "12PR300_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12pr310-16",
+      "manufacturer": "Faital",
+      "model_name": "12PR310_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12pr310-4",
+      "manufacturer": "Faital",
+      "model_name": "12PR310_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12pr310-8",
+      "manufacturer": "Faital",
+      "model_name": "12PR310_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12pr320-16",
+      "manufacturer": "Faital",
+      "model_name": "12PR320_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12pr320-8",
+      "manufacturer": "Faital",
+      "model_name": "12PR320_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12pr330-16",
+      "manufacturer": "Faital",
+      "model_name": "12PR330_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12pr330-8",
+      "manufacturer": "Faital",
+      "model_name": "12PR330_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12rs1066-16",
+      "manufacturer": "Faital",
+      "model_name": "12RS1066_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12rs1066-8",
+      "manufacturer": "Faital",
+      "model_name": "12RS1066_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12rs430-8",
+      "manufacturer": "Faital",
+      "model_name": "12RS430_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12rs550-8",
+      "manufacturer": "Faital",
+      "model_name": "12RS550_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-12xl1200-8",
+      "manufacturer": "Faital",
+      "model_name": "12XL1200_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15fh500-16",
+      "manufacturer": "Faital",
+      "model_name": "15FH500_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15fh500-4",
+      "manufacturer": "Faital",
+      "model_name": "15FH500_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15fh500-8",
+      "manufacturer": "Faital",
+      "model_name": "15FH500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15fh510-8",
+      "manufacturer": "Faital",
+      "model_name": "15FH510_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15fh520-16",
+      "manufacturer": "Faital",
+      "model_name": "15FH520_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15fh520-4",
+      "manufacturer": "Faital",
+      "model_name": "15FH520_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15fh520-8",
+      "manufacturer": "Faital",
+      "model_name": "15FH520_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15fh530-8",
+      "manufacturer": "Faital",
+      "model_name": "15FH530_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15fx560-8",
+      "manufacturer": "Faital",
+      "model_name": "15FX560_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15fx600-8",
+      "manufacturer": "Faital",
+      "model_name": "15FX600_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15hp1010-8",
+      "manufacturer": "Faital",
+      "model_name": "15HP1010_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15hp1020-8",
+      "manufacturer": "Faital",
+      "model_name": "15HP1020_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15hp1030-4",
+      "manufacturer": "Faital",
+      "model_name": "15HP1030_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15hp1030-8",
+      "manufacturer": "Faital",
+      "model_name": "15HP1030_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15hp1060-4",
+      "manufacturer": "Faital",
+      "model_name": "15HP1060_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15hp1060-8",
+      "manufacturer": "Faital",
+      "model_name": "15HP1060_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15hx500-8",
+      "manufacturer": "Faital",
+      "model_name": "15HX500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15pr300-8",
+      "manufacturer": "Faital",
+      "model_name": "15PR300_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15pr400-4",
+      "manufacturer": "Faital",
+      "model_name": "15PR400_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15pr400-8",
+      "manufacturer": "Faital",
+      "model_name": "15PR400_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15pr450-8",
+      "manufacturer": "Faital",
+      "model_name": "15PR450_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15xl1200-8",
+      "manufacturer": "Faital",
+      "model_name": "15XL1200_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15xl1400-4",
+      "manufacturer": "Faital",
+      "model_name": "15XL1400_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15xl1400-8",
+      "manufacturer": "Faital",
+      "model_name": "15XL1400_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-15xl2400-8",
+      "manufacturer": "Faital",
+      "model_name": "15XL2400_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18fh500-16",
+      "manufacturer": "Faital",
+      "model_name": "18FH500_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18fh500-4",
+      "manufacturer": "Faital",
+      "model_name": "18FH500_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18fh500-8",
+      "manufacturer": "Faital",
+      "model_name": "18FH500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18fh510-4",
+      "manufacturer": "Faital",
+      "model_name": "18FH510_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18fh510-8",
+      "manufacturer": "Faital",
+      "model_name": "18FH510_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18fx600-8",
+      "manufacturer": "Faital",
+      "model_name": "18FX600_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18fx800-8",
+      "manufacturer": "Faital",
+      "model_name": "18FX800_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hp1010-4",
+      "manufacturer": "Faital",
+      "model_name": "18HP1010_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hp1010-8",
+      "manufacturer": "Faital",
+      "model_name": "18HP1010_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hp1020-8",
+      "manufacturer": "Faital",
+      "model_name": "18HP1020_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hp1022-8",
+      "manufacturer": "Faital",
+      "model_name": "18HP1022_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hp1030-4",
+      "manufacturer": "Faital",
+      "model_name": "18HP1030_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hp1030-8",
+      "manufacturer": "Faital",
+      "model_name": "18HP1030_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hp1040-8",
+      "manufacturer": "Faital",
+      "model_name": "18HP1040_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hp1042-8",
+      "manufacturer": "Faital",
+      "model_name": "18HP1042_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hp1060-4",
+      "manufacturer": "Faital",
+      "model_name": "18HP1060_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hp1060-8",
+      "manufacturer": "Faital",
+      "model_name": "18HP1060_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hw1070-4",
+      "manufacturer": "Faital",
+      "model_name": "18HW1070_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18hw1070-8",
+      "manufacturer": "Faital",
+      "model_name": "18HW1070_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18xl1500-8",
+      "manufacturer": "Faital",
+      "model_name": "18XL1500_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18xl1600-4",
+      "manufacturer": "Faital",
+      "model_name": "18XL1600_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18xl1600-8",
+      "manufacturer": "Faital",
+      "model_name": "18XL1600_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18xl1700-8",
+      "manufacturer": "Faital",
+      "model_name": "18XL1700_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18xl1800-8",
+      "manufacturer": "Faital",
+      "model_name": "18XL1800_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-18xl2000-8",
+      "manufacturer": "Faital",
+      "model_name": "18XL2000_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-21xl3000-8",
+      "manufacturer": "Faital",
+      "model_name": "21XL3000_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-2fe22-8",
+      "manufacturer": "Faital",
+      "model_name": "2FE22_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-2fe24-8",
+      "manufacturer": "Faital",
+      "model_name": "2FE24_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-3fe20-16",
+      "manufacturer": "Faital",
+      "model_name": "3FE20_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-3fe20-4",
+      "manufacturer": "Faital",
+      "model_name": "3FE20_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-3fe20-8",
+      "manufacturer": "Faital",
+      "model_name": "3FE20_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-3fe22-16",
+      "manufacturer": "Faital",
+      "model_name": "3FE22_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-3fe22-4",
+      "manufacturer": "Faital",
+      "model_name": "3FE22_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-3fe22-8",
+      "manufacturer": "Faital",
+      "model_name": "3FE22_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-3fe25-16",
+      "manufacturer": "Faital",
+      "model_name": "3FE25_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-3fe25-4",
+      "manufacturer": "Faital",
+      "model_name": "3FE25_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-3fe25-8",
+      "manufacturer": "Faital",
+      "model_name": "3FE25_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-3fe26-16",
+      "manufacturer": "Faital",
+      "model_name": "3FE26_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-3fe26-8",
+      "manufacturer": "Faital",
+      "model_name": "3FE26_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe30-16",
+      "manufacturer": "Faital",
+      "model_name": "4FE30_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe30-4",
+      "manufacturer": "Faital",
+      "model_name": "4FE30_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe30-8",
+      "manufacturer": "Faital",
+      "model_name": "4FE30_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe32-16",
+      "manufacturer": "Faital",
+      "model_name": "4FE32_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe32-4",
+      "manufacturer": "Faital",
+      "model_name": "4FE32_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe32-8",
+      "manufacturer": "Faital",
+      "model_name": "4FE32_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe35-16",
+      "manufacturer": "Faital",
+      "model_name": "4FE35_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe35-4",
+      "manufacturer": "Faital",
+      "model_name": "4FE35_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe35-8",
+      "manufacturer": "Faital",
+      "model_name": "4FE35_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe42-4",
+      "manufacturer": "Faital",
+      "model_name": "4FE42_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe42-8",
+      "manufacturer": "Faital",
+      "model_name": "4FE42_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-4fe44-8",
+      "manufacturer": "Faital",
+      "model_name": "4FE44_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-5fe100-4",
+      "manufacturer": "Faital",
+      "model_name": "5FE100_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-5fe100-8",
+      "manufacturer": "Faital",
+      "model_name": "5FE100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-5fe105-8",
+      "manufacturer": "Faital",
+      "model_name": "5FE105_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-5fe120-16",
+      "manufacturer": "Faital",
+      "model_name": "5FE120_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-5fe120-4",
+      "manufacturer": "Faital",
+      "model_name": "5FE120_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-5fe120-8",
+      "manufacturer": "Faital",
+      "model_name": "5FE120_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-5fe125-8",
+      "manufacturer": "Faital",
+      "model_name": "5FE125_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-5hx140-8",
+      "manufacturer": "Faital",
+      "model_name": "5HX140_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-5hx220-8",
+      "manufacturer": "Faital",
+      "model_name": "5HX220_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-5pr120-8",
+      "manufacturer": "Faital",
+      "model_name": "5PR120_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-5pr160-8",
+      "manufacturer": "Faital",
+      "model_name": "5PR160_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6fe100-8",
+      "manufacturer": "Faital",
+      "model_name": "6FE100_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6fe125-8",
+      "manufacturer": "Faital",
+      "model_name": "6FE125_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6fe200-16",
+      "manufacturer": "Faital",
+      "model_name": "6FE200_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6fe200-4",
+      "manufacturer": "Faital",
+      "model_name": "6FE200_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6fe200-8",
+      "manufacturer": "Faital",
+      "model_name": "6FE200_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6fe300-4",
+      "manufacturer": "Faital",
+      "model_name": "6FE300_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6fe300-8",
+      "manufacturer": "Faital",
+      "model_name": "6FE300_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6fe400-8",
+      "manufacturer": "Faital",
+      "model_name": "6FE400_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6hx150-8",
+      "manufacturer": "Faital",
+      "model_name": "6HX150_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6pr110-8",
+      "manufacturer": "Faital",
+      "model_name": "6PR110_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6pr122-8",
+      "manufacturer": "Faital",
+      "model_name": "6PR122_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6pr130-8",
+      "manufacturer": "Faital",
+      "model_name": "6PR130_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6pr150-8",
+      "manufacturer": "Faital",
+      "model_name": "6PR150_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6pr160-8",
+      "manufacturer": "Faital",
+      "model_name": "6PR160_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6rs140-16",
+      "manufacturer": "Faital",
+      "model_name": "6RS140_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-6rs140-8",
+      "manufacturer": "Faital",
+      "model_name": "6RS140_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8fe200-4",
+      "manufacturer": "Faital",
+      "model_name": "8FE200_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8fe200-8",
+      "manufacturer": "Faital",
+      "model_name": "8FE200_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8fe300-4",
+      "manufacturer": "Faital",
+      "model_name": "8FE300_4Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8fe300-8",
+      "manufacturer": "Faital",
+      "model_name": "8FE300_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8fe400-8",
+      "manufacturer": "Faital",
+      "model_name": "8FE400_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8hx150-8",
+      "manufacturer": "Faital",
+      "model_name": "8HX150_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8hx200-8",
+      "manufacturer": "Faital",
+      "model_name": "8HX200_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8hx210-8",
+      "manufacturer": "Faital",
+      "model_name": "8HX210_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8hx230-8",
+      "manufacturer": "Faital",
+      "model_name": "8HX230_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8hx240-8",
+      "manufacturer": "Faital",
+      "model_name": "8HX240_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8pr150-8",
+      "manufacturer": "Faital",
+      "model_name": "8PR150_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8pr155-8",
+      "manufacturer": "Faital",
+      "model_name": "8PR155_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8pr200-16",
+      "manufacturer": "Faital",
+      "model_name": "8PR200_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8pr200-8",
+      "manufacturer": "Faital",
+      "model_name": "8PR200_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8pr210-16",
+      "manufacturer": "Faital",
+      "model_name": "8PR210_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8pr210-8",
+      "manufacturer": "Faital",
+      "model_name": "8PR210_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8pr320-8",
+      "manufacturer": "Faital",
+      "model_name": "8PR320_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8rs250-8",
+      "manufacturer": "Faital",
+      "model_name": "8RS250_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8rs340-8",
+      "manufacturer": "Faital",
+      "model_name": "8RS340_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-8rs350-8",
+      "manufacturer": "Faital",
+      "model_name": "8RS350_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-m5n8-80-12",
+      "manufacturer": "Faital",
+      "model_name": "M5N8-80_12Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-m5n8-80-8",
+      "manufacturer": "Faital",
+      "model_name": "M5N8-80_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-m6n8-150-8",
+      "manufacturer": "Faital",
+      "model_name": "M6N8-150_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w10n8-200-8",
+      "manufacturer": "Faital",
+      "model_name": "W10N8-200_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w10n8-350-8",
+      "manufacturer": "Faital",
+      "model_name": "W10N8-350_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w10n8-700-8",
+      "manufacturer": "Faital",
+      "model_name": "W10N8-700_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w12n8-200-8",
+      "manufacturer": "Faital",
+      "model_name": "W12N8-200_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w12n8-350-8",
+      "manufacturer": "Faital",
+      "model_name": "W12N8-350_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w12n8-700-8",
+      "manufacturer": "Faital",
+      "model_name": "W12N8-700_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w15n8-700-8",
+      "manufacturer": "Faital",
+      "model_name": "W15N8-700_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w18n8-1000-8",
+      "manufacturer": "Faital",
+      "model_name": "W18N8-1000_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w6n8-120-16",
+      "manufacturer": "Faital",
+      "model_name": "W6N8-120_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w6n8-120-8",
+      "manufacturer": "Faital",
+      "model_name": "W6N8-120_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w8n8-150-16",
+      "manufacturer": "Faital",
+      "model_name": "W8N8-150_16Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w8n8-150-8",
+      "manufacturer": "Faital",
+      "model_name": "W8N8-150_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    },
+    {
+      "driver_id": "faital-w8n8-200-8",
+      "manufacturer": "Faital",
+      "model_name": "W8N8-200_8Ω",
+      "reason": "Removed in 396f2d2: the stored page was a copy of another driver's page (wedged origin). Not re-fetched: loudspeakerdatabase.com answered HTTP 429 to every request on 2026-11-15."
+    }
+  ]
+}

@@ -2,7 +2,7 @@
     "driver_id": "dayton-rs100t-8",
     "manufacturer": "Dayton",
     "model_name": "RS100T-8",
-    "driver_type": "compression",
+    "driver_type": "unknown",
     "parameters": {
         "fs_hz": 94.9,
         "re_ohm": 6.5,
@@ -15,5 +15,18 @@
         "xmax_m": 0.0037,
         "qms": 2.4,
         "qes": 0.79
+    },
+    "parameter_source": "https://loudspeakerdatabase.com/Dayton/RS100T-8",
+    "record_schema_version": 1,
+    "provenance": {
+        "retrieved_on": "2026-02-26",
+        "retrieved_on_basis": "Date of commit 3f212b1, which wrote this record. The scrape date itself was not recorded.",
+        "source_kind": "third_party_aggregator",
+        "capture_method": "Legacy scrape of loudspeakerdatabase.com (before scraper schema 3). parameter_source was reconstructed from the manufacturer slug and model name.",
+        "known_limitations": [
+            "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
+            "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
+            "Band, power handling, Rms and sensitivity were not captured."
+        ]
     }
 }

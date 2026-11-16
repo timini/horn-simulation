@@ -16,5 +16,18 @@
         "qms": 2.3,
         "qes": 0.55
     },
-    "nominal_diameter": "8in"
+    "nominal_diameter": "8in",
+    "parameter_source": "https://loudspeakerdatabase.com/Ciare/HX205",
+    "record_schema_version": 1,
+    "provenance": {
+        "retrieved_on": "2026-02-26",
+        "retrieved_on_basis": "Date of commit 3f212b1, which wrote this record. The scrape date itself was not recorded.",
+        "source_kind": "third_party_aggregator",
+        "capture_method": "Legacy scrape of loudspeakerdatabase.com (before scraper schema 3). parameter_source was reconstructed from the manufacturer slug and model name.",
+        "known_limitations": [
+            "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
+            "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
+            "Band, power handling, Rms and sensitivity were not captured."
+        ]
+    }
 }
