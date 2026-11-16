@@ -293,3 +293,17 @@ def test_size_compromise_is_worded_as_a_sizing_rule_and_checked_against_predicti
     page = _render_scoring(describe_scoring(TargetSpec(800, 1600), {"size_compromise": compromise}), rows)
     assert "590 Hz" in page and "does not show this shortfall" in page
     assert "support about" not in page
+
+
+def test_evidence_summary_states_each_driver_once_and_header_names_horns(report_inputs):
+    """Three ranked horns with one driver used to repeat the same evidence sentence three times."""
+    gaps = ["driver_interface_unverified", "front_chamber_volume_estimated"]
+    for row in report_inputs["all_ranked"]:
+        row["evidence_gaps"] = list(gaps)
+    text = generate_html_report(**report_inputs)
+    summary = text.split("<ul>", 1)[1].split("</ul>", 1)[0]
+    # Two drivers, three horns each: one entry per driver with the same gaps.
+    assert summary.count("<li>") == 2
+    # The header lists horn candidate IDs, so it must not call them profiles.
+    assert "Horns: conical, exponential, hyperbolic" in text
+    assert "Profiles: conical" not in text

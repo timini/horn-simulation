@@ -267,10 +267,15 @@ _EVIDENCE_LABELS = {
 
 
 def _render_evidence_summary(results):
-    return "<ul>" + "".join(
-        "<li><strong>" + html.escape(r.get("model_name") or r.get("driver_id", "")) + "</strong>: "
-        + html.escape("; ".join(_EVIDENCE_LABELS.get(g, g.replace("_", " ")) for g in r.get("evidence_gaps", []))
-                      or "Independent assembly validation is pending") + ".</li>" for r in results) + "</ul>"
+    """One line per driver and distinct set of evidence gaps, in rank order."""
+    lines = []
+    for r in results:
+        line = ("<li><strong>" + html.escape(r.get("model_name") or r.get("driver_id", "")) + "</strong>: "
+                + html.escape("; ".join(_EVIDENCE_LABELS.get(g, g.replace("_", " ")) for g in r.get("evidence_gaps", []))
+                              or "Independent assembly validation is pending") + ".</li>")
+        if line not in lines:
+            lines.append(line)
+    return "<ul>" + "".join(lines) + "</ul>"
 
 
 def _chamber_note(row) -> str:
@@ -434,7 +439,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
   Throat radius: {throat_display} &nbsp;|&nbsp;
   Mouth: {mouth_radius} &nbsp;|&nbsp;
   Length: {horn_length} &nbsp;|&nbsp;
-  Profiles: {profiles} &nbsp;|&nbsp;
+  Horns: {profiles} &nbsp;|&nbsp;
   Generated: {timestamp}
 </p>
 
