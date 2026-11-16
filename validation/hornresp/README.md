@@ -6,11 +6,13 @@ Hornresp is a Windows program. It is not installed here and Wine is not availabl
 
 - `records/<id>.txt`: the values to type into the Hornresp input window for each horn, in Hornresp units (cm2, cm, Hz). One sheet per profile at throat radius 25 mm, mouth radius 150 mm, length 300 mm (the tractrix uses its natural length, 223.8 mm), plus `example_800_1600.txt`, the 800 to 1600 Hz worked example horn with the 18Sound 6NMB420 driver.
 - `records/horns.json`: the same values in machine-readable form, with the air properties used.
+- `records/import_unverified/<id>.txt`: the same values as Hornresp import records. Unverified, see below.
 - `reference/<id>_tmm.csv`: our throat impedance (Ra, Xa normalised to rho c / S1) for the geometry exactly as entered in Hornresp, baffled piston mouth, 2000-segment TMM.
+- `reference/example_800_1600_spl_halfspace.csv`: our 1D SPL for the worked example, built the way a 1D horn program builds it (see Tolerances).
 - `hornresp_records.py`: regenerates the sheets and reference curves.
 - `compare_hornresp.py`: compares an exported Hornresp file with our output.
 
-The sheets are not Hornresp record files. The record file layout differs between Hornresp versions and could not be checked without the program, so the values are listed for manual entry instead.
+The sheets in `records/` are for manual entry. `records/import_unverified/` also holds import records written from the Hornresp text record layout as published in user forums: `ID` and `Comment` lines, `|... PARAMETER VALUES:` sections, one `key=value` per line, and each horn segment as its flare keyword (`Con`, `Exp`, `Hyp`, `Tra`) holding the segment length in cm, followed by its `F12`-style cut-off. That layout could not be checked without the program and may differ between Hornresp versions. Try the import first; if Hornresp rejects it or a value lands in the wrong field, use the manual sheet.
 
 ## Geometry
 
@@ -48,9 +50,17 @@ The script finds the header line that contains a frequency column and picks the 
 | Throat impedance magnitude, 20 Hz to 20 kHz | median 0.2 dB, p95 1.0 dB, max 3.0 dB |
 | Throat impedance phase | p95 5 degrees |
 | Impedance peak frequencies | 1 % |
-| SPL against `examples/800-1600-modal/response.csv`, 800 to 1600 Hz | median 0.5 dB, max 2.0 dB |
+| SPL against `examples/800-1600-modal/response.csv` (our modal FEM, on axis), 800 to 1600 Hz | median 0.5 dB, max 2.0 dB |
+| SPL against `reference/example_800_1600_spl_halfspace.csv` (our 1D model), 800 to 1600 Hz | median 0.5 dB, max 2.0 dB, added in the review pass, still before any Hornresp data |
 
-Both codes are plane-wave models for the impedance, so near agreement is expected. The SPL reference is our modal FEM with a nonuniform mouth velocity, while Hornresp assumes a plane-wave piston mouth; part of any SPL difference comes from that.
+Both codes are plane-wave models for the impedance, so near agreement is expected. The impedance check also requires the same number of peaks; peaks are paired one to one.
+
+The two SPL checks use different references:
+
+- The first, frozen with the sheets, compares Hornresp with our modal FEM: a nonuniform mouth velocity, the FEM throat impedance and the modal on-axis observer. Hornresp is a plane-wave model. This check is expected to fail even if Hornresp agrees exactly with our own 1D model: our 1D half-space curve differs from the FEM curve by median 1.06 dB and max 1.41 dB over 800 to 1600 Hz (about +1.4 dB at 800 Hz, -1.4 dB near 1.4 kHz). The check is kept as frozen; read a failure there as the 1D against 3D model difference, not as a Hornresp disagreement.
+- The second is like for like: our 2000-segment TMM horn with the baffled piston load, the sheet's driver through an ideal area transformer at 2.83 V, and the mouth volume velocity radiated as a point source into half space, p = rho omega |U| / (2 pi r), at 1 m. As far as we know Hornresp computes its SPL at Ang = 2 pi in this way. This could not be confirmed without the program.
+
+Piston directivity is not a source of on-axis difference here. In the far field the on-axis pressure of a uniform baffled piston equals that of a half-space point source with the same volume velocity; at 1 m the near-field correction for this 88.7 mm mouth is 0.02 dB. Directivity matters off axis only, and neither SPL check looks off axis.
 
 ## Driver assumptions for the example
 

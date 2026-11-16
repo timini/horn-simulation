@@ -159,6 +159,33 @@ def our_output(sheet, air=HORNRESP_AIR, freqs=FREQS):
     return freqs, z
 
 
+def halfspace_spl(sheet, air=HORNRESP_AIR, freqs=None, voltage=2.83, distance=1.0):
+    """On-axis SPL built the way a 1D horn program builds it.
+
+    Our TMM horn (baffled piston mouth load) driven through an ideal area
+    transformer by the sheet's driver; the mouth volume velocity then radiates
+    as a point source into half space, p = rho w |U| / (2 pi r), with no
+    piston directivity. This is the like-for-like reference for a Hornresp
+    SPL chart at Ang = 2 pi. Returns (freqs, spl_db).
+    """
+    freqs = np.geomspace(500.0, 3000.0, 241) if freqs is None else np.asarray(freqs, float)
+    d = sheet["driver"]
+    sd, s_t = d["Sd_cm2"] / 1e4, math.pi * sheet["throat_radius_m"] ** 2
+    out = compute_horn_transfer_tmm(freqs, segmented_radius(sheet), sheet["length_m"], sheet["throat_radius_m"],
+                                    sheet["mouth_radius_m"], n_segments=2000, radiation_model="flanged_piston",
+                                    air=air)
+    z_horn = out["z_real"] + 1j * out["z_imag"]          # specific, Pa s/m
+    w = 2 * np.pi * freqs
+    z_e = d["Re_ohm"] + 1j * w * d["Le_mH"] / 1e3
+    z_mech = (d["Rms_Ns_per_m"] + 1j * w * d["Mmd_g"] / 1e3 + 1 / (1j * w * d["Cms_m_per_N"])
+              + z_horn * sd ** 2 / s_t)
+    velocity = d["Bl_Tm"] * voltage / (z_e * z_mech + d["Bl_Tm"] ** 2)
+    p_throat = z_horn * velocity * sd / s_t
+    u_mouth = p_throat * out["mouth_volume_velocity_transfer"]
+    p_far = air.rho * w * np.abs(u_mouth) / (2 * np.pi * distance)
+    return freqs, 20 * np.log10(p_far / 20e-6)
+
+
 def driver_values():
     p = json.loads(DRIVER_JSON.read_text())["parameters"]
     w = 2 * math.pi * p["fs_hz"]
@@ -204,6 +231,38 @@ def sheet_text(sheet, c, rho, driver=None):
     return "\n".join(lines) + "\n"
 
 
+def import_record_text(sheet, driver=None):
+    """Best-effort Hornresp import record. UNVERIFIED.
+
+    Written from the section and key layout of Hornresp text records as
+    published in user forums (ID, Comment, "|...PARAMETER VALUES:" sections,
+    one key=value per line, each horn segment given as its flare keyword
+    holding the segment length in cm, followed by F<ij> for the flare
+    cut-off). It has not been checked against Hornresp itself. If the import
+    is rejected or a value lands in the wrong field, enter the sheet in
+    records/<id>.txt by hand instead.
+    """
+    segs = sheet["segments"]
+    lines = ["ID=0.00", f"Comment=horn-simulation cross-software check: {sheet['id']} ({sheet['profile']})",
+             "", "|RADIATION, SOURCE AND MOUTH PARAMETER VALUES:", "", "Ang=2.0 x Pi", "Eg=2.83", "Rg=0.00",
+             "Cir=0.00", "", "|HORN PARAMETER VALUES:", ""]
+    for i, seg in enumerate(segs):
+        j = i + 1
+        lines.append(f"S{j}={seg['s_in']:.2f}")
+        lines.append(f"S{j+1}={seg['s_out']:.2f}")
+        lines.append(f"{seg['flare']}={seg['length_cm']:.2f}")
+        lines.append(f"F{j}{j+1}={seg.get('cutoff_hz', 0.0):.2f}")
+        if "T" in seg:
+            lines.append(f"T={seg['T']:.2f}")
+    if driver:
+        lines += ["", "|TRADITIONAL DRIVER PARAMETER VALUES:", "",
+                  f"Sd={driver['Sd_cm2']:.2f}", f"Bl={driver['Bl_Tm']:.2f}", f"Cms={driver['Cms_m_per_N']:.2E}",
+                  f"Rms={driver['Rms_Ns_per_m']:.2f}", f"Mmd={driver['Mmd_g']:.2f}", f"Le={driver['Le_mH']:.2f}",
+                  f"Re={driver['Re_ohm']:.2f}", "Nd=1", "", "|CHAMBER PARAMETER VALUES:", "",
+                  "Vrc=0.00", "Lrc=0.00", "Vtc=0.00", f"Atc={segs[0]['s_in']:.2f}"]
+    return "\n".join(lines) + "\n"
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", type=Path, default=OUT)
@@ -220,11 +279,17 @@ def main():
     sheets.append(ex)
     (args.out / "records").mkdir(parents=True, exist_ok=True)
     (args.out / "reference").mkdir(parents=True, exist_ok=True)
+    (args.out / "records" / "import_unverified").mkdir(parents=True, exist_ok=True)
     for sheet in sheets:
         (args.out / "records" / f"{sheet['id']}.txt").write_text(sheet_text(sheet, c, rho, sheet.get("driver")))
+        (args.out / "records" / "import_unverified" / f"{sheet['id']}.txt").write_text(
+            import_record_text(sheet, sheet.get("driver")))
         f, z = our_output(sheet)
         rows = ["frequency_hz,ra_norm,xa_norm"] + [f"{a:.6f},{b.real:.8g},{b.imag:.8g}" for a, b in zip(f, z)]
         (args.out / "reference" / f"{sheet['id']}_tmm.csv").write_text("\n".join(rows) + "\n")
+    f, spl = halfspace_spl(ex)
+    rows = ["frequency_hz,spl_db"] + [f"{a:.6f},{b:.6f}" for a, b in zip(f, spl)]
+    (args.out / "reference" / f"{ex['id']}_spl_halfspace.csv").write_text("\n".join(rows) + "\n")
     (args.out / "records" / "horns.json").write_text(json.dumps(
         {"air": {"c": c, "rho": rho}, "horns": sheets}, indent=1) + "\n")
     for s in sheets:
