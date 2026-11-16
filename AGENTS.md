@@ -27,4 +27,4 @@ If an automated reviewer fails, retry at most once, then inspect the change dire
 - Preserve user work and historical results. Use an isolated checkout when the working tree contains unrelated edits.
 - Finish the delivery: push, merge when authorized and checks pass, then summarize what a user can do now and the few remaining product blockers. Do not substitute review activity or documentation volume for progress toward designing a horn.
 
-See `CLAUDE.md` for repository commands and `docs/SINGLE_HORN_ROADMAP.md` for the current technical scope. These delivery and review rules apply to all coding agents working in this repository.
+See `CLAUDE.md` for repository commands and `docs/STATUS.md` for the current technical scope. These delivery and review rules apply to all coding agents working in this repository.

@@ -1,368 +1,134 @@
 # Horn Loudspeaker Simulation Pipeline
 
-> Design and simulate horn-loaded loudspeakers — from a target frequency band to ranked driver-horn recommendations — using FEM acoustics, a driver database, and automated optimization.
-
 [![CI](https://github.com/timini/horn-simulation/actions/workflows/ci.yml/badge.svg)](https://github.com/timini/horn-simulation/actions/workflows/ci.yml)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)
 
-## What is this?
+Give it a frequency band and it designs horns for it. The pipeline generates horn geometries, solves the acoustic field inside each with the finite element method, couples real loudspeaker drivers through their Thiele-Small parameters, and ranks every driver and horn pair. It writes a self-contained HTML report, the horn's STEP geometry and the predicted response, impedance and excursion.
 
-An open-source tool for acoustic horn design. Give it a target frequency band and it will generate horn geometries, solve the Helmholtz equation with FEM, couple the results with real loudspeaker drivers via Thiele-Small parameters, and rank every driver-horn combination — producing a self-contained HTML report you can open in any browser.
+It covers conventional single-driver, rigid, axisymmetric, front-loaded horns. Multiple-entry horns belong in the sister project [MEH Design Studio](https://github.com/timini/meh-design-studio).
 
-Built for audio engineers, acousticians, DIY speaker builders, and researchers.
+**See it first:** the [example site](https://timini.github.io/horn-simulation/) and the [examples folder](examples/README.md) have finished reports you can open without installing anything.
 
-Browse the [ready-to-open design examples](examples/README.md) for a generated report, winning STEP file, response data and commands for your own band.
+## Status
 
-**Current status: experimental predictions.** The complete automatic workflow runs, including bounded refinement, failure checks and reports. Its driver/interface and listening-distance output models have not passed independent physical validation. Missing driver evidence is reported as `insufficient_evidence`; an unsuccessful search returns no feasible design. Acoustic STEP exports describe an air volume, not fabrication-ready hardware.
+Experimental. The software works end to end, but its predictions have not been checked against a measured horn and driver assembly. Reports label every result as an experimental prediction, and a run may return no feasible design.
 
-The solver container uses the conservative Nehalem OpenBLAS kernel on x86 to keep the pinned numerical environment consistent across host CPUs. This is a workaround under validation for intermittent CI geometry failures, not a confirmed diagnosis of the upstream cause. Independent basis/area checks and a gross mesh-to-CAD area guard catch corrupt geometry before reporting a response. An explicit `OPENBLAS_CORETYPE` override requires validating that alternative backend.
+What has been checked:
 
-Use `just run-auto --target_f_low 500 --target_f_high 4000` for an isolated run. The launcher writes a manifest, source snapshot and container hashes under a new `results/<run-id>/` directory. Defaults are 2.83 V RMS, 1 m from the mouth, 6 dB maximum band ripple, the modal infinite-baffle radiation model and on-axis observer, ten screened geometries and six additional refinement evaluations. Override these with `--voltage_rms`, `--observation_distance`, `--max_ripple_db`, `--lem_top_n` and `--refinement_budget`. Add `--test_power_w 50` to check excursion at 50 W into the nominal impedance over the whole sweep, separately from the drive voltage used for SPL. Fix dimensions or set minimum/maximum search bounds when space is limited.
+- The interior solver agrees with an independent finite element code, analytical cavity modes and an independent mode-matching code for the default mouth model.
+- The input impedance of one measured exponential horn is matched for ka 1 to 5.
+- The fast screen agrees with openwind, and keeps the best designs found by exhaustive FEM on a test grid.
 
-The [measured exponential-horn comparison](docs/POST_HIXSON_VALIDATION.md) passes its fixed input-impedance limits over `1 ≤ ka ≤ 5` (approximately 201–1,007 Hz at the simulated sound speed). This validates a bounded horn-loading comparison; complete driver/assembly qualification remains outstanding.
+What has not:
 
-Optional thermoviscous losses and finite-flange pipe radiation now have independent impedance checks; see [the measured results and remaining failures](docs/LOSS_PHYSICS_VALIDATION.md). Generated horns use the `modal_baffled` radiation model by default, which passes the independent infinite-baffle reference; an imported STEP falls back to `flanged_piston`, whose known 1.05 dB / 5.7 degree throat-impedance error is printed in the report. Auto reports add an experimental infinite-baffle beamwidth plot for modal horns. The old FEM-BEM coupling has been removed.
+- Absolute sound level for a real driver on a real horn, and the order in which drivers are ranked.
+- Driver adapters and phase plugs. No shipped driver has a verified interface.
+- Directivity, finite baffles and free-standing horns.
+- Some comparisons fail and are kept as failures, for example the Hajicek and Neely conical horn standard.
 
-The Webster prescreen, the FEM throat loading and the directivity formula are also compared with independent open-source tools (openwind and bempp-cl), with a Hornresp kit for a manual run; see [cross-software validation](docs/CROSS_SOFTWARE_VALIDATION.md).
-
-See [acoustic assumptions](docs/ACOUSTIC_CONTRACT.md), [existing measurement sources and importer](docs/VALIDATION_DATA.md), and [implementation/validation status](docs/history/IMPLEMENTATION_STATUS.md). Resume only an unchanged source/data/container/Nextflow snapshot with `python scripts/run_pipeline.py --run-dir results/<run-id> -resume`.
-
-
-## Scope and sister project
-
-This project focuses on selecting a driver and sizing a conventional single-driver horn for a target frequency band, initially using rigid, axisymmetric, front-loaded horns with characterized driver-to-throat interfaces.
-
-**Multiple-entry horn (MEH) design and simulation are outside this project's scope.** Work on multiple drivers feeding a shared horn through separate entries, their acoustic interaction, and crossover optimization belongs in the sister project: [MEH Design Studio](https://github.com/timini/meh-design-studio).
-
-## Key features
-
-- **7 horn profiles**: conical, exponential, hyperbolic (hypex T=0, catenoidal), tractrix (true constant-tangent curve), oblate spheroid, axially scaled tractrix, and an exponential throat with a tangent cone (`cd`). `lecleach` remains as a deprecated alias of `scaled_tractrix`; it was never a Le Cléac’h horn.
-  - A tractrix through the throat and mouth radii has a natural length (tractrix constant equal to the mouth radius, wall perpendicular at the mouth). A longer requested length uses a larger tractrix constant, so the wall stops short of 90 degrees at the mouth. A shorter one has no tractrix: the candidate grid skips it, refinement rejects it, and single mode stops with the natural length in the message.
-  - The pipeline always uses hypex T=0 for `hyperbolic`. Other T values are available only through the Python API (`get_radius_func(hypex_t=)`, `create_horn(hypex_t=)`) and `horn-geometry --hypex-t`; the screen, report render and candidate CSV do not carry T, so do not feed a STEP made with another T into the pipeline.
-  - The generated STEP wall is the profile curve revolved about the horn axis. The generator checks it against the profile radius by dense sampling along the wall and requires it to stay within 1%; the generator uses more profile points than `--num_sections` when a profile needs them.
-- **FEM Helmholtz solver** — FEniCSx/dolfinx with adaptive meshing and radiation BC
-- **Driver database** with Thiele-Small parameter coupling
-- **3 operating modes** — single simulation, auto comparison, full-auto design exploration
-- **Self-contained HTML reports** — rankings, plots, and driver tables, all base64-embedded
-- **Containerized and parallelized** — Docker + Nextflow, frequency bands solved in parallel
-
-## How it works
-
-### Pipeline flow
-
-```mermaid
-flowchart LR
-    A[Target frequency band] --> B[Pre-screen drivers]
-    A --> C[Generate horn geometry]
-    C --> D[FEM solver — Helmholtz equation]
-    D --> E[Couple with drivers]
-    E --> F[Score & rank combinations]
-    F --> G[HTML report + plots]
-```
-
-### Package architecture
-
-```mermaid
-flowchart TB
-    subgraph Orchestration
-        NF[Nextflow pipeline]
-    end
-    subgraph Packages
-        CORE[horn-core<br/>parameters & data structures]
-        GEO[horn-geometry<br/>gmsh STEP generation]
-        SOLVER[horn-solver<br/>FEniCSx FEM — Helmholtz]
-        ANALYSIS[horn-analysis<br/>scoring, ranking, reports]
-        DRIVERS[horn-drivers<br/>driver database]
-    end
-    NF --> GEO --> SOLVER --> ANALYSIS
-    DRIVERS --> ANALYSIS
-    CORE --> GEO & SOLVER & ANALYSIS & DRIVERS
-```
-
-### Frequency parallelization
-
-```mermaid
-flowchart TB
-    G[generate_geometry<br/>gmsh/OCC → STEP file] --> S0[solve band 0]
-    G --> S1[solve band 1]
-    G --> SN[solve band N]
-    S0 --> M[merge_results<br/>pandas concat]
-    S1 --> M
-    SN --> M
-    M --> P[generate_plots<br/>SPL vs frequency]
-```
-
-## Operating modes
-
-### Single mode (default)
-
-Simulate one horn with explicit geometry parameters and get a frequency response plot.
-
-For imported geometry, supply both `--step_file path/to/horn.step` and `--length` in metres. The STEP file's declared length unit is honoured, so millimetre CAD exports import at true size. Generated STEP files are written at true size (millimetre coordinates under a millimetre declaration). The supported orientation has the inlet at z = 0 and the outlet at z = length; imported files do not inherit the parametric 0.5 m default. Reports use actual CAD boundary areas and omit inferred circular radii; supply `--horn_3d_png` for your own geometry image, otherwise the report shows an explicit placeholder.
-
-```bash
-just run \
-    --throat_radius 0.05 --mouth_radius 0.2 --length 0.5
-```
-
-### Auto mode
-
-Fix any dimensions you know, derive the others from the band, screen seven profile families, evaluate a shortlist with FEM, and refine within a fixed budget. Ranking uses the requested band and records infeasible combinations and missing evidence.
-
-How the search chooses what to solve:
-
-- **Throats.** Unless you fix `--throat_radius`, throats are sampled up to ka = 3.83 at `target_f_high` (the first radial duct mode, where a plane-wave screen stops being meaningful). Throats above ka = 1.84 (the first asymmetric mode) are flagged `throat_above_first_asymmetric_mode`. Radii within 1% are merged. Drivers with Sd smaller than a sampled throat are listed in `prescreen_result.json` and flagged `diaphragm_smaller_than_throat`. A throat you fix may go up to ka = 2 pi.
-- **Driver front chamber.** Levels and scores include the driver's front chamber, so the search prefers throats and horns that work with it. A cone without chamber data gets a geometric estimate (the air in the cone behind a flat adapter plate). Rows using it carry `front_chamber_estimated: true` and the evidence gap `front_chamber_volume_estimated`. A constraint that fails only with the estimate is listed in `estimated_chamber_reasons` and flagged `response_limited_by_estimated_front_chamber`; it does not reject the design. `without_front_chamber` gives the ripple and level with no chamber. Put the real adapter volume in the driver record (`front_chamber_volume_cm3`, 0 for a phase plug filling the cone) to replace the estimate.
-- **Size caps.** With only `--max_length` or `--max_mouth_radius`, that dimension is searched from 0.4 times the cap up to the cap. When the cap is below the ka = 1 mouth or quarter-wave length for `target_f_low`, `design.json`, the ranking and the report state the expected low-frequency shortfall in octaves.
-- **FEM shortlist.** The top half of `--lem_top_n` goes to FEM by score alone. The best design of each missing profile then fills slots up to 80% of the budget, and no profile takes more than half of `--lem_top_n` while other profiles have comparable candidates.
-- **Refinement.** It starts from the best feasible FEM design or, when every FEM candidate failed, from the least-infeasible one (fewest failed constraints, smallest ripple excess). When it ends on a heuristic bound it widens that bound by 25%, up to twice; bounds you set are never moved.
-
-```bash
-just run-auto \
-    --target_f_low 500 --target_f_high 4000 \
-    --mouth_radius 0.2 --length 0.5 --top_n 10
-```
-
-### Fullauto mode
-
-Specify **only** a target frequency band. The system derives horn geometry analytically (mouth radius from cutoff frequency, length from quarter-wave to half-wave), generates a grid of seven profiles and candidate dimensions, screens it analytically, runs FEM on a shortlist, and refines promising dimensions. Reports describe the best evaluated candidates, not a proven global optimum.
-
-```bash
-just run-fullauto \
-    --target_f_low 500 --target_f_high 4000
-```
+Details: [STATUS](docs/STATUS.md) and [VALIDATION](docs/VALIDATION.md).
 
 ## Quick start
 
 ### Prerequisites
 
-- [Docker](https://www.docker.com/get-started)
-- [just](https://github.com/casey/just) (task runner)
-- [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html#installation)
-- **Java 17–22** (required by Nextflow; Java 25+ is not supported). On macOS: `brew install openjdk@21`
+- [Docker](https://docs.docker.com/get-docker/), running. Give it at least 8 GB of memory.
+- [just](https://github.com/casey/just).
+- Python 3.10 or newer, as `python3`.
+- Java 17 to 22 for Nextflow; 21 is recommended. On macOS: `brew install openjdk@21`. The launcher finds it without changing your shell.
+- [Nextflow](https://www.nextflow.io/) 24.10.x. The pipeline refuses other versions. To install 24.10.5:
 
-### Build
+  ```sh
+  curl -fL https://github.com/nextflow-io/nextflow/releases/download/v24.10.5/nextflow -o nextflow
+  chmod +x nextflow && mv nextflow ~/.local/bin/    # any folder on your PATH
+  ```
 
-```bash
+- Optional, for the local tests and driver tools: [uv](https://docs.astral.sh/uv/).
+- Optional: nf-test. `just test-nextflow` downloads the pinned version itself.
+
+### Build and run
+
+```sh
+git clone https://github.com/timini/horn-simulation.git
+cd horn-simulation
 just build
 ```
 
-### Run
+Simulate one horn (about a minute):
 
-```bash
-just run-fullauto \
-    --target_f_low 500 --target_f_high 4000
+```sh
+just run --profile exponential --throat_radius 0.025 --mouth_radius 0.1 --length 0.2 \
+  --min_freq 500 --max_freq 2000 --num_bands 2
 ```
 
-Find the latest completed run with `just latest-run`, then open `outputs/auto/report/auto_report.html` beneath that directory.
+Design a horn for a band (a few minutes):
+
+```sh
+just run-auto --target_f_low 800 --target_f_high 1600 --drivers_db data/drivers-curated \
+  --lem_top_n 3 --refinement_budget 2 --num_bands 2 --num_intervals 101 --mesh_size 0.01
+```
+
+This is the [worked example](docs/WORKED_EXAMPLE.md). A small search budget keeps it quick.
+
+Each run gets its own folder under `results/`. Find the latest with:
+
+```sh
+just latest-run
+```
+
+Open `outputs/single_report.html` (single mode) or `outputs/auto/report/auto_report.html` (auto mode) inside that folder.
 
 ### Test
 
-```bash
-just test                        # all packages
-just test-package horn-solver    # single package
+```sh
+uv sync --all-packages --extra test
+just test-local          # package tests without Docker
+just test                # package tests in Docker
+just test-nextflow       # workflow tests
 ```
 
-## Parameters
+## Modes
 
-<details>
-<summary><strong>Single mode (default)</strong></summary>
+**Single mode** (`just run`) simulates one horn you describe, or a STEP file you import, and optionally couples one driver to it.
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `throat_radius` | Horn throat radius (m) | `0.05` |
-| `mouth_radius` | Horn mouth radius (m) | `0.2` |
-| `length` | Horn length along Z-axis (m) | `0.5` |
-| `profile` | Horn flare profile | `conical` |
-| `min_freq` | Minimum simulation frequency (Hz) | `500` |
-| `max_freq` | Maximum simulation frequency (Hz) | `8000` |
-| `num_intervals` | Number of frequency steps | `100` |
-| `min_points_per_octave` | Minimum log-spaced solver points per octave (0 disables) | `24` |
-| `mesh_size` | Largest element size (m); the finer of this and the wavelength rule is used | `0.01` |
-| `max_mesh_nodes` | Per-band node limit (see meshing below) | `100000` |
-| `radiation_model` | `modal_baffled`, `flanged_piston`, `unflanged_piston`, `finite_flange`, `plane_wave` or `closed` | `modal_baffled` for generated geometry with lossless P1, else `flanged_piston` |
-| `num_bands` | Parallel frequency band jobs | `8` |
-| `outdir` | Direct Nextflow output directory | Required for direct invocation; launcher chooses an isolated run |
+**Auto mode** (`just run-auto`) takes a target band and optional limits, searches seven profiles and a range of sizes, and ranks driver and horn pairs. `just run-fullauto` is the same command under its old name.
 
-</details>
+All commands and parameters: [USAGE](docs/USAGE.md).
 
-<details>
-<summary><strong>Auto mode (<code>--mode auto</code>)</strong></summary>
+## Features
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `target_f_low` | Target low frequency (Hz) | `500` |
-| `target_f_high` | Target high frequency (Hz) | `4000` |
-| `drivers_db` | Driver database directory (`data/drivers-curated` holds the sourced, hand-checked set) | `data/drivers` |
-| `top_n` | Number of top results to return | `10` |
-| `max_ripple_db` | Maximum target-band ripple for a feasible design (dB) | `6.0` |
-| `min_output_db` | Optional minimum observer level anywhere in the target band (dB) | unset |
-| `score_weights` | Preference weights, e.g. `sensitivity=0.625,ripple=0.25,extension=0.125,size=0` (normalised to sum to 1) | as shown |
+- Seven horn profiles from one shared implementation: [PHYSICS, profiles](docs/PHYSICS.md#profiles)
+- 3D finite element solver with mesh rules tied to wavelength: [PHYSICS](docs/PHYSICS.md)
+- Modal mouth radiation in an infinite baffle, plus local radiation models: [MODAL_APERTURE](docs/MODAL_APERTURE.md)
+- Optional thermoviscous wall losses: [LOSS_PHYSICS_VALIDATION](docs/LOSS_PHYSICS_VALIDATION.md)
+- Band-driven search with a fast screen, FEM shortlist and bounded refinement: [SEARCH_AND_SCORING](docs/SEARCH_AND_SCORING.md)
+- Hard limits and a documented weighted score: [SEARCH_AND_SCORING, score](docs/SEARCH_AND_SCORING.md#score)
+- Size caps, fixed dimensions, minimum output and profile restriction: [USAGE, auto search](docs/USAGE.md#auto-search)
+- Driver coupling with front and rear chambers: [DRIVERS, chambers](docs/DRIVERS.md#front-and-rear-chambers)
+- Driver databases with provenance, a validator and a datasheet entry tool: [DRIVERS](docs/DRIVERS.md)
+- Electrical impedance, excursion, power and group delay per candidate: [OUTPUTS](docs/OUTPUTS.md#coupled-csv-columns)
+- Experimental directivity and beamwidth: [OUTPUTS, directivity](docs/OUTPUTS.md#directivity-csv)
+- True-size STEP files and builder profile CSVs: [OUTPUTS, STEP files](docs/OUTPUTS.md#step-files)
+- STEP import with unit handling: [USAGE, imported STEP](docs/USAGE.md#imported-step-geometry)
+- Self-contained HTML reports with rejection reasons and margins: [OUTPUTS](docs/OUTPUTS.md)
+- Isolated runs with provenance, checked resume and run lookup: [USAGE, launcher](docs/USAGE.md#launcher)
+- Cross-software checks against openwind, bempp-cl and Hornresp: [CROSS_SOFTWARE_VALIDATION](docs/CROSS_SOFTWARE_VALIDATION.md)
+- Validation records and CI jobs: [VALIDATION](docs/VALIDATION.md)
 
-The score is a weighted sum of four terms on fixed scales: target-band mean level, target-band ripple, extension (octaves by which the f3 points, 3 dB below the target-band mean, lie outside the band) and horn volume. With the default weights, 1 dB less ripple is worth 2 dB of sensitivity and 1 octave more extension is worth 6 dB; size is ignored. The formula, weights, exchange rates and the origin of every bound are written to `ranked_results.json` and the report.
+## Examples
 
-</details>
+- [Example site](https://timini.github.io/horn-simulation/)
+- [examples/](examples/README.md): an 800 to 1600 Hz design and a size-capped 320 to 5000 Hz design, with reports, STEP files and data.
+- [Worked example](docs/WORKED_EXAMPLE.md): one auto run from command to result.
 
-<details>
-<summary><strong>Fullauto mode (<code>--mode fullauto</code>)</strong></summary>
+## Documentation
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `target_f_low` | Target low frequency (Hz) | `500` |
-| `target_f_high` | Target high frequency (Hz) | `4000` |
-| `drivers_db` | Driver database directory (`data/drivers-curated` holds the sourced, hand-checked set) | `data/drivers` |
-| `top_n` | Number of top results to return | `10` |
-| `num_mouth_radii` | Mouth radius grid points | `3` |
-| `num_lengths` | Length grid points | `3` |
-| `num_intervals` | Frequency steps per simulation | `100` |
-| `num_bands` | Parallel frequency band jobs | `8` |
-
-</details>
-
-## Packages
-
-| Package | Purpose | Key Dependencies |
-|---------|---------|-----------------|
-| `horn-core` | Shared data structures (`HornParameters`, `DriverParameters`) | numpy |
-| `horn-geometry` | Procedural horn geometry generation (STEP files) | gmsh (OpenCASCADE) |
-| `horn-solver` | FEM acoustic solving + meshing | FEniCSx/dolfinx, gmsh |
-| `horn-analysis` | Result merging, plotting, scoring, ranking, HTML reports | pandas, matplotlib, scipy |
-| `horn-drivers` | Driver database loading and validation | numpy, horn-core |
-
-## Acoustic modelling
-
-### Governing equation
-
-The solver computes the steady-state acoustic pressure field inside the horn by solving the **time-harmonic Helmholtz equation**:
-
-```
-∇²p + k²p = 0
-```
-
-where `p` is complex acoustic pressure, `k = 2πf / c₀` is the wave number, `f` is frequency, and `c₀ = 343 m/s` is the speed of sound in air.
-
-This is discretised using the **Finite Element Method (FEM)** via FEniCSx/dolfinx. The weak (variational) form used is:
-
-```
-∫_Ω [∇p · ∇q − k²pq] dx − jk ∫_outlet pq ds = 0
-```
-
-where `q` is a test function from a first-order Lagrange (P1) finite element space on the tetrahedral volume mesh. The surface integral implements the first-order Sommerfeld radiation condition at the outlet. The linear system is solved with a direct LU factorisation via PETSc at each frequency.
-
-### Boundary conditions
-
-The horn mesh has three tagged boundary regions, identified automatically by the z-coordinate of each surface's centre of mass:
-
-| Boundary | Tag | Location | Condition |
-|----------|-----|----------|-----------|
-| **Inlet** (throat) | 2 | z = 0 | Dirichlet: p = 1 Pa (unit driving pressure) |
-| **Outlet** (mouth) | 3 | z = length | Robin: ∂p/∂n = −jkp (radiation impedance) |
-| **Walls** | 4 | Remaining surfaces | Neumann: ∂p/∂n = 0 (sound-hard walls) |
-
-The wall Neumann condition is natural (satisfied implicitly by the variational form). The inlet Dirichlet condition models a piston driver producing a uniform pressure at the throat. The outlet Robin condition (first-order Sommerfeld radiation condition) is implemented as `a -= jk ∫_outlet p·q ds`, which adds radiation damping and is accurate for ka < ~3.
-
-### Meshing and element sizing
-
-The STEP geometry is imported into gmsh's OpenCASCADE kernel and meshed with tetrahedra. Each frequency band gets its own mesh, sized for the band's highest frequency `f_max` (rules in `packages/horn-solver/src/horn_solver/meshing.py`):
-
-- **Wavelength rule by element degree**: P1 (the default) uses λ/10, P2 uses λ/6. The leading-order phase error per wavelength is about 4.6 % for P1 at λ/6, 1.6 % for P1 at λ/10 and 0.08 % for P2 at λ/6. P1 stays the default because the default `modal_baffled` model supports P1 only and all executed resolution evidence is P1. The size used is the finer of this rule and `mesh_size`.
-- **Throat refinement**: a gmsh Distance/Threshold field caps elements at r_t/5 within one throat radius of the throat, grading to the bulk size over two more throat radii. If the faceted throat area still misses the CAD area by more than 1 %, the mesh is regenerated once at r_t/10 (the solver logs this), then the candidate is rejected.
-- **Throat-area guard**: the faceted mesh area of the throat must be within 1 % of the CAD area (one retry with a finer throat cap).
-- **Node limit** (`max_mesh_nodes`, default 100,000): a P1 mesh that would exceed it is coarsened just enough to fit, but never beyond λ/6. Each response row records `mesh_elements_per_wavelength` and `mesh_coarsened_for_node_limit`. If even λ/6 does not fit, or the throat guard fails, an auto-mode candidate is listed as rejected (`mesh_node_limit_exceeded`, `throat_area_guard_failed`) and the run continues.
-
-For example, at `f_max = 8000 Hz`: λ_min = 43 mm, so the P1 target is 4.3 mm. The default single-mode horn (conical, 50/200/500 mm) needs about 266,000 nodes at that size, so its top band is coarsened to about λ/6.9 to stay within 100,000 nodes; the lower bands use the full λ/10.
-
-### SPL calculation
-
-Sound Pressure Level is computed from the RMS pressure integrated over the **outlet surface** (horn mouth), giving a physically meaningful metric independent of mesh refinement or horn volume:
-
-```
-p_rms = √( ∫_outlet |p|² ds  /  A_outlet )
-
-SPL = 20 × log₁₀(p_rms / p_ref)
-```
-
-where `p_ref = 20 µPa` is the standard acoustic reference pressure. The outlet area `A_outlet` is computed once before the frequency loop since the mesh is static.
-
-### Frequency sweep
-
-Frequencies are logarithmically spaced, so every octave gets the same number of points. The total range is split into `num_bands` sub-ranges of equal width on a logarithmic axis, each with the same number of points (at least `num_intervals / num_bands`, raised if needed to `min_points_per_octave`), so the merged grid is uniform in log frequency. The sub-ranges run in parallel as separate Nextflow processes, each in its own Docker container. Results are merged and sorted by frequency after all bands complete.
-
-### Physical constants
-
-| Constant | Value | Description |
-|----------|-------|-------------|
-| c₀ | 343.0 m/s | Speed of sound in air (~20 °C) |
-| ρ₀ | 1.225 kg/m³ | Air density at sea level |
-| p_ref | 20 µPa | SPL reference pressure |
-
-### Limitations
-
-- **Experimental driver recommendations**: driver/interface coupling and absolute listening-distance output still need matched assembly validation. Missing evidence is disclosed in reports.
-- **Restricted radiation models**: the default [modal aperture model](docs/MODAL_APERTURE.md) accounts for nonuniform axisymmetric mouth velocity and passes an independent infinite-baffle comparison for one worked horn. The `flanged_piston` fallback (imported STEP, wall losses or P2) misses that reference by 1.05 dB / 5.7 degrees in throat impedance. Directivity is an experimental infinite-baffle far-field estimate, not compared with any measured polar; finite baffles and cabinets are not modelled.
-- **Rigid structure**: optional boundary-layer losses cover a restricted pipe regime, not flexible walls, porous materials or general damping. Measured-reference failures remain visible.
-- **Air and driver assumptions**: reference runs record air properties; direct motor coupling requires the default air properties. Nonlinear distortion and broadband thermal performance are not predicted.
-- **Profile qualification**: seven profiles are implemented, but validation of simple pipes and conical/exponential search grids does not qualify every profile or frequency band.
-- **Acoustic CAD only**: exported STEP files describe the air volume. Walls, mounting and the actual driver interface require mechanical design before fabrication.
-
-## Architecture
-
-This is a monorepo with each package in `packages/`. Each package has its own Dockerfile with multi-stage builds (base → production → test). Tests run inside Docker containers to ensure reproducibility.
-
-The pipeline is orchestrated by Nextflow (`main.nf`), which maps each process to its corresponding Docker container via `nextflow.config`.
-
-## Roadmap
-
-The goal is a dependable **target band → driver and horn dimensions** workflow for conventional single-driver horns. [Issue #81](https://github.com/timini/horn-simulation/issues/81) tracks completion; [the current status and delivery roadmap](docs/history/SINGLE_HORN_ROADMAP.md) records the evidence, remaining issues and acceptance gates. MEH development belongs in [MEH Design Studio](https://github.com/timini/meh-design-studio).
-
-The automated search, bounded refinement, seven profiles, axial STEP import, isolated runs and reports work. The independent interior/ideal-motor comparison, cavity test, modal radiation comparison, candidate-resolution studies and four-band search audit now have archived passing evidence. See the [worked default example](docs/WORKED_EXAMPLE.md) and [improved-radiation example](docs/MODAL_APERTURE.md). Predictions remain experimental while the following physical gates are outstanding:
-
-1. Obtain complete source/interface and calibration data for two sufficiently documented reference assemblies, and qualify a small driver set (#81). Known FSN classification is corrected; the larger catalogue audit remains #74.
-2. Model and independently check the interfaces/rear loads required by those references, extending the numerical domain only where needed (#81).
-3. Compare frozen absolute response, impedance and ordering with both measured assemblies. Differences smaller than uncertainty remain ties (#81).
-4. Repeat release acceptance with qualified inputs and publish the reference's mechanical/interface drawings alongside acoustic CAD (#81).
-
-Output management (#75) is delivered. Interior field export (#45), flexible boundary tagging (#49), and folded/back-loaded or automatic phase-plug design (#51) remain later extensions unless a selected reference case requires them. Historical closure of exterior-solver issues does not certify the disabled legacy coupling.
+The [documentation index](docs/index.md) lists every page. Items from the original brief that were not built are in [DESCOPED](docs/DESCOPED.md).
 
 ## Contributing
 
-Contributions welcome. Please open an issue first to discuss what you'd like to change.
+Open an issue first to discuss a change. [DEVELOPMENT](docs/DEVELOPMENT.md) covers the layout, environments, tests and CI. [AGENTS.md](AGENTS.md) sets the delivery rules.
 
 ## License
 
-Project code is available under the [MIT licence](LICENSE). External reference datasets retain the source-specific terms recorded in the validation catalog.
-
-
-### Resumable driver imports
-
-Install the scraper extras with `pip install -e "packages/horn-drivers[scrape]"`.
-Run `horn-scrape-drivers --db data/drivers --manufacturers Eminence --state results/scrape-state.json`.
-Valid records with the required fields, source provenance and current scraper schema are skipped; use `--refresh` to explicitly refetch them. Older records are refreshed to remove provisional Mms values.
-Writes replace individual files atomically, retaining existing permissions or respecting the process umask for new files, so interrupted or failed refreshes preserve the last good record.
-Discovery failures, incomplete pagination and failed driver retrieval return a failure status; an all-current resume succeeds.
-`--patience-hours` optionally waits through origin outages; exhausting that budget stops the batch instead of restarting the wait for the next driver. Throttling retries remain bounded.
-
-Driver pages must identify the requested URL. Missing Mms is not replaced with dry Mmd, and program power is not converted into an assumed continuous rating. Records lacking essential known parameters are rejected; additional chamber/interface validation is still required before making physical driver recommendations.
-Pages are decoded as UTF-8 (the site sends no charset). Each record stores the source URL, retrieval date, `scraper_schema_version` and `record_schema_version`, plus the site's Rms, Cms, power handling, sensitivity and nominal frequency range (stored as `usable_f_low_hz`/`usable_f_high_hz` and labelled nominal in `provenance.band_definition`). The driver category comes from the site's category label and is recorded in `type_source`; a refresh keeps an existing category only when it has a `type_source`. Without one the category is unknown, because diaphragm area alone cannot distinguish a compression driver from a small cone driver.
-Manually enriched interface data, usable-frequency bounds and parameters not supplied by the source survive refresh; values actually fetched from the source replace their earlier values.
-During migration, an existing continuous-power rating must have an independent source in `parameter_sources.power_w`; otherwise it is removed because older scraper versions inferred it from program power. A manufacturer's progress is marked incomplete before discovery, so a failed refresh cannot leave an earlier completion flag in place.
-
-### Checking and adding drivers
-
-`horn-validate-drivers --db data/drivers` must report zero errors; CI runs it on `data/drivers` and `data/drivers-curated`. Errors include inconsistent Qms/Qes/Qts (relative tolerance 10%), records the loader would reject, mojibake in model names and the same parameter tuple across unrelated models (a copied page).
-
-To add a driver from a datasheet, give each value in the unit the datasheet uses:
-
-```bash
-horn-add-driver --db data/drivers-curated --manufacturer Acme --model "AC10 8ohm" --type cone \
-  --fs-hz 45 --re-ohm 5.6 --bl-tm 15.2 --sd-cm2 346 --vas-l 52 --le-mh 0.9 \
-  --qms 5.1 --qes 0.38 --qts 0.354 --xmax-mm 4 --power-w 300 \
-  --f-low-hz 50 --f-high-hz 3000 --source-url https://example.com/ac10.pdf
-```
-
-Mms is derived from Vas, Sd and Fs when it is not given. Compression drivers take `--exit-diameter-mm`. Adapter or phase-plug air goes in `--front-chamber-cm3` (0 means none), with `--front-chamber-area-cm2` when it acts as a short duct; a sealed rear volume goes in `--rear-chamber-cm3`. The command converts to SI, runs the loader and validator and writes nothing if either fails. The loader also accepts `sd_cm2`, `vas_l`, `mms_g`, `le_mh`, `xmax_mm`, `exit_area_cm2`, `exit_diameter_mm`, `front_chamber_volume_cm3`, `front_chamber_area_cm2`, `rear_chamber_volume_cm3` and `power_aes_watts` in hand-written JSON, and rejects values that are orders of magnitude off with a hint about the unit.
-
-See the [independent solver protocol](docs/INDEPENDENT_SOLVER_VALIDATION.md) and [physical assembly reference audit](docs/PHYSICAL_REFERENCE_AUDIT.md) for the current qualification work.
-See [run locations, latest-run lookup, resume and cleanup](docs/history/RUN_MANAGEMENT.md).
-
-Start with the [reproducible 800–1600 Hz worked example](docs/WORKED_EXAMPLE.md), then check a candidate using the [mesh, frequency and loft resolution procedure](docs/CANDIDATE_RESOLUTION.md). Read [cutoff and sweep-bound metric definitions](docs/history/REPORT_METRICS.md) when interpreting the report.
+Code is under the [MIT licence](LICENSE). External reference datasets keep the terms recorded in `data/validation/references.json`.
