@@ -1,5 +1,4 @@
 """Reports for experimental driver-horn predictions and their evidence gaps."""
-from horn_analysis.evaluation import coupled_output
 
 from horn_analysis.kpi import format_kpi
 
@@ -15,7 +14,7 @@ from horn_core.parameters import DriverParameters
 from horn_analysis.compare import plot_multi_comparison
 from horn_analysis.html_report import generate_html_report
 from horn_analysis.scoring import TargetSpec
-from horn_analysis.transfer_function import compute_driver_response, scale_solver_spl
+from horn_analysis.electrical_output import electrical_table, plot_electrical
 
 
 def generate_auto_report(
@@ -73,6 +72,7 @@ def generate_auto_report(
 
     # 2. Generate individual coupled-SPL CSVs for top candidates
     csv_pairs = []  # (csv_path, label) for comparison plot
+    electrical_tables = []
     for rank, result in enumerate(top_results, 1):
         driver_id = result["driver_id"]
         horn_label = result["horn_label"]
@@ -83,23 +83,22 @@ def generate_auto_report(
         drv = drivers[driver_id]
         solver_csv = solver_csvs[horn_label]
         df = pd.read_csv(solver_csv)
-        freq = df["frequency"].values
-        solver_spl = df["spl"].values
-        z_real = df["z_real"].values
-        z_imag = df["z_imag"].values
         cand_throat = result.get("throat_radius", throat_radius)
 
-        coupled_spl, _, metric = coupled_output(df, drv, target, cand_throat)
+        # frequency, spl, Re/Im/|Ze| (ohm), excursion (mm), input power and
+        # system group delay; see horn_analysis.electrical_output.
+        table = electrical_table(df, drv, target, cand_throat, result.get("length") or None)
 
         csv_name = f"coupled_{rank:02d}_{driver_id}_{horn_label}.csv"
         csv_path = out / csv_name
-        pd.DataFrame({
-            "frequency": freq,
-            "spl": coupled_spl,
-        }).to_csv(csv_path, index=False)
+        table.to_csv(csv_path, index=False)
 
         label = f"#{rank} {drv.manufacturer} {drv.model_name} ({horn_label})"
         csv_pairs.append((str(csv_path), label))
+        electrical_tables.append((label, table, drv.xmax_m))
+
+    if electrical_tables:
+        plot_electrical(electrical_tables, str(out / "auto_electrical.png"))
 
     # 3. Comparison plot
     if csv_pairs:
@@ -166,6 +165,16 @@ def generate_auto_report(
                       f"Mean output level: {result['avg_sensitivity_db']:.1f} dB")
         if all(result.get(key) is not None for key in ("throat_radius", "mouth_radius", "length")):
             lines.append(f"     Throat radius: {result['throat_radius']:.6f} m; mouth radius: {result['mouth_radius']:.6f} m; length: {result['length']:.6f} m")
+        interface = result.get("driver_interface")
+        if interface:
+            corner = interface.get("front_chamber_corner_hz")
+            lines.append(f"     Front chamber: {interface['front_chamber_volume_cm3']:.1f} cm3 ({interface['front_chamber_source']}); "
+                         f"Sd/St {interface['compression_ratio']:.2f}"
+                         + (f"; lumped corner on a resistive load {corner:.0f} Hz" if corner else ""))
+        if result.get("test_power_w") is not None:
+            margin = result.get("test_power_xmax_margin_mm")
+            lines.append(f"     At {result['test_power_w']:g} W: max in-band excursion {result['test_power_band_max_excursion_mm']:.2f} mm"
+                         + (f", Xmax margin {margin:.2f} mm" if margin is not None else ", Xmax unknown"))
         if "kpi" in result:
             kpi = result["kpi"]
             f3l = format_kpi(result, "f3_low_hz")

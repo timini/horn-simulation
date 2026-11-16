@@ -74,6 +74,14 @@ class DriverParameters:
     interface_model: Optional[str] = None
     mmd_kg: Optional[float] = None  # diaphragm mass without the measured free-air load
     rear_load_mass_kg: Optional[float] = None
+    # Driver interface (see horn_core.driver_interface). front_chamber_volume_m3
+    # is the air volume between diaphragm and horn throat (Vtc); zero is the
+    # ideal area transformer, None means not supplied (cones get an estimate).
+    # front_chamber_area_m2 (Atc) turns the chamber into a short duct.
+    # rear_chamber_volume_m3 (Vrc) is a sealed rear volume; None is open back.
+    front_chamber_volume_m3: Optional[float] = None
+    front_chamber_area_m2: Optional[float] = None
+    rear_chamber_volume_m3: Optional[float] = None
 
     @property
     def coupled_moving_mass_kg(self) -> float:
@@ -90,14 +98,16 @@ class DriverParameters:
     def _validate_optional_numbers(self):
         positive = ("qms", "qes", "qts", "cms_m_per_n", "exit_area_m2", "xmax_m",
                     "nominal_impedance_ohm", "power_w", "peak_power_w", "usable_f_low_hz",
-                    "usable_f_high_hz", "mmd_kg")
-        # Zero resistance or rear air mass is a meaningful limiting case.
-        nonnegative = ("rms_kg_per_s", "rear_load_mass_kg")
+                    "usable_f_high_hz", "mmd_kg", "front_chamber_area_m2", "rear_chamber_volume_m3")
+        # Zero resistance, rear air mass or front chamber volume is a meaningful limiting case.
+        nonnegative = ("rms_kg_per_s", "rear_load_mass_kg", "front_chamber_volume_m3")
         for name in positive + nonnegative:
             value = getattr(self, name)
             if value is not None and (not np.isfinite(value) or value < 0 or (name in positive and value == 0)):
                 requirement = "positive" if name in positive else "nonnegative"
                 raise ValueError(f"{self.driver_id}: {name} must be finite and {requirement}")
+        if self.front_chamber_area_m2 is not None and not self.front_chamber_volume_m3:
+            raise ValueError(f"{self.driver_id}: front_chamber_area_m2 needs a positive front_chamber_volume_m3")
         if self.usable_f_low_hz is not None and self.usable_f_high_hz is not None and self.usable_f_low_hz >= self.usable_f_high_hz:
             raise ValueError(f"{self.driver_id}: usable frequency band must be increasing")
 

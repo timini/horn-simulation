@@ -26,6 +26,7 @@ def main():
     p.add_argument('--mesh-size',type=float,default=.01);p.add_argument('--radiation-model',default='flanged_piston')
     p.add_argument('--voltage',type=float,default=2.83);p.add_argument('--distance',type=float,default=1.)
     p.add_argument('--max-ripple',type=float,default=6.);p.add_argument('--max-compression',type=float,default=10.)
+    p.add_argument('--test-power',type=float,default=None)
     p.add_argument("--loss-model",choices=["lossless", "boundary_layer"],default="lossless")
     p.add_argument("--flange-width",type=float,default=0.)
     p.add_argument("--minimum-wall-scale",type=float)
@@ -44,7 +45,7 @@ def main():
         from horn_solver.modal_geometry import ModalGeometryError
         screen=json.loads(Path(a.prescreen_json).read_text())
         drivers=[d for d in load_drivers(a.drivers_db) if d.driver_id in screen['drivers']]
-        target=TargetSpec(design['target_f_low'],design['target_f_high'],voltage_rms=a.voltage,observation_distance_m=a.distance,max_ripple_db=a.max_ripple,max_compression_ratio=a.max_compression,min_output_db=a.min_output,score_weights=a.score_weights)
+        target=TargetSpec(design['target_f_low'],design['target_f_high'],voltage_rms=a.voltage,observation_distance_m=a.distance,max_ripple_db=a.max_ripple,max_compression_ratio=a.max_compression,min_output_db=a.min_output,score_weights=a.score_weights,test_power_w=a.test_power)
         r=data['results'][0]
         seed=CandidateGeometry(candidate_id=r['horn_label'],profile=r['profile'],throat_radius=r['throat_radius'],mouth_radius=r['mouth_radius'],length=r['length'])
         cache={geometry_key(seed):r['composite_score']}

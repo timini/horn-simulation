@@ -198,6 +198,7 @@ def main():
     parser.add_argument("--distance",type=float,default=1.)
     parser.add_argument("--max-ripple",type=float,default=6.)
     parser.add_argument("--max-compression",type=float,default=10.)
+    parser.add_argument("--test-power",type=float,default=None,help="Stress power (W) for excursion checks over the full sweep.")
     parser.add_argument("--radiation-model", default="flanged_piston")
     parser.add_argument("--loss-model", choices=["lossless", "boundary_layer"], default="lossless")
     parser.add_argument("--flange-width", type=float, default=0.)
@@ -236,7 +237,7 @@ def main():
         num_frequencies=args.num_frequencies,
         top_n=args.top_n,
         radiation_model=args.radiation_model, loss_model=args.loss_model, flange_width=args.flange_width,
-        target=TargetSpec(args.target_f_low,args.target_f_high,voltage_rms=args.voltage,observation_distance_m=args.distance,max_ripple_db=args.max_ripple,max_compression_ratio=args.max_compression,min_output_db=args.min_output,score_weights=args.score_weights),
+        target=TargetSpec(args.target_f_low,args.target_f_high,voltage_rms=args.voltage,observation_distance_m=args.distance,max_ripple_db=args.max_ripple,max_compression_ratio=args.max_compression,min_output_db=args.min_output,score_weights=args.score_weights,test_power_w=args.test_power),
     )
 
     # Write outputs

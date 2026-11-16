@@ -11,11 +11,15 @@ Physics chain (impedance domains documented at every step)::
       → Z_mech_driver = Rms + jωMms + 1/(jωCms)            (mechanical, kg/s)
       → Z_horn = z_real + j·z_imag                          (specific acoustic, Pa·s/m)
       → Z_mech_load = Z_horn · Sd² / S_throat               (mechanical, kg/s)
+        (ideal transformer; with a front chamber Vtc the load is Sd² times the
+        chamber two-port input impedance, and a sealed rear chamber Vrc adds
+        Sd² ρc²/(jωVrc); see horn_core.driver_interface)
       → Z_mech_total = Z_mech_driver + Z_mech_load
       → Z_mot = BL² / Z_mech_total                          (motional impedance, Ω)
       → I = V_g / (Z_e + Z_mot)                             (current, A)
       → v = BL·I / Z_mech_total                             (diaphragm velocity, m/s)
-      → p_throat = Z_horn · v · (Sd / S_throat)             (throat pressure, Pa)
+      → p_throat = Z_horn · U_throat / S_throat             (throat pressure, Pa;
+        U_throat = v·Sd without a front chamber)
 """
 from horn_core.acoustics import inlet_area_from_frame
 
@@ -28,6 +32,7 @@ import numpy as np
 import pandas as pd
 
 from horn_core.parameters import DriverParameters
+from horn_core.driver_interface import driver_operating_point
 from horn_drivers.loader import load_drivers
 
 
@@ -68,41 +73,9 @@ def compute_driver_operating_point(
     moving_mass = driver.coupled_moving_mass_kg
     if moving_mass <= 0 or driver.cms_m_per_n <= 0:
         raise ValueError("Invalid driver mass or compliance")
-    omega = 2.0 * np.pi * frequencies
-
-    # Electrical impedance
-    z_e = driver.re_ohm + 1j * omega * driver.le_h
-
-    # Mechanical impedance of the driver suspension
-    rms = driver.rms_kg_per_s if driver.rms_kg_per_s is not None else 0.0
-    z_mech_driver = rms + 1j * omega * moving_mass + 1.0 / (1j * omega * driver.cms_m_per_n)
-
-    # Horn throat impedance (specific acoustic → mechanical via area ratio)
-    z_horn = z_horn_real + 1j * z_horn_imag
-    z_mech_load = z_horn * (driver.sd_m2 ** 2) / throat_area
-
-    # Total mechanical impedance seen by the voice coil
-    z_mech_total = z_mech_driver + z_mech_load
-
-    # Solve the two motor equations without dividing by mechanical impedance.
-    # The undamped, unloaded resonance has zero current and finite velocity.
-    denominator = z_e * z_mech_total + driver.bl_tm**2
-    current = v_g * z_mech_total / denominator
-    velocity = driver.bl_tm * v_g / denominator
-    with np.errstate(divide="ignore", invalid="ignore"):
-        electrical_impedance = np.divide(v_g, current)
-    electrical_impedance = np.where(current == 0, complex(np.inf, 0), electrical_impedance)
-
-    # Throat pressure: p = Z_horn * U / S_throat, where U = v * Sd
-    p_throat = z_horn * velocity * (driver.sd_m2 / throat_area)
-
-    return {"throat_pressure": p_throat, "velocity_rms": velocity,
-            "current_rms": current, "electrical_impedance": electrical_impedance,
-            "displacement_peak_m": np.sqrt(2)*np.abs(velocity)/omega,
-            "input_power_w": np.real(v_g*np.conjugate(current)),
-            "copper_power_w": np.abs(current)**2*driver.re_ohm,
-            "mechanical_loss_w": np.abs(velocity)**2*rms,
-            "horn_power_w": np.abs(velocity)**2*np.real(z_mech_load)}
+    # Motor, optional rear and front chambers, and horn load: see
+    # horn_core.driver_interface for the network and its references.
+    return driver_operating_point(driver, frequencies, z_horn_real + 1j * z_horn_imag, throat_area, v_g)
 
 
 def compute_driver_response(driver, frequencies, z_horn_real, z_horn_imag, throat_area, v_g=2.83):

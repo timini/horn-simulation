@@ -242,3 +242,22 @@ def test_supplied_rms_fixes_qms_instead_of_ill_conditioned_derivation():
     assert d.rms_kg_per_s == 1.5
     assert d.qms == pytest.approx(omega * 0.049 / 1.5)
     assert 1 / d.qts == pytest.approx(1 / d.qms + 1 / d.qes)
+
+
+def test_chamber_fields_load_in_si_or_convenience_units(v2_db):
+    from pathlib import Path
+    from horn_drivers.loader import _driver_from_dict
+    raw = json.loads(Path(v2_db).read_text())['drivers'][0]
+    raw['parameters'].update(front_chamber_volume_cm3=120., front_chamber_area_cm2=30., rear_chamber_volume_cm3=900.)
+    driver = _driver_from_dict(raw)
+    assert driver.front_chamber_volume_m3 == pytest.approx(1.2e-4)
+    assert driver.front_chamber_area_m2 == pytest.approx(3e-3)
+    assert driver.rear_chamber_volume_m3 == pytest.approx(9e-4)
+    raw['parameters'].update(front_chamber_volume_m3=0.)
+    with pytest.raises(ValueError, match='front_chamber_area_m2'):
+        _driver_from_dict(raw)  # an area without a volume is meaningless
+    raw['parameters'].pop('front_chamber_area_cm2')
+    assert _driver_from_dict(raw).front_chamber_volume_m3 == 0.
+    raw['parameters'].update(rear_chamber_volume_m3=-1.)
+    with pytest.raises(ValueError, match='rear_chamber_volume_m3'):
+        _driver_from_dict(raw)

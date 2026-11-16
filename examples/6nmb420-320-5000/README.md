@@ -6,6 +6,8 @@ Open [report.html](report.html), download [horn.step](horn.step) for CAD, or ins
 
 The final prediction is **4.42 dB peak-to-peak variation** over 320–5000 Hz, averaging **105.52 dB SPL at 2.83 V RMS / 1 m on axis**, without EQ. [Response and electrical impedance](response.csv), [nominal profile coordinates in mm](profile.csv), [full assessment](design.json), [numerical checks](resolution.json) and [CAD dimensions](cad-check.json) are included.
 
+These figures were produced with an ideal area transformer at the throat (no front chamber). The current coupling gives a cone driver without chamber data an estimated front chamber: the air in the open cone behind a flat adapter plate, 139 cm3 for the 6NMB420, with a lumped corner near 1.8 kHz on this 76 mm throat. Re-ranking the preserved 8 mm FEM response (`horn-impedance-8mm.csv`) with that estimate gives about 13 dB variation at 103.9 dB, and the design fails the 6 dB ripple limit, so a new run will reject it. A phase plug or cone filler reduces the chamber volume; give the real adapter volume as `front_chamber_volume_m3` in the driver record to re-rank.
+
 Mesh and frequency checks passed: maximum in-band SPL change 0.244 dB, impedance magnitude 0.397 dB and phase 1.609°, with 0.088 dB interpolation difference after doubling the frequency samples. This compares 8 and 6 mm meshes using the same 40-section CAD; it does not establish every form of discretization error.
 
 ## Limits
