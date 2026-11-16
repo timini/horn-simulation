@@ -70,7 +70,7 @@ def generate_auto_report(
         from horn_analysis.scoring import describe_scoring
         scoring = describe_scoring(target, derived_geometry)
 
-    from horn_analysis.report_tables import (candidate_label, chamber_assumption, has_parametric_geometry,
+    from horn_analysis.report_tables import (candidate_label, horn_legend, chamber_assumption, has_parametric_geometry,
                                              profile_table, rejection_summary)
     rejected = list(rejected or []) + [r for r in all_ranked if r.get("model_feasible") is False]
     all_ranked = [r for r in all_ranked if r.get("model_feasible") is not False]
@@ -135,14 +135,17 @@ def generate_auto_report(
     # The pattern is relative to the axis and so independent of the driver.
     from horn_analysis.directivity import directivity_table, beamwidth_figure, DIRECTIVITY_LABEL
     directivity_tables = []
-    for result in top_results:
+    seen_horns = set()
+    for rank, result in enumerate(top_results, 1):
         horn_label = result["horn_label"]
-        if any(label == horn_label for label, _ in directivity_tables):
+        if horn_label in seen_horns:
             continue
+        seen_horns.add(horn_label)
         table = directivity_table(pd.read_csv(solver_csvs[horn_label]))
         if table is not None:
             table.to_csv(out / f"directivity_{horn_label}.csv", index=False)
-            directivity_tables.append((horn_label, table))
+            # Same '#rank horn' legend as the other horn-only plots.
+            directivity_tables.append((horn_legend(rank, result), table))
     if directivity_tables:
         from horn_analysis import plot_theme
         plot_theme.save_figure(beamwidth_figure(directivity_tables, target), str(out / "auto_beamwidth.png"))
@@ -290,6 +293,7 @@ def generate_auto_report(
         scoring=scoring,
         directivity_tables=directivity_tables,
         electrical_tables=electrical_tables,
+        electrical_png=str(out / "auto_electrical.png") if electrical_tables else None,
         rejected=rejected,
         rejection_stage=rejection_stage,
         builder_files=builder_files,

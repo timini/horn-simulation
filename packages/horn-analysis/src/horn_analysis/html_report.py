@@ -707,6 +707,12 @@ def _render_design_summary(derived_geometry: dict) -> str:
     )
 
 
+def _embed_png(path: str) -> str:
+    import base64
+    with open(path, "rb") as handle:
+        return "data:image/png;base64," + base64.b64encode(handle.read()).decode("ascii")
+
+
 def _render_electrical_section(electrical_png: Optional[str]) -> str:
     if not electrical_png:
         return ""
@@ -866,12 +872,15 @@ def generate_html_report(
     plot_phase = _plot_profile_phase(horn_curves)
     electrical_section = ""
     if electrical_tables:
+        # Embed the PNG written next to the report when there is one, so the
+        # page shows the same figure as auto_electrical.png.
+        image = _embed_png(electrical_png) if electrical_png else _plot_electrical(electrical_tables)
         electrical_section = (
             '<h2>Electrical impedance, excursion and group delay of the top candidates</h2>\n'
             '<p class="subtitle">|Ze| in ohms as the amplifier sees it; peak excursion against Xmax (dotted); '
             'system group delay on axis with the straight-line time of flight removed. '
             'Per-frequency values are in the coupled_NN CSV files.</p>\n'
-            f'<div class="plot"><img src="{_plot_electrical(electrical_tables)}" alt="Electrical impedance, excursion and group delay"></div>'
+            f'<div class="plot"><img src="{image}" alt="Electrical impedance, excursion and group delay"></div>'
         )
     elif electrical_png:
         electrical_section = _render_electrical_section(electrical_png)
