@@ -77,7 +77,7 @@ def main():
                     "profile": c.profile, "throat_radius": c.throat_radius,
                     "mouth_radius": c.mouth_radius, "length": c.length,
                     "model_feasible": False, "simulation_eligible": False,
-                    "composite_score": 0., "bandwidth_coverage": 0.,
+                    "composite_score": 0., "extension_octaves": None,
                     "passband_ripple_db": None, "avg_sensitivity_db": None,
                     "rejection_reasons": ["profile_geometry_infeasible"],
                     "rejection_detail": profile_error, "evidence_gaps": []} for drv in drivers)
@@ -92,7 +92,7 @@ def main():
                     "profile": c.profile, "throat_radius": c.throat_radius,
                     "mouth_radius": c.mouth_radius, "length": c.length,
                     "model_feasible": False, "simulation_eligible": False,
-                    "composite_score": 0., "bandwidth_coverage": 0.,
+                    "composite_score": 0., "extension_octaves": None,
                     "passband_ripple_db": None, "avg_sensitivity_db": None,
                     "rejection_reasons": ["loft_accuracy_unmet"],
                     "rejection_detail": str(error), "evidence_gaps": []} for drv in drivers)
