@@ -1,4 +1,4 @@
-# 800–1600 Hz: generate an experimental horn candidate
+# 800 to 1600 Hz: generate an experimental horn candidate
 
 Open [report.html](report.html) locally in a browser to inspect the predicted response, shortlisted designs, assumptions and evidence gaps. The report is self-contained; Docker is only required to generate a fresh design.
 

@@ -31,7 +31,7 @@ This command generates an experimental candidate, not a qualified physical assem
 
 ## Executed automatic design
 
-A fresh 800–1600 Hz search completed all 18 processes using this model; a subsequent resume reused all 18 from cache. The leading candidate is an 18Sound 6NMB420 with a hyperbolic air passage: throat diameter 64.996 mm, mouth diameter 177.418 mm and length 117.906 mm. Its predicted target-band ripple is **1.485 dB**, with mean output **104.882 dB SPL at 1 m and 2.83 V RMS**. The report retains a near tie and insufficient-evidence status because the physical driver interface and moving-mass/rear-load separation are unverified.
+A fresh 800 to 1600 Hz search completed all 18 processes using this model; a subsequent resume reused all 18 from cache. The leading candidate is an 18Sound 6NMB420 with a hyperbolic air passage: throat diameter 64.996 mm, mouth diameter 177.418 mm and length 117.906 mm. Its predicted target-band ripple is **1.485 dB**, with mean output **104.882 dB SPL at 1 m and 2.83 V RMS**. The report retains a near tie and insufficient-evidence status because the physical driver interface and moving-mass/rear-load separation are unverified.
 
 The [worked-example archive](../data/validation/worked_example_modal_800_1600.tar.gz) contains the self-contained report, STEP geometry, rankings, raw and coupled curves, resolved specification, sealed manifest and fresh/resume logs. The [identity manifest](../data/validation/worked_example_modal_800_1600_manifest.json) names the executed revision. The selected STEP is `outputs/auto/refinement/refine_hyperbolic_0001.step`; it represents the acoustic air volume, with no wall or mounting design.
 
@@ -41,7 +41,7 @@ The actual ranked candidate also passes all six [mesh, loft and frequency compar
 
 ## Mathematical and numerical checks
 
-Modes are `J0(mu_n r/a)/J0(mu_n)`, where `mu_0=0` and subsequent roots satisfy `J1(mu_n)=0`. Each has area norm `S`. The Fourier–Bessel spectrum is integrated over propagating and evanescent plane waves with positive quadrature weights; this preserves reciprocity and nonnegative radiation resistance. The finite evanescent tail is explicit and tested by doubling its range.
+Modes are `J0(mu_n r/a)/J0(mu_n)`, where `mu_0=0` and subsequent roots satisfy `J1(mu_n)=0`. Each has area norm `S`. The Fourier-Bessel spectrum is integrated over propagating and evanescent plane waves with positive quadrature weights; this preserves reciprocity and nonnegative radiation resistance. The finite evanescent tail is explicit and tested by doubling its range.
 
 The FEM pressure and scaled modal velocity `w=rho*c*v` are solved together:
 

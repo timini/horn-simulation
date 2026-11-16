@@ -34,7 +34,7 @@ The legacy FEM-BEM coupling has been removed from the solver and the pipeline. I
 
 ## Losses and numerical acceptance
 
-Optional boundary-layer wall loss, finite-flange pipe termination and quadratic elements are documented with their restricted domains in [loss validation](LOSS_PHYSICS_VALIDATION.md). Every production frequency solve rejects a nonfinite or relative residual above 1e-8 and a nonpositive solver convergence reason. Side-wall viscous/thermal and inlet/outlet RMS powers are exported separately. Direct motor coupling requires the default air properties. The legacy FEM–BEM entry points are disabled because their boundary mapping was invalid.
+Optional boundary-layer wall loss, finite-flange pipe termination and quadratic elements are documented with their restricted domains in [loss validation](LOSS_PHYSICS_VALIDATION.md). Every production frequency solve rejects a nonfinite or relative residual above 1e-8 and a nonpositive solver convergence reason. Side-wall viscous/thermal and inlet/outlet RMS powers are exported separately. Direct motor coupling requires the default air properties. The legacy FEM-BEM entry points are disabled because their boundary mapping was invalid.
 
 
 ## Frequency-band joins

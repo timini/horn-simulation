@@ -1,6 +1,6 @@
 # Complete-horn radiation validation
 
-A correct interior FEM solve and a correct uniform-piston formula do not establish the radiation of a complete horn. The mouth velocity can vary across the aperture, and a real baffle/body can change both loading and the listening-position response. This work separates those effects for the hyperbolic horn in the [800–1600 Hz worked example](WORKED_EXAMPLE.md).
+A correct interior FEM solve and a correct uniform-piston formula do not establish the radiation of a complete horn. The mouth velocity can vary across the aperture, and a real baffle/body can change both loading and the listening-position response. This work separates those effects for the hyperbolic horn in the [800 to 1600 Hz worked example](WORKED_EXAMPLE.md).
 
 ## Matched infinite-baffle comparison
 
@@ -8,7 +8,7 @@ The independently maintained [MMM Toolbox](https://github.com/bkolbrek/MMM_toolb
 
 The frozen study uses the worked candidate's mathematical hyperbolic profile, 1 m/s RMS uniform throat velocity, 1.225 kg/m³ air density, 343 m/s sound speed and an observation point 1 m on axis from the mouth. Both sides use `exp(+iwt)`. The reference computes the full modal mouth loading and a spatial Rayleigh integral; production uses its local flanged-piston boundary and uniform-mouth observer approximation. Polygonal inlet areas are corrected to the same nominal volume velocity before comparing output. No fitted level shift is allowed.
 
-Thirty-three logarithmically spaced frequencies cover 800–1600 Hz. Reference refinements use 16, 32 and 64 radial modes; 250, 500 and 1,000 axial sections; and 201 versus 401 radial integration points. Production uses a 4 mm P1 mesh and an 80-section loft, whose resolution is separately studied in [the candidate report](CANDIDATE_RESOLUTION.md). The reference uses directly integrated modal radiation matrices, without the toolbox's precomputed interpolation tables or high-frequency approximation.
+Thirty-three logarithmically spaced frequencies cover 800 to 1600 Hz. Reference refinements use 16, 32 and 64 radial modes; 250, 500 and 1,000 axial sections; and 201 versus 401 radial integration points. Production uses a 4 mm P1 mesh and an 80-section loft, whose resolution is separately studied in [the candidate report](CANDIDATE_RESOLUTION.md). The reference uses directly integrated modal radiation matrices, without the toolbox's precomputed interpolation tables or high-frequency approximation.
 
 Before the dense comparison, the protocol fixes final-reference refinement limits of 0.05 dB and 1 degree for complex pressure and throat impedance, and model-comparison targets of 0.5 dB in pressure/impedance magnitude and 5 degrees in phase. These strict engineering targets assess this approximation; they are not measurement uncertainty or a universal standard. Preliminary three-frequency studies informed the method, not a physical calibration. Any failed target remains a failure and must be investigated.
 
@@ -41,7 +41,7 @@ The [comparison JSON](../data/validation/mmm_radiation_reference.json), [raw arc
 
 The separate Boundary Lab pilot uses the exact worked-example air-volume STEP inside a rigid cylindrical body. Its front face is flush with the mouth, the back is 10 mm behind the throat, and the throat floor supplies uniform velocity into the horn. All other surfaces are rigid. The outward-oriented surface is closed and checked for watertight edges and source orientation. This is a defined finite mounting geometry, not an infinite-baffle reference or a proposed fabrication drawing.
 
-Pinned Boundary Lab `8cb166226e412877d3f71f2845918e479b97aa85` solved the complete exterior Burton–Miller Neumann problem. The source derivative is checked against unit velocity, and integrated source pressure against the reported mechanical force/velocity impedance. Conversion to our specific throat impedance uses both the source area and the opposite phasor convention. These closure checks do not replace a linear-system residual; this backend does not export an exterior residual.
+Pinned Boundary Lab `8cb166226e412877d3f71f2845918e479b97aa85` solved the complete exterior Burton-Miller Neumann problem. The source derivative is checked against unit velocity, and integrated source pressure against the reported mechanical force/velocity impedance. Conversion to our specific throat impedance uses both the source area and the opposite phasor convention. These closure checks do not replace a linear-system residual; this backend does not export an exterior residual.
 
 The table gives **reference minus production** on-axis output differences, with no fitted gain:
 
