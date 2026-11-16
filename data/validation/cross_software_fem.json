@@ -7,11 +7,49 @@
    "db_max": 1.0,
    "phase_p95_deg": 3.0
   },
-  "high_ka": "report only: plane-wave 1D models omit higher-order modes and wavefront curvature"
+  "high_ka": "report only: plane-wave 1D models omit higher-order modes and wavefront curvature",
+  "mesh_refinement": {
+   "ka_max": 1.5,
+   "db_max": 0.1,
+   "phase_max_deg": 1.0
+  }
  },
  "results": [
   {
    "run": "results/20261116T154534Z-c3ed006e",
+   "provenance": {
+    "source_revision": "0303d430df8190a69b429cf7e854fbf81d98a03e",
+    "started_at": "2026-11-16T15:45:36.522982+00:00",
+    "finished_at": "2026-11-16T16:01:03.691398+00:00",
+    "arguments": [
+     "--profile",
+     "conical",
+     "--throat_radius",
+     "0.025",
+     "--mouth_radius",
+     "0.15",
+     "--length",
+     "0.3",
+     "--min_freq",
+     "50",
+     "--max_freq",
+     "5000",
+     "--radiation_model",
+     "flanged_piston",
+     "--loss_model",
+     "lossless",
+     "--num_bands",
+     "2"
+    ],
+    "container_image_ids": {
+     "horn-solver": "sha256:cfa7a18f6f9c306404821c6ea23f65d83e15fbaa7c715128453820efc319f24d",
+     "horn-analysis": "sha256:ee8aac43d6b069859a00e684b65a1d71756b6258f9d341d48fd26625540c36e3",
+     "horn-geometry": "sha256:9ffbbd02b69fdf90add0a5450fbd1bf3b08d422257594a20943e26790230e850"
+    },
+    "mesh_size_m": 0.01,
+    "element_degree": 1,
+    "max_mesh_nodes": 100000
+   },
    "fem_csv": "outputs/final_results.csv",
    "profile": "conical",
    "geometry": {
@@ -352,6 +390,39 @@
   },
   {
    "run": "results/20261116T160638Z-1f441625",
+   "provenance": {
+    "source_revision": "799c0e239508939b7b7ee630bca78418360bae10",
+    "started_at": "2026-11-16T16:06:40.684974+00:00",
+    "finished_at": "2026-11-16T16:14:08.477877+00:00",
+    "arguments": [
+     "--profile",
+     "exponential",
+     "--throat_radius",
+     "0.025",
+     "--mouth_radius",
+     "0.15",
+     "--length",
+     "0.3",
+     "--min_freq",
+     "50",
+     "--max_freq",
+     "5000",
+     "--radiation_model",
+     "flanged_piston",
+     "--loss_model",
+     "lossless",
+     "--num_bands",
+     "2"
+    ],
+    "container_image_ids": {
+     "horn-solver": "sha256:cfa7a18f6f9c306404821c6ea23f65d83e15fbaa7c715128453820efc319f24d",
+     "horn-analysis": "sha256:ee8aac43d6b069859a00e684b65a1d71756b6258f9d341d48fd26625540c36e3",
+     "horn-geometry": "sha256:9ffbbd02b69fdf90add0a5450fbd1bf3b08d422257594a20943e26790230e850"
+    },
+    "mesh_size_m": 0.01,
+    "element_degree": 1,
+    "max_mesh_nodes": 100000
+   },
    "fem_csv": "outputs/final_results.csv",
    "profile": "exponential",
    "geometry": {
@@ -689,6 +760,437 @@
      "phase_max_deg": 3.8108697148095527
     }
    ]
+  }
+ ],
+ "mesh_refinement": [
+  {
+   "profile": "conical",
+   "coarse_run": "results/20261116T154534Z-c3ed006e",
+   "fine_run": "results/20261116T181626Z-bb179610",
+   "coarse": {
+    "source_revision": "0303d430df8190a69b429cf7e854fbf81d98a03e",
+    "started_at": "2026-11-16T15:45:36.522982+00:00",
+    "finished_at": "2026-11-16T16:01:03.691398+00:00",
+    "arguments": [
+     "--profile",
+     "conical",
+     "--throat_radius",
+     "0.025",
+     "--mouth_radius",
+     "0.15",
+     "--length",
+     "0.3",
+     "--min_freq",
+     "50",
+     "--max_freq",
+     "5000",
+     "--radiation_model",
+     "flanged_piston",
+     "--loss_model",
+     "lossless",
+     "--num_bands",
+     "2"
+    ],
+    "container_image_ids": {
+     "horn-solver": "sha256:cfa7a18f6f9c306404821c6ea23f65d83e15fbaa7c715128453820efc319f24d",
+     "horn-analysis": "sha256:ee8aac43d6b069859a00e684b65a1d71756b6258f9d341d48fd26625540c36e3",
+     "horn-geometry": "sha256:9ffbbd02b69fdf90add0a5450fbd1bf3b08d422257594a20943e26790230e850"
+    },
+    "mesh_size_m": 0.01,
+    "element_degree": 1,
+    "max_mesh_nodes": 100000
+   },
+   "fine": {
+    "source_revision": "d1a9d38f66601f86023ab51f5670856b9521be64",
+    "started_at": "2026-11-16T18:16:27.782368+00:00",
+    "finished_at": "2026-11-16T18:24:18.553923+00:00",
+    "arguments": [
+     "--profile",
+     "conical",
+     "--throat_radius",
+     "0.025",
+     "--mouth_radius",
+     "0.15",
+     "--length",
+     "0.3",
+     "--min_freq",
+     "50",
+     "--max_freq",
+     "666.7607160816619",
+     "--num_intervals",
+     "90",
+     "--radiation_model",
+     "flanged_piston",
+     "--loss_model",
+     "lossless",
+     "--num_bands",
+     "1",
+     "--mesh_size",
+     "0.007"
+    ],
+    "container_image_ids": {
+     "horn-solver": "sha256:cfa7a18f6f9c306404821c6ea23f65d83e15fbaa7c715128453820efc319f24d",
+     "horn-analysis": "sha256:ee8aac43d6b069859a00e684b65a1d71756b6258f9d341d48fd26625540c36e3",
+     "horn-geometry": "sha256:9ffbbd02b69fdf90add0a5450fbd1bf3b08d422257594a20943e26790230e850"
+    },
+    "mesh_size_m": 0.007,
+    "element_degree": 1,
+    "max_mesh_nodes": 100000
+   },
+   "coarse_mesh_cells_in_shared_band": [
+    43927,
+    123803
+   ],
+   "fine_mesh_cells_in_shared_band": [
+    116690,
+    116690
+   ],
+   "shared_points": 91,
+   "frequency_hz": [
+    50.0,
+    666.7607160816619
+   ],
+   "ka_max_shared": 1.8320908752283547,
+   "fine_vs_coarse_low_ka": {
+    "points": 84,
+    "db_median": 0.0014806298640486727,
+    "db_p95": 0.006178638353308024,
+    "db_max": 0.009065299734426584,
+    "phase_median_deg": 0.0005201315694841409,
+    "phase_p95_deg": 0.056628771526029534,
+    "phase_max_deg": 0.06460803946002623
+   },
+   "checks": {
+    "db_max": true,
+    "phase_max_deg": true
+   },
+   "fine_vs_coarse_by_ka": [
+    {
+     "ka": [
+      0,
+      0.5
+     ],
+     "points": 45,
+     "db_median": 0.001476580087460206,
+     "db_p95": 0.0015117312817051222,
+     "db_max": 0.0015138084217476385,
+     "phase_median_deg": 0.00032418469816663246,
+     "phase_p95_deg": 0.000596124845235065,
+     "phase_max_deg": 0.0006136186211093719
+    },
+    {
+     "ka": [
+      0.5,
+      1
+     ],
+     "points": 24,
+     "db_median": 0.0014886085918641954,
+     "db_p95": 0.0036732718949790493,
+     "db_max": 0.00628623634478208,
+     "phase_median_deg": 0.001455208112213111,
+     "phase_p95_deg": 0.03053667458043098,
+     "phase_max_deg": 0.03160039942367958
+    },
+    {
+     "ka": [
+      1,
+      1.5
+     ],
+     "points": 15,
+     "db_median": 0.0029257154296850624,
+     "db_p95": 0.008911270556507981,
+     "db_max": 0.009065299734426584,
+     "phase_median_deg": 0.04527677436162307,
+     "phase_p95_deg": 0.0639159273374589,
+     "phase_max_deg": 0.06460803946002623
+    },
+    {
+     "ka": [
+      1.5,
+      2
+     ],
+     "points": 7,
+     "db_median": 0.0006388492194827396,
+     "db_p95": 0.0007770020742823752,
+     "db_max": 0.0007918892830984263,
+     "phase_median_deg": 0.002447966309069625,
+     "phase_p95_deg": 0.0034276917334794014,
+     "phase_max_deg": 0.0035693320989864
+    }
+   ],
+   "fine_vs_1d": {
+    "run": "results/20261116T181626Z-bb179610",
+    "provenance": {
+     "source_revision": "d1a9d38f66601f86023ab51f5670856b9521be64",
+     "started_at": "2026-11-16T18:16:27.782368+00:00",
+     "finished_at": "2026-11-16T18:24:18.553923+00:00",
+     "arguments": [
+      "--profile",
+      "conical",
+      "--throat_radius",
+      "0.025",
+      "--mouth_radius",
+      "0.15",
+      "--length",
+      "0.3",
+      "--min_freq",
+      "50",
+      "--max_freq",
+      "666.7607160816619",
+      "--num_intervals",
+      "90",
+      "--radiation_model",
+      "flanged_piston",
+      "--loss_model",
+      "lossless",
+      "--num_bands",
+      "1",
+      "--mesh_size",
+      "0.007"
+     ],
+     "container_image_ids": {
+      "horn-solver": "sha256:cfa7a18f6f9c306404821c6ea23f65d83e15fbaa7c715128453820efc319f24d",
+      "horn-analysis": "sha256:ee8aac43d6b069859a00e684b65a1d71756b6258f9d341d48fd26625540c36e3",
+      "horn-geometry": "sha256:9ffbbd02b69fdf90add0a5450fbd1bf3b08d422257594a20943e26790230e850"
+     },
+     "mesh_size_m": 0.007,
+     "element_degree": 1,
+     "max_mesh_nodes": 100000
+    },
+    "fem_csv": "outputs/final_results.csv",
+    "profile": "conical",
+    "geometry": {
+     "throat_radius_m": 0.025,
+     "mouth_radius_m": 0.15,
+     "length_m": 0.3
+    },
+    "mesh_cells_max": 116690,
+    "frequency_hz": [
+     50.0,
+     666.7607160816619
+    ],
+    "points": 91,
+    "air": {
+     "rho": 1.225,
+     "c": 343.0
+    },
+    "fem_vs_openwind": {
+     "low_ka": {
+      "points": 84,
+      "db_median": 0.6045525461593785,
+      "db_p95": 0.8890601551340153,
+      "db_max": 0.937440669605972,
+      "phase_median_deg": 0.04945770433756755,
+      "phase_p95_deg": 3.7208551384929978,
+      "phase_max_deg": 4.965171015022744
+     },
+     "high_ka_report_only": {
+      "points": 7,
+      "db_median": 0.7609057049535586,
+      "db_p95": 0.7811250315576278,
+      "db_max": 0.781695232568741,
+      "phase_median_deg": 1.1100987496489598,
+      "phase_p95_deg": 2.299161264482797,
+      "phase_max_deg": 2.4523342202305725
+     },
+     "low_ka_checks": {
+      "db_median": false,
+      "db_p95": false,
+      "db_max": true,
+      "phase_p95_deg": false
+     },
+     "low_ka_pass": false
+    },
+    "fem_vs_tmm": {
+     "low_ka": {
+      "points": 84,
+      "db_median": 0.6045564505573765,
+      "db_p95": 0.8890604124142727,
+      "db_max": 0.9374402404966448,
+      "phase_median_deg": 0.04945831572937454,
+      "phase_p95_deg": 3.720811183462148,
+      "phase_max_deg": 4.965129100856402
+     },
+     "high_ka_report_only": {
+      "points": 7,
+      "db_median": 0.7609026527372847,
+      "db_p95": 0.7811233133931799,
+      "db_max": 0.7816937489042676,
+      "phase_median_deg": 1.110072368656219,
+      "phase_p95_deg": 2.299125142164519,
+      "phase_max_deg": 2.452296644262626
+     },
+     "low_ka_checks": {
+      "db_median": false,
+      "db_p95": false,
+      "db_max": true,
+      "phase_p95_deg": false
+     },
+     "low_ka_pass": false
+    },
+    "tmm_vs_openwind": {
+     "low_ka": {
+      "points": 84,
+      "db_median": 3.7102251908811673e-06,
+      "db_p95": 4.250869520360641e-06,
+      "db_max": 4.4206398316794685e-06,
+      "phase_median_deg": 1.0026526441843587e-06,
+      "phase_p95_deg": 4.337677273052364e-05,
+      "phase_max_deg": 4.728672629145769e-05
+     },
+     "high_ka_report_only": {
+      "points": 7,
+      "db_median": 1.2645839588137352e-06,
+      "db_p95": 2.816150706766637e-06,
+      "db_max": 3.052216272365281e-06,
+      "phase_median_deg": 2.6380992740305466e-05,
+      "phase_p95_deg": 3.612231827715321e-05,
+      "phase_max_deg": 3.757596794494234e-05
+     },
+     "low_ka_checks": {
+      "db_median": true,
+      "db_p95": true,
+      "db_max": true,
+      "phase_p95_deg": true
+     },
+     "low_ka_pass": true
+    },
+    "fem_vs_openwind_spherical_waves": {
+     "low_ka": {
+      "points": 84,
+      "db_median": 0.1351022442233831,
+      "db_p95": 1.106038604216538,
+      "db_max": 1.5956427241585476,
+      "phase_median_deg": 0.0824709723181957,
+      "phase_p95_deg": 6.490371878442116,
+      "phase_max_deg": 9.233717945505072
+     },
+     "high_ka_report_only": {
+      "points": 7,
+      "db_median": 0.580212320120977,
+      "db_p95": 0.6095537222839487,
+      "db_max": 0.6125508309398308,
+      "phase_median_deg": 1.2164872447885857,
+      "phase_p95_deg": 3.9975807099417686,
+      "phase_max_deg": 4.364232737612776
+     },
+     "low_ka_checks": {
+      "db_median": true,
+      "db_p95": false,
+      "db_max": false,
+      "phase_p95_deg": false
+     },
+     "low_ka_pass": false
+    },
+    "fem_vs_openwind_by_ka": [
+     {
+      "ka": [
+       0,
+       0.5
+      ],
+      "points": 45,
+      "db_median": 0.5979696335837812,
+      "db_p95": 0.6344172601134909,
+      "db_max": 0.643664640829113,
+      "phase_median_deg": 0.03576470354521464,
+      "phase_p95_deg": 0.0565538531262223,
+      "phase_max_deg": 0.05686272517321421
+     },
+     {
+      "ka": [
+       0.5,
+       1
+      ],
+      "points": 24,
+      "db_median": 0.7383648479919529,
+      "db_p95": 0.932679373733212,
+      "db_max": 0.937440669605972,
+      "phase_median_deg": 0.20332879953057725,
+      "phase_p95_deg": 4.679079490187164,
+      "phase_max_deg": 4.965171015022744
+     },
+     {
+      "ka": [
+       1,
+       1.5
+      ],
+      "points": 15,
+      "db_median": 0.33389056480855617,
+      "db_p95": 0.6733086915403662,
+      "db_max": 0.6926373687123487,
+      "phase_median_deg": 0.7928244867078155,
+      "phase_p95_deg": 4.033825715299226,
+      "phase_max_deg": 4.619227276676448
+     },
+     {
+      "ka": [
+       1.5,
+       2
+      ],
+      "points": 7,
+      "db_median": 0.7609057049535586,
+      "db_p95": 0.7811250315576278,
+      "db_max": 0.781695232568741,
+      "phase_median_deg": 1.1100987496489598,
+      "phase_p95_deg": 2.299161264482797,
+      "phase_max_deg": 2.4523342202305725
+     }
+    ],
+    "fem_vs_openwind_spherical_by_ka": [
+     {
+      "ka": [
+       0,
+       0.5
+      ],
+      "points": 45,
+      "db_median": 0.08467148579828637,
+      "db_p95": 0.142675262965275,
+      "db_max": 0.1579645019869523,
+      "phase_median_deg": 0.0028846544526270616,
+      "phase_p95_deg": 0.08627226631991387,
+      "phase_max_deg": 0.12160395329029676
+     },
+     {
+      "ka": [
+       0.5,
+       1
+      ],
+      "points": 24,
+      "db_median": 0.31565339120979113,
+      "db_p95": 0.9355791048418124,
+      "db_max": 1.378559387338769,
+      "phase_median_deg": 1.306183661483892,
+      "phase_p95_deg": 8.830178525474205,
+      "phase_max_deg": 9.233717945505072
+     },
+     {
+      "ka": [
+       1,
+       1.5
+      ],
+      "points": 15,
+      "db_median": 0.4606766876911777,
+      "db_p95": 1.5907267364137896,
+      "db_max": 1.5956427241585476,
+      "phase_median_deg": 3.430798171174239,
+      "phase_p95_deg": 6.327882050541154,
+      "phase_max_deg": 6.502693593837024
+     },
+     {
+      "ka": [
+       1.5,
+       2
+      ],
+      "points": 7,
+      "db_median": 0.580212320120977,
+      "db_p95": 0.6095537222839487,
+      "db_max": 0.6125508309398308,
+      "phase_median_deg": 1.2164872447885857,
+      "phase_p95_deg": 3.9975807099417686,
+      "phase_max_deg": 4.364232737612776
+     }
+    ]
+   }
   }
  ]
 }

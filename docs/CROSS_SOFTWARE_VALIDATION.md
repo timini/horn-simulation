@@ -8,7 +8,13 @@ Until now the solver was checked mostly against itself, analytic formulas and on
 
 Neither openwind nor bempp-cl is a dependency of the project packages. They run in a separate environment from `validation/cross_software/requirements.txt`.
 
-Every tolerance below was written into the scripts before the first comparison was run, and none was changed afterwards. Two checks were added later (the Rayleigh quadrature and the spherical-wave 1D reference), each with its tolerance fixed before it ran. Failures are listed as failures.
+The openwind, bempp-cl and Hornresp tolerances were committed (799c0e2) before the first comparison was run, and none was changed afterwards. Checks added later each had their tolerance fixed in the script before that check first ran:
+
+- the FEM tolerance (part A2) was written before `fem_compare.py` was first run, but committed (a7de55e, 16:08 UTC) after the conical FEM run had finished (16:01 UTC) and before the exponential run finished (16:14 UTC);
+- the Rayleigh quadrature and the spherical-wave 1D reference;
+- in the review fix pass: openwind's `planar_piston` low-ka check, the FEM mesh refinement criterion and the like-for-like Hornresp SPL reference.
+
+Failures are listed as failures.
 
 ## Summary
 
@@ -16,15 +22,15 @@ Every tolerance below was written into the scripts before the first comparison w
 | --- | --- | --- |
 | Webster TMM against openwind, same physics, 7 profiles, 5 cases each | our plane-wave propagation, Kirchhoff and thin-layer losses, piston load, closed-end resonances | Pass, 35 of 35 |
 | Webster TMM (exact piston load) against openwind's flanged-pipe radiation fit, ka at most 3 | the radiation model choice | Fails 6 of 7 profiles; expected model difference, see below |
-| horn-solver FEM (3D) against openwind and TMM (1D), conical and exponential | the plane-wave assumption of the 1D prescreen | Fails the frozen low-ka limit (0.60 dB and 0.40 dB median); explained by wavefront curvature |
+| horn-solver FEM (3D) against openwind and TMM (1D), conical and exponential | 3D against 1D throat impedance with the same piston mouth impedance | Fails the frozen low-ka limit (0.60 dB and 0.40 dB median). The offset below ka 0.5 is wavefront curvature; the larger differences between ka 0.5 and 1.5 are not explained |
 | bempp-cl pulsating sphere | the BEM set-up | Pass |
-| Project modal far field against direct Rayleigh quadrature | the experimental directivity formula | Pass, below 1e-12 dB |
+| Project modal far field against direct Rayleigh quadrature | the far-field transform in the experimental directivity, for the solver's mode basis | Pass, below 1e-12 dB |
 | bempp-cl piston in a finite baffle against the infinite-baffle piston | piston radiation impedance and directivity | Impedance passes at ka 2 and 4; directivity fails at ka 2 because of the finite baffle |
 | bempp-cl horn in a finite baffle against the archived modal_baffled FEM | throat impedance, directivity and on-axis level of a complete horn | Throat impedance passes at 5 of 5 frequencies; directivity and on-axis level fail, dominated by finite-baffle diffraction |
 | BEM mesh refinement | BEM discretisation | 7 of 9 pairs pass; two directivity changes of 0.10 and 0.16 dB |
 | Hornresp | plane-wave horn impedance and the 800 to 1600 Hz driver example | Not run; kit in `validation/hornresp/` |
 
-No bug in the project code was found. Wherever the two codes model the same physics the TMM matches openwind within 0.07 dB at the 95th percentile, and within 0.43 dB at worst on the flank of a sharp closed-end resonance. The differences that remain come from modelling choices the project already documents: the uniform piston against a flanged pipe, plane against curved wavefronts, and an infinite against a finite baffle.
+No bug in the project code was found. Wherever the two codes model the same physics the TMM matches openwind within 0.07 dB at the 95th percentile, and within 0.43 dB at worst on the flank of a sharp closed-end resonance. Most remaining differences come from modelling choices the project already documents: the uniform piston against a flanged pipe, plane against curved wavefronts at low ka, and an infinite against a finite baffle. One is not explained: the 3D FEM with the local `flanged_piston` mouth load differs from the 1D codes by up to about 1.5 dB between mouth ka 0.5 and 1.5 (part A2).
 
 ## Reproduce
 
@@ -40,7 +46,7 @@ just run --profile conical --throat_radius 0.025 --mouth_radius 0.15 --length 0.
   --min_freq 50 --max_freq 5000 --radiation_model flanged_piston --loss_model lossless --num_bands 2
 ```
 
-and the same with `--profile exponential`. The runs used for the results here were `results/20261116T154534Z-c3ed006e` (conical, 161 frequencies, up to 123,803 cells) and `results/20261116T160638Z-1f441625` (exponential, up to 85,504 cells), both with the `horn-solver:latest` image present on 2026-11-16. Their run directories are not committed; the comparison JSON keeps the numbers.
+and the same with `--profile exponential`. The runs used for the results here were `results/20261116T154534Z-c3ed006e` (conical, 161 frequencies, up to 123,803 cells) and `results/20261116T160638Z-1f441625` (exponential, up to 85,504 cells), both with horn-solver image `sha256:cfa7a18f6f9c` (tagged `horn-solver:latest` on 2026-11-16), from source revisions `0303d43` (conical) and `799c0e2` (exponential); the solver code is the same in both. Their run directories are not committed; the comparison JSON keeps the numbers, and each result records the source revision, container image ids and mesh settings from the run manifest.
 
 Run time on an Apple laptop: openwind about 90 minutes (1,981 frequencies, 7 profiles, 7 solves each, dense bores), bempp-cl about 40 minutes.
 
@@ -108,9 +114,13 @@ Our `flanged_piston` and `modal_baffled` prescreen load is a rigid piston in an 
 
 ## A2. horn-solver FEM against openwind and the TMM
 
-The production FEM solves the 3D air volume. It was run in single mode with the `flanged_piston` mouth load and no losses, so all three codes use the same local piston impedance on a flat mouth disc. They differ only in the interior field: the FEM has curved wavefronts and, at high ka, higher-order modes, while both 1D models assume plane wavefronts.
+The production FEM solves the 3D air volume. It was run in single mode with the `flanged_piston` mouth load and no losses. All three codes use the exact baffled-piston impedance Z_piston(ka) at a flat mouth disc, but they apply it differently, and the throat is driven differently:
 
-Tolerance, frozen before the first FEM run finished: for mouth ka at most 1.5, median 0.2 dB, p95 0.5 dB, max 1.0 dB, phase p95 3 degrees. Above ka 1.5 the comparison is reported only, because a plane-wave model is not expected to follow the 3D field there.
+- The FEM applies Z_piston as a local Robin condition at every point of the mouth disc (`packages/horn-solver/src/horn_solver/solver.py`, the `flanged_piston` branch): u_n(r) = p(r) / Z_piston. The 1D codes apply it as a lumped load on the mean mouth pressure and velocity. The two agree only when the mouth pressure is uniform; once it is not, the FEM loads each part of the mouth with the impedance of the whole piston, which is not the true nonlocal radiation load.
+- The FEM drives a flat throat disc at uniform pressure (`dirichlet`) and takes Z as that pressure over the mean throat velocity. The 1D codes assume a plane wave at the throat.
+- The FEM interior field has curved wavefronts and, at higher ka, higher-order modes. Both 1D models assume plane wavefronts.
+
+Tolerance: for mouth ka at most 1.5, median 0.2 dB, p95 0.5 dB, max 1.0 dB, phase p95 3 degrees. Above ka 1.5 the comparison is reported only, because a plane-wave model is not expected to follow the 3D field there. The tolerance was written before `fem_compare.py` was first run and committed after the conical FEM run had finished (see the note at the top of this page).
 
 | Profile | ka at most 1.5, dB median / p95 / max | phase p95 | ka above 1.5, dB median / p95 / max | Result |
 | --- | --- | --- | --- | --- |
@@ -119,11 +129,35 @@ Tolerance, frozen before the first FEM run finished: for mouth ka at most 1.5, m
 
 The TMM (2,000 segments) and openwind agree with each other to 0.00001 dB here, so the FEM differs from both 1D codes equally.
 
-The difference at the lowest frequencies is a nearly constant level offset with no phase error: 0.60 dB for the cone (22.6 degree half angle) and 0.35 dB for the exponential horn. openwind can also model curved wavefronts in a flaring bore (`spherical_waves=True`). Against that variant the FEM agrees to 0.16 dB (cone) and 0.04 dB (exponential) for ka below 0.5. The offset is therefore the plane-wavefront approximation of the 1D model, not an error in the FEM. Between ka 0.5 and 3, where the first horn resonances lie, the FEM sits between the plane-wave and spherical-wave 1D curves, and the dB difference reaches 1.5 dB at the resonance flanks.
+openwind can also model curved wavefronts in a flaring bore (`spherical_waves=True`). The FEM difference by mouth ka band, magnitude median / max in dB:
 
-What this means for users: the Webster prescreen inherits a plane-wave error of up to about 1.5 dB in throat impedance for these 300 mm horns, which is consistent with its role as a prescreen. Final predictions use the FEM.
+| ka band | conical, plane-wave 1D | conical, spherical-wave 1D | exponential, plane-wave 1D | exponential, spherical-wave 1D |
+| --- | --- | --- | --- | --- |
+| 0 to 0.5 | 0.60 / 0.64 | 0.09 / 0.16 | 0.35 / 0.42 | 0.01 / 0.04 |
+| 0.5 to 1 | 0.74 / 0.94 | 0.32 / 1.38 | 0.57 / 1.10 | 0.13 / 0.31 |
+| 1 to 1.5 | 0.33 / 0.69 | 0.46 / 1.60 | 1.13 / 1.53 | 0.99 / 2.16 |
+
+What is explained: below ka 0.5 the difference is a nearly constant level offset with no phase error, 0.60 dB for the cone (22.6 degree half angle) and 0.35 dB for the exponential horn. The spherical-wave 1D model removes almost all of it (0.16 dB and 0.04 dB left). That offset is the plane-wavefront approximation of the 1D model.
+
+What is not explained: between ka 0.5 and 1.5, where most of the frozen failures sit, the FEM differs from the spherical-wave 1D curve about as much as from the plane-wave curves (up to 1.4 and 1.6 dB for the cone, 2.2 dB for the exponential horn, with phase p95 of 6 to 12 degrees). Wavefront curvature alone does not account for it. Candidate causes, none of which has been isolated:
+
+1. the local Robin application of the piston impedance in the FEM against the lumped load of the 1D codes (above), which matters exactly when the mouth pressure becomes nonuniform at moderate ka;
+2. the throat conditions: a uniform-pressure flat disc in the FEM against a plane wave in the 1D codes;
+3. wavefront curvature beyond what openwind's spherical-wave option represents, and the onset of higher-order modes.
+
+The FEM volume mesh has been ruled out (see the refinement below).
+
+The production ranking does not use this configuration: it uses the nonlocal `modal_baffled` mouth, which removes cause 1.
+
+What this means for users: the Webster prescreen and the `flanged_piston` FEM differ by up to about 1.5 dB in throat impedance for these 300 mm horns between ka 0.5 and 1.5, and the reason is not yet established. The prescreen is only a prescreen; final predictions use the FEM with `modal_baffled`.
 
 Plots: [conical](validation/cross_software/fem_conical.png), [exponential](validation/cross_software/fem_exponential.png).
+
+### FEM mesh refinement
+
+The conical horn was rerun from 50 to 667 Hz (mouth ka up to 1.83) on the same frequency grid with `--mesh_size 0.007` and one band: `results/20261116T181626Z-bb179610`, 116,690 cells, P1, same horn-solver image, source `d1a9d38` (no solver change). In the original run the frequencies up to 500 Hz (ka 1.37) were solved on 43,927 cells and those above on 123,803 cells, so the cell count grows by a factor of 2.7 below ka 1.37; above it the two meshes are of similar size. The throat element size, 5 mm, was the same in both runs.
+
+Criterion, committed in `fem_compare.py` before the refined run started (the run's source revision `d1a9d38` contains it): refining must change |Z| by at most 0.1 dB and 1 degree for ka at most 1.5. Result: the largest change is 0.009 dB and 0.065 degrees (0.006 dB between ka 0.5 and 1). Pass. The refined FEM differs from openwind by the same amounts as the original (median 0.60 dB, max 0.94 dB for ka at most 1.5), so the volume mesh is not the cause. Finer throat meshing and P2 elements were not tried.
 
 ## B. bempp-cl: exterior radiation
 
@@ -151,7 +185,7 @@ A rigid piston or horn mouth "in an infinite baffle" cannot be modelled directly
 
 The pulsating sphere (4,098 unknowns) agrees with the closed form within 0.015 dB and 0.2 degrees at ka 0.5, 2 and 5. Pass.
 
-The project's experimental directivity (`horn_core.modal_radiation.modal_baffled_far_field`) evaluates the Rayleigh far field of the 16 mouth-velocity modes through their mode spectrum. Integrating the same velocity profile directly (400-point Gauss quadrature of v(r) J0(k r sin theta) r) for all 101 archived frequencies of the worked example horn gives the same result within 3e-13 dB and 2e-12 degrees. With a uniform velocity it reproduces the analytic piston pattern exactly. Pass. The formula is correct for the infinite-baffle model it states.
+The project's experimental directivity (`horn_core.modal_radiation.modal_baffled_far_field`) evaluates the Rayleigh far field of the 16 mouth-velocity modes through their mode spectrum. Integrating the same velocity profile directly (400-point Gauss quadrature of v(r) J0(k r sin theta) r) for all 101 archived frequencies of the worked example horn gives the same result within 3e-13 dB and 2e-12 degrees. With a uniform velocity it reproduces the analytic piston pattern exactly. Pass. The quadrature uses the same velocity basis, J0(mu_n r / a) / J0(mu_n), taken from `modal_boundary.aperture_projection`. It therefore confirms the Hankel-transform evaluation of the far field for that basis. That the solver's modal coefficients are expressed in the same basis was checked by reading the code, not by this test.
 
 ### Piston in a finite baffle
 
@@ -178,7 +212,7 @@ The archived hyperbolic horn of the 800 to 1600 Hz worked example (throat radius
 | 1389 | 2.26 | 2,977 | 1.255 + 0.243i | 1.273 + 0.227i | 0.10 / 0.86 | 1.67 | 0.77 | -0.04 |
 | 1598 | 2.60 | 3,420 | 1.292 + 0.004i | 1.338 + 0.021i | 0.30 / 0.72 | 0.44 | 3.61 | -2.59 |
 
-Throat impedance passes at all five frequencies (largest 0.47 dB, 2.4 degrees). This is an independent 3D confirmation of the production `modal_baffled` throat loading for this horn, to within the finite-baffle effect. The 1D Webster prescreen with the piston load differs from the BEM by up to 2.7 dB here, which matches the known `flanged_piston` throat-impedance error recorded in [EXTERIOR_RADIATION_VALIDATION.md](EXTERIOR_RADIATION_VALIDATION.md).
+Throat impedance passes at all five frequencies (largest 0.47 dB, 2.4 degrees). The two throat conditions are not identical: the BEM drives the throat with a uniform normal velocity, the archived FEM with a uniform pressure (`dirichlet`), and each takes Z as mean pressure over mean velocity. They differ slightly when the throat field is not plane; throat ka reaches 0.95 at 1.6 kHz. This is an independent 3D confirmation of the production `modal_baffled` throat loading for this horn, to within the finite-baffle effect. The 1D Webster prescreen with the piston load differs from the BEM by up to 2.7 dB here. That is a different quantity from, and larger than, the 1.05 dB throat-impedance error of the FEM with a local `flanged_piston` load recorded for another horn in [EXTERIOR_RADIATION_VALIDATION.md](EXTERIOR_RADIATION_VALIDATION.md); it is reported here, not explained.
 
 Directivity fails at four of five frequencies and on-axis level at three. These cannot be separated from the finite baffle: the mouth ka is only 1.3 to 2.6, where the piston case also shows several dB of baffle diffraction. With the 10x baffle the on-axis difference at 801 Hz changes from -5.41 to -4.28 dB and at 1199 Hz from +2.48 to -2.41 dB, so it oscillates with baffle size as edge diffraction does. The project's directivity output is therefore correct for an infinite baffle (Rayleigh check above), but a real cabinet or a baffle of a few mouth diameters will change it by several dB in this ka range, as its label already says.
 
@@ -198,7 +232,10 @@ Hornresp is a Windows program and Wine is not installed here, so no Hornresp res
 
 - input sheets for the seven horns above and for the 800 to 1600 Hz worked example horn with the 18Sound 6NMB420 driver, with values in Hornresp units;
 - our TMM throat impedance for each geometry exactly as entered;
-- `compare_hornresp.py`, which reads a Hornresp text export and applies tolerances frozen before any Hornresp data: impedance median 0.2 dB, p95 1.0 dB, max 3.0 dB, phase p95 5 degrees, peaks within 1 %; SPL against the archived example within median 0.5 dB and max 2.0 dB from 800 to 1600 Hz.
+- the same values as Hornresp import records (`records/import_unverified/`), written from the record layout published in user forums and not checked against the program;
+- `compare_hornresp.py`, which reads a Hornresp text export and applies tolerances frozen before any Hornresp data: impedance median 0.2 dB, p95 1.0 dB, max 3.0 dB, phase p95 5 degrees, peaks within 1 % and the same peak count; SPL from 800 to 1600 Hz within median 0.5 dB and max 2.0 dB against two references.
+
+The two SPL references differ on purpose. The first is the archived modal FEM on-axis response. Hornresp is a plane-wave model, and our own 1D model built the way Hornresp builds SPL already differs from that FEM curve by median 1.06 dB and max 1.41 dB, so this check is expected to fail even if Hornresp agrees exactly with our 1D model. The second reference, added in the review pass before any Hornresp data, is that like-for-like 1D curve: TMM horn, ideal transformer, mouth volume velocity into half space. Piston directivity does not affect either on-axis comparison: in the far field the on-axis level of a baffled piston equals that of a half-space point source with the same volume velocity, and the near-field correction at 1 m is 0.02 dB.
 
 Conical, exponential, hyperbolic (Hornresp Hyp with T = 0), tractrix and CD (Exp then Con) are entered exactly. OS and the scaled tractrix have no Hornresp flare; they are entered as four Con or Exp segments with 1.30 % and 1.36 % largest radius error, and our reference curve uses the same segmented shape. The export parser is tested on synthetic files (`scripts/tests/test_hornresp_compare.py`); it has not seen a real Hornresp export, so column names may need the override options.
 
@@ -207,4 +244,4 @@ Conical, exponential, hyperbolic (Hornresp Hyp with T = 0), tractrix and CD (Exp
 - All comparisons are numerical. None is a measurement, and none qualifies a physical driver, adapter or enclosure.
 - openwind and the TMM are both 1D plane-wave models. Their agreement checks our implementation of that model, not the model.
 - The bempp-cl baffle is finite. An infinite baffle cannot be modelled with these closed-body boundary elements, so the directivity of the project's infinite-baffle output could only be bounded, not confirmed, below ka of about 4.
-- Only two FEM runs were compared with the 1D codes, both with the `flanged_piston` load. The production `modal_baffled` FEM is compared here only through the archived worked example.
+- Only two FEM runs were compared with the 1D codes, both with the `flanged_piston` load, plus one mesh refinement run of the cone. The cause of their difference between ka 0.5 and 1.5 is not established. The production `modal_baffled` FEM is compared here only through the archived worked example.

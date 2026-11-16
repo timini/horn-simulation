@@ -34,7 +34,7 @@ ROOT = Path(__file__).resolve().parents[2]
 TOLERANCES = {
     "low_ka": {"ka_max": 1.5, "db_median": 0.2, "db_p95": 0.5, "db_max": 1.0, "phase_p95_deg": 3.0},
     "high_ka": "report only: plane-wave 1D models omit higher-order modes and wavefront curvature",
-    # Review fix pass, frozen before the refined run finished: the mesh is
+    # Review fix pass, committed before the refined run started: the mesh is
     # ruled out as the cause if refining changes |Z| by at most 0.1 dB and
     # 1 degree for ka <= 1.5 (the BEM refinement limit), far below the
     # 0.4 to 1.6 dB FEM against 1D differences.
