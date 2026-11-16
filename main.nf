@@ -20,10 +20,15 @@ params.min_freq = 500      // Minimum frequency for the sweep in Hz
 params.max_freq = 8000     // Maximum frequency for the sweep in Hz
 params.num_intervals = 100 // Number of frequency steps in the sweep
 params.min_points_per_octave = 24 // Lower limit on log-spaced solver points per octave (0 disables)
-params.mesh_size = 0.01    // Target mesh element size in meters
+params.mesh_size = 0.01    // Largest element size in metres; finer of this and lambda/10 (P1) or lambda/6 (P2)
+params.max_mesh_nodes = 100000 // Per-band node limit; P1 coarsens towards lambda/6 to fit, else the candidate is rejected
 
-// Radiation impedance model at the horn mouth
-params.radiation_model = "flanged_piston"  // local radiation model or experimental BEM
+// Radiation model at the horn mouth. null chooses modal_baffled for generated
+// (axisymmetric) geometry with lossless P1 elements, and flanged_piston for an
+// imported STEP or other settings. modal_baffled passes the independent MMM
+// infinite-baffle reference; flanged_piston misses it by 1.05 dB / 5.7 deg in
+// throat impedance (docs/EXTERIOR_RADIATION_VALIDATION.md).
+params.radiation_model = null
 params.loss_model = "lossless"  // opt-in boundary_layer until horn-domain validation
 params.flange_width = 0.0
 params.minimum_wall_scale = null  // required for boundary_layer: minimum curvature/gap scale in metres
@@ -33,14 +38,12 @@ params.element_degree = 1
 params.num_bands = 8       // Number of parallel jobs for the solver
 params.outdir = null // direct invocation must choose an output directory
 
-// Directivity (opt-in, single mode only, requires BEM)
-params.directivity = false
-
 // Auto mode settings
 params.target_f_low = 500
 params.target_f_high = 4000
 params.drivers_db = "data/drivers"
 params.top_n = 10
+params.profiles = null    // Optional comma list restricting auto profiles, e.g. "os,conical"
 
 // Single mode optional driver coupling: when set, single mode also produces
 // a driver+horn coupled SPL plot/CSV/KPI alongside the bare-horn outputs.
@@ -72,6 +75,13 @@ params.max_length = null    // Optional cap/extension of derived length range up
 params.min_length = null    // Optional override of derived length range lower bound (m)
 params.max_mouth_radius = null // Optional cap/extension of derived mouth radius upper bound (m)
 params.min_mouth_radius = null // Optional override of derived mouth radius lower bound (m)
+
+// Effective radiation model; see params.radiation_model.
+def radiationModel() {
+    if (params.radiation_model != null) return params.radiation_model
+    def modalEligible = !params.step_file && params.loss_model == 'lossless' && params.element_degree == 1
+    return modalEligible ? 'modal_baffled' : 'flanged_piston'
+}
 
 // Solver band edges and point counts come from horn_core.frequency_grid
 // (equal log-width bands), so every process uses the same grid.
@@ -151,8 +161,8 @@ process run_simulation {
         --max-freq \${band_high} \
         --num-intervals \${band_points} \
         --length ${sim_length} \
-        --mesh-size ${params.mesh_size} \
-        --radiation-model ${params.radiation_model} \
+        --mesh-size ${params.mesh_size} --max-mesh-nodes ${params.max_mesh_nodes} \
+        --radiation-model ${radiationModel()} \
         --loss-model ${params.loss_model} --flange-width ${params.flange_width} \
         --element-degree ${params.element_degree} ${params.minimum_wall_scale != null ? "--minimum-wall-scale " + params.minimum_wall_scale : ""}
     """
@@ -305,65 +315,6 @@ process render_horn_3d {
     """
 }
 
-process run_simulation_directivity {
-    input:
-    tuple path(horn_step, stageAs: "horn_input.step"), val(band_index)
-
-    output:
-    path "directivity_${band_index}.csv"
-
-    script:
-    def sim_length = params.length ?: 0.5
-    """
-    ${bandGridShell(params.min_freq, params.max_freq, band_index)}
-    echo "Running directivity band ${band_index}: \${band_low} Hz to \${band_high} Hz"
-    python3 -m horn_solver.solver \
-        --step-file ${horn_step} \
-        --output-file solver_directivity_${band_index}.csv \
-        --min-freq \${band_low} \
-        --max-freq \${band_high} \
-        --num-intervals \${band_points} \
-        --length ${sim_length} \
-        --mesh-size ${params.mesh_size} \
-        --radiation-model bem \
-        --compute-directivity \
-        --directivity-file directivity_${band_index}.csv
-    """
-}
-
-process merge_directivity_results {
-    publishDir "${params.outdir}", mode: 'copy'
-
-    input:
-    path(csv_files)
-
-    output:
-    path "directivity.csv"
-
-    script:
-    """
-    python3 -c "import pandas as pd; import glob; all_files = glob.glob('directivity_*.csv'); df = pd.concat((pd.read_csv(f) for f in all_files), ignore_index=True); df = df.drop_duplicates(subset=['frequency', 'theta_deg'], keep='first'); df.sort_values(by=['frequency', 'theta_deg']).to_csv('directivity.csv', index=False)"
-    """
-}
-
-process generate_directivity_plots {
-    publishDir "${params.outdir}/directivity", mode: 'copy'
-
-    input:
-    path directivity_csv
-
-    output:
-    path "polar_directivity.png"
-    path "directivity_contour.png"
-    path "beamwidth.png"
-    path "directivity_index.png"
-
-    script:
-    """
-    python3 -m horn_analysis.directivity_plot ${directivity_csv} --output-dir .
-    """
-}
-
 process generate_single_report {
     publishDir "${params.outdir}", mode: 'copy'
 
@@ -436,50 +387,6 @@ process generate_single_report_with_driver {
         --horn-3d-png ${horn_3d_png} \
         --coupled-png ${coupled_png} \
         --coupled-kpis ${coupled_kpis_json} \
-        --output single_report.html
-    """
-}
-
-process generate_single_report_with_directivity {
-    publishDir "${params.outdir}", mode: 'copy'
-
-    input:
-    path kpis_json
-    path final_csv
-    path spl_png
-    path impedance_png
-    path phase_png
-    path dashboard_png
-    path horn_3d_png, stageAs: 'horn_render_input.png'
-    path polar_png
-    path contour_png
-    path beamwidth_png
-    path di_png
-
-    output:
-    path "single_report.html"
-
-    script:
-    def throat_r = params.throat_radius ?: 0.05
-    def mouth_r = params.mouth_radius ?: 0.2
-    def horn_len = params.length ?: 0.5
-    """
-    horn-single-report ${params.step_file ? "--imported-geometry" : ""} \
-        --kpis ${kpis_json} \
-        --final-csv ${final_csv} \
-        --throat-radius ${throat_r} \
-        --mouth-radius ${mouth_r} \
-        --length ${horn_len} \
-        --profile ${params.profile} \
-        --spl-png ${spl_png} \
-        --impedance-png ${impedance_png} \
-        --phase-png ${phase_png} \
-        --dashboard-png ${dashboard_png} \
-        --horn-3d-png ${horn_3d_png} \
-        --polar-png ${polar_png} \
-        --contour-png ${contour_png} \
-        --beamwidth-png ${beamwidth_png} \
-        --di-png ${di_png} \
         --output single_report.html
     """
 }
@@ -562,6 +469,7 @@ process derive_auto_geometry {
     def min_length_flag = params.min_length != null ? "--min-length ${params.min_length}" : ""
     def max_mr_flag = params.max_mouth_radius != null ? "--max-mouth-radius ${params.max_mouth_radius}" : ""
     def min_mr_flag = params.min_mouth_radius != null ? "--min-mouth-radius ${params.min_mouth_radius}" : ""
+    def profiles_flag = params.profiles != null ? "--profiles ${params.profiles.toString().replaceAll(/\s/, '')}" : ""
     """
     python3 -m horn_core.geometry_designer \
         --target-f-low ${params.target_f_low} \
@@ -576,6 +484,7 @@ process derive_auto_geometry {
         ${min_length_flag} \
         ${max_mr_flag} \
         ${min_mr_flag} \
+        ${profiles_flag} \
         --output candidates.csv \
         --design-json design.json
     """
@@ -602,7 +511,7 @@ process lem_prescreen {
         --design-json ${design_json} \
         --target-f-low ${params.target_f_low} \
         --target-f-high ${params.target_f_high} \
-        --radiation-model ${params.radiation_model} --loss-model ${params.loss_model} --flange-width ${params.flange_width} \
+        --radiation-model ${radiationModel()} --loss-model ${params.loss_model} --flange-width ${params.flange_width} \
         --voltage ${params.voltage_rms} --distance ${params.observation_distance} \
         --max-ripple ${params.max_ripple_db} --max-compression ${params.max_compression_ratio} ${scoringCliFlags()} \
         ${params.test_power_w ? "--test-power " + params.test_power_w : ""} \
@@ -633,13 +542,16 @@ process generate_candidate_geometry {
 }
 
 process run_candidate_simulation {
+    // Real solver faults stop the run. A per-candidate mesh or CAD rejection
+    // (node limit, throat-area guard, non-axisymmetric CAD) exits 0 with a
+    // rejection record instead, and the candidate is listed as rejected.
     errorStrategy 'terminate'
 
     input:
     tuple val(candidate_id), val(profile), val(mouth_radius), val(length), path(horn_step, stageAs: "horn_input.step"), val(band_index), val(sim_min_freq), val(sim_max_freq)
 
     output:
-    tuple val(candidate_id), path("results_${candidate_id}_${band_index}.csv")
+    tuple val(candidate_id), path("results_${candidate_id}_${band_index}.{csv,rejected.json}")
 
     script:
     """
@@ -648,12 +560,13 @@ process run_candidate_simulation {
     python3 -m horn_solver.solver \
         --step-file ${horn_step} \
         --output-file results_${candidate_id}_${band_index}.csv \
+        --rejection-file results_${candidate_id}_${band_index}.rejected.json \
         --min-freq \${band_low} \
         --max-freq \${band_high} \
         --num-intervals \${band_points} \
         --length ${length} \
-        --mesh-size ${params.mesh_size} \
-        --radiation-model ${params.radiation_model} \
+        --mesh-size ${params.mesh_size} --max-mesh-nodes ${params.max_mesh_nodes} \
+        --radiation-model ${radiationModel()} \
         --loss-model ${params.loss_model} --flange-width ${params.flange_width} \
         --element-degree ${params.element_degree} ${params.minimum_wall_scale != null ? "--minimum-wall-scale " + params.minimum_wall_scale : ""}
     """
@@ -666,16 +579,21 @@ process merge_candidate_results {
     tuple val(candidate_id), path(csv_files)
 
     output:
-    tuple val(candidate_id), path("${candidate_id}_results.csv")
+    tuple val(candidate_id), path("${candidate_id}_{results.csv,rejected.json}")
 
     script:
     """
-    python3 -m horn_analysis.merge --files results_${candidate_id}_*.csv \
-        --num-bands ${params.num_bands} \
-        --min-freq ${params.target_f_low / Math.sqrt(2)} \
-        --max-freq ${params.target_f_high * Math.sqrt(2)} \
-        ${gridFlags()} \
-        --output ${candidate_id}_results.csv
+    if compgen -G 'results_${candidate_id}_*.rejected.json' > /dev/null; then
+        python3 -m horn_analysis.merge --rejections results_${candidate_id}_*.rejected.json \
+            --candidate-id ${candidate_id} --output ${candidate_id}_rejected.json
+    else
+        python3 -m horn_analysis.merge --files results_${candidate_id}_*.csv \
+            --num-bands ${params.num_bands} \
+            --min-freq ${params.target_f_low / Math.sqrt(2)} \
+            --max-freq ${params.target_f_high * Math.sqrt(2)} \
+            ${gridFlags()} \
+            --output ${candidate_id}_results.csv
+    fi
     """
 }
 
@@ -741,9 +659,16 @@ for csv_path in csv_files:
         r['profile'] = cand.get('profile', '')
     all_results.extend(results)
 
+# Candidates rejected by the solver before producing a response
+from horn_analysis.rank_pipeline import rejection_rows
+solver_rejected = []
+for json_path in sorted(glob.glob('*_rejected.json')):
+    record = json.loads(Path(json_path).read_text())
+    solver_rejected.extend(rejection_rows(record, candidates_lookup.get(record['candidate_id'], {}), driver_ids))
+
 # Sort all by composite score and take overall top N
 total_scored = len(all_results)
-rejected = [r for r in all_results if not r.get('model_feasible', False)]
+rejected = [r for r in all_results if not r.get('model_feasible', False)] + solver_rejected
 all_results = [r for r in all_results if r.get('model_feasible', False)]
 all_results.sort(key=lambda r: r['composite_score'], reverse=True)
 from horn_analysis.search import annotate_comparable_candidates
@@ -751,6 +676,7 @@ all_results = annotate_comparable_candidates(all_results[:${params.top_n}])
 
 output = {
     'total_candidates': total_candidates,
+    'solver_rejected_candidates': sorted({r['horn_label'] for r in solver_rejected}),
     'total_scored': total_scored,
     'results': all_results,
     'rejected': rejected,
@@ -784,7 +710,7 @@ process refine_ranked_candidates {
         --drivers-db ${drivers_db} --prescreen-json ${prescreen_json} --design-json ${design_json} \
         --budget ${params.refinement_budget} --top-n ${params.top_n} --num-frequencies ${params.num_intervals} \
         --num-bands ${params.num_bands} --min-points-per-octave ${params.min_points_per_octave} --num-sections ${params.num_sections} \
-        --mesh-size ${params.mesh_size} --radiation-model ${params.radiation_model} \
+        --mesh-size ${params.mesh_size} --max-mesh-nodes ${params.max_mesh_nodes} --radiation-model ${radiationModel()} \
         --loss-model ${params.loss_model} --flange-width ${params.flange_width} \
         --element-degree ${params.element_degree} ${params.minimum_wall_scale != null ? "--minimum-wall-scale " + params.minimum_wall_scale : ""} \
         --voltage ${params.voltage_rms} --distance ${params.observation_distance} \
@@ -812,6 +738,8 @@ process generate_auto_report {
     path "report/auto_report.html"
     path "report/coupled_*.csv", optional: true
     path "report/auto_electrical.png", optional: true
+    path "report/directivity_*.csv", optional: true
+    path "report/auto_beamwidth.png", optional: true
 
     script:
     """
@@ -941,25 +869,7 @@ workflow single {
         )
     }
 
-    // 11. Directivity (opt-in, requires BEM) -- parallelized across frequency bands
-    if (params.directivity) {
-        ch_dir_band_indices = Channel.from(0..<params.num_bands)
-        ch_dir_inputs = ch_step_file.combine(ch_dir_band_indices)
-        ch_dir_band_results = run_simulation_directivity(ch_dir_inputs)
-        ch_directivity_csv = merge_directivity_results(ch_dir_band_results.collect())
-        generate_directivity_plots(ch_directivity_csv)
-
-        // 12. HTML report with directivity
-        generate_single_report_with_directivity(
-            extract_kpis.out, ch_merged_results,
-            generate_plots.out, generate_impedance_plot.out,
-            generate_phase_plot.out, generate_dashboard.out, ch_horn_3d_png,
-            generate_directivity_plots.out[0],
-            generate_directivity_plots.out[1],
-            generate_directivity_plots.out[2],
-            generate_directivity_plots.out[3],
-        )
-    } else if (params.driver_id) {
+    if (params.driver_id) {
         // 12. HTML report with driver-coupled section
         generate_single_report_with_driver(
             extract_kpis.out, ch_merged_results,
@@ -968,7 +878,7 @@ workflow single {
             ch_coupled_png, ch_coupled_kpis,
         )
     } else {
-        // 12. HTML report without directivity
+        // 12. HTML report without driver coupling
         generate_single_report(
             extract_kpis.out, ch_merged_results,
             generate_plots.out, generate_impedance_plot.out,
@@ -1084,24 +994,22 @@ workflow auto {
 
 workflow {
     if (params.outdir == null || params.outdir instanceof Boolean || !(params.outdir as String).trim()) error "Choose --outdir for direct Nextflow runs, or use scripts/run_pipeline.py for isolated outputs and checked resume"
-    if (params.radiation_model == 'bem' || params.directivity) error "Legacy FEM-BEM horn coupling and directivity are disabled pending a validated exterior domain"
     if (!(params.loss_model in ['lossless', 'boundary_layer'])) error "Unknown loss model"
     if (!(params.element_degree in [1, 2])) error "Element degree must be 1 or 2"
     if (!Double.isFinite(params.flange_width as double) || params.flange_width < 0) error "Invalid flange width"
     if (params.loss_model == 'boundary_layer' && (params.minimum_wall_scale == null || !Double.isFinite(params.minimum_wall_scale as double) || params.minimum_wall_scale <= 0)) error "Boundary-layer walls require minimum_wall_scale in metres"
-    if (params.loss_model != 'lossless' && (params.radiation_model == 'bem' || params.directivity)) error "BEM wall losses are unsupported"
     if (params.mode != 'single' && params.radiation_model == 'closed') error "Closed termination is a single-case impedance validation boundary, not a radiating horn"
-    if (params.mode != 'single' && params.radiation_model == 'bem') error "Auto screening currently requires a local radiation model; BEM is experimental single-mode only"
-    if (!(params.radiation_model in ['plane_wave', 'flanged_piston', 'modal_baffled', 'unflanged_piston', 'finite_flange', 'closed', 'bem'])) error "Unknown radiation model"
+    if (params.radiation_model != null && !(params.radiation_model in ['plane_wave', 'flanged_piston', 'modal_baffled', 'unflanged_piston', 'finite_flange', 'closed'])) error "Unknown radiation model: choose plane_wave, flanged_piston, modal_baffled, unflanged_piston, finite_flange or closed"
+    if (params.profiles != null && !(params.profiles.toString().replaceAll(/\s/, '') ==~ /(conical|exponential|hyperbolic|tractrix|os|scaled_tractrix|cd)(,(conical|exponential|hyperbolic|tractrix|os|scaled_tractrix|cd))*/)) error "profiles must be a comma list of conical, exponential, hyperbolic, tractrix, os, scaled_tractrix, cd"
     if (params.radiation_model == 'modal_baffled' && (params.loss_model != 'lossless' || params.element_degree != 1)) error "Experimental modal aperture requires lossless P1"
     if (!(params.mode in ['single', 'auto', 'fullauto'])) error "Unknown mode: ${params.mode}"
     def low = params.mode == 'single' ? params.min_freq : params.target_f_low
     def high = params.mode == 'single' ? params.max_freq : params.target_f_high
     if (!(low > 0 && high > low && Double.isFinite(high as double))) error "Require 0 < low frequency < high frequency"
-    for (key in ['voltage_rms', 'observation_distance', 'max_ripple_db', 'max_compression_ratio', 'mesh_size', 'num_bands', 'num_intervals', 'num_sections', 'num_mouth_radii', 'num_lengths', 'lem_top_n', 'top_n']) {
+    for (key in ['voltage_rms', 'observation_distance', 'max_ripple_db', 'max_compression_ratio', 'mesh_size', 'max_mesh_nodes', 'num_bands', 'num_intervals', 'num_sections', 'num_mouth_radii', 'num_lengths', 'lem_top_n', 'top_n']) {
         if (!(params[key] > 0 && Double.isFinite(params[key] as double))) error "${key} must be finite and positive"
     }
-    for (key in ['num_bands', 'num_intervals', 'num_sections', 'num_mouth_radii', 'num_lengths', 'lem_top_n', 'top_n', 'refinement_budget']) {
+    for (key in ['max_mesh_nodes', 'num_bands', 'num_intervals', 'num_sections', 'num_mouth_radii', 'num_lengths', 'lem_top_n', 'top_n', 'refinement_budget']) {
         if (!Double.isFinite(params[key] as double) || (params[key] as double) != Math.floor(params[key] as double)) error "${key} must be an integer"
     }
     if (params.num_intervals < 2 || params.num_sections < 2) error "At least two frequency points and geometry sections are required"
@@ -1116,6 +1024,7 @@ workflow {
     outputRoot.mkdirs()
     def resolvedParameters = [:]
     params.each { key, value -> resolvedParameters[key] = value }
+    resolvedParameters.radiation_model = radiationModel()
     if (params.mode == 'single' && !params.step_file) {
         [throat_radius: 0.05, mouth_radius: 0.2, length: 0.5].each { key, value ->
             if (resolvedParameters[key] == null) resolvedParameters[key] = value

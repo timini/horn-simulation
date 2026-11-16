@@ -77,6 +77,24 @@ def rank_horn_drivers(
     return sorted(results, key=lambda r: (-r["composite_score"], r["driver_id"]))[:top_n]
 
 
+def rejection_rows(record, candidate, driver_ids):
+    """Ranking rows for a candidate the solver rejected before producing a response.
+
+    ``record`` is a merged rejection (horn_analysis.merge.merge_rejections) and
+    ``candidate`` its candidates.csv row. One row per driver keeps the rejected
+    list in the same shape as model rejections.
+    """
+    geometry = {key: float(candidate[key]) for key in ("throat_radius", "mouth_radius", "length")
+                if candidate.get(key) not in (None, "")}
+    return [{"horn_label": record["candidate_id"], "driver_id": driver_id,
+             "profile": candidate.get("profile", ""), **geometry,
+             "model_feasible": False, "simulation_eligible": False, "composite_score": 0.,
+             "extension_octaves": None, "passband_ripple_db": None, "avg_sensitivity_db": None,
+             "rejection_reasons": list(record["rejection_reasons"]),
+             "rejection_detail": record.get("rejection_detail", ""), "evidence_gaps": []}
+            for driver_id in sorted(driver_ids)]
+
+
 def main():
     """CLI for ranking drivers against a horn solver result."""
     parser = argparse.ArgumentParser(

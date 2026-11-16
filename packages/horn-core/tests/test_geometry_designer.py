@@ -371,3 +371,24 @@ def test_fixed_throat_obeys_high_frequency_acoustic_cap():
     assert candidates and all(c.throat_radius <= cap for c in candidates)
     with pytest.raises(ValueError, match="acoustic ka cap"):
         generate_auto_candidates(1000, 4000, [cap], mouth_radius=.3, ka_max=math.pi)
+
+
+def test_cli_profiles_option_restricts_the_search(tmp_path, monkeypatch):
+    import csv
+    import json
+    import sys
+    from horn_core import geometry_designer
+    prescreen = tmp_path / "prescreen.json"
+    prescreen.write_text(json.dumps({"throat_radius_m": 0.0125, "throat_radii_m": [0.0125]}))
+    output = tmp_path / "candidates.csv"
+    monkeypatch.setattr(sys, "argv", ["designer", "--target-f-low", "800", "--target-f-high", "1600",
+                                      "--prescreen-json", str(prescreen), "--profiles", "os, conical",
+                                      "--output", str(output), "--design-json", str(tmp_path / "d.json")])
+    geometry_designer.main()
+    with output.open() as handle:
+        profiles = {row["profile"] for row in csv.DictReader(handle)}
+    assert profiles == {"os", "conical"}
+    monkeypatch.setattr(sys, "argv", ["designer", "--target-f-low", "800", "--target-f-high", "1600",
+                                      "--prescreen-json", str(prescreen), "--profiles", "lecleach"])
+    with pytest.raises(SystemExit):
+        geometry_designer.main()

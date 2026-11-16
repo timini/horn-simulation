@@ -2,7 +2,7 @@
 
 A completed optimisation is a search result, not evidence that its mesh or frequency grid is adequate. `scripts/validate_candidate_resolution.py` freezes a selected candidate, its driver record and its target band, then checks the production geometry/solver/coupling at increasing resolutions. It never changes the physical evidence status or certifies a driver interface.
 
-The initial protocol supports the default lossless, flanged-piston, P1 model. It uses the candidate's exact profile, dimensions, voltage and observation distance. Its simulation range extends half an octave beyond each target edge. Three mesh sizes (10, 6 and 4 mm), three loft counts (20, 40 and 80 sections), and two nested grids (101 and 201 frequencies) isolate mesh, geometry and sampling changes. Every spatial refinement runs at 201 frequencies; the finest geometry also runs at 101 points for the sampling comparison. The actual response that produced the ranking is compared with the first refined solve, and the three mesh cases use the original ranked STEP. Preparation rejects bands whose wavelength-based cap would collapse any mesh refinement. Comparison also requires strictly increasing cell counts across the three mesh cases.
+The initial protocol supported the then-default lossless, flanged-piston, P1 model; the harness now also accepts `modal_baffled`, the current default. It uses the candidate's exact profile, dimensions, voltage and observation distance. Its simulation range extends half an octave beyond each target edge. Three mesh sizes (10, 6 and 4 mm), three loft counts (20, 40 and 80 sections), and two nested grids (101 and 201 frequencies) isolate mesh, geometry and sampling changes. Every spatial refinement runs at 201 frequencies; the finest geometry also runs at 101 points for the sampling comparison. The actual response that produced the ranking is compared with the first refined solve, and the three mesh cases use the original ranked STEP. Preparation rejects bands whose wavelength-based cap would collapse any mesh refinement. Comparison also requires strictly increasing cell counts across the three mesh cases.
 
 Before solving, the study freezes these engineering gates:
 
@@ -15,6 +15,14 @@ Before solving, the study freezes these engineering gates:
 Frequency refinement also limits the change in target-band ripple to 0.2 dB. Comparisons interpolate SPL and complex impedance components against logarithmic frequency on the **union of both grids**, preserving every original and refined sample even when the band-partition grids are not nested. Target-band ripple includes both band edges with the same logarithmic-frequency interpolation used by the production ranking. Each solve must have a complete frequency grid, finite values, the specified model/phase contract, residual at most 1e-8, positive convergence reason, passive input load and relative acoustic power imbalance at most 1e-7.
 
 These are resolution-change bounds for one fixed model, not an asymptotic error estimate, uncertainty in a physical loudspeaker, universal acoustic standards or proof that no still-narrower feature exists. They do not establish the ranking of nearly tied candidates. Preserve any failing study and investigate it before freezing a new protocol.
+
+## Protocol 2: mesh cases relative to the production size
+
+The solver now meshes P1 at λ/10 of each band's top frequency, with a throat refinement field and a node limit (see the README's meshing section). Fixed 10, 6 and 4 mm cases collapse onto the wavelength cap above about 2.4 kHz, so protocol 1 cannot study high bands or small horns. New studies use protocol 2. Its spatial cases scale the production size h0 = min(10 mm, c / (10 f_max)), where f_max is the top of the simulation band, by 1, 0.6 and 0.4: the same ratios as 10/6/4 mm. The loft and frequency cases use the finest (0.4 h0) mesh, as before. The case names (`mesh_10`, `mesh_6`, `mesh_4`) are kept so comparisons read the same. Gates, frequency grids and loft counts are unchanged.
+
+Refined meshes are solved with a node limit of 3,000,000 so the production limit cannot coarsen them, and a response whose mesh was coarsened for the node limit fails the health check. A 0.4 h0 mesh has about 15 times the nodes of the production mesh, so large low-band horns can need several GB of memory for the direct solve.
+
+Archived protocol-1 studies keep their absolute sizes (`protocol_version` absent means 1) and are still verified against the protocol-1 case table.
 
 ## Run a study
 

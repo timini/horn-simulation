@@ -84,16 +84,43 @@ def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output
     return joined
 
 
+def merge_rejections(paths, *, candidate_id, output):
+    """Combine per-band solver rejections into one record for the candidate.
+
+    One rejected band means the candidate has no complete response, so the
+    whole candidate is rejected; the reasons and band details are kept.
+    """
+    import json
+    records = [json.loads(Path(path).read_text()) for path in paths]
+    if not records or any(r.get("status") != "rejected" or not r.get("rejection_reasons") for r in records):
+        raise ValueError("Rejection files must each name at least one reason")
+    reasons = sorted({reason for r in records for reason in r["rejection_reasons"]})
+    record = {"candidate_id": candidate_id, "status": "rejected", "rejection_reasons": reasons,
+              "rejection_detail": "; ".join(r.get("rejection_detail", "") for r in records),
+              "bands": records}
+    Path(output).write_text(json.dumps(record, indent=2))
+    return record
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--files", nargs="+", required=True)
-    p.add_argument("--num-bands", type=int, required=True)
-    p.add_argument("--min-freq", type=float, required=True)
-    p.add_argument("--max-freq", type=float, required=True)
-    p.add_argument("--num-intervals", type=int, required=True)
+    p.add_argument("--files", nargs="+")
+    p.add_argument("--rejections", nargs="+", help="Per-band solver rejection JSON files")
+    p.add_argument("--candidate-id", help="Candidate label for --rejections")
+    p.add_argument("--num-bands", type=int)
+    p.add_argument("--min-freq", type=float)
+    p.add_argument("--max-freq", type=float)
+    p.add_argument("--num-intervals", type=int)
     p.add_argument("--min-points-per-octave", type=float, default=DEFAULT_MIN_POINTS_PER_OCTAVE)
     p.add_argument("--output", required=True)
     a = p.parse_args()
+    if a.rejections:
+        if not a.candidate_id:
+            p.error("--rejections needs --candidate-id")
+        merge_rejections(a.rejections, candidate_id=a.candidate_id, output=a.output)
+        return
+    if not a.files or None in (a.num_bands, a.min_freq, a.max_freq, a.num_intervals):
+        p.error("--files needs --num-bands, --min-freq, --max-freq and --num-intervals")
     points = grid_points_per_band(a.min_freq, a.max_freq, a.num_bands, a.num_intervals, a.min_points_per_octave)
     merge_bands(a.files, num_bands=a.num_bands, min_freq=a.min_freq, max_freq=a.max_freq,
                 points_per_band=points, output=a.output)

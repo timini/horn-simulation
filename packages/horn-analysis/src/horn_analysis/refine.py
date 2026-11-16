@@ -31,6 +31,7 @@ def main():
     p.add_argument("--flange-width",type=float,default=0.)
     p.add_argument("--minimum-wall-scale",type=float)
     p.add_argument("--element-degree",type=int,default=1)
+    p.add_argument("--max-mesh-nodes",type=int,default=None)
     a=p.parse_args()
     if a.num_bands < 1 or a.num_frequencies < 2 or a.budget < 0 or a.top_n < 1: p.error("Invalid simulation budget/grid")
     out=Path(a.output_dir);out.mkdir(parents=True,exist_ok=True)
@@ -42,7 +43,7 @@ def main():
         from horn_geometry.generator import create_horn, LoftAccuracyError
         from horn_core.parameters import HornParameters, FlareProfile
         from horn_solver.solver import run_simulation_from_step
-        from horn_solver.modal_geometry import ModalGeometryError
+        from horn_solver.meshing import rejection_reason
         screen=json.loads(Path(a.prescreen_json).read_text())
         drivers=[d for d in load_drivers(a.drivers_db) if d.driver_id in screen['drivers']]
         target=TargetSpec(design['target_f_low'],design['target_f_high'],voltage_rms=a.voltage,observation_distance_m=a.distance,max_ripple_db=a.max_ripple,max_compression_ratio=a.max_compression,min_output_db=a.min_output,score_weights=a.score_weights,test_power_w=a.test_power)
@@ -105,9 +106,14 @@ def main():
             try:
                 for index,(band_low,band_high,_) in enumerate(grids):
                     path=band_dir/f'results_{index}.csv'
-                    run_simulation_from_step(str(step),(band_low,band_high),points,{'length':c.length},str(path),band_high,mesh_size=a.mesh_size,radiation_model=a.radiation_model,loss_model=a.loss_model,flange_width=a.flange_width,minimum_wall_scale=a.minimum_wall_scale,element_degree=a.element_degree)
+                    run_simulation_from_step(str(step),(band_low,band_high),points,{'length':c.length},str(path),band_high,mesh_size=a.mesh_size,radiation_model=a.radiation_model,loss_model=a.loss_model,flange_width=a.flange_width,minimum_wall_scale=a.minimum_wall_scale,element_degree=a.element_degree,max_mesh_nodes=a.max_mesh_nodes)
                     paths.append(path)
-            except ModalGeometryError as error:
+            except Exception as error:
+                # Mesh-size, throat-area and CAD rejections drop this candidate;
+                # anything else is a real fault and stops the run.
+                reason = rejection_reason(error)
+                if reason is None:
+                    raise
                 geometry_rejected.append(c.candidate_id)
                 rejected.extend({"horn_label": c.candidate_id, "driver_id": drv.driver_id,
                     "profile": c.profile, "throat_radius": c.throat_radius,
@@ -115,7 +121,7 @@ def main():
                     "model_feasible": False, "simulation_eligible": False,
                     "composite_score": 0., "extension_octaves": None,
                     "passband_ripple_db": None, "avg_sensitivity_db": None,
-                    "rejection_reasons": ["cad_geometry_rejected"],
+                    "rejection_reasons": [reason],
                     "rejection_detail": str(error), "evidence_gaps": []} for drv in drivers)
                 cache[key] = 0.
                 return 0.

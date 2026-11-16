@@ -366,7 +366,15 @@ def main():
         help="Output design summary JSON.",
     )
     parser.add_argument("--throat-radius", type=float, default=None, help="Fix throat radius")
+    parser.add_argument("--profiles", type=str, default=None,
+                        help="Comma list of profiles to search (default: all seven).")
     args = parser.parse_args()
+    profiles = None
+    if args.profiles:
+        profiles = [name.strip() for name in args.profiles.split(",") if name.strip()]
+        unknown = sorted(set(profiles) - set(DEFAULT_PROFILES))
+        if not profiles or unknown:
+            parser.error(f"Unknown profiles {unknown}; choose from {DEFAULT_PROFILES}")
 
     prescreen = json.loads(Path(args.prescreen_json).read_text())
     throat_radii = prescreen.get("throat_radii_m") or [prescreen["throat_radius_m"]]
@@ -383,6 +391,7 @@ def main():
         min_length=args.min_length,
         max_mouth_radius=args.max_mouth_radius,
         min_mouth_radius=args.min_mouth_radius,
+        profiles=profiles,
         ka_max=prescreen.get("ka_max", 2 * math.pi),
     )
 
