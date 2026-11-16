@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 # Base images are pinned by multi-arch index digest (linux/amd64 and linux/arm64).
 FROM ghcr.io/astral-sh/uv:0.8.2@sha256:a7999d42cba0e5af47ef3c06ac310229c7f29c5314e35902f8353e8e170eeed1 AS uv
 FROM dolfinx/dolfinx:v0.8.0@sha256:6fd526e28275ca60b5ba6125cd7ed488e4a120edc8fe7029ac2422f3154913fc AS base
@@ -7,7 +6,9 @@ FROM dolfinx/dolfinx:v0.8.0@sha256:6fd526e28275ca60b5ba6125cd7ed488e4a120edc8fe7
 # Exact versions from uv.lock for every workspace dependency (this image also
 # carries horn-analysis and horn-geometry), except numpy, mpi4py and gmsh:
 # the image's compiled dolfinx, petsc4py, MPI and system gmsh are built
-# against its own copies, so those stay as shipped.
+# against its own copies, so those stay as shipped. markdown-it-py also stays
+# as shipped: the base image's myst-parser and mdit-py-plugins need the older
+# release, and rich accepts it.
 FROM base AS requirements
 WORKDIR /src
 COPY pyproject.toml uv.lock ./
@@ -18,9 +19,9 @@ COPY packages/horn-solver/pyproject.toml packages/horn-solver/
 COPY packages/horn-analysis/pyproject.toml packages/horn-analysis/
 RUN --mount=from=uv,source=/uv,target=/usr/local/bin/uv \
     uv export --frozen --all-packages --no-emit-workspace --no-emit-package numpy \
-    --no-emit-package mpi4py --no-emit-package gmsh -o /requirements.txt \
+    --no-emit-package mpi4py --no-emit-package gmsh --no-emit-package markdown-it-py -o /requirements.txt \
     && uv export --frozen --package horn-solver --extra test --no-emit-workspace \
-    --no-emit-package numpy --no-emit-package mpi4py --no-emit-package gmsh -o /requirements-test.txt
+    --no-emit-package numpy --no-emit-package mpi4py --no-emit-package gmsh --no-emit-package markdown-it-py -o /requirements-test.txt
 
 # --- Production Stage ---
 FROM base AS production

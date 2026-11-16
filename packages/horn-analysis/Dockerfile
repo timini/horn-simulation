@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 # Base images are pinned by multi-arch index digest, so linux/amd64 and
 # linux/arm64 builds resolve the same release.
 FROM ghcr.io/astral-sh/uv:0.8.2@sha256:a7999d42cba0e5af47ef3c06ac310229c7f29c5314e35902f8353e8e170eeed1 AS uv
