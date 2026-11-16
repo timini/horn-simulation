@@ -33,6 +33,9 @@ FROM production as test
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 COPY ./scripts/run_pipeline.py /app/scripts/run_pipeline.py
 COPY ./data/validation/boundary_lab_reference.json /app/data/validation/boundary_lab_reference.json
+# The electrical output tests re-rank the preserved 800-1600 Hz example with a curated driver.
+COPY ./data/drivers-curated /app/data/drivers-curated
+COPY ./examples/800-1600-modal/ranking.json ./examples/800-1600-modal/horn-impedance.csv /app/examples/800-1600-modal/
 WORKDIR /app
 ENV PYTHONPATH /app
 
