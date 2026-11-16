@@ -28,8 +28,15 @@ def test_wide_search_throats_stay_below_the_first_radial_mode(wide):
     assert all(c.throat_radius <= cap * (1 + 1e-9) for c in wide['candidates'])
 
 
-def test_wide_search_shortlist_holds_a_design_within_6_db(wide):
-    """The broad search's 8 FEM finalists all failed the ripple limit (11-12 dB)."""
+def test_wide_search_keeps_flagged_designs_that_meet_6_db_without_the_estimated_chamber(wide):
+    """The broad search's 8 FEM finalists all failed the ripple limit (11-12 dB).
+
+    This checks the without-chamber figure and a supplied chamber of 0, not
+    the default prediction. With the 139 cm3 cone estimate the shortlisted
+    ripple is about 7.1 to 9.1 dB, so "predicted ripple <= 6 dB" is not met
+    under the default chamber model; the designs are kept only because an
+    estimated chamber never rejects a design.
+    """
     shortlist = wide['shortlist']
     assert len(shortlist) == 8
     # Without adapter data the cone estimate is applied and flagged; the

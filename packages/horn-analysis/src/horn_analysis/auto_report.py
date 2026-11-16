@@ -13,7 +13,7 @@ import pandas as pd
 from horn_core.parameters import DriverParameters
 from horn_analysis.compare import plot_multi_comparison
 from horn_analysis.html_report import generate_html_report
-from horn_analysis.scoring import TargetSpec
+from horn_analysis.scoring import TargetSpec, size_compromise_note
 from horn_analysis.electrical_output import electrical_table, plot_electrical
 
 
@@ -140,9 +140,7 @@ def generate_auto_report(
     lines.extend(f"Constraint {k}: {v['value']} ({v['source']})" for k, v in scoring["constraints"].items())
     compromise = scoring.get("size_compromise")
     if compromise:
-        lines.append(f"Size limits support about {compromise['expected_f_low_hz']:.0f} Hz by the ka = 1 mouth and "
-                     f"quarter-wave rules: a low-frequency shortfall of {compromise['shortfall_octaves']:.2f} octaves "
-                     f"against {compromise['target_f_low_hz']:g} Hz (see f3 below for predictions)")
+        lines.append("Size compromise: " + size_compromise_note(compromise, all_ranked))
     refinement = scoring.get("refinement")
     if refinement:
         lines.append(f"Refinement: {refinement['new_evaluations']} new geometries from "

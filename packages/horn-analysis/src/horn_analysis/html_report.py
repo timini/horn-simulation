@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 
 from horn_core.parameters import DriverParameters
-from horn_analysis.scoring import TargetSpec, describe_scoring
+from horn_analysis.scoring import TargetSpec, describe_scoring, size_compromise_note
 from horn_analysis import plot_theme
 from horn_analysis.horn_render import fig_to_b64_3d
 
@@ -487,7 +487,7 @@ _BOUND_SOURCE_LABELS = {
 }
 
 
-def _render_scoring(scoring: dict) -> str:
+def _render_scoring(scoring: dict, ranked: Optional[List[dict]] = None) -> str:
     """State the score formula, weights, exchange rates and bound origins."""
     weights = ", ".join(f"{html.escape(k)} {v:.3f}" for k, v in scoring["weights"].items())
     rates = scoring["exchange_rates"]
@@ -505,10 +505,7 @@ def _render_scoring(scoring: dict) -> str:
     extra = ""
     compromise = scoring.get("size_compromise")
     if compromise:
-        extra += (f'<p><strong>Size compromise:</strong> the size limits support about '
-                  f'{compromise["expected_f_low_hz"]:.0f} Hz by the ka = 1 mouth and quarter-wave rules, '
-                  f'{compromise["shortfall_octaves"]:.2f} octaves above the requested {compromise["target_f_low_hz"]:g} Hz. '
-                  'The f3 columns give the predicted response.</p>')
+        extra += (f'<p><strong>Size compromise:</strong> {html.escape(size_compromise_note(compromise, ranked))}</p>')
     refinement = scoring.get("refinement")
     if refinement:
         widened = "; ".join(f'{html.escape(w["field"])} {html.escape(w["side"])} to {_fmt(w["to"][1] if w["side"] == "high" else w["to"][0], ".4f")}'
@@ -776,7 +773,7 @@ def generate_html_report(
         "geometry_header_cols": geometry_header_cols,
         "geometry_section": geometry_section,
         "rankings_rows": rankings_rows,
-        "scoring_section": _render_scoring(scoring or describe_scoring(target, derived_geometry)),
+        "scoring_section": _render_scoring(scoring or describe_scoring(target, derived_geometry), all_ranked),
         "plot_coupled_spl": plot_coupled_spl,
         "plot_raw_spl": plot_raw_spl,
         "plot_impedance": plot_impedance,

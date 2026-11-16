@@ -475,8 +475,9 @@ def main():
     )
     if derived.size_compromise:
         c = derived.size_compromise
-        print(f"  Size limits support about {c['expected_f_low_hz']:.0f} Hz, "
-              f"{c['shortfall_octaves']:.2f} octaves above the requested {args.target_f_low:g} Hz")
+        print(f"  Size caps are below the sizing rules for {args.target_f_low:g} Hz: horn loading is expected "
+              f"to weaken below about {c['expected_f_low_hz']:.0f} Hz ({c['shortfall_octaves']:.2f} octaves; "
+              "rule of thumb, see ranked f3_low for predictions)")
 
 
 if __name__ == "__main__":

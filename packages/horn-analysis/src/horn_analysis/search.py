@@ -47,10 +47,11 @@ def refine(seed, evaluate, bounds, budget=6, relative_step=.1, min_improvement=.
 
     The baseline is evaluated once, outside the new-geometry budget. Callers
     should cache it. No randomness; shrinking steps stop at 1% of seed values.
+    A step that would cross a bound is clamped to it, so the edge is tried.
 
     ``widenable`` maps a field to the sides of its bound that came from a
     heuristic, e.g. ``{'length': ('high',)}``. When the search stops with the
-    best design on such a side and budget remains, that side moves outward by
+    best design on or within 1% of such a side and budget remains, that side moves outward by
     ``widen_factor`` (never past ``hard_limits``) and the search resumes, up to
     ``max_widenings`` times. User-set sides are never moved.
     """
@@ -62,18 +63,21 @@ def refine(seed, evaluate, bounds, budget=6, relative_step=.1, min_improvement=.
     best=seed;best_score=float(evaluate(seed));seen={geometry_key(seed)};history=[]
     if not math.isfinite(best_score): raise ValueError("Non-finite baseline score")
     widenings = []
-    def at_bounds(candidate):
+    def at_bounds(candidate, rel_tol=1e-6):
         return [(key, side) for key, (lo, hi) in bounds.items()
-                for side, edge in (("low", lo), ("high", hi)) if math.isclose(getattr(candidate, key), edge, rel_tol=1e-6)]
+                for side, edge in (("low", lo), ("high", hi)) if math.isclose(getattr(candidate, key), edge, rel_tol=rel_tol)]
     while True:
         step=relative_step
         while len(history)<budget and step>=.01:
             improved=False
             for field in ('mouth_radius','length','throat_radius'):
                 for sign in (-1,1):
-                    value=getattr(best,field)*(1+sign*step)
+                    current=getattr(best,field)
                     lo,hi=bounds[field]
-                    if not lo<=value<=hi: continue
+                    # A step that overshoots a bound tries the bound itself, so a
+                    # search moving towards an edge reaches it (and can widen it).
+                    value=min(max(current*(1+sign*step),lo),hi)
+                    if math.isclose(value,current,rel_tol=1e-9): continue
                     trial=replace(best,**{field:round(value,8)},candidate_id=f'refine_{best.profile}_{len(history):04d}')
                     if trial.throat_radius>=trial.mouth_radius or geometry_key(trial) in seen: continue
                     seen.add(geometry_key(trial));score=float(evaluate(trial))
@@ -87,7 +91,10 @@ def refine(seed, evaluate, bounds, budget=6, relative_step=.1, min_improvement=.
         if len(history) >= budget or len(widenings) >= max_widenings:
             break
         moved = []
-        for key, side in at_bounds(best):
+        # Within the smallest step (1%) of an edge counts as on it: the edge
+        # trial may not beat the best by min_improvement, yet the search was
+        # still stopped by the bound.
+        for key, side in at_bounds(best, rel_tol=.01):
             if side not in widenable.get(key, ()):
                 continue
             lo, hi = bounds[key]
@@ -123,9 +130,10 @@ def screening_audit(exhaustive_rows, shortlisted_ids, top_k=10):
             'passed':regret is not None and regret<=.02 and recall>=.9}
 
 
-SHORTLIST_POLICY = ("best design of every profile in the leading feasibility class, then by search objective "
-                    "with at most half the budget per profile while other profiles have candidates of the same feasibility, last 20% "
-                    "geometrically diverse within 0.02 score; fixed total budget")
+SHORTLIST_POLICY = ("top half of the budget by search objective, then the best design of each missing profile in the "
+                    "leading feasibility class up to 80% of the budget, then by search objective with at most half the budget "
+                    "per profile while other profiles have candidates of the same feasibility, last 20% geometrically diverse "
+                    "within 0.02 score; fixed total budget")
 
 
 def shortlist_geometries(rows, budget=10, score_margin=.02, max_ripple_db=6.0, profile_share=.5):
@@ -133,11 +141,13 @@ def shortlist_geometries(rows, budget=10, score_margin=.02, max_ripple_db=6.0, p
 
     Order is by ``search_objective``: feasible designs by score, then
     infeasible ones nearest to feasible, so an all-infeasible screen still
-    sends its most promising geometries. Profiles are explored fairly: the
-    best design of each profile goes first (only profiles whose best design is
-    in the same feasibility class as the overall best), and no profile takes
-    more than ``profile_share`` of the budget while another profile still has
-    candidates. The last 20% of slots prefer geometrically different
+    sends its most promising geometries. The best ``profile_share`` of the
+    budget is taken by objective alone, so near-winners are never pushed out.
+    Profiles are then explored fairly: the best design of each missing
+    profile (only profiles whose best design is in the same feasibility class
+    as the overall best) fills the slots up to 80% of the budget, and no
+    profile takes more than ``profile_share`` of the budget while another
+    profile still has candidates. The last 20% of slots prefer geometrically different
     near-ties. The score margin is a conservative search policy, not a
     measured uncertainty interval. Hard-rejected geometries without metrics
     (simulation_eligible False) are never sent.
@@ -153,13 +163,23 @@ def shortlist_geometries(rows, budget=10, score_margin=.02, max_ripple_db=6.0, p
     if len(ordered) <= budget:
         return [r['candidate_id'] for r in ordered]
     lead_class = ordered[0]['model_feasible']
-    selected, profiles = [], set()
-    for row in ordered:
-        if row['profile'] not in profiles and row['model_feasible'] == lead_class and len(selected) < budget:
+    cap = max(1, math.ceil(profile_share * budget))
+    elite_count = math.ceil(.8*budget)
+    # The best ``cap`` designs go first whatever their profile, so leaders of
+    # weak profiles never displace near-winners.
+    selected = ordered[:cap]
+    # Then the best design of each profile not yet present, but only in the
+    # slots left between the top designs and the diversity tail.
+    leader_slots = max(0, elite_count - cap)
+    profiles = {r['profile'] for r in selected}
+    for row in ordered[cap:]:
+        if leader_slots == 0:
+            break
+        if row['profile'] not in profiles and row['model_feasible'] == lead_class:
             selected.append(row)
             profiles.add(row['profile'])
+            leader_slots -= 1
     remaining = [r for r in ordered if r not in selected]
-    cap = max(1, math.ceil(profile_share * budget))
 
     def allowed(row):
         count = sum(s['profile'] == row['profile'] for s in selected)
@@ -169,7 +189,6 @@ def shortlist_geometries(rows, budget=10, score_margin=.02, max_ripple_db=6.0, p
         return not any(r['profile'] != row['profile'] and r['model_feasible'] == row['model_feasible']
                        and sum(s['profile'] == r['profile'] for s in selected) < cap for r in remaining)
 
-    elite_count = max(len(selected), math.ceil(.8*budget))
     while len(selected) < elite_count and remaining:
         chosen = next((r for r in remaining if allowed(r)), remaining[0])
         selected.append(chosen)

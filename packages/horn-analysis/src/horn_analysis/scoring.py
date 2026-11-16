@@ -157,6 +157,33 @@ _BOUND_KEYS = {
 }
 
 
+def size_compromise_note(compromise, rows=None):
+    """Plain-text statement of a size cap's low-frequency cost, or "" when none binds.
+
+    The figure comes from the ka = 1 mouth and quarter-wave sizing rules, so it
+    is worded as a rule-of-thumb loading limit. When ranked rows are given,
+    the best feasible row's predicted f3_low is set against it, so a reader
+    never takes the rule for a prediction the rankings contradict.
+    """
+    if not compromise:
+        return ""
+    target_low = compromise["target_f_low_hz"]
+    note = (f"The size caps are below the ka = 1 mouth and quarter-wave sizing rules for {target_low:g} Hz. "
+            f"By those rules of thumb, horn loading is expected to weaken below about "
+            f"{compromise['expected_f_low_hz']:.0f} Hz, {compromise['shortfall_octaves']:.2f} octaves above the target. "
+            "This is a sizing rule, not a prediction.")
+    ranked = [r for r in rows or [] if r.get("model_feasible", True) and r.get("f3_low_hz") is not None]
+    if ranked:
+        best = max(ranked, key=lambda r: r.get("composite_score", 0.0))
+        f3 = float(best["f3_low_hz"])
+        if f3 <= target_low:
+            note += (f" The best ranked design's predicted f3_low is {f3:.0f} Hz, at or below {target_low:g} Hz, "
+                     "so the model prediction does not show this shortfall.")
+        else:
+            note += f" The best ranked design's predicted f3_low is {f3:.0f} Hz."
+    return note
+
+
 def describe_scoring(target, design=None, user_bounds=None):
     """Record the formula, weights and the origin of every bound for outputs."""
     user_bounds = {k: v for k, v in (user_bounds or {}).items() if v is not None}

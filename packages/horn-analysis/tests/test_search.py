@@ -36,11 +36,13 @@ def test_shortlist_preserves_winner_and_explores_near_ties_with_fixed_budget():
     rows[-1].update(profile='exponential', mouth_radius=.2, length=.2)
     selected = shortlist_geometries(rows,5)
     assert len(selected) == len(set(selected)) == 5
-    # Best scores first; no profile takes more than half the budget (3 of 5)
-    # while another profile still has candidates.
+    # The top half of the budget (3 of 5) goes by score alone; the
+    # exponential leader then takes a reserved slot and the last slot is the
+    # most distinct conical near-tie.
     assert selected[:3] == ['0','1','2']
     assert '11' in selected
-    assert sum(not s.isdigit() or s != '11' for s in selected) == 4
+    assert sum(s != '11' for s in selected) == 4
+    assert '10' in selected
     assert shortlist_geometries(list(reversed(rows)),5) == selected
     rows[-1]['model_feasible'] = False
     assert '11' not in shortlist_geometries(rows,5)
@@ -149,3 +151,23 @@ def test_refinement_widens_only_heuristic_sides_and_keeps_throat_under_ka_cap():
     widenable, limits = widening_policy(design, {'ka_max': 3.8317})
     assert widenable == {'mouth_radius': ('low', 'high'), 'length': (), 'throat_radius': ('low', 'high')}
     assert limits['throat_radius'][1] == pytest.approx(343*3.8317/(2*math.pi*5000))
+
+
+def test_shortlist_profile_leaders_do_not_displace_near_winners():
+    from horn_analysis.search import shortlist_geometries
+    rows = [_row(f'a{i}', 'a', .9-i*.01, mouth_radius=.1+i*.01) for i in range(3)]
+    rows += [_row(f'{p}0', p, .3-i*.01) for i, p in enumerate('bcd')]
+    # Before, every profile leader took a slot first: ['a0', 'b0', 'c0'].
+    assert shortlist_geometries(rows, 3) == ['a0', 'a1', 'b0']
+
+
+def test_refinement_widens_a_heuristic_bound_reached_from_an_interior_seed():
+    seed = CandidateGeometry('seed', 'conical', .02, .10, .15)
+    bounds = {'throat_radius': (.02, .02), 'mouth_radius': (.10, .10), 'length': (.1, .2)}
+    best, audit = refine(seed, lambda c: c.length, bounds, budget=40, widenable={'length': ('high',)},
+                         hard_limits={'length': (0., .3)})
+    # Before, the search stopped at 0.19965 and never widened.
+    assert [w['side'] for w in audit['widened_bounds']] == ['high', 'high']
+    assert best.length > .2 and audit['final_bounds']['length'][1] == pytest.approx(.3)
+    best, audit = refine(seed, lambda c: c.length, bounds, budget=40)
+    assert .198 <= best.length <= .2 and audit['widened_bounds'] == []
