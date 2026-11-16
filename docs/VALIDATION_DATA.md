@@ -1,6 +1,6 @@
 # Existing horn validation data
 
-Latest expanded run: [8 September reference validation report](REFERENCE_VALIDATION_REPORT.md).
+Latest expanded run: [8 September reference validation report](history/REFERENCE_VALIDATION_REPORT.md).
 
 Research and archive inspection: 7 September 2026. Machine-readable source catalog: [`data/validation/references.json`](../data/validation/references.json).
 

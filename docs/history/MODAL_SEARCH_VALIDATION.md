@@ -15,7 +15,7 @@ This tests acceleration against exhaustive FEM **at the same fixed resolution**.
 
 ## Evidence and reproduction
 
-The [identity manifest](../data/validation/modal_search_manifest.json) records the executed revision and immutable solver image. The [archive](../data/validation/modal_search_artifacts.tar.gz) contains all 20 STEP files, 20 raw responses, all screening/exhaustive rankings, runtime identity, source snapshot, host execution/seals, exact host runner and console log. The [summary](../data/validation/modal_search_reference.json) records the gates and outcomes. An earlier attempt failed before any simulation because a diagnostic helper was absent; it is explicitly excluded.
+The [identity manifest](../../data/validation/modal_search_manifest.json) records the executed revision and immutable solver image. The [archive](../../data/validation/modal_search_artifacts.tar.gz) contains all 20 STEP files, 20 raw responses, all screening/exhaustive rankings, runtime identity, source snapshot, host execution/seals, exact host runner and console log. The [summary](../../data/validation/modal_search_reference.json) records the gates and outcomes. An earlier attempt failed before any simulation because a diagnostic helper was absent; it is explicitly excluded.
 
 At the recorded source revision, use the pinned image and archived host runner, adjusting only the workspace/output paths. The runner checks clean source, freezes package/driver/harness hashes, mounts source read-only, captures actual runtime and seals outputs after execution. The benchmark entry point inside that environment is:
 

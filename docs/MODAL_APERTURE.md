@@ -4,7 +4,7 @@
 
 ## Why this model exists
 
-The [matched independent reference](EXTERIOR_RADIATION_VALIDATION.md) found that the local boundary's throat impedance missed the frozen 0.5 dB / 5 degree comparison limits, despite on-axis pressure agreeing within 0.40 dB. Those failed results remain in the repository. The new operator [passes the same reference](MODAL_APERTURE_VALIDATION.md): maximum differences are 0.017 dB for throat impedance and 0.013 dB for on-axis pressure, with phase errors below 0.19 degrees. Separate mode and mesh refinements also pass. This establishes one ideal geometry and band.
+The [matched independent reference](EXTERIOR_RADIATION_VALIDATION.md) found that the local boundary's throat impedance missed the frozen 0.5 dB / 5 degree comparison limits, despite on-axis pressure agreeing within 0.40 dB. Those failed results remain in the repository. The new operator [passes the same reference](history/MODAL_APERTURE_VALIDATION.md): maximum differences are 0.017 dB for throat impedance and 0.013 dB for on-axis pressure, with phase errors below 0.19 degrees. Separate mode and mesh refinements also pass. This establishes one ideal geometry and band.
 
 ## Supported implementation and limits
 
@@ -12,7 +12,7 @@ The [matched independent reference](EXTERIOR_RADIATION_VALIDATION.md) found that
 - CAD checks sample the port boundaries and compare the complete volume with two rotated copies. STEP spline uncertainty is allowed at 0.1 micrometre radial tolerance, with a corresponding thin-shell volume tolerance. Annular ports, offset ports, rectangular ports and non-axisymmetric internal cuts are rejected.
 - Lossless air, P1 elements and a single MPI rank. Infinite baffle only. Finite-baffle diffraction, non-axisymmetric modes, wall losses and fabrication detail are outside this implementation. Directivity is an experimental far-field estimate from the same modes (`horn_core.modal_radiation.modal_baffled_far_field`); it assumes the infinite baffle and has no independent reference.
 - The quadrature accepts mouth ka up to 30; this is a numerical domain limit, **not an experimentally validated bandwidth**. Every new horn/band needs mode, mesh and frequency convergence checks. Sixteen modes do not guarantee convergence for arbitrary dimensions.
-- The final auto-ranking uses the full modal on-axis pressure. Webster screening remains a plane-mode approximation and is labelled accordingly. The [finite-grid search audit](MODAL_SEARCH_VALIDATION.md) retains all exhaustive top-ten results and winners in four bands; this does not establish a global optimum or performance outside that grid.
+- The final auto-ranking uses the full modal on-axis pressure. Webster screening remains a plane-mode approximation and is labelled accordingly. The [finite-grid search audit](history/MODAL_SEARCH_VALIDATION.md) retains all exhaustive top-ten results and winners in four bands; this does not establish a global optimum or performance outside that grid.
 - Driver and interface evidence rules remain in force. Numerical radiation agreement does not characterize a cone-to-throat chamber, phase plug, rear load or moving-mass convention. Results remain experimental predictions.
 
 ## Running it

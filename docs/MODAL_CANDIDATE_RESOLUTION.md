@@ -21,4 +21,4 @@ The [identity manifest](../data/validation/modal_candidate_resolution_manifest.j
 
 The final union-grid comparison is a separately identified reanalysis of these sealed curves. The original comparison and both comparator source snapshots remain in the archive. No numerical result or tolerance was replaced. Reproduce the original solve at `reproduction_source_commit`, or the union-grid assessment at `analysis_revision`, following the [reanalysis procedure](CANDIDATE_RESOLUTION.md#executed-8001600-hz-example).
 
-Mode-count refinement has its own [independent qualification](MODAL_APERTURE_VALIDATION.md) for this geometry over 800–1600 Hz. This study does not extend that independent reference comparison to the extra sweep margins, every profile, arbitrary ka or a finite baffle. New candidates need their own convergence checks.
+Mode-count refinement has its own [independent qualification](history/MODAL_APERTURE_VALIDATION.md) for this geometry over 800–1600 Hz. This study does not extend that independent reference comparison to the extra sweep margins, every profile, arbitrary ka or a finite baffle. New candidates need their own convergence checks.

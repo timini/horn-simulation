@@ -2,7 +2,7 @@
 
 The new nonlocal mouth boundary **passes** the frozen independent comparison for the worked hyperbolic horn over 800–1600 Hz. This is numerical qualification of an ideal infinite-baffle problem, not measured qualification of a physical horn/driver assembly.
 
-The earlier local Robin boundary comparison remains a failure in [the exterior-radiation report](EXTERIOR_RADIATION_VALIDATION.md). No tolerance, source amplitude, geometry or phase offset was fitted to obtain the new result.
+The earlier local Robin boundary comparison remains a failure in [the exterior-radiation report](../EXTERIOR_RADIATION_VALIDATION.md). No tolerance, source amplitude, geometry or phase offset was fitted to obtain the new result.
 
 ## Fixed problem and reference
 
@@ -38,4 +38,4 @@ python scripts/validate_modal_mouth.py compare results/qualification/modal-mouth
 
 The reference input is taken from the checked-in MMM archive; the toolbox does not need to be rerun for this comparison. To reproduce that independent reference itself, follow the exterior-radiation report. Solves and comparisons refuse changed source, changed inputs, missing frequency rows or changed output seals.
 
-This result covers one profile, geometry and target band under uniform inlet velocity. Production pressure-transfer integration is now exercised by the [complete automatic workflow](MODAL_APERTURE.md), its [candidate-resolution study](MODAL_CANDIDATE_RESOLUTION.md), pressure/velocity solver tests and the [four-band search audit](MODAL_SEARCH_VALIDATION.md). Additional profiles/bands, finite-baffle behavior and actual driver/interface data still need their own evidence. Reports continue to show insufficient evidence for an uncharacterized assembly.
+This result covers one profile, geometry and target band under uniform inlet velocity. Production pressure-transfer integration is now exercised by the [complete automatic workflow](../MODAL_APERTURE.md), its [candidate-resolution study](../MODAL_CANDIDATE_RESOLUTION.md), pressure/velocity solver tests and the [four-band search audit](MODAL_SEARCH_VALIDATION.md). Additional profiles/bands, finite-baffle behavior and actual driver/interface data still need their own evidence. Reports continue to show insufficient evidence for an uncharacterized assembly.

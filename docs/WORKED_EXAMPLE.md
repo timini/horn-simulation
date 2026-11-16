@@ -41,7 +41,7 @@ The throat/mouth dimensions describe the air passage. They do not specify horn w
 
 The [resolution study](CANDIDATE_RESOLUTION.md) freezes the geometry, driver and band, then separately increases mesh, loft and frequency resolution. Numerical convergence does not improve the missing physical evidence or establish the order of nearly tied designs.
 
-Reports distinguish observed −3 dB crossings from sweep bounds. For this example the upper crossing is outside the simulated range: `≥2263 Hz` is a bound, not an exact cutoff. [Response metric definitions](REPORT_METRICS.md) explain the difference between target-band acceptance and secondary peak-lobe KPIs.
+Reports distinguish observed −3 dB crossings from sweep bounds. For this example the upper crossing is outside the simulated range: `≥2263 Hz` is a bound, not an exact cutoff. [Response metric definitions](history/REPORT_METRICS.md) explain the difference between target-band acceptance and secondary peak-lobe KPIs.
 
 ## Resume and preserve evidence
 
@@ -51,11 +51,11 @@ Resume with the run path returned by the launcher:
 python3 scripts/run_pipeline.py --run-dir results/<run-id> -resume
 ```
 
-The source, inputs and container identities must still match. Successful completion and a cached resume have been exercised for the original example. Preserve the manifest and all outputs together; do not edit old evidence to match a newer checkout. See [run management](RUN_MANAGEMENT.md) for lookup and archival cleanup.
+The source, inputs and container identities must still match. Successful completion and a cached resume have been exercised for the original example. Preserve the manifest and all outputs together; do not edit old evidence to match a newer checkout. See [run management](history/RUN_MANAGEMENT.md) for lookup and archival cleanup.
 
 The [independent complete-horn comparison](EXTERIOR_RADIATION_VALIDATION.md) finds on-axis agreement within 0.40 dB for the ideal infinite-baffle model, but misses the strict throat-impedance targets. A finite baffle produces differences of several decibels at the tested points. These are numerical-model findings, not measurements of this driver assembly.
 
-The remaining step to a dependable physical recommendation is the [reference/interface/radiation sequence](SINGLE_HORN_ROADMAP.md), tracked in [#81](https://github.com/timini/horn-simulation/issues/81). Neither this successful workflow nor its numerical comparisons closes that gate.
+The remaining step to a dependable physical recommendation is the [reference/interface/radiation sequence](history/SINGLE_HORN_ROADMAP.md), tracked in [#81](https://github.com/timini/horn-simulation/issues/81). Neither this successful workflow nor its numerical comparisons closes that gate.
 
 ## Archived workflow evidence
 

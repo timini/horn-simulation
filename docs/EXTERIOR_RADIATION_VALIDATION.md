@@ -59,6 +59,6 @@ The [comparison and raw-file hashes](../data/validation/exterior_baffle_pilot_re
 
 ## Release implication
 
-Because the local `flanged_piston` boundary fails the throat-impedance comparison and `modal_baffled` [passes it](MODAL_APERTURE_VALIDATION.md), `modal_baffled` is the default for generated axisymmetric horns. `flanged_piston` remains the fallback for imported STEP files, wall losses and P2 elements, and reports that use it print the 1.05 dB / 5.7 degree error.
+Because the local `flanged_piston` boundary fails the throat-impedance comparison and `modal_baffled` [passes it](history/MODAL_APERTURE_VALIDATION.md), `modal_baffled` is the default for generated axisymmetric horns. `flanged_piston` remains the fallback for imported STEP files, wall losses and P2 elements, and reports that use it print the 1.05 dB / 5.7 degree error.
 
 The default prediction assumes infinite-baffle radiation and a simplified mouth field. A free-standing horn or a finite mounting needs its own radiation evidence. A driver also needs its characterized interface and rear load: an ideal source comparison cannot supply them. [Issue #81](https://github.com/timini/horn-simulation/issues/81) remains open for the complete physical design gate, and the [physical-reference audit](PHYSICAL_REFERENCE_AUDIT.md) records the usable measurements and missing information for each current lead.

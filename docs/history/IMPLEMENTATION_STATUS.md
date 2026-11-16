@@ -33,7 +33,7 @@ Updated 7 September 2026. Band-to-driver-and-horn search, bounded refinement, CA
 | Full solver suite after wall-loss/residual changes | 48 passed, one optional straight-tube regime skipped | `results/validation-81/loss-physics/all-solver-tests.xml` |
 | Three-mesh production wall-loss case | Complex impedance, finest-mesh output convergence, passivity and RMS energy balance pass | `packages/horn-solver/tests/validation/test_wall_losses.py` |
 | Independent published numerical impedances | All four comparisons pass; p95 magnitude error <0.010 dB | `data/validation/loss_physics_validation.json` |
-| Published measured impedances | 237/299 pass magnitude limits, including 201/263 held-out curves; failures retained | [Full comparison and limits](LOSS_PHYSICS_VALIDATION.md) |
+| Published measured impedances | 237/299 pass magnitude limits, including 201/263 held-out curves; failures retained | [Full comparison and limits](../LOSS_PHYSICS_VALIDATION.md) |
 | Direct production FEM versus measurements | 90/100 comparisons pass on the three open geometries | `results/validation-81/loss-physics/held-out-final/validation.json` |
 | Fresh clean-checkout band-only run | 235 screened drivers, 231 geometries; 106 tasks completed in 6m28s. All 80 original simulation bands also pass the stricter complex-join gate | `data/validation/band_only_release_summary.json` |
 | Earlier band-only database run | 239 drivers, 231 geometries / 55,209 analytical pairs; 106 tasks completed in 6m23s | `results/validation-81/band-only-final/manifest.json` |
@@ -67,7 +67,7 @@ just test-nextflow
 just run-auto --target_f_low 1000 --target_f_high 1200
 ```
 
-Use `--drivers_db data/drivers-curated` for traceable manufacturer inputs. Losses are opt-in with `--loss_model boundary_layer --minimum_wall_scale 0.01 --element_degree 2` only where that scale is conservative for the actual geometry. See [the acoustic contract](ACOUSTIC_CONTRACT.md) and [loss validation](LOSS_PHYSICS_VALIDATION.md).
+Use `--drivers_db data/drivers-curated` for traceable manufacturer inputs. Losses are opt-in with `--loss_model boundary_layer --minimum_wall_scale 0.01 --element_degree 2` only where that scale is conservative for the actual geometry. See [the acoustic contract](../ACOUSTIC_CONTRACT.md) and [loss validation](../LOSS_PHYSICS_VALIDATION.md).
 
 The launcher selects an available compatible Java without changing global settings. The checked-in validation scripts emit protocols, complete comparisons and hashes. Large third-party archives are downloaded locally from pinned sources rather than vendored without reuse permission.
 

@@ -25,7 +25,7 @@ Optional thermoviscous losses and finite-flange pipe radiation now have independ
 
 The Webster prescreen, the FEM throat loading and the directivity formula are also compared with independent open-source tools (openwind and bempp-cl), with a Hornresp kit for a manual run; see [cross-software validation](docs/CROSS_SOFTWARE_VALIDATION.md).
 
-See [acoustic assumptions](docs/ACOUSTIC_CONTRACT.md), [existing measurement sources and importer](docs/VALIDATION_DATA.md), and [implementation/validation status](docs/IMPLEMENTATION_STATUS.md). Resume only an unchanged source/data/container/Nextflow snapshot with `python scripts/run_pipeline.py --run-dir results/<run-id> -resume`.
+See [acoustic assumptions](docs/ACOUSTIC_CONTRACT.md), [existing measurement sources and importer](docs/VALIDATION_DATA.md), and [implementation/validation status](docs/history/IMPLEMENTATION_STATUS.md). Resume only an unchanged source/data/container/Nextflow snapshot with `python scripts/run_pipeline.py --run-dir results/<run-id> -resume`.
 
 
 ## Scope and sister project
@@ -313,7 +313,7 @@ The pipeline is orchestrated by Nextflow (`main.nf`), which maps each process to
 
 ## Roadmap
 
-The goal is a dependable **target band → driver and horn dimensions** workflow for conventional single-driver horns. [Issue #81](https://github.com/timini/horn-simulation/issues/81) tracks completion; [the current status and delivery roadmap](docs/SINGLE_HORN_ROADMAP.md) records the evidence, remaining issues and acceptance gates. MEH development belongs in [MEH Design Studio](https://github.com/timini/meh-design-studio).
+The goal is a dependable **target band → driver and horn dimensions** workflow for conventional single-driver horns. [Issue #81](https://github.com/timini/horn-simulation/issues/81) tracks completion; [the current status and delivery roadmap](docs/history/SINGLE_HORN_ROADMAP.md) records the evidence, remaining issues and acceptance gates. MEH development belongs in [MEH Design Studio](https://github.com/timini/meh-design-studio).
 
 The automated search, bounded refinement, seven profiles, axial STEP import, isolated runs and reports work. The independent interior/ideal-motor comparison, cavity test, modal radiation comparison, candidate-resolution studies and four-band search audit now have archived passing evidence. See the [worked default example](docs/WORKED_EXAMPLE.md) and [improved-radiation example](docs/MODAL_APERTURE.md). Predictions remain experimental while the following physical gates are outstanding:
 
@@ -363,6 +363,6 @@ horn-add-driver --db data/drivers-curated --manufacturer Acme --model "AC10 8ohm
 Mms is derived from Vas, Sd and Fs when it is not given. Compression drivers take `--exit-diameter-mm`. Adapter or phase-plug air goes in `--front-chamber-cm3` (0 means none), with `--front-chamber-area-cm2` when it acts as a short duct; a sealed rear volume goes in `--rear-chamber-cm3`. The command converts to SI, runs the loader and validator and writes nothing if either fails. The loader also accepts `sd_cm2`, `vas_l`, `mms_g`, `le_mh`, `xmax_mm`, `exit_area_cm2`, `exit_diameter_mm`, `front_chamber_volume_cm3`, `front_chamber_area_cm2`, `rear_chamber_volume_cm3` and `power_aes_watts` in hand-written JSON, and rejects values that are orders of magnitude off with a hint about the unit.
 
 See the [independent solver protocol](docs/INDEPENDENT_SOLVER_VALIDATION.md) and [physical assembly reference audit](docs/PHYSICAL_REFERENCE_AUDIT.md) for the current qualification work.
-See [run locations, latest-run lookup, resume and cleanup](docs/RUN_MANAGEMENT.md).
+See [run locations, latest-run lookup, resume and cleanup](docs/history/RUN_MANAGEMENT.md).
 
-Start with the [reproducible 800–1600 Hz worked example](docs/WORKED_EXAMPLE.md), then check a candidate using the [mesh, frequency and loft resolution procedure](docs/CANDIDATE_RESOLUTION.md). Read [cutoff and sweep-bound metric definitions](docs/REPORT_METRICS.md) when interpreting the report.
+Start with the [reproducible 800–1600 Hz worked example](docs/WORKED_EXAMPLE.md), then check a candidate using the [mesh, frequency and loft resolution procedure](docs/CANDIDATE_RESOLUTION.md). Read [cutoff and sweep-bound metric definitions](docs/history/REPORT_METRICS.md) when interpreting the report.
