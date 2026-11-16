@@ -39,15 +39,11 @@ def coupled_observer(frame, driver, target, legacy_radius=None):
         raise ValueError("Inconsistent mouth area")
     u = frame.mouth_u_real.to_numpy() + 1j*frame.mouth_u_imag.to_numpy()
     validate_response(f, u)
-    if 'radiation_model' in frame and (frame.radiation_model=='modal_baffled').any():
-        if not (frame.radiation_model=='modal_baffled').all() or 'modal_mode_count' not in frame or not (frame.modal_mode_count==16).all():
-            raise ValueError('Inconsistent modal aperture contract')
+    from horn_analysis.directivity import modal_velocity_matrix
+    velocity = modal_velocity_matrix(frame)
+    if velocity is not None:
         from horn_core.modal_radiation import modal_baffled_on_axis
-        columns=[f'modal_v_{n}_{part}' for n in range(16) for part in ('real','imag')]
-        if any(name not in frame for name in columns):
-            raise ValueError('Missing modal aperture velocity coefficients')
-        velocity=np.column_stack([frame[f'modal_v_{n}_real'].to_numpy()+1j*frame[f'modal_v_{n}_imag'].to_numpy() for n in range(16)])
-        if not np.isfinite(velocity).all() or not np.allclose(u,mouth_area*velocity[:,0],rtol=1e-8,atol=1e-15):
+        if not np.allclose(u,mouth_area*velocity[:,0],rtol=1e-8,atol=1e-15):
             raise ValueError('Inconsistent modal aperture volume velocity')
         observer=modal_baffled_on_axis(f,velocity*p[:,None],np.sqrt(mouth_area[0]/np.pi),target.observation_distance_m)
         return result(pressure_level(observer),observer,'modal_baffled_on_axis')

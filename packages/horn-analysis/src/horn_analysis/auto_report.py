@@ -100,6 +100,22 @@ def generate_auto_report(
     if electrical_tables:
         plot_electrical(electrical_tables, str(out / "auto_electrical.png"))
 
+    # Experimental infinite-baffle directivity for each modal horn shown.
+    # The pattern is relative to the axis and so independent of the driver.
+    from horn_analysis.directivity import directivity_table, beamwidth_figure, DIRECTIVITY_LABEL
+    directivity_tables = []
+    for result in top_results:
+        horn_label = result["horn_label"]
+        if any(label == horn_label for label, _ in directivity_tables):
+            continue
+        table = directivity_table(pd.read_csv(solver_csvs[horn_label]))
+        if table is not None:
+            table.to_csv(out / f"directivity_{horn_label}.csv", index=False)
+            directivity_tables.append((horn_label, table))
+    if directivity_tables:
+        from horn_analysis import plot_theme
+        plot_theme.save_figure(beamwidth_figure(directivity_tables, target), str(out / "auto_beamwidth.png"))
+
     # 3. Comparison plot
     if csv_pairs:
         plot_multi_comparison(
@@ -183,6 +199,14 @@ def generate_auto_report(
                           f"Peak: {kpi['peak_spl_db']:.1f} dB @ {kpi['peak_frequency_hz']:.0f} Hz")
         lines.append("")
 
+    if any(r.get("radiation_model") == "flanged_piston" for r in top_results):
+        from horn_analysis.html_report import FLANGED_PISTON_CAVEAT
+        lines.append(FLANGED_PISTON_CAVEAT)
+    if directivity_tables:
+        lines.append(f"Directivity ({DIRECTIVITY_LABEL}): directivity_<horn>.csv and auto_beamwidth.png, "
+                     "relative to the axis, far field, 0-90 degrees.")
+    elif top_results:
+        lines.append("Directivity: not available; it needs the modal_baffled radiation model.")
     if no_feasible_reason and not all_ranked:
         lines.append("Reason: " + no_feasible_reason)
     (out / "auto_summary.txt").write_text("\n".join(lines))
@@ -204,6 +228,7 @@ def generate_auto_report(
         lem_results=lem_results,
         no_feasible_reason=no_feasible_reason,
         scoring=scoring,
+        directivity_tables=directivity_tables,
     )
     (out / "auto_report.html").write_text(html_report)
 
