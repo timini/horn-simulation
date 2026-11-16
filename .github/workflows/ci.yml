@@ -21,16 +21,67 @@ jobs:
           chmod +x nextflow
           ./nextflow -version
           sudo mv nextflow /usr/local/bin/
-      - name: Install nf-test
-        uses: nf-core/setup-nf-test@v1
-        with:
-          version: 0.9.5
       - name: Install just
         uses: extractions/setup-just@v2
       - name: Build Docker images
         run: just build
-      - name: Run nf-test
+      - name: Run nf-test 0.9.5 (fetched and checksum-verified by scripts/nf_test.sh)
         run: just test-nextflow
+
+  launcher_end_to_end:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Install Nextflow
+        run: |
+          curl -fL https://github.com/nextflow-io/nextflow/releases/download/v24.10.5/nextflow -o nextflow
+          chmod +x nextflow
+          sudo mv nextflow /usr/local/bin/
+      - name: Install just
+        uses: extractions/setup-just@v2
+      - name: Build Docker images
+        run: just build
+      - name: Run a tiny single-mode case through the launcher
+        run: |
+          python3 scripts/run_pipeline.py --run-dir results/ci-single --require-current-images \
+            --profile conical --throat_radius 0.025 --mouth_radius 0.1 --length 0.2 \
+            --min_freq 200 --max_freq 400 --num_bands 1 --num_intervals 2 \
+            --min_points_per_octave 0 --mesh_size 0.08 --num_sections 8
+          python3 scripts/check_run.py results/ci-single \
+            --expect horn.step --expect final_results.csv --expect kpis.json \
+            --expect frequency_response.png --expect impedance.png \
+            --expect single_report.html --expect resolved_specification.json
+      - name: Run a tiny auto case (two drivers, two lengths) from a params file
+        run: |
+          python3 scripts/run_pipeline.py --run-dir results/ci-auto --require-current-images \
+            -params-file tests/data/ci_auto_params.json
+          python3 scripts/check_run.py results/ci-auto --params-file tests/data/ci_auto_params.json \
+            --expect auto/refinement/ranked_results.json --expect auto/report/auto_ranking.json \
+            --expect auto/report/auto_report.html --expect resolved_specification.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: launcher-end-to-end
+          path: |
+            results/*/manifest.json
+            results/*/nextflow.log
+            results/*/outputs
+
+  check_lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.8.2'
+      - name: Docker images install from uv.lock, so it must match the pyproject files
+        run: uv lock --check
 
   test_pure_python:
     runs-on: ubuntu-latest
