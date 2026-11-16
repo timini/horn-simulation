@@ -67,8 +67,8 @@ run-fullauto *ARGS:
     python3 scripts/run_pipeline.py --mode auto {{ARGS}}
 
 # Run Nextflow tests
-test-nextflow:
-    nf-test test tests/
+test-nextflow *ARGS:
+    scripts/nf_test.sh test tests/ {{ARGS}}
 
 # Clean up Docker images and Nextflow files
 clean:

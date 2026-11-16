@@ -133,3 +133,6 @@ dag.png
 results/
 nf-test
 .nf-test/
+
+# Pinned tool downloads (scripts/nf_test.sh)
+.tools/
