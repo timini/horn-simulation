@@ -14,7 +14,7 @@ Open [report.html](report.html) locally in a browser to inspect the predicted re
 | Radiation setting | Nonuniform axisymmetric mouth in an infinite baffle (`modal_baffled`) |
 | Physical evidence status | Insufficient evidence; experimental prediction |
 
-The selected candidate is near-tied with other designs. Its throat dimensions describe an ideal acoustic connection. The real cone driver's chamber/adapter, rear load and moving-mass decomposition have not been qualified. This run used the ideal area transformer. The current coupling adds an estimated front chamber for cone drivers (139 cm3 here, the air in the open cone behind a flat adapter plate, lumped corner near 1.3 kHz); with it the same FEM response gives about 6.4 dB ripple and fails the 6 dB limit. A phase plug or cone filler would reduce that volume; give the real adapter volume as `front_chamber_volume_m3` to re-rank.
+The selected candidate is near-tied with other designs. Its throat dimensions describe an ideal acoustic connection. The real cone driver's chamber/adapter, rear load and moving-mass decomposition have not been qualified. This run used the ideal area transformer. The current coupling adds an estimated front chamber for cone drivers (139 cm3 here, the air in the open cone behind a flat adapter plate, lumped corner near 1.3 kHz); with it the same FEM response gives about 6.4 dB ripple. That is over the 6 dB limit only because of the estimate, so the design is kept, scored on the response with the chamber and flagged `front_chamber_estimated` (the reason is listed under `estimated_chamber_reasons`). A phase plug or cone filler would reduce that volume; give the real adapter volume as `front_chamber_volume_m3` to re-rank.
 
 ## Inspect the design
 

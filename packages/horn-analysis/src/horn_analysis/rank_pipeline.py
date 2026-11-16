@@ -33,7 +33,8 @@ def rank_horn_drivers(
     Per driver:
     1. coupled_output() -> observer level from the solver transfer
     2. compute_driver_operating_point() -> excursion and input power
-    3. evaluate_response() -> constraints, f3, extension and composite score
+    3. evaluate_response() -> constraints, f3, extension and composite score,
+       through assess_with_chamber_policy (an estimated chamber flags, it does not reject)
     4. extract_kpis_from_arrays() -> peak-lobe diagnostics
 
     Args:
@@ -58,12 +59,18 @@ def rank_horn_drivers(
         target = replace(target, voltage_rms=v_g)
     df = pd.read_csv(solver_csv)
     results = []
+    from horn_analysis.evaluation import assess_with_chamber_policy
+    from horn_analysis.transfer_function import compute_driver_operating_point
+    mouth_radius = float(np.sqrt(df.mouth_area_m2.iloc[0] / np.pi)) if "mouth_area_m2" in df else None
     for drv in drivers:
         coupled_spl, area, metric = coupled_output(df, drv, target, throat_radius)
-        from horn_analysis.transfer_function import compute_driver_operating_point
-        point = compute_driver_operating_point(drv,df.frequency.to_numpy(),df.z_real.to_numpy(),df.z_imag.to_numpy(),area,target.voltage_rms)
-        mouth_radius = float(np.sqrt(df.mouth_area_m2.iloc[0] / np.pi)) if "mouth_area_m2" in df else None
-        assessment = evaluate_response(df.frequency.to_numpy(), coupled_spl, target, drv, area, length=length, mouth_radius=mouth_radius, operating_point=point)
+
+        def evaluate(model):
+            levels = coupled_spl if model is drv else coupled_output(df, model, target, throat_radius)[0]
+            point = compute_driver_operating_point(model, df.frequency.to_numpy(), df.z_real.to_numpy(), df.z_imag.to_numpy(), area, target.voltage_rms)
+            return evaluate_response(df.frequency.to_numpy(), levels, target, model, area, length=length, mouth_radius=mouth_radius, operating_point=point)
+
+        assessment = assess_with_chamber_policy(drv, evaluate, target)
         kpi = extract_kpis_from_arrays(df.frequency.to_numpy(), coupled_spl)
         results.append({
             **assessment, "driver_id": drv.driver_id, "horn_label": horn_label,

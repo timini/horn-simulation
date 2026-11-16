@@ -147,6 +147,44 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
     }
 
 
+def assess_with_chamber_policy(driver, evaluate, target):
+    """Apply the estimated-front-chamber policy to one driver assessment.
+
+    ``evaluate(driver)`` returns an ``evaluate_response`` dict. A cone driver
+    with no chamber data is evaluated with its geometric front-chamber
+    estimate, so the score and every reported level include that chamber and
+    the search prefers horns that work with it. An estimated chamber does not
+    by itself reject a design: reasons that appear only with the estimate,
+    and not with a zero chamber, are moved to ``estimated_chamber_reasons``
+    and the design stays feasible, flagged ``front_chamber_estimated``. A
+    user-supplied chamber volume (including 0) is used as given and rejects
+    normally.
+    """
+    from dataclasses import replace
+    from horn_core.driver_interface import resolve_front_chamber
+    from horn_analysis.scoring import weighted_score
+    assessment = evaluate(driver)
+    estimated = resolve_front_chamber(driver)[2] == "estimated"
+    assessment["front_chamber_estimated"] = estimated
+    assessment["estimated_chamber_reasons"] = []
+    if not estimated or not assessment["rejection_reasons"]:
+        return assessment
+    ideal = evaluate(replace(driver, front_chamber_volume_m3=0.0, front_chamber_area_m2=None))
+    chamber_only = [r for r in assessment["rejection_reasons"] if r not in ideal["rejection_reasons"]]
+    if not chamber_only:
+        return assessment
+    reasons = [r for r in assessment["rejection_reasons"] if r not in chamber_only]
+    gaps = assessment["evidence_gaps"]
+    assessment.update(
+        rejection_reasons=reasons,
+        estimated_chamber_reasons=chamber_only,
+        model_feasible=not reasons,
+        composite_score=0.0 if reasons else weighted_score(target, assessment["score_terms"]),
+        eligibility_status="infeasible" if reasons else ("insufficient_evidence" if gaps else "model_feasible"),
+    )
+    return assessment
+
+
 def _f3_edge(log_f, levels, log_edge, log_other_edge, threshold, direction):
     """First crossing of ``threshold`` measured from one target-band edge.
 

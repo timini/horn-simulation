@@ -21,7 +21,7 @@ from horn_core.parameters import DriverParameters
 from horn_core.profiles import get_radius_func
 from horn_core.webster import compute_horn_transfer_tmm
 from horn_core.acoustics import baffled_piston_on_axis, pressure_level
-from horn_analysis.evaluation import evaluate_response, radiation_domain_rejection
+from horn_analysis.evaluation import assess_with_chamber_policy, evaluate_response, radiation_domain_rejection
 from horn_analysis.kpi import extract_kpis_from_arrays
 from horn_analysis.scoring import TargetSpec
 from horn_analysis.transfer_function import compute_driver_response, compute_driver_operating_point
@@ -114,15 +114,16 @@ def lem_prescreen_candidates(
         throat_area = np.pi * cand.throat_radius**2
 
         for drv in drivers:
-            point = compute_driver_operating_point(
-                drv, frequencies, z_real, z_imag, throat_area, target.voltage_rms
-            )
-            p_throat = point["throat_pressure"]
-            coupled_spl = pressure_level(baffled_piston_on_axis(
-                frequencies, transfer["mouth_volume_velocity_transfer"]*p_throat,
-                transfer["mouth_area_m2"], target.observation_distance_m))
-            assessment = evaluate_response(frequencies, coupled_spl, target, drv, throat_area,
-                                           cand.length, cand.mouth_radius, operating_point=point)
+            def evaluate(model):
+                point = compute_driver_operating_point(
+                    model, frequencies, z_real, z_imag, throat_area, target.voltage_rms
+                )
+                coupled_spl = pressure_level(baffled_piston_on_axis(
+                    frequencies, transfer["mouth_volume_velocity_transfer"]*point["throat_pressure"],
+                    transfer["mouth_area_m2"], target.observation_distance_m))
+                return evaluate_response(frequencies, coupled_spl, target, model, throat_area,
+                                         cand.length, cand.mouth_radius, operating_point=point)
+            assessment = assess_with_chamber_policy(drv, evaluate, target)
 
             all_scores.append({
                 "candidate_id": cand.candidate_id,
