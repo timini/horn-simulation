@@ -63,6 +63,8 @@ TOLERANCES = {
     "horn_directivity": {"level_db": 1.0, "theta_max_deg": 60.0, "floor_db": -20.0},
     "horn_on_axis_level": {"level_db": 1.5},
     "mesh_refinement": {"level_db": 0.1, "phase_deg": 1.0},
+    # Added with the Rayleigh quadrature check, before it was run.
+    "rayleigh_quadrature": {"level_db": 0.01, "phase_deg": 0.1},
 }
 
 
@@ -111,14 +113,14 @@ def oriented_surface(volume_tag_pairs, driven_surfaces):
     return xyz[used].T.copy(), remap[triangles].T.copy(), np.array(domains, dtype=np.uint32)
 
 
-def baffle_with(radiator, h_near, h_far, horn=None):
+def baffle_with(radiator, h_near, h_far, horn=None, ratio=None):
     """Thick circular baffle with a flush piston, or with a horn cut into it."""
     import gmsh
     gmsh.initialize()
     gmsh.option.setNumber("General.Terminal", 0)
     gmsh.model.add("baffle")
     occ = gmsh.model.occ
-    b = BAFFLE_RATIO * radiator
+    b = (ratio or BAFFLE_RATIO) * radiator
     if horn is None:
         body = occ.addCylinder(0, 0, -BAFFLE_THICKNESS, 0, 0, BAFFLE_THICKNESS, b)
         disk = occ.addDisk(0, 0, 0, radiator, radiator)
@@ -241,14 +243,14 @@ def sphere_case(api):
     return results
 
 
-def piston_case(api, refine):
+def piston_case(api, refine, ratio=None, kas=None):
     rows = []
-    for ka in PISTON_KA:
+    for ka in kas or PISTON_KA:
         k = ka / PISTON_A
         lam = 2 * np.pi / k
         h_near = min(lam / 8, PISTON_A / 6) / refine
         h_far = min(lam / 6, BAFFLE_RATIO * PISTON_A / 4) / refine
-        verts, elems, dom = baffle_with(PISTON_A, h_near, h_far)
+        verts, elems, dom = baffle_with(PISTON_A, h_near, h_far, ratio=ratio)
         t0 = time.time()
         sol = solve_exterior(api, verts, elems, dom, k, lambda x: np.ones(x.shape[0]), far_points())
         far = np.conj(sol["far"] * FAR_R * np.exp(-1j * k * FAR_R))       # R p e^{ikR}, exp(+iwt)
@@ -290,7 +292,7 @@ def archived_horn():
     return rows
 
 
-def horn_case(api, refine):
+def horn_case(api, refine, ratio=None, freqs=None):
     rows = archived_horn()
     freqs_fem = np.array([float(r["frequency"]) for r in rows])
     out = []
@@ -299,6 +301,8 @@ def horn_case(api, refine):
                                     HORN["mouth_radius"], HORN["length"]), HORN["length"], HORN["throat_radius"],
                                     HORN["mouth_radius"], n_segments=200, radiation_model="flanged_piston")
     for i, f in enumerate(HORN_FREQS):
+        if freqs is not None and f not in freqs:
+            continue
         j = int(np.argmin(np.abs(freqs_fem - f)))
         r = rows[j]
         f_fem = float(r["frequency"])
@@ -306,7 +310,7 @@ def horn_case(api, refine):
         lam = 2 * np.pi / k
         h_near = min(lam / 10, HORN["throat_radius"] / 3) / refine
         h_far = (lam / 6) / refine
-        verts, elems, dom = baffle_with(radius, h_near, h_far, horn=HORN)
+        verts, elems, dom = baffle_with(radius, h_near, h_far, horn=HORN, ratio=ratio)
         t0 = time.time()
         sol = solve_exterior(api, verts, elems, dom, k, lambda x: np.ones(x.shape[0]), far_points())
         z_bem = np.conj(sol["mean_driven_pressure"])                 # specific, v = 1
@@ -341,6 +345,40 @@ def horn_case(api, refine):
         print(f"horn f={f_fem:.0f} dofs={sol['dofs']}: Z {z_lvl:.3f} dB {z_ph:.2f} deg (TMM {row['z_tmm_vs_bem_level_db']:.3f} dB), "
               f"dir {dir_err:.3f} dB, axis {axis_db:+.2f} dB ({row['seconds']} s)", flush=True)
     return out
+
+
+def rayleigh_far_field(f, modal_v, radius, angles_deg, order=400):
+    """Independent quadrature of the infinite-baffle Rayleigh far field.
+
+    R p e^{ikR} = i rho c k int_0^a v(r) J0(k r sin theta) r dr, with
+    v(r) = sum_n v_n J0(mu_n r / a) / J0(mu_n); no mode spectrum is used.
+    """
+    from numpy.polynomial.legendre import leggauss
+    from scipy.special import j0, jn_zeros
+    roots = np.r_[0.0, jn_zeros(1, len(modal_v) - 1)]
+    x, w = leggauss(order)
+    r = (x + 1) * radius / 2
+    v = (modal_v[None, :] * (j0(roots[None, :] * r[:, None] / radius) / j0(roots)[None, :])).sum(axis=1)
+    k = 2 * np.pi * f / C
+    theta = np.radians(angles_deg)
+    kernel = j0(k * r[None, :] * np.sin(theta)[:, None])
+    return 1j * RHO * C * k * (kernel * (v * r * w * radius / 2)[None, :]).sum(axis=1)
+
+
+def rayleigh_check():
+    """The project's modal far field against direct Rayleigh quadrature, every archived frequency."""
+    rows = archived_horn()
+    worst_db, worst_deg = 0.0, 0.0
+    for r in rows:
+        f = float(r["frequency"])
+        v = np.array([float(r[f"modal_v_{n}_real"]) + 1j * float(r[f"modal_v_{n}_imag"]) for n in range(16)])
+        ours = modal_baffled_far_field(np.array([f]), v[None, :], HORN["mouth_radius"], ANGLES, rho=RHO, c=C)[0]
+        ref = rayleigh_far_field(f, v, HORN["mouth_radius"], ANGLES)
+        worst_db = max(worst_db, db_err(ours, ref))
+        worst_deg = max(worst_deg, ph_err(ours, ref))
+    tol = TOLERANCES["rayleigh_quadrature"]
+    return {"frequencies": len(rows), "angles_deg": [float(a) for a in ANGLES], "level_db_max": worst_db,
+            "phase_deg_max": worst_deg, "pass": worst_db <= tol["level_db"] and worst_deg <= tol["phase_deg"]}
 
 
 def refinement(coarse, fine, key):
@@ -387,6 +425,8 @@ def main():
     args = parser.parse_args()
     api = bempp()
     t0 = time.time()
+    rayleigh = rayleigh_check()
+    print(f"rayleigh quadrature: {rayleigh['level_db_max']:.2e} dB {rayleigh['phase_deg_max']:.2e} deg", flush=True)
     sphere = sphere_case(api)
     piston = piston_case(api, 1.0)
     horn = horn_case(api, 1.0)
@@ -395,13 +435,19 @@ def main():
                "air": {"rho": RHO, "c": C}, "far_field_radius_m": FAR_R,
                "baffle": {"radius_over_radiator": BAFFLE_RATIO, "thickness_m": BAFFLE_THICKNESS},
                "horn": HORN, "horn_reference": HORN_CSV, "tolerances": TOLERANCES,
-               "sphere": sphere, "piston": piston, "horn_results": horn}
+               "rayleigh_check": rayleigh, "sphere": sphere, "piston": piston, "horn_results": horn}
     if not args.skip_refinement:
         piston_fine = piston_case(api, 1.4)
         horn_fine = horn_case(api, 1.4)
         summary["refinement"] = {"piston": refinement(piston, piston_fine, "z_bem_over_rhoc"),
                                  "horn": refinement(horn, horn_fine, "z_bem_over_rhoc")}
         summary["piston_fine"], summary["horn_fine"] = piston_fine, horn_fine
+    # Baffle size study: a larger baffle should move the BEM towards the
+    # infinite-baffle models if the remaining difference is edge diffraction.
+    summary["baffle_study"] = {
+        str(ratio): {"piston": piston_case(api, 1.0, ratio=ratio, kas=[1.0, 2.0]),
+                     "horn": horn_case(api, 1.0, ratio=ratio, freqs=[800.0, 1200.0])}
+        for ratio in (10.0,)}
     summary["seconds"] = round(time.time() - t0, 1)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(summary, indent=1, allow_nan=False) + "\n")

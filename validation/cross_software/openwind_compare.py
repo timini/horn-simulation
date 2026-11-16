@@ -84,7 +84,7 @@ def openwind_air():
                          heat_capacity=float(phys.Cp(0)))
 
 
-def run_openwind(freqs, bore, radiation, losses, air, method="FEM"):
+def run_openwind(freqs, bore, radiation, losses, air, method="FEM", spherical_waves=False):
     from openwind import ImpedanceComputation
     if radiation == "piston_data":
         k = 2 * np.pi * freqs / air.c
@@ -93,7 +93,8 @@ def run_openwind(freqs, bore, radiation, losses, air, method="FEM"):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         result = ImpedanceComputation(freqs, bore, temperature=TEMPERATURE_C, losses=losses,
-                                      radiation_category=radiation, compute_method=method)
+                                      radiation_category=radiation, compute_method=method,
+                                      spherical_waves=spherical_waves)
     return np.asarray(result.impedance) / result.Zc
 
 
