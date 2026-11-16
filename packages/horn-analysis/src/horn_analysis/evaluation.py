@@ -147,6 +147,13 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
     }
 
 
+# Limits that do not depend on the front chamber; rows failing only these skip the re-evaluation.
+_CHAMBER_INDEPENDENT_REASONS = {
+    "maximum_length_exceeded", "maximum_mouth_radius_exceeded", "driver_larger_than_mouth",
+    "compression_ratio_exceeded", "outside_driver_usable_band",
+}
+
+
 def assess_with_chamber_policy(driver, evaluate, target):
     """Apply the estimated-front-chamber policy to one driver assessment.
 
@@ -167,7 +174,7 @@ def assess_with_chamber_policy(driver, evaluate, target):
     estimated = resolve_front_chamber(driver)[2] == "estimated"
     assessment["front_chamber_estimated"] = estimated
     assessment["estimated_chamber_reasons"] = []
-    if not estimated or not assessment["rejection_reasons"]:
+    if not estimated or set(assessment["rejection_reasons"]) <= _CHAMBER_INDEPENDENT_REASONS:
         return assessment
     ideal = evaluate(replace(driver, front_chamber_volume_m3=0.0, front_chamber_area_m2=None))
     chamber_only = [r for r in assessment["rejection_reasons"] if r not in ideal["rejection_reasons"]]
