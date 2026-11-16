@@ -4,7 +4,7 @@ Until now the solver was checked mostly against itself, analytic formulas and on
 
 - [openwind](https://openwind.inria.fr/) 0.12.4 (Inria, GPL-3): one-dimensional finite elements for the input impedance of wind instruments.
 - [bempp-cl](https://bempp.com/) 0.4.2 (MIT): three-dimensional boundary elements for exterior radiation, numba backend.
-- [Hornresp](https://www.hornresp.net/) (freeware, Windows): the usual horn loudspeaker simulator. It could not be run here (no Wine), so input sheets and a comparison script are provided for a manual run.
+- [Hornresp](https://www.hornresp.net/) (freeware, Windows): a widely used horn loudspeaker simulator. It could not be run here (no Wine), so input sheets and a comparison script are provided for a manual run.
 
 Neither openwind nor bempp-cl is a dependency of the project packages. They run in a separate environment from `validation/cross_software/requirements.txt`.
 
@@ -24,7 +24,7 @@ Every tolerance below was written into the scripts before the first comparison w
 | BEM mesh refinement | BEM discretisation | 7 of 9 pairs pass; two directivity changes of 0.10 and 0.16 dB |
 | Hornresp | plane-wave horn impedance and the 800 to 1600 Hz driver example | Not run; kit in `validation/hornresp/` |
 
-No bug in the project code was found. The TMM matches openwind to within 0.02 dB (p95) wherever the two codes model the same physics. The differences that remain come from modelling choices the project already documents: the uniform piston against a flanged pipe, plane against curved wavefronts, and an infinite against a finite baffle.
+No bug in the project code was found. Wherever the two codes model the same physics the TMM matches openwind within 0.07 dB at the 95th percentile, and within 0.43 dB at worst on the flank of a sharp closed-end resonance. The differences that remain come from modelling choices the project already documents: the uniform piston against a flanged pipe, plane against curved wavefronts, and an infinite against a finite baffle.
 
 ## Reproduce
 
