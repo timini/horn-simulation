@@ -90,7 +90,10 @@ nextflow_pipeline {
             assert ranking.status == "no_feasible_design"
             assert ranking.results == []
             assert ranking.rejected.size() > 0
-            assert ranking.refinement.reason == "no_feasible_seed"
+            // Refinement now starts from the least-infeasible FEM candidate. Every
+            // dimension is user-fixed here, so it has no room to move.
+            assert ranking.refinement.seed_source == "least_infeasible"
+            assert ranking.refinement.new_evaluations == 0
             assert new File("${outputDir}/auto/report/auto_report.html").length() > 0
         }
     }

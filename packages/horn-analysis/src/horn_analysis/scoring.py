@@ -143,6 +143,12 @@ def exchange_rates(weights):
     }
 
 
+FRONT_CHAMBER_POLICY = (
+    "Levels and scores include each driver's front chamber. A cone driver without chamber data gets a"
+    " geometric estimate (front_chamber_estimated); a constraint that fails only with that estimate is"
+    " listed in estimated_chamber_only_reasons and flagged, not rejected. A supplied volume, including 0,"
+    " is used as given.")
+
 _PIPELINE_DEFAULTS = {"max_ripple_db": 6.0, "max_compression_ratio": 10.0}
 _BOUND_KEYS = {
     "throat_radius_m": ("throat_radius", None, None, "throat_radius_range"),
@@ -181,4 +187,6 @@ def describe_scoring(target, design=None, user_bounds=None):
         "target_band_hz": [target.f_low_hz, target.f_high_hz],
         "constraints": constraints,
         "geometry_bounds": bounds,
+        "size_compromise": (design or {}).get("size_compromise"),
+        "front_chamber_policy": FRONT_CHAMBER_POLICY,
     }

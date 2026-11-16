@@ -446,3 +446,44 @@ def test_rounded_throat_radii_remain_within_absolute_ka_cap():
     cap=343*cfg.ka_max/(2*math.pi*cfg.target_f_high_hz)
     assert result.count == 1
     assert max(result.throat_radii_m) <= cap
+
+
+def test_default_throat_sampling_stops_at_first_radial_mode_at_f_high():
+    """Throats used to be sampled up to ka = 2 pi, past the (0,1) mode at ka = 3.83."""
+    result = prescreen_drivers([_make_driver('comp', fs_hz=200, qes=.4, sd_m2=.0008)], PrescreenConfig(320, 5000))
+    cap = _SPEED_OF_SOUND * 3.8317 / (2 * math.pi * 5000)
+    assert max(result.throat_radii_m) == pytest.approx(cap, rel=1e-6)
+    ka = [2 * math.pi * 5000 * r / _SPEED_OF_SOUND for r in result.throat_radii_m]
+    flags = result.to_dict()['throat_flags']
+    assert [v['above_first_asymmetric_mode'] for v in flags.values()] == [k > 1.8412 for k in ka]
+    assert any(k > 1.8412 for k in ka) and any(k <= 1.8412 for k in ka)
+
+
+def test_throat_radii_within_one_percent_are_merged():
+    config = PrescreenConfig(500, 4000, mouth_radius_m=.2)
+    # Two drivers whose Sd-matched radii differ by 0.5%.
+    a = _make_driver('a', fs_hz=400, qes=.4, sd_m2=math.pi*.0200**2)
+    b = _make_driver('b', fs_hz=400, qes=.4, sd_m2=math.pi*.0201**2)
+    radii = prescreen_drivers([a, b], config).throat_radii_m
+    assert sum(.0199 < r < .0202 for r in radii) == 1
+    assert all(r2 > r1 * 1.01 for r1, r2 in zip(radii, radii[1:]))
+
+
+def test_cone_front_chamber_adds_a_chamber_matched_throat_and_a_supplied_zero_does_not():
+    from horn_core.driver_interface import estimate_cone_front_chamber_m3
+    config = PrescreenConfig(800, 1600, mouth_radius_m=.2)
+    cone = _make_driver('cone', fs_hz=100, qes=.4, sd_m2=.013, driver_type='cone')
+    expected = math.sqrt(2 * math.pi * 1600 * estimate_cone_front_chamber_m3(.013) / _SPEED_OF_SOUND / math.pi)
+    radii = prescreen_drivers([cone], config).throat_radii_m
+    assert any(r == pytest.approx(expected, rel=1e-4) for r in radii)
+    plugged = _make_driver('cone', fs_hz=100, qes=.4, sd_m2=.013, driver_type='cone')
+    plugged.front_chamber_volume_m3 = 0.
+    assert not any(r == pytest.approx(expected, rel=1e-3) for r in prescreen_drivers([plugged], config).throat_radii_m)
+
+
+def test_drivers_smaller_than_a_sampled_throat_are_flagged():
+    config = PrescreenConfig(500, 2000, mouth_radius_m=.2)
+    small = _make_driver('small', fs_hz=400, qes=.4, sd_m2=.0002)
+    flags = prescreen_drivers([small], config).to_dict()['throat_flags']
+    flagged = [r for r, v in flags.items() if v['drivers_with_sd_below_throat'] == ['small']]
+    assert flagged and all(math.pi * float(r)**2 > .0002 for r in flagged)

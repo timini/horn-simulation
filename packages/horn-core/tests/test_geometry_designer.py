@@ -327,13 +327,44 @@ class TestGenerateAutoCandidates:
         assert derived.sim_freq_range[1] > 4000
 
 
-@pytest.mark.parametrize('kwargs', [{'max_length':.1},{'max_mouth_radius':.02}])
-def test_valid_size_cap_below_heuristic_range_returns_empty_design(kwargs):
+@pytest.mark.parametrize('kwargs,field,cap', [({'max_length':.1},'length',.1),({'max_mouth_radius':.02},'mouth_radius',.02)])
+def test_size_cap_below_heuristic_range_searches_up_to_the_cap_and_states_shortfall(kwargs,field,cap):
+    # A cap below the heuristic range used to return no design at all.
     candidates,design=generate_auto_candidates(500,2000,[.01],**kwargs)
+    assert candidates and design.status == 'candidates_generated'
+    values = [getattr(c, field) for c in candidates]
+    assert max(values) == pytest.approx(cap)
+    searched = design.length_range if field == 'length' else design.mouth_radius_range
+    assert searched == pytest.approx((.4*cap, cap))
+    assert design.bound_sources[field] == {'low':'size_cap_fraction','high':'user'}
+    compromise = design.size_compromise
+    assert compromise['shortfall_octaves'] > 0
+    assert compromise['expected_f_low_hz'] > 500
+    assert field in compromise['limits']
+
+
+def test_minimum_above_heuristic_range_returns_empty_design():
+    candidates,design=generate_auto_candidates(500,2000,[.01],min_length=1.)
     assert candidates == []
     assert design.candidate_count == 0
     assert design.status == 'no_feasible_design'
     assert design.reason == 'size_constraints_exclude_search_range'
+
+
+def test_max_length_0_1_at_800_1600_states_quarter_wave_shortfall():
+    candidates,design=generate_auto_candidates(800,1600,[.02],max_length=.1)
+    assert candidates and max(c.length for c in candidates) <= .1
+    limit = design.size_compromise['limits']['length']
+    assert limit['supported_f_low_hz'] == pytest.approx(343/(4*.1))
+    assert design.size_compromise['shortfall_octaves'] == pytest.approx(math.log2(857.5/800))
+    assert 'mouth_radius' not in design.size_compromise['limits']
+
+
+def test_no_size_compromise_without_binding_cap():
+    _,design=generate_auto_candidates(800,1600,[.02])
+    assert design.size_compromise is None
+    assert design.bound_sources == {'mouth_radius':{'low':'heuristic','high':'heuristic'},
+                                    'length':{'low':'heuristic','high':'heuristic'}}
 
 
 def test_mouth_not_larger_than_throat_is_an_empty_search():

@@ -219,3 +219,21 @@ def test_report_states_score_formula_weights_and_band_referenced_f3(report_input
     assert "size 0.167" in text
     assert "heuristic range with a user limit" in text
     assert "min_output_db 90.0 (user)" in text
+
+
+def test_scoring_section_states_size_compromise_refinement_and_chamber_policy():
+    from horn_analysis.html_report import _render_scoring, _chamber_note
+    from horn_analysis.scoring import TargetSpec, describe_scoring
+    from horn_core.geometry_designer import generate_auto_candidates
+    _, design = generate_auto_candidates(800, 1600, [.02], max_length=.1)
+    scoring = describe_scoring(TargetSpec(800, 1600), {"size_compromise": design.size_compromise})
+    scoring["refinement"] = {"seed_candidate": "auto_os_0001", "seed_source": "least_infeasible", "new_evaluations": 4,
+                             "budget": 6, "bound_sides_reached": ["length_high"],
+                             "widened_bounds": [{"field": "length", "side": "high", "from": [.1, .2], "to": [.1, .25]}]}
+    page = _render_scoring(scoring)
+    assert "858 Hz" in page and "0.10 octaves" in page
+    assert "least infeasible" in page and "length high to 0.2500" in page
+    assert "front_chamber_estimated" in page
+    note = _chamber_note({"front_chamber_estimated": True, "without_front_chamber": {"passband_ripple_db": 4.29}})
+    assert "est. chamber" in note and "4.3 without" in note
+    assert _chamber_note({"front_chamber_estimated": False}) == ""

@@ -138,6 +138,19 @@ def generate_auto_report(
     lines.extend(f"Bound {k}: {v['source']}" + (f" {v['searched_range']}" if v.get("searched_range") else "")
                  for k, v in scoring["geometry_bounds"].items())
     lines.extend(f"Constraint {k}: {v['value']} ({v['source']})" for k, v in scoring["constraints"].items())
+    compromise = scoring.get("size_compromise")
+    if compromise:
+        lines.append(f"Size limits support about {compromise['expected_f_low_hz']:.0f} Hz by the ka = 1 mouth and "
+                     f"quarter-wave rules: a low-frequency shortfall of {compromise['shortfall_octaves']:.2f} octaves "
+                     f"against {compromise['target_f_low_hz']:g} Hz (see f3 below for predictions)")
+    refinement = scoring.get("refinement")
+    if refinement:
+        lines.append(f"Refinement: {refinement['new_evaluations']} new geometries from "
+                     f"{refinement['seed_candidate']} ({refinement['seed_source'].replace('_', ' ')})")
+        lines.extend(f"  Widened heuristic {w['field']} {w['side']} bound: {w['from']} to {w['to']}"
+                     for w in refinement.get("widened_bounds", []))
+    if scoring.get("front_chamber_policy"):
+        lines.append("Front chamber: " + scoring["front_chamber_policy"])
 
     if lem_results:
         lines.extend([
@@ -171,6 +184,12 @@ def generate_auto_report(
             lines.append(f"     Front chamber: {interface['front_chamber_volume_cm3']:.1f} cm3 ({interface['front_chamber_source']}); "
                          f"Sd/St {interface['compression_ratio']:.2f}"
                          + (f"; lumped corner on a resistive load {corner:.0f} Hz" if corner else ""))
+        if result.get("front_chamber_estimated"):
+            only = result.get("estimated_chamber_only_reasons") or []
+            ideal = result.get("without_front_chamber") or {}
+            lines.append("     front_chamber_estimated: yes"
+                         + (f"; fails only with the estimate: {', '.join(only)}" if only else "")
+                         + (f"; ripple without a chamber {ideal['passband_ripple_db']:.1f} dB" if ideal.get("passband_ripple_db") is not None else ""))
         if result.get("test_power_w") is not None:
             margin = result.get("test_power_xmax_margin_mm")
             lines.append(f"     At {result['test_power_w']:g} W: max in-band excursion {result['test_power_band_max_excursion_mm']:.2f} mm"
