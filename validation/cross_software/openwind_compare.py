@@ -44,6 +44,16 @@ TOLERANCES = {
     "radiation_model": {"db_median": 0.25, "db_p95": 1.0, "db_max": 2.0,
                         "phase_median_deg": 2.0, "phase_p95_deg": 8.0, "phase_max_deg": 20.0,
                         "peak_freq_rel": 0.01, "ka_max": 3.0},
+    # Added in the review fix pass (2026-11-16), frozen before this case was
+    # first run by this script. A reviewer's one-off check (median 0.018 dB
+    # conical, 0.010 dB exponential, ka <= 1) preceded it. openwind's
+    # planar_piston is its own two-term Pade fit to the baffled piston
+    # (end correction 8/(3 pi) a, resistance (ka)^2 / 2), so unlike the
+    # piston_* cases above it does not reuse our Struve load. It is only
+    # accurate at low ka, hence the ka <= 1 band.
+    "independent_low_ka_load": {"db_median": 0.1, "db_p95": 0.5, "db_max": 1.0,
+                                "phase_median_deg": 1.0, "phase_p95_deg": 5.0, "phase_max_deg": 20.0,
+                                "peak_freq_rel": 0.01, "ka_max": 1.0},
 }
 
 # (case id, tolerance class, our radiation, openwind radiation, our losses, openwind losses)
@@ -54,6 +64,7 @@ CASES = [
     ("piston_bessel", "same_physics", "flanged_piston", "piston_data", "kirchhoff", "bessel"),
     ("piston_thin_layer", "same_physics", "flanged_piston", "piston_data", "boundary_layer", "wl"),
     ("flanged_fit_bessel", "radiation_model", "flanged_piston", "flanged_non_causal", "kirchhoff", "bessel"),
+    ("piston_pade_lossless", "independent_low_ka_load", "flanged_piston", "planar_piston", "lossless", False),
 ]
 
 
@@ -119,22 +130,35 @@ def peaks(freqs, z):
     return out
 
 
+def match_peaks(ref_peaks, our_peaks):
+    """Pair each reference peak with at most one of ours, closest pairs first.
+
+    Returns (reference, ours) for every reference peak; ours is None when no
+    peak is left to pair, so one of our peaks is never counted twice.
+    """
+    pairs = sorted((abs(q - fp), i, j) for i, fp in enumerate(ref_peaks) for j, q in enumerate(our_peaks))
+    matched, used = {}, set()
+    for _, i, j in pairs:
+        if i not in matched and j not in used:
+            matched[i] = j
+            used.add(j)
+    return [(fp, our_peaks[matched[i]] if i in matched else None) for i, fp in enumerate(ref_peaks)]
+
+
 def statistics(freqs, z, ref, tol, mask=None):
     mask = np.ones(len(freqs), bool) if mask is None else mask
     db = np.abs(20 * np.log10(np.abs(z[mask]) / np.abs(ref[mask])))
     ph = np.abs(np.degrees(np.angle(z[mask] / ref[mask])))
     ref_peaks, our_peaks = peaks(freqs[mask], ref[mask]), peaks(freqs[mask], z[mask])
-    peak_rows = []
-    for fp in ref_peaks:
-        if our_peaks:
-            nearest = min(our_peaks, key=lambda q: abs(q - fp))
-            peak_rows.append({"reference_hz": fp, "ours_hz": nearest, "rel_error": (nearest - fp) / fp})
+    peak_rows = [{"reference_hz": fp, "ours_hz": fo, "rel_error": None if fo is None else (fo - fp) / fp}
+                 for fp, fo in match_peaks(ref_peaks, our_peaks)]
     stats = {
         "db_median": float(np.median(db)), "db_p95": float(np.percentile(db, 95)), "db_max": float(db.max()),
         "phase_median_deg": float(np.median(ph)), "phase_p95_deg": float(np.percentile(ph, 95)),
         "phase_max_deg": float(ph.max()),
         "peak_count_reference": len(ref_peaks), "peak_count_ours": len(our_peaks),
-        "peak_freq_rel_max": float(max((abs(r["rel_error"]) for r in peak_rows), default=0.0)),
+        "peak_freq_rel_max": float(max((abs(r["rel_error"]) for r in peak_rows if r["rel_error"] is not None),
+                                       default=0.0)),
         "peaks": peak_rows,
         "f_range_hz": [float(freqs[mask][0]), float(freqs[mask][-1])],
     }
