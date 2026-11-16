@@ -30,7 +30,7 @@ jobs:
 
   launcher_end_to_end:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
@@ -63,7 +63,8 @@ jobs:
             -params-file tests/data/ci_auto_params.json
           python3 scripts/check_run.py results/ci-auto --params-file tests/data/ci_auto_params.json \
             --expect auto/refinement/ranked_results.json --expect auto/report/auto_ranking.json \
-            --expect auto/report/auto_report.html --expect resolved_specification.json
+            --expect auto/report/auto_report.html --expect resolved_specification.json \
+            --min-scored 1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -157,11 +158,17 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Hash image sources for the label
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        id: source
+        run: echo "sha256=$(python3 scripts/image_source.py ${{ matrix.package }})" >> "$GITHUB_OUTPUT"
       - name: Build and push production image
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./packages/${{ matrix.package }}/Dockerfile
+          target: production
+          labels: horn.source_sha256=${{ steps.source.outputs.sha256 }}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.package }}:latest
