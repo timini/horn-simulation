@@ -12,6 +12,10 @@ estimated by the authors' published time-of-flight procedure (std_hrn_rfl.m,
 ported, not executed); it is applied identically to model and measurement and
 is never adjusted to improve agreement. Nothing else is fitted.
 
+Prediction and code hashes in protocol.json are reproducible only in the same
+environment: CSV bytes differ in the last digits between the horn-solver image
+and a macOS host. The committed summary comes from the horn-solver image.
+
 Run from the repository root. TMM needs only horn-core. --with-fem needs the
 horn-solver image (dolfinx) with the repository mounted.
 """
@@ -32,6 +36,7 @@ T_C = 25.
 AIR = AirProperties(c=34723e-2*(1+.00166*(T_C-26.85)), rho=1.1769*(1-.00335*(T_C-26.85)),
                     gamma=1.402, viscosity=1.83183e-5, conductivity=.02613336, heat_capacity=1004.16)
 CGS_TO_SI = 1e5  # cgs acoustic ohm to Pa*s/m^3
+REPO = Path(__file__).resolve().parents[1]
 
 # Nominal geometry from spec.txt / fun_con.txt, checked against hrn_con.stl.
 R_THROAT = .0035
@@ -57,6 +62,12 @@ LIMITS = {
     'impedance_magnitude_db': {'median': 2., 'p95': 4.},
     'fem_vs_tmm': {'p95_scaled_complex_error': .05},
 }
+POST_HOC_NOTES = [
+    'post_hoc_peak_shift fields (peak frequencies and levels) were added after the first run; they are diagnostics, not gates.',
+    'post_hoc_estimated_plane_cap_at_author_distance was added after review: the estimated probe plane is cap echo distance '
+    'minus 0.135 m, so a model consistent with it puts the cap 0.135 m past the flare. It is a diagnostic, not a gate; '
+    'the frozen nominal impedance gate is unchanged.',
+]
 
 
 def sha(path):
@@ -74,9 +85,14 @@ def radius_function(probe_to_flare):
     return radius
 
 
-def tmm_impedance(frequency, probe_to_flare, termination, loss=LOSS, segments=SEGMENTS):
-    """Throat impedance normalized by rho*c/S_throat."""
-    length = probe_to_flare + CONE_LENGTH + MOUTH_CYLINDER
+def tmm_impedance(frequency, probe_to_flare, termination, loss=LOSS, segments=SEGMENTS,
+                  flare_to_end=CONE_LENGTH+MOUTH_CYLINDER):
+    """Throat impedance normalized by rho*c/S_throat.
+
+    ``flare_to_end`` is the distance from flare start to the cap or mouth; the
+    part beyond the cone is a cylinder of the mouth radius.
+    """
+    length = probe_to_flare + flare_to_end
     kwargs = dict(radiation_model='closed') if termination == 'closed' else \
         dict(radiation_model='finite_flange', flange_width=WALL)
     t = compute_horn_transfer_tmm(frequency, radius_function(probe_to_flare), length, R_THROAT, R_MOUTH,
@@ -157,11 +173,21 @@ def peak_frequencies(frequency, z, band):
 
 
 def peak_shift(frequency, predicted, measured):
-    """Post-hoc diagnostic added after the first run; not a gate."""
+    """Post-hoc diagnostic added after the first run; not a gate.
+
+    Peaks are paired in order. Levels are 20 log10 abs(Z/(rho c/S)) at each peak.
+    """
     m, q = peak_frequencies(frequency, measured, BAND), peak_frequencies(frequency, predicted, BAND)
     n = min(len(m), len(q))
-    return {'measured_hz': m[:n].tolist(), 'predicted_hz': q[:n].tolist(),
-            'relative_shift_percent': (100*(q[:n]/m[:n]-1)).tolist()}
+    m, q = m[:n], q[:n]
+
+    def level(z, f):
+        return 20*np.log10(np.abs(z[np.searchsorted(frequency, f)]))
+    lm, lq = level(measured, m), level(predicted, q)
+    return {'measured_hz': m.tolist(), 'predicted_hz': q.tolist(),
+            'relative_shift_percent': (100*(q/m-1)).tolist(),
+            'measured_peak_db': lm.tolist(), 'predicted_peak_db': lq.tolist(),
+            'peak_level_difference_db': (lq-lm).tolist()}
 
 
 def gate(metrics, limits):
@@ -247,8 +273,9 @@ def main():
         'probe_plane_for_window': "authors' time-of-flight estimate, cap/mouth arrival minus 0.135 m",
         'limits': LIMITS, 'fit_parameters': [],
         'prediction_sha256': {f.name: sha(f) for f in sorted(out.glob('tmm-*.csv'))},
-        'code_sha256': {str(f): sha(f) for f in [Path(__file__), Path('packages/horn-core/src/horn_core/duct.py'),
-                                                 Path('packages/horn-core/src/horn_core/webster.py')]},
+        'code_sha256': {f: sha(REPO/f) for f in ['scripts/validate_horn_reflectance.py',
+                                                 'packages/horn-core/src/horn_core/duct.py',
+                                                 'packages/horn-core/src/horn_core/webster.py']},
     }
     (out/'protocol.json').write_text(json.dumps(protocol, indent=2)+'\n')
 
@@ -298,6 +325,16 @@ def main():
                 m = impedance_metrics(zp[band], zm[band])
                 row[f'impedance_{label}_probe_plane'] = {**m, 'passed': gate({'median': m['median_db'], 'p95': m['p95_db']}, LIMITS['impedance_magnitude_db']),
                                                          'post_hoc_peak_shift': peak_shift(frequency, zp, zm)}
+            # Post-hoc, not a gate: xr was estimated as cap echo distance minus
+            # CAP_DISTANCE_AUTHORS, so the model consistent with that estimate
+            # puts the cap CAP_DISTANCE_AUTHORS past the flare, not 130 mm.
+            z_consistent = tmm_impedance(frequency, xr, 'closed', flare_to_end=CAP_DISTANCE_AUTHORS)
+            m = impedance_metrics(z_consistent[band], zm[band])
+            row['post_hoc_estimated_plane_cap_at_author_distance'] = {
+                'flare_to_cap_m': CAP_DISTANCE_AUTHORS, 'probe_to_cap_m': xr+CAP_DISTANCE_AUTHORS,
+                **m, 'would_pass_impedance_limit': gate({'median': m['median_db'], 'p95': m['p95_db']}, LIMITS['impedance_magnitude_db']),
+                'untruncated_reflectance': reflectance_metrics(reflectance(z_consistent[band]), rm[band]),
+                'peak_shift': peak_shift(frequency, z_consistent, zm)}
         else:
             zo = predictions['tmm-open-nominal'][open_band]
             row['open_mouth_diagnostic'] = {'band_hz': OPEN_BAND,
@@ -338,6 +375,7 @@ def main():
             'untruncated_capped_passes': f"{sum(r['untruncated_capped']['passed'] for r in rows if 'untruncated_capped' in r)}/{sum('untruncated_capped' in r for r in rows)}",
             'impedance_nominal_probe_plane_passes': f"{sum(r['impedance_nominal_probe_plane']['passed'] for r in rows if 'impedance_nominal_probe_plane' in r)}/{sum('impedance_nominal_probe_plane' in r for r in rows)}",
             'tmm_vs_analytic_passes': f"{sum(r['tmm_lossless_vs_analytic_cone_windowed']['passed'] for r in rows)}/{len(rows)}"},
+        'post_hoc_notes': POST_HOC_NOTES,
         'physical_horn_workflow_validated': False,
         'scope': 'Rigid conical duct input impedance seen by an ear-canal probe. Does not test radiation into free space, drivers or SPL.',
     }

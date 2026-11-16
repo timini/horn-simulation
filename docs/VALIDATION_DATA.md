@@ -81,25 +81,42 @@ The output includes the acoustic CAD, both raw FEM runs, frequency-transposed no
 
 The windowed P02 zl1 case misses by 0.0004. The authors' own analytic cone gives similar errors against the measurement under our window (max 0.051, 0.049, 0.066, 0.132), so the misses are not specific to our TMM. Both open-mouth P01 channels sit below every model at low frequency (zl1 by about 0.06, zl2 by up to 0.12), as the authors' P01 figure also shows against their ideal cone.
 
-The capped impedance failure is a resonance position error, not a level error. Peak heights agree to within a few dB, which supports the wall-loss model. A post-hoc diagnostic (added after the first run, not a gate) shows the impedance peaks 3.4 to 7.5 % low with the probe at the tube entrance, and 1.1 to 4.7 % high with the authors' estimated probe plane. The unknown probe insertion depth dominates; the authors' corrected cap distance (135 mm against 130 mm geometric) is a further unexplained 5 mm. A sharp-peak dB metric cannot pass while the reference plane is uncertain by several millimetres.
+The capped impedance failure is mostly a resonance position error. Post-hoc diagnostics (added after the first run or after review, not gates) record peak frequencies and levels for each model:
+
+- Probe at the tube entrance (the frozen nominal model, probe to cap 155 mm): peaks 3.3 to 7.5 % low.
+- Authors' estimated probe plane with the cap at the geometric 130 mm (probe to cap about 143 mm): peaks 1.1 to 4.7 % high.
+- Authors' estimated probe plane with the cap at their corrected 135 mm (probe to cap about 148 mm): peaks between -1.5 % and +1.8 %. Impedance error falls to a median of 1.0 and 1.5 dB, but p95 is 5.4 and 6.0 dB, so this model would still miss the 4 dB p95 limit.
+
+The second model is inconsistent with its own probe plane: the time-of-flight estimate is the cap echo distance minus 135 mm, so it only fixes the total probe-to-cap length, about 148 mm. Once the model uses that length, the resonances line up. What the record does not state is how that length splits between throat tube insertion and cap seating.
+
+Peak levels do not agree closely. Measured P02 peaks are 30.8, 27.8, 26.7, 21.9, 26.7 and 26.2 dB (zl1) and 36.7, 28.5, 28.9, 20.1, 23.3 and 22.7 dB (zl2), in 20 log10 of the normalized impedance. Nominal TMM peaks differ from these by -4.6 to +5.1 dB, and the consistent 148 mm model by -6.3 to +9.2 dB, in both directions. Peak levels on a 5.38 Hz grid are also sensitive to where the grid falls on a sharp peak. These numbers neither confirm nor rule out the wall-loss model.
 
 FEM and TMM resonances coincide on the FEM grid, and the FEM result moved by less than 0.002 in the error statistic from 4 mm to 2 mm mesh, so the gap between FEM and TMM is not discretization error. It comes from near-resonance points where both curves are steep; we have not established which model is closer. FEM impedance-dB statistics against the measurement use only 161 points and are not comparable with the dense TMM numbers.
 
 Numerical side checks: TMM 600 against 1200 segments differs by at most 0.004 dB; Kirchhoff against thin-boundary-layer losses by at most 0.13 dB.
 
-What this shows: the TMM cone transformation matches the analytic cone, and its loss level is about right. It does not reach the frozen accuracy limits against these measurements. This tests a closed or open rigid duct seen from an ear-probe; it says nothing about radiation into free space, drivers or SPL. The summary is `data/validation/hajicek_horn_reflectance.json`.
+What this shows: the TMM cone transformation matches the analytic cone. Resonance positions match once the model uses the probe-to-cap length the time-of-flight measures. Peak levels do not match, and no model reaches the frozen accuracy limits against these measurements. This tests a closed or open rigid duct seen from an ear-probe; it says nothing about radiation into free space, drivers or SPL. The summary is `data/validation/hajicek_horn_reflectance.json`. It is written by `scripts/summarise_horn_reflectance.py` from the run directories, unrounded: the base (TMM) run supplies protocol, gates and diagnostics, and each FEM run supplies only its `fem` block after its nominal predictions and imported manifest are checked against the base run. The FEM blocks come from runs of the previous script revision; the FEM code path did not change, so they were not rerun.
+
+The prediction hashes in the protocol are tied to the `horn-solver` image: a macOS host writes slightly different CSV bytes (differences around 1e-9), so a local rerun gives the same metrics but different hashes. `code_sha256` is keyed by repository-relative path.
 
 Reproduce:
 
 ```sh
-python -m horn_analysis.reference_data --catalog data/validation/references.json --output-dir results/references
-python scripts/validate_horn_reflectance.py \
+# Imports every catalogued record. --cache-dir reuses earlier downloads; without it,
+# files already in <output-dir>/<id>/source are reused and the rest are downloaded.
+python -m horn_analysis.reference_data --catalog data/validation/references.json \
+  --output-dir results/references --cache-dir <download cache>
+# In horn-solver with the repository mounted at /workspace, so hashes match the summary:
+docker run --rm -v "$PWD":/workspace -w /workspace horn-solver:latest \
+  python3 scripts/validate_horn_reflectance.py \
   --reference-dir results/references/hajicek-neely-horn-reflectance \
   --output-dir results/hajicek-reflectance/tmm
-# FEM: inside horn-solver with the repository mounted, add --with-fem [--fem-mesh 0.002]
+# FEM: add --with-fem [--fem-mesh 0.002] and a separate --output-dir
+python scripts/summarise_horn_reflectance.py --base-run results/hajicek-reflectance/tmm \
+  --fem-run mesh_4mm=<4 mm FEM run> --fem-run mesh_2mm=<2 mm FEM run>
 ```
 
-The next useful input is the probe insertion depth and cap seating for each file, from the paper or the authors. With that, the impedance comparison could be rerun without changing any limit.
+The next useful input is how the measured probe-to-cap length splits between probe insertion depth and cap seating for each file, from the paper or the authors. With that, a geometry-consistent model could be compared under the same frozen limits, as a new protocol rather than a change to this one.
 
 ## Additional primary sources inspected
 
