@@ -201,7 +201,7 @@ def generate_auto_report(
         files = builder_files.get(result["horn_label"], {})
         if files.get("profile_csv"):
             lines.append(f"     Profile CSV: {files['profile_csv']}")
-        lines.append(f"     STEP: {files.get('step') or 'not available'}")
+        lines.append(f"     STEP (relative to this folder): {files.get('step') or 'not available'}")
         interface = result.get("driver_interface")
         if interface:
             corner = interface.get("front_chamber_corner_hz")

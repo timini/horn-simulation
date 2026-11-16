@@ -207,6 +207,7 @@ def _coupled_status(ck: dict) -> str:
     text = (f"<strong>Experimental prediction.</strong> Same observer path and KPIs as auto mode. "
             f"Target band {_fmt(band[0] if band else None, '.0f')} to {_fmt(band[1] if len(band) > 1 else None, '.0f')} Hz"
             + (" (clipped to the sweep)" if ck.get("target_band_clipped_to_sweep") else "")
+            + (" (outside the sweep; whole sweep assessed)" if ck.get("target_band_outside_sweep") else "")
             + f". Evidence status: {html.escape(str(ck['eligibility_status']).replace('_', ' '))}"
             + (f"; rejected: {html.escape(', '.join(ck['rejection_reasons']))}" if ck.get("rejection_reasons") else "")
             + f". Front chamber: {html.escape(chamber)}" + (f" {volume:.1f} cm3" if volume else "")

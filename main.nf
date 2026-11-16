@@ -277,7 +277,7 @@ process couple_with_driver {
         ${throat_flag} \
         --target-f-low ${params.target_f_low} --target-f-high ${params.target_f_high} \
         --distance ${params.observation_distance} --max-ripple ${params.max_ripple_db} \
-        --max-compression ${params.max_compression_ratio} \
+        --max-compression ${params.max_compression_ratio} ${scoringCliFlags()} \
         ${params.test_power_w ? "--test-power " + params.test_power_w : ""} \
         --length ${params.length ?: 0.5} \
         --profile ${profile} \
@@ -853,8 +853,8 @@ drivers = {d.driver_id: d for d in driver_list if d.driver_id in driver_ids}
 
 target = TargetSpec(f_low_hz=${params.target_f_low}, f_high_hz=${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio}, ${scoringTargetArgs()}, test_power_w=${params.test_power_w ?: 'None'})
 
-# Published STEP locations, relative to the run output directory.
-step_files = {cid: (f'auto/refinement/{cid}.step' if cid.startswith('refine_') else f'auto/geometry/horn_{cid}.step') for cid in solver_csvs}
+# Published STEP locations, relative to the report folder (auto/report).
+step_files = {cid: (f'../refinement/{cid}.step' if cid.startswith('refine_') else f'../geometry/horn_{cid}.step') for cid in solver_csvs}
 
 generate_auto_report(
     all_ranked=all_ranked,

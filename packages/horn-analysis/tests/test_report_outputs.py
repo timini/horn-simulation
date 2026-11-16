@@ -146,7 +146,9 @@ def test_example_report_labels_profile_and_builder_data(tmp_path, monkeypatch):
     _assert_profile_csv(tmp_path, rows[0])
     summary = (tmp_path / "auto_summary.txt").read_text()
     step = str(EXAMPLE / "horn.step")
-    assert step in text and f"STEP: {step}" in summary
+    assert step in text and f"STEP (relative to this folder): {step}" in summary
+    assert "File paths are relative to the folder that holds this report" in text
+    assert "exceeded only because of an estimated front chamber is still ranked" in text
     assert f"Throat radius: {rows[0]['throat_radius']*1e3:.2f} mm" in summary
     # Experimental label, reading guide, formula, bound sources, chamber and evidence status.
     assert "Experimental prediction." in text and "EXPERIMENTAL PREDICTION" in summary
@@ -212,7 +214,7 @@ def test_live_run_report_regenerates_from_preserved_results(run, tmp_path, monke
         _assert_legends_match_rankings(legends, text)
         ranked = sorted(feasible, key=lambda r: r["composite_score"], reverse=True)
         _assert_profile_csv(tmp_path, ranked[0])
-        step = re.search(r"STEP file \(acoustic air volume, mm\)</dt><dd><code>([^<]+)</code>", text).group(1)
+        step = re.search(r"STEP file \(acoustic air volume, mm; path relative to this report\)</dt><dd><code>([^<]+)</code>", text).group(1)
         assert Path(step).exists() and ranked[0]["horn_label"] in step
         assert len(list(tmp_path.glob("coupled_*.csv"))) == min(5, len(feasible))
     if rejected:
@@ -248,3 +250,97 @@ def test_single_mode_matches_auto_mode_levels_and_kpis(tmp_path, imported):
     assert kpis["eligibility_status"] == row["eligibility_status"]
     assert kpis["front_chamber_estimated"] is True
     assert kpis["output_metric"] == row["output_metric"] == "modal_baffled_on_axis"
+
+
+def _cli_couple(tmp_path, monkeypatch, *extra, csv_path=None):
+    """Run the couple_single command line as main.nf does and return its KPIs and levels."""
+    from horn_analysis import couple_single
+    preserved, driver = _example_inputs()
+    argv = ["couple_single", "--solver-csv", str(csv_path or EXAMPLE / "horn-impedance.csv"),
+            "--drivers-db", str(ROOT / "data/drivers-curated"), "--driver-id", driver.driver_id,
+            "--throat-radius", str(preserved["throat_radius"]), "--length", str(preserved["length"]),
+            "--output-csv", str(tmp_path / "c.csv"), "--output-png", str(tmp_path / "c.png"),
+            "--output-kpis", str(tmp_path / "k.json"), *extra]
+    monkeypatch.setattr("sys.argv", argv)
+    couple_single.main()
+    return json.loads((tmp_path / "k.json").read_text()), pd.read_csv(tmp_path / "c.csv")
+
+
+@pytest.mark.parametrize("weights,min_output", [("ripple=1,extension=1", None), (None, 130.0)])
+def test_single_mode_cli_uses_auto_mode_weights_and_output_floor(tmp_path, monkeypatch, weights, min_output):
+    """--score-weights and --min-output reach single mode, so its score and eligibility match auto mode."""
+    extra = ["--target-f-low", "800", "--target-f-high", "1600"]
+    extra += ["--score-weights", weights] if weights else []
+    extra += ["--min-output", str(min_output)] if min_output is not None else []
+    kpis, _ = _cli_couple(tmp_path, monkeypatch, *extra)
+    target = TargetSpec(800, 1600, score_weights=weights, min_output_db=min_output)
+    rows, _ = _example_report(tmp_path / "auto", target)
+    row = rows[0]
+    assert kpis["eligibility_status"] == row["eligibility_status"]
+    assert kpis["rejection_reasons"] == row["rejection_reasons"]
+    assert kpis["composite_score"] == pytest.approx(row["composite_score"], abs=1e-9)
+    if weights:
+        default_rows, _ = _example_report(tmp_path / "default", TargetSpec(800, 1600))
+        assert abs(row["composite_score"] - default_rows[0]["composite_score"]) > 1e-3
+    else:
+        assert "minimum_output_not_met" in kpis["rejection_reasons"]
+
+
+def test_single_mode_cli_applies_distance_without_target_band(tmp_path, monkeypatch):
+    """With no target band the sweep is the band, and --distance still moves the observer."""
+    (tmp_path / "near").mkdir()
+    (tmp_path / "far").mkdir()
+    _, near_levels = _cli_couple(tmp_path / "near", monkeypatch, "--distance", "1")
+    far, far_levels = _cli_couple(tmp_path / "far", monkeypatch, "--distance", "2")
+    f = pd.read_csv(EXAMPLE / "horn-impedance.csv")["frequency"]
+    assert far["target_band_hz"] == [f.min(), f.max()]
+    assert far["target_band_clipped_to_sweep"] is False
+    drop = (near_levels.coupled_spl - far_levels.coupled_spl).to_numpy()
+    assert np.all(drop > 3.0)
+
+
+def test_single_mode_sweep_outside_target_band_assesses_the_sweep(tmp_path):
+    """A sweep that misses the target band falls back to the whole sweep instead of raising."""
+    from horn_analysis.couple_single import single_assessment
+    preserved, driver = _example_inputs()
+    df = pd.read_csv(EXAMPLE / "horn-impedance.csv")
+    df = df[df.frequency >= 1700].reset_index(drop=True)
+    _, _, assessment = single_assessment(df, driver, TargetSpec(800, 1600), preserved["throat_radius"], preserved["length"])
+    assert assessment["target_band_outside_sweep"] is True
+    assert assessment["target_band_clipped_to_sweep"] is False
+    assert assessment["target_band_requested_hz"] == [800, 1600]
+    assert assessment["target_band_hz"] == [df.frequency.min(), df.frequency.max()]
+    assert np.isfinite(assessment["passband_ripple_db"])
+
+
+def _single_report(tmp_path, kpis):
+    from horn_analysis.single_report import generate_single_report
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    png = tmp_path / "blank.png"
+    plt.figure(figsize=(1, 1)); plt.savefig(png); plt.close()
+    preserved, _ = _example_inputs()
+    return generate_single_report(preserved["throat_radius"], preserved["mouth_radius"], preserved["length"],
+                                  preserved.get("profile", "horn"), {}, str(png), str(png), str(png), str(png), str(png),
+                                  coupled_png=str(png), coupled_kpis=kpis)
+
+
+@pytest.mark.parametrize("band,note", [((800, 4000), "(clipped to the sweep)"),
+                                       ((10000, 16000), "(outside the sweep; whole sweep assessed)")])
+def test_single_report_states_experimental_label_chamber_and_band(tmp_path, band, note):
+    """The single report carries the experimental label, evidence status, chamber and band handling."""
+    from horn_analysis.couple_single import couple
+    preserved, driver = _example_inputs()
+    couple(str(EXAMPLE / "horn-impedance.csv"), str(ROOT / "data/drivers-curated"), driver.driver_id,
+           throat_radius=preserved["throat_radius"], output_csv=str(tmp_path / "c.csv"),
+           output_png=str(tmp_path / "c.png"), output_kpis=str(tmp_path / "k.json"),
+           target=TargetSpec(*band), length=preserved["length"])
+    kpis = json.loads((tmp_path / "k.json").read_text())
+    assert kpis["front_chamber_estimated"] is True
+    text = _single_report(tmp_path, kpis)
+    assert "<strong>Experimental prediction.</strong>" in text
+    assert note in text
+    assert "Evidence status: " + kpis["eligibility_status"].replace("_", " ") in text
+    volume = kpis["driver_interface"]["front_chamber_volume_cm3"]
+    assert f"Front chamber: estimated {volume:.1f} cm3" in text
