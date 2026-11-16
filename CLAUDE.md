@@ -74,7 +74,7 @@ Build from repo root (context is `.`):
 docker build -t horn-geometry:latest --target production -f ./packages/horn-geometry/Dockerfile .
 ```
 
-Note: `gmsh` wheels don't have native `aarch64` Linux builds. On Apple Silicon, build with `--platform linux/amd64`.
+All three images build natively on linux/arm64 and linux/amd64: the gmsh-using images take gmsh from the dolfinx base image rather than a PyPI wheel. `just build` labels images with their source hash; the launcher warns when an image is out of date (see docs/RUN_MANAGEMENT.md).
 
 ## Java for Nextflow
 

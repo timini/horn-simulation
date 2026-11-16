@@ -16,6 +16,16 @@ python3 scripts/run_pipeline.py --run-dir results/my-500hz-horn -resume
 
 Resume checks the original source, driver/input files, containers and Nextflow engine, and uses the original session and specification. Changed inputs require a new run. Preserve `work/` and the Nextflow cache while you need resume. A directory name is the supported run label; no separate label option is needed.
 
+## Parameter files and images
+
+A `-params-file` (JSON or YAML) is forwarded to Nextflow. The manifest records its sha256 under `input_sha256`, together with the driver database, STEP file or render it names; a value given on the command line takes precedence, as in Nextflow.
+
+`just build` labels each image with `horn.source_sha256`, a hash of the files the image is built from (`scripts/image_source.py`). The launcher recomputes the hash and prints a warning when an image is unlabelled or was built from other sources, and records both values under `image_sources` in the manifest. Rebuild with `just build` after changing package code. `--require-current-images` turns the warning into an error; CI uses it. `--image-tag TAG` (or `HORN_IMAGE_TAG`) runs `horn-*:TAG` images built with `just build TAG`.
+
+Images install third-party Python packages from `uv.lock` and pin their base images by digest. The dolfinx-based images keep the base image's numpy (1.26.4), mpi4py and gmsh, because dolfinx, petsc4py and the system gmsh are compiled against them; `bempp-cl` is pinned to 0.3.1 in the solver Dockerfile. After changing dependencies, run `uv lock` and commit the lockfile; CI runs `uv lock --check`.
+
+The pipeline requires Nextflow 24.10.x (`manifest.nextflowVersion`). `just test-nextflow` runs nf-test 0.9.5 through `scripts/nf_test.sh`, which downloads it to `.tools/` and checks its sha256 on first use; set `NF_TEST` to use another copy.
+
 ## Find a run
 
 ```sh
