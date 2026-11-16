@@ -1,0 +1,520 @@
+{
+  "reference_id": "hajicek-neely-horn-reflectance",
+  "source_url": "https://zenodo.org/records/19710026",
+  "doi": "10.5281/zenodo.19710026",
+  "license": "CC BY 4.0",
+  "status": "frozen_comparison_failed_gates",
+  "physical_horn_workflow_validated": false,
+  "script": "scripts/validate_horn_reflectance.py",
+  "protocol": {
+    "source": "https://zenodo.org/records/19710026",
+    "doi": "10.5281/zenodo.19710026",
+    "imported_manifest_sha256": "5f314ce274bf5864bfe7103a2336df76a7cb8c498f87d98fb5db03517f44af3e",
+    "air": {
+      "c": 346.16366,
+      "rho": 1.18419,
+      "gamma": 1.402,
+      "viscosity": 2e-05,
+      "conductivity": 0.02613,
+      "heat_capacity": 1004.16
+    },
+    "temperature_c": 25.0,
+    "loss_model": "kirchhoff",
+    "segments": 600,
+    "geometry_m": {
+      "throat_radius": 0.0035,
+      "cone_length": 0.12,
+      "mouth_radius": 0.01429,
+      "mouth_cylinder_length": 0.01,
+      "open_mouth_wall_flange": 0.002,
+      "nominal_probe_to_flare": 0.025
+    },
+    "terminations": {
+      "22E27P01.THL": "open",
+      "22E27P02.THL": "closed"
+    },
+    "channels": [
+      "zl1",
+      "zl2"
+    ],
+    "reference_impedance": "nominal rho*c/(pi*throat_radius^2); not estimated from data",
+    "band_hz": [
+      100.0,
+      8000.0
+    ],
+    "open_band_hz": [
+      100.0,
+      5500.0
+    ],
+    "truncation_hz": 16000.0,
+    "window": "reflectance impulse kept to t = 2*(0.08 m + probe_to_flare)/c, same for model and measurement",
+    "probe_plane_for_window": "authors' time-of-flight estimate, cap/mouth arrival minus 0.135 m",
+    "limits": {
+      "untruncated_capped": {
+        "median_abs_reflectance_error": 0.02,
+        "p95_abs_reflectance_error": 0.05
+      },
+      "time_windowed": {
+        "max_abs_reflectance_error": 0.05
+      },
+      "tmm_vs_analytic_cone_windowed": {
+        "max_abs_reflectance_error": 0.02
+      },
+      "impedance_magnitude_db": {
+        "median": 2.0,
+        "p95": 4.0
+      },
+      "fem_vs_tmm": {
+        "p95_scaled_complex_error": 0.05
+      }
+    },
+    "fit_parameters": [],
+    "code_sha256": {
+      "/workspace/scripts/validate_horn_reflectance.py": "b118fc5291d5ceb9ae8185fe09b280ea12d0016f54c82abb6cd9e8335974b649",
+      "packages/horn-core/src/horn_core/duct.py": "acef8a720d9bd66f998c0b54aef8ca5dfb3cdf7fce4231205f8c2787dcd3a943",
+      "packages/horn-core/src/horn_core/webster.py": "ba6b85ba538431ecbe95ca4d0a0e5e5ab1c07ce0c0f8817e38bc3bd03c992f40"
+    }
+  },
+  "prediction_sha256": {
+    "tmm-closed-nominal-1200seg.csv": "f9bc4600d2ae4f49f485ccb692990dae64290750456766961954e4a05b44fe21",
+    "tmm-closed-nominal-boundary-layer.csv": "bccb8674ce56a6b47504acd46f349c2ab146a58cb931633078b727f19c65f7f0",
+    "tmm-closed-nominal.csv": "d78cf868ade892bb4eb86381fb875d04318e9e40a5325461aa4aa63636fc7d0a",
+    "tmm-open-nominal.csv": "4a42c3e87d3fadcd81aedd0474de74a10ccfb0c4b087188bdb7dde2c3848e55d"
+  },
+  "gate_summary": {
+    "time_windowed_passes": "0/4",
+    "untruncated_capped_passes": "0/2",
+    "impedance_nominal_probe_plane_passes": "0/2",
+    "tmm_vs_analytic_passes": "4/4"
+  },
+  "probe_plane_estimates": {
+    "22E27P01.THL:zl1": {
+      "estimated_m": 0.0161,
+      "author_reported_m": 0.0161,
+      "reproduced_within_0_5_mm": true
+    },
+    "22E27P01.THL:zl2": {
+      "estimated_m": 0.0161,
+      "author_reported_m": 0.0161,
+      "reproduced_within_0_5_mm": true
+    },
+    "22E27P02.THL:zl1": {
+      "estimated_m": 0.01316,
+      "author_reported_m": 0.0132,
+      "reproduced_within_0_5_mm": true
+    },
+    "22E27P02.THL:zl2": {
+      "estimated_m": 0.01316,
+      "author_reported_m": 0.0132,
+      "reproduced_within_0_5_mm": true
+    }
+  },
+  "numerical_checks": {
+    "tmm_600_vs_1200_segments": {
+      "median_db": 0.00021,
+      "p95_db": 0.00183,
+      "max_db": 0.00373,
+      "p95_scaled_complex_error": 0.00018
+    },
+    "kirchhoff_vs_boundary_layer_tmm": {
+      "median_db": 0.00031,
+      "p95_db": 0.01642,
+      "max_db": 0.12723,
+      "p95_scaled_complex_error": 0.00159
+    }
+  },
+  "comparisons": [
+    {
+      "source_member": "22E27P01.THL",
+      "channel": "zl1",
+      "termination": "open",
+      "estimated_probe_to_flare_m": 0.0161,
+      "time_windowed": {
+        "median_abs_reflectance_error": 0.02408,
+        "p95_abs_reflectance_error": 0.04281,
+        "max_abs_reflectance_error": 0.05514,
+        "window_end_ms": 0.55525,
+        "passed": false
+      },
+      "time_windowed_nominal_probe_plane": {
+        "median_abs_reflectance_error": 0.02683,
+        "p95_abs_reflectance_error": 0.05512,
+        "max_abs_reflectance_error": 0.06012
+      },
+      "analytic_ideal_vs_measured_windowed": {
+        "median_abs_reflectance_error": 0.02229,
+        "p95_abs_reflectance_error": 0.05538,
+        "max_abs_reflectance_error": 0.06622
+      },
+      "tmm_lossless_vs_analytic_cone_windowed": {
+        "median_abs_reflectance_error": 0.00714,
+        "p95_abs_reflectance_error": 0.01394,
+        "max_abs_reflectance_error": 0.01901,
+        "passed": true
+      },
+      "open_mouth_diagnostic": {
+        "band_hz": [
+          100.0,
+          5500.0
+        ],
+        "median_abs_reflectance_error": 0.02331,
+        "p95_abs_reflectance_error": 0.07753,
+        "max_abs_reflectance_error": 0.09829,
+        "median_db": 7.33297,
+        "p95_db": 12.34695,
+        "max_db": 17.13964,
+        "p95_scaled_complex_error": 1.76975
+      }
+    },
+    {
+      "source_member": "22E27P01.THL",
+      "channel": "zl2",
+      "termination": "open",
+      "estimated_probe_to_flare_m": 0.0161,
+      "time_windowed": {
+        "median_abs_reflectance_error": 0.05556,
+        "p95_abs_reflectance_error": 0.10017,
+        "max_abs_reflectance_error": 0.12102,
+        "window_end_ms": 0.55525,
+        "passed": false
+      },
+      "time_windowed_nominal_probe_plane": {
+        "median_abs_reflectance_error": 0.05221,
+        "p95_abs_reflectance_error": 0.09042,
+        "max_abs_reflectance_error": 0.10137
+      },
+      "analytic_ideal_vs_measured_windowed": {
+        "median_abs_reflectance_error": 0.04809,
+        "p95_abs_reflectance_error": 0.11274,
+        "max_abs_reflectance_error": 0.1321
+      },
+      "tmm_lossless_vs_analytic_cone_windowed": {
+        "median_abs_reflectance_error": 0.00714,
+        "p95_abs_reflectance_error": 0.01394,
+        "max_abs_reflectance_error": 0.01901,
+        "passed": true
+      },
+      "open_mouth_diagnostic": {
+        "band_hz": [
+          100.0,
+          5500.0
+        ],
+        "median_abs_reflectance_error": 0.02512,
+        "p95_abs_reflectance_error": 0.05783,
+        "max_abs_reflectance_error": 0.19079,
+        "median_db": 7.32061,
+        "p95_db": 12.00028,
+        "max_db": 16.63902,
+        "p95_scaled_complex_error": 1.72246
+      }
+    },
+    {
+      "source_member": "22E27P02.THL",
+      "channel": "zl1",
+      "termination": "closed",
+      "estimated_probe_to_flare_m": 0.01316,
+      "time_windowed": {
+        "median_abs_reflectance_error": 0.02445,
+        "p95_abs_reflectance_error": 0.04849,
+        "max_abs_reflectance_error": 0.05039,
+        "window_end_ms": 0.53824,
+        "passed": false
+      },
+      "time_windowed_nominal_probe_plane": {
+        "median_abs_reflectance_error": 0.02105,
+        "p95_abs_reflectance_error": 0.03749,
+        "max_abs_reflectance_error": 0.04109
+      },
+      "analytic_ideal_vs_measured_windowed": {
+        "median_abs_reflectance_error": 0.0211,
+        "p95_abs_reflectance_error": 0.0487,
+        "max_abs_reflectance_error": 0.05122
+      },
+      "tmm_lossless_vs_analytic_cone_windowed": {
+        "median_abs_reflectance_error": 0.00788,
+        "p95_abs_reflectance_error": 0.0131,
+        "max_abs_reflectance_error": 0.0161,
+        "passed": true
+      },
+      "untruncated_capped": {
+        "median_abs_reflectance_error": 0.02926,
+        "p95_abs_reflectance_error": 0.10597,
+        "max_abs_reflectance_error": 0.1795,
+        "passed": false
+      },
+      "untruncated_capped_estimated_probe_plane": {
+        "median_abs_reflectance_error": 0.02743,
+        "p95_abs_reflectance_error": 0.10177,
+        "max_abs_reflectance_error": 0.19733
+      },
+      "impedance_nominal_probe_plane": {
+        "median_db": 9.93897,
+        "p95_db": 24.24535,
+        "max_db": 32.28771,
+        "p95_scaled_complex_error": 4.36095,
+        "passed": false,
+        "post_hoc_peak_shift": {
+          "measured_hz": [
+            1448.10791,
+            2438.63525,
+            3520.67871,
+            4651.17188,
+            5813.96484,
+            6998.29102
+          ],
+          "predicted_hz": [
+            1356.5918,
+            2255.60303,
+            3310.72998,
+            4457.37305,
+            5614.78271,
+            6750.65918
+          ],
+          "relative_shift_percent": [
+            -6.3197,
+            -7.50552,
+            -5.9633,
+            -4.16667,
+            -3.42593,
+            -3.53846
+          ]
+        }
+      },
+      "impedance_estimated_probe_plane": {
+        "median_db": 7.66991,
+        "p95_db": 19.77663,
+        "max_db": 24.8629,
+        "p95_scaled_complex_error": 3.04372,
+        "passed": false,
+        "post_hoc_peak_shift": {
+          "measured_hz": [
+            1448.10791,
+            2438.63525,
+            3520.67871,
+            4651.17188,
+            5813.96484,
+            6998.29102
+          ],
+          "predicted_hz": [
+            1464.25781,
+            2546.30127,
+            3666.02783,
+            4828.8208,
+            6023.91357,
+            7235.15625
+          ],
+          "relative_shift_percent": [
+            1.11524,
+            4.41501,
+            4.12844,
+            3.81944,
+            3.61111,
+            3.38462
+          ]
+        }
+      }
+    },
+    {
+      "source_member": "22E27P02.THL",
+      "channel": "zl2",
+      "termination": "closed",
+      "estimated_probe_to_flare_m": 0.01316,
+      "time_windowed": {
+        "median_abs_reflectance_error": 0.02498,
+        "p95_abs_reflectance_error": 0.05477,
+        "max_abs_reflectance_error": 0.05682,
+        "window_end_ms": 0.53824,
+        "passed": false
+      },
+      "time_windowed_nominal_probe_plane": {
+        "median_abs_reflectance_error": 0.02316,
+        "p95_abs_reflectance_error": 0.055,
+        "max_abs_reflectance_error": 0.05709
+      },
+      "analytic_ideal_vs_measured_windowed": {
+        "median_abs_reflectance_error": 0.02741,
+        "p95_abs_reflectance_error": 0.04635,
+        "max_abs_reflectance_error": 0.04902
+      },
+      "tmm_lossless_vs_analytic_cone_windowed": {
+        "median_abs_reflectance_error": 0.00788,
+        "p95_abs_reflectance_error": 0.0131,
+        "max_abs_reflectance_error": 0.0161,
+        "passed": true
+      },
+      "untruncated_capped": {
+        "median_abs_reflectance_error": 0.01811,
+        "p95_abs_reflectance_error": 0.07128,
+        "max_abs_reflectance_error": 0.21981,
+        "passed": false
+      },
+      "untruncated_capped_estimated_probe_plane": {
+        "median_abs_reflectance_error": 0.02253,
+        "p95_abs_reflectance_error": 0.07219,
+        "max_abs_reflectance_error": 0.22263
+      },
+      "impedance_nominal_probe_plane": {
+        "median_db": 9.91425,
+        "p95_db": 23.9855,
+        "max_db": 31.91623,
+        "p95_scaled_complex_error": 4.37422,
+        "passed": false,
+        "post_hoc_peak_shift": {
+          "measured_hz": [
+            1448.10791,
+            2433.25195,
+            3509.91211,
+            4629.63867,
+            5808.58154,
+            6992.90771
+          ],
+          "predicted_hz": [
+            1356.5918,
+            2255.60303,
+            3310.72998,
+            4457.37305,
+            5614.78271,
+            6750.65918
+          ],
+          "relative_shift_percent": [
+            -6.3197,
+            -7.30088,
+            -5.67485,
+            -3.72093,
+            -3.33642,
+            -3.4642
+          ]
+        }
+      },
+      "impedance_estimated_probe_plane": {
+        "median_db": 7.95276,
+        "p95_db": 19.62472,
+        "max_db": 24.39496,
+        "p95_scaled_complex_error": 3.27106,
+        "passed": false,
+        "post_hoc_peak_shift": {
+          "measured_hz": [
+            1448.10791,
+            2433.25195,
+            3509.91211,
+            4629.63867,
+            5808.58154,
+            6992.90771
+          ],
+          "predicted_hz": [
+            1464.25781,
+            2546.30127,
+            3666.02783,
+            4828.8208,
+            6023.91357,
+            7235.15625
+          ],
+          "relative_shift_percent": [
+            1.11524,
+            4.64602,
+            4.44785,
+            4.30233,
+            3.70714,
+            3.4642
+          ]
+        }
+      }
+    }
+  ],
+  "fem": {
+    "mesh_4mm": {
+      "frequencies": 161,
+      "mesh_size_m": 0.004,
+      "element_degree": 2,
+      "loss_model": "boundary_layer",
+      "mesh_cells": 5773,
+      "vs_same_model_tmm": {
+        "median_db": 0.10049,
+        "p95_db": 1.29767,
+        "max_db": 1.80553,
+        "p95_scaled_complex_error": 0.07998,
+        "passed": false
+      },
+      "vs_measurement": {
+        "22E27P02.THL:zl1": {
+          "untruncated_capped": {
+            "median_abs_reflectance_error": 0.02001,
+            "p95_abs_reflectance_error": 0.10643,
+            "max_abs_reflectance_error": 0.17099,
+            "passed": false
+          },
+          "impedance": {
+            "median_db": 3.91528,
+            "p95_db": 18.62168,
+            "max_db": 24.93151,
+            "p95_scaled_complex_error": 2.2453
+          }
+        },
+        "22E27P02.THL:zl2": {
+          "untruncated_capped": {
+            "median_abs_reflectance_error": 0.01044,
+            "p95_abs_reflectance_error": 0.07975,
+            "max_abs_reflectance_error": 0.21407,
+            "passed": false
+          },
+          "impedance": {
+            "median_db": 3.82666,
+            "p95_db": 18.67114,
+            "max_db": 25.43188,
+            "p95_scaled_complex_error": 2.18131
+          }
+        }
+      }
+    },
+    "mesh_2mm": {
+      "frequencies": 161,
+      "mesh_size_m": 0.002,
+      "element_degree": 2,
+      "loss_model": "boundary_layer",
+      "mesh_cells": 26939,
+      "vs_same_model_tmm": {
+        "median_db": 0.07417,
+        "p95_db": 1.30388,
+        "max_db": 1.81547,
+        "p95_scaled_complex_error": 0.08188,
+        "passed": false
+      },
+      "vs_measurement": {
+        "22E27P02.THL:zl1": {
+          "untruncated_capped": {
+            "median_abs_reflectance_error": 0.02014,
+            "p95_abs_reflectance_error": 0.10629,
+            "max_abs_reflectance_error": 0.17101,
+            "passed": false
+          },
+          "impedance": {
+            "median_db": 3.91325,
+            "p95_db": 18.65955,
+            "max_db": 25.02172,
+            "p95_scaled_complex_error": 2.25185
+          }
+        },
+        "22E27P02.THL:zl2": {
+          "untruncated_capped": {
+            "median_abs_reflectance_error": 0.01042,
+            "p95_abs_reflectance_error": 0.07977,
+            "max_abs_reflectance_error": 0.21408,
+            "passed": false
+          },
+          "impedance": {
+            "median_db": 3.85408,
+            "p95_db": 18.69456,
+            "max_db": 25.52209,
+            "p95_scaled_complex_error": 2.18756
+          }
+        }
+      }
+    },
+    "note": "FEM output changed by less than 0.01 in p95 scaled complex error between 4 mm and 2 mm meshes. The FEM grid has 161 log-spaced points, so its impedance-dB statistics against the 5.4 Hz measurement grid are not comparable with the dense TMM statistics."
+  },
+  "post_hoc_notes": [
+    "peak_shift fields were added after the first run and are diagnostics, not gates."
+  ],
+  "local_results": "results/hajicek-reflectance/with-fem-2mm (TMM-only run: results/hajicek-reflectance/tmm)",
+  "scope": "Rigid conical duct input impedance seen by an ear-canal probe. Does not test radiation into free space, drivers or SPL."
+}
