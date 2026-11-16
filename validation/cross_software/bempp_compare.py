@@ -187,11 +187,18 @@ def solve_exterior(api, vertices, elements, domains, k, velocity_fn, points):
     driven = grid.domain_indices == 1
     v[driven] = velocity_fn(centroids[driven])
     neumann = api.GridFunction(dp0, coefficients=1j * k * C * RHO * v)   # dp/dn = i w rho v_n
-    ident = api.operators.boundary.sparse.identity(p1, p1, p1)
-    dlp = api.operators.boundary.helmholtz.double_layer(p1, p1, p1, k)
-    slp = api.operators.boundary.helmholtz.single_layer(dp0, p1, p1, k)
+    # Burton-Miller combination: the plain double-layer equation fails at the
+    # interior resonances of the closed baffle body (seen at 1.2 kHz with the
+    # large baffle), the combined equation is unique at every frequency.
+    # bempp exterior Calderon rows: (K - I/2) p = V g and W p = -(I/2 + K') g.
+    hel = api.operators.boundary.helmholtz
+    eta = 1j / k
+    ident_p = api.operators.boundary.sparse.identity(p1, p1, p1)
+    ident_g = api.operators.boundary.sparse.identity(dp0, p1, p1)
+    lhs = hel.double_layer(p1, p1, p1, k) - 0.5 * ident_p + eta * hel.hypersingular(p1, p1, p1, k)
+    rhs = (hel.single_layer(dp0, p1, p1, k) - eta * (0.5 * ident_g + hel.adjoint_double_layer(dp0, p1, p1, k))) * neumann
     from bempp_cl.api.linalg import gmres
-    trace, info = gmres(dlp - 0.5 * ident, slp * neumann, tol=1e-8)
+    trace, info = gmres(lhs, rhs, tol=1e-8, restart=500, maxiter=5000)
     if info != 0:
         raise RuntimeError(f"GMRES did not converge (info={info})")
     far = (api.operators.potential.helmholtz.double_layer(p1, points, k) * trace
