@@ -143,12 +143,45 @@ def exchange_rates(weights):
     }
 
 
+FRONT_CHAMBER_POLICY = (
+    "Levels and scores include each driver's front chamber. A cone driver without chamber data gets a"
+    " geometric estimate (front_chamber_estimated); a constraint that fails only with that estimate is"
+    " listed in estimated_chamber_only_reasons and flagged, not rejected. A supplied volume, including 0,"
+    " is used as given.")
+
 _PIPELINE_DEFAULTS = {"max_ripple_db": 6.0, "max_compression_ratio": 10.0}
 _BOUND_KEYS = {
     "throat_radius_m": ("throat_radius", None, None, "throat_radius_range"),
     "mouth_radius_m": ("mouth_radius", "min_mouth_radius", "max_mouth_radius", "mouth_radius_range"),
     "length_m": ("length", "min_length", "max_length", "length_range"),
 }
+
+
+def size_compromise_note(compromise, rows=None):
+    """Plain-text statement of a size cap's low-frequency cost, or "" when none binds.
+
+    The figure comes from the ka = 1 mouth and quarter-wave sizing rules, so it
+    is worded as a rule-of-thumb loading limit. When ranked rows are given,
+    the best feasible row's predicted f3_low is set against it, so a reader
+    never takes the rule for a prediction the rankings contradict.
+    """
+    if not compromise:
+        return ""
+    target_low = compromise["target_f_low_hz"]
+    note = (f"The size caps are below the ka = 1 mouth and quarter-wave sizing rules for {target_low:g} Hz. "
+            f"By those rules of thumb, horn loading is expected to weaken below about "
+            f"{compromise['expected_f_low_hz']:.0f} Hz, {compromise['shortfall_octaves']:.2f} octaves above the target. "
+            "This is a sizing rule, not a prediction.")
+    ranked = [r for r in rows or [] if r.get("model_feasible", True) and r.get("f3_low_hz") is not None]
+    if ranked:
+        best = max(ranked, key=lambda r: r.get("composite_score", 0.0))
+        f3 = float(best["f3_low_hz"])
+        if f3 <= target_low:
+            note += (f" The best ranked design's predicted f3_low is {f3:.0f} Hz, at or below {target_low:g} Hz, "
+                     "so the model prediction does not show this shortfall.")
+        else:
+            note += f" The best ranked design's predicted f3_low is {f3:.0f} Hz."
+    return note
 
 
 def describe_scoring(target, design=None, user_bounds=None):
@@ -181,4 +214,6 @@ def describe_scoring(target, design=None, user_bounds=None):
         "target_band_hz": [target.f_low_hz, target.f_high_hz],
         "constraints": constraints,
         "geometry_bounds": bounds,
+        "size_compromise": (design or {}).get("size_compromise"),
+        "front_chamber_policy": FRONT_CHAMBER_POLICY,
     }

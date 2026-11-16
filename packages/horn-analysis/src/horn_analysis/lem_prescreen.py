@@ -21,7 +21,7 @@ from horn_core.parameters import DriverParameters
 from horn_core.profiles import get_radius_func
 from horn_core.webster import compute_horn_transfer_tmm
 from horn_core.acoustics import baffled_piston_on_axis, pressure_level
-from horn_analysis.evaluation import evaluate_response, radiation_domain_rejection
+from horn_analysis.evaluation import assess_driver, radiation_domain_rejection
 from horn_analysis.kpi import extract_kpis_from_arrays
 from horn_analysis.scoring import TargetSpec
 from horn_analysis.transfer_function import compute_driver_response, compute_driver_operating_point
@@ -113,16 +113,18 @@ def lem_prescreen_candidates(
         z_real, z_imag = transfer["z_real"], transfer["z_imag"]
         throat_area = np.pi * cand.throat_radius**2
 
-        for drv in drivers:
+        def response(driver):
             point = compute_driver_operating_point(
-                drv, frequencies, z_real, z_imag, throat_area, target.voltage_rms
+                driver, frequencies, z_real, z_imag, throat_area, target.voltage_rms
             )
-            p_throat = point["throat_pressure"]
             coupled_spl = pressure_level(baffled_piston_on_axis(
-                frequencies, transfer["mouth_volume_velocity_transfer"]*p_throat,
+                frequencies, transfer["mouth_volume_velocity_transfer"]*point["throat_pressure"],
                 transfer["mouth_area_m2"], target.observation_distance_m))
-            assessment = evaluate_response(frequencies, coupled_spl, target, drv, throat_area,
-                                           cand.length, cand.mouth_radius, operating_point=point)
+            return coupled_spl, point
+
+        for drv in drivers:
+            assessment = assess_driver(frequencies, target, drv, throat_area, response,
+                                       length=cand.length, mouth_radius=cand.mouth_radius)
 
             all_scores.append({
                 "candidate_id": cand.candidate_id,
@@ -139,14 +141,14 @@ def lem_prescreen_candidates(
     # Sort by composite score descending
     all_scores.sort(key=lambda x: x["composite_score"], reverse=True)
 
-    from horn_analysis.search import shortlist_geometries
-    filtered_ids = shortlist_geometries(all_scores, top_n)
+    from horn_analysis.search import SHORTLIST_POLICY, shortlist_geometries
+    filtered_ids = shortlist_geometries(all_scores, top_n, max_ripple_db=target.max_ripple_db)
 
     return {
         "total_evaluated": len(candidates),
         "total_pairs": len(all_scores),
         "top_n": top_n,
-        "shortlist_policy": "80% score, remaining slots diverse within 0.02 score; fixed total budget",
+        "shortlist_policy": SHORTLIST_POLICY,
         "filtered_candidate_ids": filtered_ids,
         "rankings": all_scores,
     }

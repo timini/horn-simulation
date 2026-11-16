@@ -255,3 +255,38 @@ def test_single_report_states_flanged_piston_error_only_when_that_model_was_used
     assert 'Known radiation-model error' in texts['flanged_piston']
     assert '1.05 dB' in texts['flanged_piston']
     assert 'Known radiation-model error' not in texts['modal_baffled']
+
+
+def test_scoring_section_states_size_compromise_refinement_and_chamber_policy():
+    from horn_analysis.html_report import _render_scoring, _chamber_note
+    from horn_analysis.scoring import TargetSpec, describe_scoring
+    from horn_core.geometry_designer import generate_auto_candidates
+    _, design = generate_auto_candidates(800, 1600, [.02], max_length=.1)
+    scoring = describe_scoring(TargetSpec(800, 1600), {"size_compromise": design.size_compromise})
+    scoring["refinement"] = {"seed_candidate": "auto_os_0001", "seed_source": "least_infeasible", "new_evaluations": 4,
+                             "budget": 6, "bound_sides_reached": ["length_high"],
+                             "widened_bounds": [{"field": "length", "side": "high", "from": [.1, .2], "to": [.1, .25]}]}
+    page = _render_scoring(scoring)
+    assert "858 Hz" in page and "0.10 octaves" in page
+    assert "least infeasible" in page and "length high to 0.2500" in page
+    assert "front_chamber_estimated" in page
+    note = _chamber_note({"front_chamber_estimated": True, "without_front_chamber": {"passband_ripple_db": 4.29}})
+    assert "est. chamber" in note and "4.3 without" in note
+    assert _chamber_note({"front_chamber_estimated": False}) == ""
+
+
+def test_size_compromise_is_worded_as_a_sizing_rule_and_checked_against_predictions():
+    from horn_analysis.html_report import _render_scoring
+    from horn_analysis.scoring import TargetSpec, describe_scoring, size_compromise_note
+    from horn_core.geometry_designer import generate_auto_candidates
+    _, design = generate_auto_candidates(800, 1600, [.02], max_length=.1)
+    compromise = design.size_compromise
+    text = size_compromise_note(compromise)
+    assert "858 Hz" in text and "rule" in text and "not a prediction" in text
+    rows = [{"model_feasible": True, "composite_score": .5, "f3_low_hz": 590.},
+            {"model_feasible": True, "composite_score": .2, "f3_low_hz": 900.}]
+    assert "does not show this shortfall" in size_compromise_note(compromise, rows)
+    assert "does not show" not in size_compromise_note(compromise, rows[1:])
+    page = _render_scoring(describe_scoring(TargetSpec(800, 1600), {"size_compromise": compromise}), rows)
+    assert "590 Hz" in page and "does not show this shortfall" in page
+    assert "support about" not in page

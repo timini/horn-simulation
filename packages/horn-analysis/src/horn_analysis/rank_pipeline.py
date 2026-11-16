@@ -50,7 +50,7 @@ def rank_horn_drivers(
         List of dicts with score + KPI info for top N drivers, sorted by
         composite_score descending.
     """
-    from horn_analysis.evaluation import coupled_output, evaluate_response
+    from horn_analysis.evaluation import coupled_output
     if top_n < 1:
         raise ValueError("top_n must be positive")
     if v_g is not None:
@@ -58,12 +58,17 @@ def rank_horn_drivers(
         target = replace(target, voltage_rms=v_g)
     df = pd.read_csv(solver_csv)
     results = []
+    from horn_analysis.evaluation import assess_driver
+    from horn_analysis.transfer_function import compute_driver_operating_point
     for drv in drivers:
         coupled_spl, area, metric = coupled_output(df, drv, target, throat_radius)
-        from horn_analysis.transfer_function import compute_driver_operating_point
-        point = compute_driver_operating_point(drv,df.frequency.to_numpy(),df.z_real.to_numpy(),df.z_imag.to_numpy(),area,target.voltage_rms)
+
+        def response(driver):
+            levels = coupled_spl if driver is drv else coupled_output(df, driver, target, throat_radius)[0]
+            point = compute_driver_operating_point(driver,df.frequency.to_numpy(),df.z_real.to_numpy(),df.z_imag.to_numpy(),area,target.voltage_rms)
+            return levels, point
         mouth_radius = float(np.sqrt(df.mouth_area_m2.iloc[0] / np.pi)) if "mouth_area_m2" in df else None
-        assessment = evaluate_response(df.frequency.to_numpy(), coupled_spl, target, drv, area, length=length, mouth_radius=mouth_radius, operating_point=point)
+        assessment = assess_driver(df.frequency.to_numpy(), target, drv, area, response, length=length, mouth_radius=mouth_radius)
         kpi = extract_kpis_from_arrays(df.frequency.to_numpy(), coupled_spl)
         results.append({
             **assessment, "driver_id": drv.driver_id, "horn_label": horn_label,

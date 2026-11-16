@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 
 from horn_core.parameters import DriverParameters
-from horn_analysis.scoring import TargetSpec, describe_scoring
+from horn_analysis.scoring import TargetSpec, describe_scoring, size_compromise_note
 from horn_analysis import plot_theme
 from horn_analysis.horn_render import fig_to_b64_3d
 
@@ -253,6 +253,8 @@ _EVIDENCE_LABELS = {
     "front_chamber_volume_unknown": "Front chamber volume is unknown; the ideal area transformer is optimistic",
     "diaphragm_smaller_than_throat": "Throat is larger than the diaphragm",
     "front_chamber_not_lumped_in_band": "Target band goes above ka = 1 for the front chamber, where a uniform chamber pressure is approximate",
+    "response_limited_by_estimated_front_chamber": "Meets the limits without a front chamber but not with the estimated one; supply the real adapter volume",
+    "throat_above_first_asymmetric_mode": "Throat ka exceeds 1.84 at the top of the band, where an asymmetric duct mode can propagate",
 }
 
 
@@ -261,6 +263,15 @@ def _render_evidence_summary(results):
         "<li><strong>" + html.escape(r.get("model_name") or r.get("driver_id", "")) + "</strong>: "
         + html.escape("; ".join(_EVIDENCE_LABELS.get(g, g.replace("_", " ")) for g in r.get("evidence_gaps", []))
                       or "Independent assembly validation is pending") + ".</li>" for r in results) + "</ul>"
+
+
+def _chamber_note(row) -> str:
+    """Mark a level computed with an estimated front chamber (front_chamber_estimated)."""
+    if not row.get("front_chamber_estimated"):
+        return ""
+    ideal = (row.get("without_front_chamber") or {}).get("passband_ripple_db")
+    return ('<br><small title="front_chamber_estimated">est. chamber'
+            + (f"; {_fmt(ideal, '.1f')} without" if ideal is not None else "") + '</small>')
 
 
 def _render_rankings_rows(
@@ -299,7 +310,7 @@ def _render_rankings_rows(
             f"{geom_cols}"
             f"<td><strong>{_fmt(r.get('composite_score'), '.3f')}</strong>{' (near tie)' if r.get('comparison_status') == 'near_tie' else ''}</td>"
             f"<td>{_fmt(r.get('extension_octaves'), '+.2f')}</td>"
-            f"<td>{_fmt(r.get('passband_ripple_db'), '.1f')}</td>"
+            f"<td>{_fmt(r.get('passband_ripple_db'), '.1f')}{_chamber_note(r)}</td>"
             f"<td>{_fmt(r.get('avg_sensitivity_db'), '.1f')}</td>"
             f"<td>{f3l} \u2014 {f3h}</td>"
             f"<td>{_fmt(kpi.get('peak_spl_db'), '.1f')}</td>"
@@ -479,7 +490,7 @@ _BOUND_SOURCE_LABELS = {
 }
 
 
-def _render_scoring(scoring: dict) -> str:
+def _render_scoring(scoring: dict, ranked: Optional[List[dict]] = None) -> str:
     """State the score formula, weights, exchange rates and bound origins."""
     weights = ", ".join(f"{html.escape(k)} {v:.3f}" for k, v in scoring["weights"].items())
     rates = scoring["exchange_rates"]
@@ -494,12 +505,26 @@ def _render_scoring(scoring: dict) -> str:
     constraints = "; ".join(
         f"{html.escape(k)} {html.escape(str(v['value']))} ({html.escape(v['source'].replace('_', ' '))})"
         for k, v in scoring["constraints"].items())
+    extra = ""
+    compromise = scoring.get("size_compromise")
+    if compromise:
+        extra += (f'<p><strong>Size compromise:</strong> {html.escape(size_compromise_note(compromise, ranked))}</p>')
+    refinement = scoring.get("refinement")
+    if refinement:
+        widened = "; ".join(f'{html.escape(w["field"])} {html.escape(w["side"])} to {_fmt(w["to"][1] if w["side"] == "high" else w["to"][0], ".4f")}'
+                            for w in refinement.get("widened_bounds", []))
+        extra += (f'<p><strong>Refinement:</strong> {refinement["new_evaluations"]} new geometries from '
+                  f'{html.escape(str(refinement["seed_candidate"]))} ({html.escape(refinement["seed_source"].replace("_", " "))})'
+                  + (f'; widened heuristic bounds: {widened}' if widened else '') + '.</p>')
+    if scoring.get("front_chamber_policy"):
+        extra += f'<p><strong>Front chamber:</strong> {html.escape(scoring["front_chamber_policy"])}</p>'
     return (
         '<div class="design-summary">'
         f'<p><strong>Score.</strong> {html.escape(scoring["formula"])}</p>'
         f'<p><strong>Weights</strong> ({html.escape(scoring["weights_source"].replace("_", " "))}): {weights}. {rate_text}</p>'
         f'<p><strong>Constraints:</strong> {constraints}.</p>'
         f'<p><strong>Geometry bounds:</strong> {bounds}.</p>'
+        + extra +
         '</div>'
     )
 
@@ -790,7 +815,7 @@ def generate_html_report(
         "geometry_header_cols": geometry_header_cols,
         "geometry_section": geometry_section,
         "rankings_rows": rankings_rows,
-        "scoring_section": _render_scoring(scoring or describe_scoring(target, derived_geometry)),
+        "scoring_section": _render_scoring(scoring or describe_scoring(target, derived_geometry), all_ranked),
         "plot_coupled_spl": plot_coupled_spl,
         "plot_raw_spl": plot_raw_spl,
         "plot_impedance": plot_impedance,

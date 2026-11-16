@@ -18,6 +18,16 @@ from horn_core.parameters import DriverParameters
 
 _SPEED_OF_SOUND = 343.0  # m/s at ~20°C
 
+# Zeros of J1': the first non-axisymmetric (1,1) duct mode cuts on at ka = 1.841
+# and the first radial (0,1) mode at ka = 3.832. Above 3.832 inside the band a
+# plane-wave (Webster) prediction of the throat is no longer meaningful, so
+# default throat sampling stops there. Above 1.841 the throat is flagged:
+# an axisymmetric drive does not excite the (1,1) mode, but any asymmetry does.
+THROAT_KA_FIRST_RADIAL_MODE = 3.8317
+THROAT_KA_FIRST_ASYMMETRIC_MODE = 1.8412
+# Radii within this relative distance of a kept radius are treated as duplicates.
+THROAT_RADIUS_DEDUP_RELATIVE = 0.01
+
 
 @dataclass
 class PrescreenConfig:
@@ -27,7 +37,9 @@ class PrescreenConfig:
     mouth_radius_m: Optional[float] = None
     length_m: Optional[float] = None
     min_ebp: float = 50.0
-    ka_max: float = 2 * math.pi  # ~6.28, absolute cap on throat ka at f_high
+    # Cap on throat ka at the top of the target band, where the score is measured.
+    ka_max: float = THROAT_KA_FIRST_RADIAL_MODE
+    ka_soft: float = THROAT_KA_FIRST_ASYMMETRIC_MODE
     min_nominal_diameter_in: Optional[float] = None
     max_nominal_diameter_in: Optional[float] = None
     throat_fractions: Optional[List[float]] = None  # override default [0.3,0.65,1.0]
@@ -40,6 +52,7 @@ class PrescreenResult:
     throat_radius_m: float
     throat_radii_m: List[float]
     count: int
+    throat_flags: dict = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         return {
@@ -47,7 +60,46 @@ class PrescreenResult:
             "throat_radius_m": self.throat_radius_m,
             "throat_radii_m": self.throat_radii_m,
             "count": self.count,
+            "throat_flags": self.throat_flags,
         }
+
+
+def dedupe_radii(radii, relative=THROAT_RADIUS_DEDUP_RELATIVE):
+    """Sorted radii with any radius within ``relative`` of the previous kept one dropped."""
+    kept = []
+    for radius in sorted(radii):
+        if not kept or radius > kept[-1] * (1 + relative):
+            kept.append(radius)
+    return kept
+
+
+def chamber_matched_throat_radius(driver, f_high_hz):
+    """Throat radius whose front-chamber corner c St / (2 pi V) sits at f_high.
+
+    None when the driver has no front chamber (supplied as zero, or unknown
+    type). With an estimated or supplied chamber, a smaller throat puts the
+    chamber's low-pass corner inside the band.
+    """
+    from horn_core.driver_interface import resolve_front_chamber
+    volume, _, _ = resolve_front_chamber(driver)
+    if volume <= 0:
+        return None
+    area = 2 * math.pi * f_high_hz * volume / _SPEED_OF_SOUND
+    return math.sqrt(area / math.pi)
+
+
+def throat_flags(radii, drivers, f_high_hz, ka_soft=THROAT_KA_FIRST_ASYMMETRIC_MODE):
+    """Per sampled radius: ka at f_high, the soft-flag state and drivers with Sd < St."""
+    flags = {}
+    for radius in radii:
+        ka = 2 * math.pi * f_high_hz * radius / _SPEED_OF_SOUND
+        area = math.pi * radius**2
+        flags[f"{radius:.6f}"] = {
+            "ka_at_f_high": ka,
+            "above_first_asymmetric_mode": ka > ka_soft,
+            "drivers_with_sd_below_throat": sorted(d.driver_id for d in drivers if d.sd_m2 < area),
+        }
+    return flags
 
 
 def _parse_diameter_inches(d: Optional[str]) -> Optional[float]:
@@ -73,8 +125,11 @@ def prescreen_drivers(
     3. Optional nominal diameter filter (user-specified min/max)
     4. Driver must physically fit in the horn mouth
 
-    Throat radii are derived from acoustic constraints (ka ≤ ka_max at f_high),
-    not from driver Sd.
+    Throat radii are derived from acoustic constraints (ka <= ka_max at
+    f_high, default 3.83, the first radial duct mode), plus driver-matched
+    radii (St = Sd) and chamber-matched radii (front-chamber corner at
+    f_high) that fall under the cap. Radii within 1% are merged. Radii above
+    ka_soft (1.84) and drivers with Sd < St are flagged, not removed.
 
     Args:
         drivers: Full list of drivers from the database.
@@ -145,10 +200,16 @@ def prescreen_drivers(
         for d in candidates if d.effective_throat_area > 0
     ]
     direct_radii = [r for r in driver_radii if r <= a_acoustic_max]
+    # A front chamber (estimated or supplied) favours throats large enough to
+    # put its low-pass corner at or above f_high; capped like every other radius.
+    chamber_radii = [r for r in (chamber_matched_throat_radius(d, config.target_f_high_hz) for d in candidates)
+                     if r is not None]
+    chamber_radii = [min(r, a_acoustic_max) for r in chamber_radii]
 
-    all_radii = sorted(set(
-        min(round(r, 6), a_acoustic_max) for r in acoustic_radii + direct_radii
-    ))
+    # round() can lift a radius above the cap; floor to the cap after rounding.
+    all_radii = dedupe_radii(
+        min(round(r, 6), a_acoustic_max) for r in acoustic_radii + direct_radii + chamber_radii
+    )
 
     # Keep at most 5 to limit combinatorial explosion
     if len(all_radii) > 5:
@@ -163,6 +224,7 @@ def prescreen_drivers(
         throat_radius_m=representative_radius,
         throat_radii_m=throat_radii_m,
         count=len(candidates),
+        throat_flags=throat_flags(throat_radii_m, candidates, config.target_f_high_hz, config.ka_soft),
     )
 
 
@@ -177,8 +239,8 @@ def main():
     parser.add_argument("--mouth-radius", type=float, default=None, help="Horn mouth radius (m). Optional for fullauto mode.")
     parser.add_argument("--length", type=float, default=None, help="Horn length (m). Optional for fullauto mode.")
     parser.add_argument("--min-ebp", type=float, default=50.0, help="Minimum EBP threshold.")
-    parser.add_argument("--ka-max", type=float, default=2 * math.pi,
-                        help="Absolute cap on throat ka at f_high (default 2π ≈ 6.28).")
+    parser.add_argument("--ka-max", type=float, default=THROAT_KA_FIRST_RADIAL_MODE,
+                        help="Cap on sampled throat ka at the target high frequency (default 3.83, first radial mode).")
     parser.add_argument("--min-diameter", type=float, default=None,
                         help="Minimum driver nominal diameter (inches).")
     parser.add_argument("--max-diameter", type=float, default=None,
@@ -212,7 +274,8 @@ def main():
 
     result = prescreen_drivers(drivers, config)
 
-    output = json.dumps({**result.to_dict(), "ka_max": config.ka_max}, indent=2)
+    output = json.dumps({**result.to_dict(), "ka_max": config.ka_max, "ka_soft": config.ka_soft,
+                         "ka_reference": "target_f_high"}, indent=2)
     Path(args.output).write_text(output)
     print(f"Pre-screening complete: {result.count} drivers passed")
     print(f"Representative throat radius: {result.throat_radius_m:.4f} m")

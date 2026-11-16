@@ -104,6 +104,11 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
             missing.append("maximum_output_limits_unknown")
         from horn_core.driver_interface import interface_evidence_gaps, interface_summary
         missing.extend(interface_evidence_gaps(driver, throat_area, target.f_high_hz))
+    if throat_area is not None and throat_area > 0:
+        from horn_analysis.prescreen import THROAT_KA_FIRST_ASYMMETRIC_MODE
+        throat_ka = 2*np.pi*target.f_high_hz*np.sqrt(throat_area/np.pi)/343.
+        if throat_ka > THROAT_KA_FIRST_ASYMMETRIC_MODE:
+            missing.append("throat_above_first_asymmetric_mode")
     operating_limits = {}
     if driver is not None and operating_point is not None:
         for quantity, limit, reason in [("displacement_peak_m",driver.xmax_m,"driver_excursion_exceeded"),
@@ -141,6 +146,50 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
         "target_min_level_db": float(y.min()),
         "target_max_level_db": float(y.max()),
     }
+
+
+CHAMBER_LIMITED_GAP = "response_limited_by_estimated_front_chamber"
+
+
+def assess_driver(frequencies, target, driver, throat_area, response, length=None, mouth_radius=None):
+    """evaluate_response for one driver, with the estimated-chamber policy applied.
+
+    ``response(driver)`` returns ``(levels, operating_point)`` for that driver
+    on the horn. Levels, score and every reported metric use the driver's
+    front chamber, so the search prefers horns that work with it. When that
+    chamber is only the cone geometric estimate, the pair is evaluated a
+    second time with no front chamber, and a hard constraint fails the design
+    only if it also fails without the chamber. Constraints that fail only
+    because of the estimate are listed in ``estimated_chamber_only_reasons``
+    and flagged as an evidence gap instead. A supplied chamber volume,
+    including 0, is never second-guessed.
+    """
+    from dataclasses import replace
+    from horn_core.driver_interface import resolve_front_chamber
+    levels, point = response(driver)
+    result = evaluate_response(frequencies, levels, target, driver, throat_area, length, mouth_radius, operating_point=point)
+    estimated = resolve_front_chamber(driver)[2] == "estimated"
+    result["front_chamber_estimated"] = estimated
+    if not estimated:
+        return result
+    ideal_driver = replace(driver, front_chamber_volume_m3=0.0, front_chamber_area_m2=None)
+    ideal_levels, ideal_point = response(ideal_driver)
+    ideal = evaluate_response(frequencies, ideal_levels, target, ideal_driver, throat_area, length, mouth_radius, operating_point=ideal_point)
+    kept = [r for r in result["rejection_reasons"] if r in ideal["rejection_reasons"]]
+    chamber_only = [r for r in result["rejection_reasons"] if r not in ideal["rejection_reasons"]]
+    gaps = list(result["evidence_gaps"]) + ([CHAMBER_LIMITED_GAP] if chamber_only else [])
+    from horn_analysis.scoring import weighted_score
+    result.update({
+        "rejection_reasons": kept,
+        "estimated_chamber_only_reasons": chamber_only,
+        "evidence_gaps": gaps,
+        "model_feasible": not kept,
+        "composite_score": 0.0 if kept else weighted_score(target, result["score_terms"]),
+        "eligibility_status": "infeasible" if kept else ("insufficient_evidence" if gaps else "model_feasible"),
+        "without_front_chamber": {k: ideal[k] for k in ("passband_ripple_db", "avg_sensitivity_db", "extension_octaves",
+                                                        "f3_low_hz", "f3_high_hz", "rejection_reasons")},
+    })
+    return result
 
 
 def _f3_edge(log_f, levels, log_edge, log_other_edge, threshold, direction):

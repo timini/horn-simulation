@@ -107,6 +107,14 @@ just run \
 
 Fix any dimensions you know, derive the others from the band, screen seven profile families, evaluate a shortlist with FEM, and refine within a fixed budget. Ranking uses the requested band and records infeasible combinations and missing evidence.
 
+How the search chooses what to solve:
+
+- **Throats.** Unless you fix `--throat_radius`, throats are sampled up to ka = 3.83 at `target_f_high` (the first radial duct mode, where a plane-wave screen stops being meaningful). Throats above ka = 1.84 (the first asymmetric mode) are flagged `throat_above_first_asymmetric_mode`. Radii within 1% are merged. Drivers with Sd smaller than a sampled throat are listed in `prescreen_result.json` and flagged `diaphragm_smaller_than_throat`. A throat you fix may go up to ka = 2 pi.
+- **Driver front chamber.** Levels and scores include the driver's front chamber, so the search prefers throats and horns that work with it. A cone without chamber data gets a geometric estimate (the air in the cone behind a flat adapter plate). Rows using it carry `front_chamber_estimated: true`. A constraint that fails only with the estimate is listed in `estimated_chamber_only_reasons` and flagged `response_limited_by_estimated_front_chamber`; it does not reject the design. `without_front_chamber` gives the ripple and level with no chamber. Put the real adapter volume in the driver record (`front_chamber_volume_cm3`, 0 for a phase plug filling the cone) to replace the estimate.
+- **Size caps.** With only `--max_length` or `--max_mouth_radius`, that dimension is searched from 0.4 times the cap up to the cap. When the cap is below the ka = 1 mouth or quarter-wave length for `target_f_low`, `design.json`, the ranking and the report state the expected low-frequency shortfall in octaves.
+- **FEM shortlist.** The top half of `--lem_top_n` goes to FEM by score alone. The best design of each missing profile then fills slots up to 80% of the budget, and no profile takes more than half of `--lem_top_n` while other profiles have comparable candidates.
+- **Refinement.** It starts from the best feasible FEM design or, when every FEM candidate failed, from the least-infeasible one (fewest failed constraints, smallest ripple excess). When it ends on a heuristic bound it widens that bound by 25%, up to twice; bounds you set are never moved.
+
 ```bash
 just run-auto \
     --target_f_low 500 --target_f_high 4000 \
