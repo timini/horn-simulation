@@ -36,7 +36,7 @@ def test_estimated_chamber_failure_is_flagged_not_rejected():
     assert row["front_chamber_estimated"] is True
     assert row["passband_ripple_db"] > 6.0  # levels and score include the estimate
     assert row["without_front_chamber"]["passband_ripple_db"] < 6.0
-    assert row["estimated_chamber_only_reasons"] == ["target_band_ripple_exceeded"]
+    assert row["estimated_chamber_reasons"] == ["target_band_ripple_exceeded"]
     assert row["rejection_reasons"] == [] and row["model_feasible"] is True
     assert "response_limited_by_estimated_front_chamber" in row["evidence_gaps"]
     assert "front_chamber_volume_estimated" in row["evidence_gaps"]
@@ -68,7 +68,7 @@ def test_failure_without_the_chamber_still_rejects():
     strict_row = result["rankings"][0]
     assert strict_row["model_feasible"] is False
     assert strict_row["rejection_reasons"] == ["target_band_ripple_exceeded"]
-    assert strict_row["estimated_chamber_only_reasons"] == []
+    assert strict_row["estimated_chamber_reasons"] == []
 
 
 def test_fem_ranking_applies_the_same_policy_to_the_preserved_800_1600_example():
@@ -82,7 +82,7 @@ def test_fem_ranking_applies_the_same_policy_to_the_preserved_800_1600_example()
     assert row["passband_ripple_db"] > 6.0
     assert row["without_front_chamber"]["passband_ripple_db"] <= 6.0
     assert row["model_feasible"] is True
-    assert row["estimated_chamber_only_reasons"] == ["target_band_ripple_exceeded"]
+    assert row["estimated_chamber_reasons"] == ["target_band_ripple_exceeded"]
 
 
 def test_wide_throat_is_flagged_above_first_asymmetric_mode():
@@ -93,3 +93,53 @@ def test_wide_throat_is_flagged_above_first_asymmetric_mode():
                                       (320 / 2**.5, 5000 * 2**.5), num_frequencies=161, top_n=1,
                                       radiation_model="modal_baffled", target=TargetSpec(320, 5000))
     assert "throat_above_first_asymmetric_mode" not in result["rankings"][0]["evidence_gaps"]
+
+
+# The cases below came from the report stream and check the FEM ranking path
+# on the preserved 800-1600 Hz example.
+EXAMPLE_800 = ROOT / "examples/800-1600-modal"
+
+
+@pytest.fixture(scope="module")
+def example():
+    preserved = json.loads((EXAMPLE_800 / "ranking.json").read_text())[0]
+    driver = load_driver(str(ROOT / "data/drivers-curated"), preserved["driver_id"])
+    assert driver.driver_type == "cone" and driver.front_chamber_volume_m3 is None
+    return preserved, driver
+
+
+def _rank(preserved, driver):
+    return rank_horn_drivers(str(EXAMPLE_800 / "horn-impedance.csv"), preserved["horn_label"], preserved["throat_radius"],
+                             [driver], TargetSpec(800, 1600), top_n=1, length=preserved["length"])[0]
+
+
+def test_estimated_chamber_flags_instead_of_rejecting(example):
+    row = _rank(*example)
+    # The estimate is applied: ripple is over the 6 dB limit with the chamber.
+    assert row["passband_ripple_db"] > 6.0
+    assert row["front_chamber_estimated"] is True
+    assert row["driver_interface"]["front_chamber_source"] == "estimated"
+    assert row["estimated_chamber_reasons"] == ["target_band_ripple_exceeded"]
+    assert row["rejection_reasons"] == []
+    assert row["model_feasible"] is True
+    assert row["composite_score"] > 0
+    assert "front_chamber_volume_estimated" in row["evidence_gaps"]
+
+
+def test_estimated_chamber_still_lowers_the_score(example):
+    preserved, driver = example
+    estimated = _rank(preserved, driver)
+    ideal = _rank(preserved, replace(driver, front_chamber_volume_m3=0.0))
+    assert ideal["passband_ripple_db"] == pytest.approx(1.485, abs=1e-3)
+    assert ideal["front_chamber_estimated"] is False
+    assert estimated["composite_score"] < ideal["composite_score"]
+
+
+def test_supplied_chamber_rejects_normally(example):
+    preserved, driver = example
+    supplied = replace(driver, front_chamber_volume_m3=estimate_cone_front_chamber_m3(driver.sd_m2),
+                       front_chamber_area_m2=driver.sd_m2)
+    row = _rank(preserved, supplied)
+    assert row["front_chamber_estimated"] is False
+    assert row["rejection_reasons"] == ["target_band_ripple_exceeded"]
+    assert row["model_feasible"] is False and row["composite_score"] == 0.0

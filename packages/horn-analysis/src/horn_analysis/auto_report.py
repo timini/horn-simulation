@@ -33,6 +33,9 @@ def generate_auto_report(
     lem_results: Optional[dict] = None,
     no_feasible_reason: Optional[str] = None,
     scoring: Optional[dict] = None,
+    rejected: Optional[List[dict]] = None,
+    rejection_stage: Optional[str] = None,
+    step_files: Optional[Dict[str, str]] = None,
 ) -> Path:
     """Generate the auto-select report with rankings, plots, and CSVs.
 
@@ -51,6 +54,12 @@ def generate_auto_report(
         total_scored: Total number of driver-horn combinations scored.
         scoring: Score formula, weights and bound origins (``describe_scoring``).
             Derived from ``target`` when not given.
+        rejected: Rows that failed a hard limit. Infeasible rows in
+            ``all_ranked`` are moved here. They are summarised by reason with
+            margins in the report, auto_summary.txt and auto_rejections.json.
+        rejection_stage: Where those rows were rejected, e.g. "FEM" or
+            "analytical prescreen".
+        step_files: horn_label -> STEP path to show for each ranked horn.
 
     Returns:
         Path to the output directory.
@@ -60,6 +69,15 @@ def generate_auto_report(
     if scoring is None:
         from horn_analysis.scoring import describe_scoring
         scoring = describe_scoring(target, derived_geometry)
+
+    from horn_analysis.report_tables import (candidate_label, chamber_assumption, has_parametric_geometry,
+                                             profile_table, rejection_summary)
+    rejected = list(rejected or []) + [r for r in all_ranked if r.get("model_feasible") is False]
+    all_ranked = [r for r in all_ranked if r.get("model_feasible") is not False]
+    step_files = step_files or {}
+    if not all_ranked and rejected and not no_feasible_reason:
+        no_feasible_reason = ("Every evaluated driver-horn pair failed at least one hard limit; "
+                              "see the rejection table for the reasons and how close they came.")
 
     # Sort all results by composite score
     all_ranked.sort(key=lambda r: r["composite_score"], reverse=True)
@@ -73,6 +91,7 @@ def generate_auto_report(
     # 2. Generate individual coupled-SPL CSVs for top candidates
     csv_pairs = []  # (csv_path, label) for comparison plot
     electrical_tables = []
+    builder_files = {}
     for rank, result in enumerate(top_results, 1):
         driver_id = result["driver_id"]
         horn_label = result["horn_label"]
@@ -93,9 +112,21 @@ def generate_auto_report(
         csv_path = out / csv_name
         table.to_csv(csv_path, index=False)
 
-        label = f"#{rank} {drv.manufacturer} {drv.model_name} ({horn_label})"
+        label = candidate_label(rank, result)
         csv_pairs.append((str(csv_path), label))
         electrical_tables.append((label, table, drv.xmax_m))
+
+        if horn_label not in builder_files:
+            files = {"step": step_files.get(horn_label)}
+            if has_parametric_geometry(result):
+                profile_name = f"profile_{rank:02d}_{horn_label}.csv"
+                profile_table(result).to_csv(out / profile_name, index=False)
+                files["profile_csv"] = profile_name
+            builder_files[horn_label] = files
+
+    summary = rejection_summary(rejected, target, drivers)
+    (out / "auto_rejections.json").write_text(json.dumps(
+        {"stage": rejection_stage, "rejected_pairs": len(rejected), "reasons": summary}, indent=2))
 
     if electrical_tables:
         plot_electrical(electrical_tables, str(out / "auto_electrical.png"))
@@ -135,15 +166,17 @@ def generate_auto_report(
     # 4. Human-readable summary
     scored_display = total_scored if total_scored is not None else len(all_ranked)
     lines = [
-        "Horn Driver Auto-Select Results — experimental predictions",
+        "Horn Driver Auto-Select Results: EXPERIMENTAL PREDICTION",
         "Status: experimental_candidates" if all_ranked else "Status: no_feasible_design",
         "No recommendation is physically validated. See evidence gaps in ranking JSON.",
+        "Candidates are named '#rank horn_label + driver_id'; plot legends and CSV names use the same IDs.",
+        "Dimensions are in mm. Profile CSVs give the air-passage wall radius r_mm against axial position z_mm (z = 0 at the throat).",
         "f3 is 3 dB below the target-band mean level, searched outward from the band edges over the full sweep; ≤ / ≥ values are sweep bounds.",
         "Scores within 0.02 are near-ties for comparison; physical uncertainty is not quantified.",
         "=" * 40,
         f"Target: {target.f_low_hz:.0f} Hz - {target.f_high_hz:.0f} Hz",
         "Throat radii: see each candidate below" if derived_geometry else (f"Throat radius: {throat_radius:.4f} m" if throat_radius is not None else "Throat radius: not available"),
-        f"Profiles evaluated: {', '.join(solver_csvs.keys())}",
+        f"Horns evaluated: {', '.join(solver_csvs.keys())}",
         f"Total candidates scored: {scored_display}",
     ]
 
@@ -183,23 +216,27 @@ def generate_auto_report(
 
     for rank, result in enumerate(top_results, 1):
         lines.append(
-            f"  {rank}. {result.get('manufacturer', '')} {result.get('model_name', '')} "
-            f"+ {result['horn_label']}"
+            f"  {candidate_label(rank, result)} ({result.get('manufacturer', '')} {result.get('model_name', '')}); "
+            f"evidence status: {result.get('eligibility_status', 'unknown')}"
         )
         lines.append(f"     Score: {result['composite_score']:.3f}  "
                       f"Extension: {result['extension_octaves']:+.2f} oct  "
                       f"Ripple: {result['passband_ripple_db']:.1f} dB  "
                       f"Mean output level: {result['avg_sensitivity_db']:.1f} dB")
         if all(result.get(key) is not None for key in ("throat_radius", "mouth_radius", "length")):
-            lines.append(f"     Throat radius: {result['throat_radius']:.6f} m; mouth radius: {result['mouth_radius']:.6f} m; length: {result['length']:.6f} m")
+            lines.append(f"     Throat radius: {result['throat_radius']*1e3:.2f} mm; mouth radius: {result['mouth_radius']*1e3:.2f} mm; length: {result['length']*1e3:.2f} mm")
+        files = builder_files.get(result["horn_label"], {})
+        if files.get("profile_csv"):
+            lines.append(f"     Profile CSV: {files['profile_csv']}")
+        lines.append(f"     STEP (relative to this folder): {files.get('step') or 'not available'}")
         interface = result.get("driver_interface")
         if interface:
             corner = interface.get("front_chamber_corner_hz")
-            lines.append(f"     Front chamber: {interface['front_chamber_volume_cm3']:.1f} cm3 ({interface['front_chamber_source']}); "
+            lines.append(f"     Front chamber: {chamber_assumption(result)}; "
                          f"Sd/St {interface['compression_ratio']:.2f}"
                          + (f"; lumped corner on a resistive load {corner:.0f} Hz" if corner else ""))
         if result.get("front_chamber_estimated"):
-            only = result.get("estimated_chamber_only_reasons") or []
+            only = result.get("estimated_chamber_reasons") or []
             ideal = result.get("without_front_chamber") or {}
             lines.append("     front_chamber_estimated: yes"
                          + (f"; fails only with the estimate: {', '.join(only)}" if only else "")
@@ -226,6 +263,12 @@ def generate_auto_report(
         lines.append("Directivity: not available; it needs the modal_baffled radiation model.")
     if no_feasible_reason and not all_ranked:
         lines.append("Reason: " + no_feasible_reason)
+    if summary:
+        lines.extend(["", f"Rejected pairs: {len(rejected)}" + (f" ({rejection_stage})" if rejection_stage else ""),
+                      "  reason: count, closest miss, largest excess"])
+        for entry in summary:
+            fmt = lambda v: "n/a" if v is None else f"{v:.2f} {entry['unit']}".strip()
+            lines.append(f"  {entry['reason']}: {entry['count']}, {fmt(entry['closest_excess'])}, {fmt(entry['largest_excess'])}")
     (out / "auto_summary.txt").write_text("\n".join(lines))
 
     # 5. Self-contained HTML report
@@ -245,8 +288,11 @@ def generate_auto_report(
         lem_results=lem_results,
         no_feasible_reason=no_feasible_reason,
         scoring=scoring,
-        electrical_png=str(out / "auto_electrical.png") if electrical_tables else None,
         directivity_tables=directivity_tables,
+        electrical_tables=electrical_tables,
+        rejected=rejected,
+        rejection_stage=rejection_stage,
+        builder_files=builder_files,
     )
     (out / "auto_report.html").write_text(html_report)
 

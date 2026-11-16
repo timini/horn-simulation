@@ -153,8 +153,9 @@ def test_variable_throats_appear_in_table_summary_and_candidate_renders(report_i
                                derived_geometry={'throat_radius_range':[.012,.024],
                                                  'mouth_radius_range':[.1,.1], 'length_range':[.2,.2]})
     assert 'Throat radius: 0.0120 — 0.0240 m (search range)' in text
-    assert '<th>Throat R (m)</th>' in text
-    assert '<td>0.0120</td>' in text and '<td>0.0180</td>' in text
+    # Builder dimensions in the ranking table are in millimetres.
+    assert '<th>Throat R (mm)</th>' in text
+    assert '<td>12.0</td>' in text and '<td>18.0</td>' in text
     assert '<dt>Throat radius range</dt><dd>0.0120 — 0.0240 m</dd>' in text
     assert set(rendered) == set(radii)
     assert 'Mouth: 0.1000 m' in text
@@ -177,7 +178,9 @@ def test_rankings_use_profile_metadata_with_legacy_label_fallback(report_inputs)
     row = dict(report_inputs['all_ranked'][0], horn_label='auto_hyp_0012', profile='hyperbolic')
     text = _render_rankings_rows([row], report_inputs['drivers'])
     assert '>Hyperbolic</span>' in text
-    assert 'auto_hyp_0012' not in text
+    # The candidate ID has its own column; the profile badge names the profile, not the ID.
+    assert '<td><code>auto_hyp_0012 + d1</code></td>' in text
+    assert '>Auto_hyp_0012</span>' not in text
     row.update(profile='', horn_label='conical')
     assert '>Conical</span>' in _render_rankings_rows([row], report_inputs['drivers'])
 

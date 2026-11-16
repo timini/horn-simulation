@@ -150,46 +150,65 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
 
 CHAMBER_LIMITED_GAP = "response_limited_by_estimated_front_chamber"
 
+# Limits that do not depend on the front chamber. A row that already fails
+# one of these is rejected whatever the chamber, so it skips the re-evaluation.
+_CHAMBER_INDEPENDENT_REASONS = {
+    "maximum_length_exceeded", "maximum_mouth_radius_exceeded", "driver_larger_than_mouth",
+    "compression_ratio_exceeded", "outside_driver_usable_band",
+}
 
-def assess_driver(frequencies, target, driver, throat_area, response, length=None, mouth_radius=None):
-    """evaluate_response for one driver, with the estimated-chamber policy applied.
 
-    ``response(driver)`` returns ``(levels, operating_point)`` for that driver
-    on the horn. Levels, score and every reported metric use the driver's
-    front chamber, so the search prefers horns that work with it. When that
-    chamber is only the cone geometric estimate, the pair is evaluated a
-    second time with no front chamber, and a hard constraint fails the design
-    only if it also fails without the chamber. Constraints that fail only
-    because of the estimate are listed in ``estimated_chamber_only_reasons``
-    and flagged as an evidence gap instead. A supplied chamber volume,
-    including 0, is never second-guessed.
+def assess_with_chamber_policy(driver, evaluate, target):
+    """Apply the estimated-front-chamber policy to one driver assessment.
+
+    ``evaluate(driver)`` returns an ``evaluate_response`` dict. A cone driver
+    with no chamber data is evaluated with its geometric front-chamber
+    estimate, so the score and every reported level include that chamber and
+    the search prefers horns that work with it. An estimated chamber does not
+    by itself reject a design: the pair is evaluated again with no front
+    chamber, and reasons that appear only with the estimate are moved to
+    ``estimated_chamber_reasons`` and flagged with the evidence gap
+    ``response_limited_by_estimated_front_chamber``. The no-chamber metrics
+    are kept in ``without_front_chamber``. A user-supplied chamber volume
+    (including 0) is used as given and rejects normally.
     """
     from dataclasses import replace
     from horn_core.driver_interface import resolve_front_chamber
-    levels, point = response(driver)
-    result = evaluate_response(frequencies, levels, target, driver, throat_area, length, mouth_radius, operating_point=point)
-    estimated = resolve_front_chamber(driver)[2] == "estimated"
-    result["front_chamber_estimated"] = estimated
-    if not estimated:
-        return result
-    ideal_driver = replace(driver, front_chamber_volume_m3=0.0, front_chamber_area_m2=None)
-    ideal_levels, ideal_point = response(ideal_driver)
-    ideal = evaluate_response(frequencies, ideal_levels, target, ideal_driver, throat_area, length, mouth_radius, operating_point=ideal_point)
-    kept = [r for r in result["rejection_reasons"] if r in ideal["rejection_reasons"]]
-    chamber_only = [r for r in result["rejection_reasons"] if r not in ideal["rejection_reasons"]]
-    gaps = list(result["evidence_gaps"]) + ([CHAMBER_LIMITED_GAP] if chamber_only else [])
     from horn_analysis.scoring import weighted_score
-    result.update({
-        "rejection_reasons": kept,
-        "estimated_chamber_only_reasons": chamber_only,
-        "evidence_gaps": gaps,
-        "model_feasible": not kept,
-        "composite_score": 0.0 if kept else weighted_score(target, result["score_terms"]),
-        "eligibility_status": "infeasible" if kept else ("insufficient_evidence" if gaps else "model_feasible"),
-        "without_front_chamber": {k: ideal[k] for k in ("passband_ripple_db", "avg_sensitivity_db", "extension_octaves",
-                                                        "f3_low_hz", "f3_high_hz", "rejection_reasons")},
-    })
-    return result
+    assessment = evaluate(driver)
+    estimated = resolve_front_chamber(driver)[2] == "estimated"
+    assessment["front_chamber_estimated"] = estimated
+    assessment["estimated_chamber_reasons"] = []
+    reasons = assessment["rejection_reasons"]
+    if not estimated or (reasons and set(reasons) & _CHAMBER_INDEPENDENT_REASONS):
+        return assessment
+    ideal = evaluate(replace(driver, front_chamber_volume_m3=0.0, front_chamber_area_m2=None))
+    assessment["without_front_chamber"] = {k: ideal[k] for k in (
+        "passband_ripple_db", "avg_sensitivity_db", "extension_octaves", "f3_low_hz", "f3_high_hz",
+        "rejection_reasons")}
+    chamber_only = [r for r in reasons if r not in ideal["rejection_reasons"]]
+    if not chamber_only:
+        return assessment
+    kept = [r for r in reasons if r not in chamber_only]
+    gaps = list(assessment["evidence_gaps"]) + [CHAMBER_LIMITED_GAP]
+    assessment.update(
+        rejection_reasons=kept,
+        estimated_chamber_reasons=chamber_only,
+        evidence_gaps=gaps,
+        model_feasible=not kept,
+        composite_score=0.0 if kept else weighted_score(target, assessment["score_terms"]),
+        eligibility_status="infeasible" if kept else "insufficient_evidence",
+    )
+    return assessment
+
+
+def assess_driver(frequencies, target, driver, throat_area, response, length=None, mouth_radius=None):
+    """``assess_with_chamber_policy`` for a ``response(driver) -> (levels, operating_point)`` callback."""
+    def evaluate(model):
+        levels, point = response(model)
+        return evaluate_response(frequencies, levels, target, model, throat_area, length, mouth_radius,
+                                 operating_point=point)
+    return assess_with_chamber_policy(driver, evaluate, target)
 
 
 def _f3_edge(log_f, levels, log_edge, log_other_edge, threshold, direction):
