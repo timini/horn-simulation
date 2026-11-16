@@ -1,64 +1,80 @@
-# Worked example: an 800–1600 Hz horn candidate
+# Worked example: an 800 to 1600 Hz horn
 
-The pipeline can now generate and refine a candidate from an operating band, rank the driver/horn combinations, and produce response data, dimensions, acoustic STEP geometry and a report. This example demonstrates that software workflow. It is **an experimental prediction**, not a physically qualified or manufacturing-ready assembly.
+This walks through one auto-mode run from command to result. The result is an experimental prediction, not a qualified or buildable assembly.
 
-## Reproduce the search
+## Run it
 
-From a clean checkout, install the README prerequisites and run:
+After the [README](../README.md#quick-start) prerequisites:
 
 ```sh
 just build
-just run-auto --target_f_low 800 --target_f_high 1600 \
-  --drivers_db data/drivers-curated --lem_top_n 3 --refinement_budget 2 \
-  --num_bands 2 --num_intervals 101 --mesh_size 0.01
+just run-auto --target_f_low 800 --target_f_high 1600 --drivers_db data/drivers-curated \
+  --lem_top_n 3 --refinement_budget 2 --num_bands 2 --num_intervals 101 --mesh_size 0.01
 just latest-run
 ```
 
-The last command returns the completed run directory. Open `outputs/auto/report/auto_report.html` inside it. The report is self-contained. The default drive is 2.83 V RMS and the observation point is 1 m on axis, using the lossless horn and uniform circular piston in an infinite baffle. The full resolved specification is stored in the run.
+`just latest-run` prints the run folder. Open `outputs/auto/report/auto_report.html` inside it.
 
-The bounded example deliberately evaluates three screened geometries and two refinement proposals. A larger search is possible, but this example does not prove a global optimum or that physical differences between close scores are meaningful.
+The settings keep the run short: three screened geometries go to FEM and refinement gets two extra solves. Drive is 2.83 V RMS, the observer is 1 m on axis, the mouth model is `modal_baffled` and the ripple limit is 6 dB, all defaults. A larger budget may find a different design. This run does not show a global optimum.
 
-## Generated candidate
+## What happened
 
-The completed run and a fresh run after the report fixes selected the following leading numerical candidate:
+The numbers below are from run `20261116T223748Z-45ab2da6`, at source revision `4307d67` (the pipeline code is the same as at `ba3cb10`). It took under two minutes on an Apple laptop. Run folders are not committed; rerun the command to reproduce them. Small differences can come from a different machine.
+
+1. **Driver screen.** Five of the seven curated drivers passed: the three cone drivers and two Peerless compression drivers.
+2. **Throats.** Five throat radii from 12.7 mm to 130.7 mm (the ka = 3.83 limit at 1600 Hz), including one that puts the 6NMB420's estimated front chamber corner at 1600 Hz.
+3. **Grid and screen.** 230 geometries across the seven profiles, 1,150 driver pairs scored by the Webster screen. Three went to FEM: one `cd`, one exponential and one scaled tractrix.
+4. **FEM and ranking.** 25 driver and horn pairs were scored. Both Peerless drivers were rejected: the band is outside their rated usable band, and one also exceeds Xmax at 2.83 V.
+5. **Refinement.** Two more `cd` geometries, starting from the best FEM design.
+
+## Result
 
 | Item | Value |
 | --- | --- |
-| Driver | 18Sound 6NMB420, curated manufacturer-parameter record |
-| Profile | Hyperbolic |
-| Throat diameter | 64.996 mm |
-| Mouth diameter | 177.418 mm |
-| Acoustic length | 117.906 mm |
-| Target-band predicted ripple | Approximately 0.99 dB |
-| Predicted mean target-band output | Approximately 104.94 dB SPL at 1 m, 2.83 V RMS |
-| Evidence status | Insufficient evidence for a physical recommendation |
+| Driver | 18Sound 6NMB420 (8 ohm), curated record |
+| Profile | `cd` (exponential throat into a cone) |
+| Throat diameter | 72.12 mm |
+| Mouth diameter | 177.42 mm |
+| Length | 117.91 mm |
+| Target-band ripple | 2.08 dB |
+| Mean target-band level | 104.13 dB at 1 m, 2.83 V RMS |
+| f3 | 485 Hz and 2024 Hz (3 dB below the band mean) |
+| Score | 0.791 |
+| Status | `insufficient_evidence` |
 
-The STEP file is `outputs/auto/refinement/refine_hyperbolic_0001.step`. Its matching raw FEM data are `refine_hyperbolic_0001_results.csv` in the same directory. Driver-coupled SPL data are in `outputs/auto/report/coupled_01_18sound-6nmb420_refine_hyperbolic_0001.csv`. Full rankings retain near-tie information, rejection reasons, model assumptions and evidence gaps.
+The next two designs (another `cd` and an exponential horn of the same throat and mouth) score within 0.02 and are marked near ties. Treat the three as equivalent.
 
-The throat/mouth dimensions describe the air passage. They do not specify horn wall thickness, driver mounting, front chamber, adapter/phase-plug geometry or a separately characterized rear load. The curated record lacks a verified interface and separate moving-mass/rear-load decomposition. These figures were produced with an ideal area transformer at the throat (no front chamber). The coupling now models a front chamber, and a cone driver without chamber data gets the cone's own air volume as an estimate (139 cm3 for the 6NMB420, a lumped corner near 1.3 kHz on this 65 mm throat). Re-ranking the preserved modal FEM response for this geometry (`examples/800-1600-modal/horn-impedance.csv`) with that estimate gives about 6.4 dB target-band ripple, above the default 6 dB limit, so a new run will not reproduce the table above. Because the design meets the limit without the chamber (1.48 dB), it is kept and marked `front_chamber_estimated: true` (evidence gap `front_chamber_volume_estimated`), with the ripple limit listed under `estimated_chamber_reasons`; an estimated chamber never rejects a design by itself. The estimate is the air in an open cone closed by a flat adapter plate. It is not a bound: a spacer adds volume, while a phase plug or cone filler reduces it and raises the corner. Supply `front_chamber_volume_cm3` (cubic centimetres) for the adapter you will actually build. Do not fabricate this as a supposedly validated assembly from the air-volume STEP alone.
+The level includes the 6NMB420's estimated front chamber: 139 cm3, the air in its cone closed by a flat adapter plate, with a corner near 1600 Hz on this throat (`front_chamber_estimated: true`). Without the chamber the same horn gives 3.23 dB ripple and 102.33 dB (`without_front_chamber`). The real adapter will differ: a spacer adds volume, a phase plug or cone filler removes it. Put the real volume in the driver record as `front_chamber_volume_cm3` and rerun.
 
-## Resolution and reporting
+Evidence gaps on the winner: `driver_interface_unverified`, `moving_mass_and_rear_load_not_separated`, `front_chamber_volume_estimated` and `front_chamber_not_lumped_in_band`.
 
-The [resolution study](CANDIDATE_RESOLUTION.md) freezes the geometry, driver and band, then separately increases mesh, loft and frequency resolution. Numerical convergence does not improve the missing physical evidence or establish the order of nearly tied designs.
+## Files
 
-Reports distinguish observed −3 dB crossings from sweep bounds. For this example the upper crossing is outside the simulated range: `≥2263 Hz` is a bound, not an exact cutoff. [Response metric definitions](history/REPORT_METRICS.md) explain the difference between target-band acceptance and secondary peak-lobe KPIs.
+Inside `outputs/auto/`:
 
-## Resume and preserve evidence
+- `refinement/refine_cd_0001.step`: the winning air volume, true size in millimetres.
+- `report/profile_01_refine_cd_0001.csv`: its wall profile, `z_mm` and `r_mm`.
+- `report/coupled_01_18sound-6nmb420_refine_cd_0001.csv`: level, electrical impedance, excursion, power and group delay.
+- `refinement/refine_cd_0001_results.csv`: the raw FEM output.
+- `refinement/ranked_results.json`, `report/auto_rejections.json`, `refinement/search_audit.json`: ranking, rejections and the refinement trail.
 
-Resume with the run path returned by the launcher:
+[OUTPUTS](OUTPUTS.md) explains every file. The STEP describes the air passage only: no walls, mounting or adapter.
+
+## Resume
 
 ```sh
 python3 scripts/run_pipeline.py --run-dir results/<run-id> -resume
 ```
 
-The source, inputs and container identities must still match. Successful completion and a cached resume have been exercised for the original example. Preserve the manifest and all outputs together; do not edit old evidence to match a newer checkout. See [run management](history/RUN_MANAGEMENT.md) for lookup and archival cleanup.
+The source, inputs and images must be unchanged. See [USAGE](USAGE.md#resume).
 
-The [independent complete-horn comparison](EXTERIOR_RADIATION_VALIDATION.md) finds on-axis agreement within 0.40 dB for the ideal infinite-baffle model, but misses the strict throat-impedance targets. A finite baffle produces differences of several decibels at the tested points. These are numerical-model findings, not measurements of this driver assembly.
+## Earlier archived runs of this band
 
-The remaining step to a dependable physical recommendation is the [reference/interface/radiation sequence](history/SINGLE_HORN_ROADMAP.md), tracked in [#81](https://github.com/timini/horn-simulation/issues/81). Neither this successful workflow nor its numerical comparisons closes that gate.
+Two earlier runs of the same command are archived with full provenance. Both used an ideal area transformer at the throat, before the front chamber model, and chose a hyperbolic horn with a 65.0 mm throat, 177.4 mm mouth and 117.9 mm length:
 
-## Archived workflow evidence
+- `flanged_piston` mouth: [archive](../data/validation/worked_example_800_1600.tar.gz) and [manifest](../data/validation/worked_example_800_1600_manifest.json). About 0.99 dB ripple and 104.94 dB at the time. Its [resolution study](CANDIDATE_RESOLUTION.md#executed-800-to-1600-hz-example) passes all six comparisons.
+- `modal_baffled` mouth: [examples/800-1600-modal](../examples/800-1600-modal/README.md), 1.49 dB and 104.88 dB at the time. Its [resolution study](MODAL_CANDIDATE_RESOLUTION.md) passes too.
 
-The [2.6 MB worked-example archive](../data/validation/worked_example_800_1600.tar.gz) includes the corrected self-contained HTML report, acoustic STEP files, raw and coupled responses, search audit, full rankings, resolved specification, source/input/container manifest and launch/resume logs. Its [identity manifest](../data/validation/worked_example_800_1600_manifest.json) records the exact source revision. The fresh run completed all 18 processes; its subsequent resume reused every process from cache. Earlier invocation failures are explicitly excluded from this pass.
+With the current front chamber estimate, the archived modal hyperbolic horn gives about 6.4 dB ripple, which is why the current run picks a larger throat. The archives are kept unchanged as evidence of what the code did then.
 
-The separate [resolution archive](CANDIDATE_RESOLUTION.md#executed-8001600-hz-example) passes all six fixed comparisons. Neither archive contains a measured physical horn/driver assembly or a manufacturing specification.
+The [complete-horn radiation comparison](EXTERIOR_RADIATION_VALIDATION.md) and [STATUS](STATUS.md#remaining-work) explain what still separates this from a physically validated recommendation.
