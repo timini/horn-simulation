@@ -44,6 +44,7 @@ PROFILE_STYLES = {
     "hyperbolic":  {"color": "#d4831a", "linestyle": "-."},
     "tractrix":    {"color": "#7b4ea3", "linestyle": ":"},
     "os":          {"color": "#0d9488", "linestyle": "-"},
+    "scaled_tractrix": {"color": "#be185d", "linestyle": "--"},
     "lecleach":    {"color": "#be185d", "linestyle": "--"},
     "cd":          {"color": "#475569", "linestyle": "-."},
 }

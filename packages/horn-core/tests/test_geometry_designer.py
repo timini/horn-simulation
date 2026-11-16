@@ -107,8 +107,8 @@ class TestGenerateFullautoCandidates:
             throat_radii=[0.025],
         )
         # All 63 should pass since derived mouth radii >> 0.025
-        assert len(candidates) == 63
-        assert derived.candidate_count == 63
+        assert len(candidates) == 62  # the shortest tractrix is below its natural length and skipped
+        assert derived.candidate_count == 62
 
     def test_all_profiles_represented(self):
         candidates, _ = generate_fullauto_candidates(
@@ -117,7 +117,7 @@ class TestGenerateFullautoCandidates:
             throat_radii=[0.025],
         )
         profiles = {c.profile for c in candidates}
-        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"}
+        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "cd"}
 
     def test_mouth_exceeds_throat(self):
         """Every candidate must have mouth_radius > throat_radius."""
@@ -172,7 +172,7 @@ class TestGenerateFullautoCandidates:
             num_mouth_radii=2,
             num_lengths=2,
         )
-        assert len(candidates) == 28
+        assert len(candidates) == 27  # one tractrix point is below its natural length
 
     def test_multiple_throat_radii(self):
         """Two throat radii should roughly double the candidates."""
@@ -247,8 +247,8 @@ class TestGenerateAutoCandidates:
             target_f_high=4000,
             throat_radii=[0.025],
         )
-        assert len(candidates) == 63
-        assert derived.candidate_count == 63
+        assert len(candidates) == 62  # one tractrix point is below its natural length
+        assert derived.candidate_count == 62
 
     def test_fixed_mouth_radius(self):
         """Fixed mouth radius → 7×1×1×3 = 21."""
@@ -258,7 +258,7 @@ class TestGenerateAutoCandidates:
             throat_radii=[0.025],
             mouth_radius=0.15,
         )
-        assert len(candidates) == 21
+        assert len(candidates) == 20  # one tractrix point is below its natural length
         # All candidates should have the fixed mouth radius
         for c in candidates:
             assert c.mouth_radius == pytest.approx(0.15)
@@ -289,7 +289,7 @@ class TestGenerateAutoCandidates:
         )
         assert len(candidates) == 7
         profiles = {c.profile for c in candidates}
-        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"}
+        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "cd"}
 
     def test_multiple_throat_radii_fixed_geom(self):
         """3 throat radii with fixed mouth+length → 7×3×1×1 = 21."""
@@ -339,6 +339,15 @@ def test_valid_size_cap_below_heuristic_range_returns_empty_design(kwargs):
 def test_mouth_not_larger_than_throat_is_an_empty_search():
     candidates,design=generate_auto_candidates(500,2000,[.05],mouth_radius=.04,length=.1)
     assert candidates == [] and design.reason == 'no_mouth_larger_than_throat'
+
+
+def test_tractrix_only_below_natural_length_reports_profile_reason():
+    from horn_core.profiles import natural_tractrix_length
+    short = 0.5 * natural_tractrix_length(.025, .15)
+    candidates,design=generate_auto_candidates(500,2000,[.025],mouth_radius=.15,length=short,profiles=['tractrix'])
+    assert candidates == []
+    assert design.status == 'no_feasible_design'
+    assert design.reason == 'profile_geometry_infeasible'
 
 
 @pytest.mark.parametrize('kwargs',[{'max_length':-1},{'min_length':.2,'max_length':.1},{'max_mouth_radius':float('nan')}])

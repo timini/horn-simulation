@@ -65,6 +65,8 @@ def test_annular_inlet_area_and_velocity_coupling(tmp_path):
     area=np.pi*(outer**2-inner**2)
     step=tmp_path/'annulus.step'
     gmsh.initialize()
+    from horn_core.cad_units import set_step_units
+    set_step_units(gmsh)  # write true-size STEP (metre model)
     try:
         gmsh.model.add('annular_air_volume')
         shell=gmsh.model.occ.addCylinder(0,0,0,0,0,length,outer)

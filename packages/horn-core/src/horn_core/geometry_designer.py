@@ -22,11 +22,12 @@ from typing import List, Optional
 import numpy as np
 
 from horn_core.candidates import CandidateGeometry, write_candidates_csv
+from horn_core.profiles import profile_geometry_error
 
 # Speed of sound in air at ~20C
 C0 = 343.0
 
-DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"]
+DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "cd"]
 
 
 @dataclass
@@ -87,6 +88,19 @@ def derive_simulation_freq_range(
     sim_min = f_low / (2 ** 0.5)  # -0.5 octave
     sim_max = f_high * (2 ** 0.5)  # +0.5 octave
     return (sim_min, sim_max)
+
+
+def _empty_grid_reason(candidates, mouth_radii, lengths, profile_skipped) -> Optional[str]:
+    """Why an auto grid produced no candidates, or None if it produced some."""
+    if candidates:
+        return None
+    if not mouth_radii or not lengths:
+        return "size_constraints_exclude_search_range"
+    if profile_skipped:
+        # Some mouth/length points were larger than the throat but every one
+        # was impossible for its profile (a tractrix below its natural length).
+        return "profile_geometry_infeasible"
+    return "no_mouth_larger_than_throat"
 
 
 def generate_auto_candidates(
@@ -173,6 +187,7 @@ def generate_auto_candidates(
     sim_range = derive_simulation_freq_range(target_f_low, target_f_high)
 
     candidates = []
+    profile_skipped = False
     idx = 0
     for profile in profiles:
         for r_throat in throat_radii:
@@ -180,6 +195,9 @@ def generate_auto_candidates(
                 for horn_length in lengths:
                     if r_mouth <= r_throat:
                         continue
+                    if profile_geometry_error(profile, r_throat, r_mouth, horn_length):
+                        profile_skipped = True
+                        continue  # e.g. a tractrix shorter than its natural length
                     candidate_id = f"auto_{profile[:3]}_{idx:04d}"
                     candidates.append(
                         CandidateGeometry(
@@ -202,8 +220,7 @@ def generate_auto_candidates(
         sim_freq_range=sim_range,
         candidate_count=len(candidates),
         status="candidates_generated" if candidates else "no_feasible_design",
-        reason=(None if candidates else "size_constraints_exclude_search_range"
-                if not mouth_radii or not lengths else "no_mouth_larger_than_throat"),
+        reason=_empty_grid_reason(candidates, mouth_radii, lengths, profile_skipped),
     )
 
     return candidates, derived
@@ -263,6 +280,8 @@ def generate_fullauto_candidates(
                 for horn_length in lengths:
                     if r_mouth <= r_throat:
                         continue
+                    if profile_geometry_error(profile, r_throat, r_mouth, horn_length):
+                        continue  # e.g. a tractrix shorter than its natural length
                     candidate_id = f"fa_{profile[:3]}_{idx:04d}"
                     candidates.append(
                         CandidateGeometry(

@@ -10,6 +10,7 @@ def test_conical_export_geometry(tmp_path):
     step=create_conical_horn(r,R,length,tmp_path/'horn.step')
     gmsh.initialize()
     try:
+        gmsh.option.setString("Geometry.OCCTargetUnit", "M")
         gmsh.model.occ.importShapes(str(step));gmsh.model.occ.synchronize()
         volumes=gmsh.model.getEntities(3)
         assert len(volumes)==1
@@ -34,6 +35,7 @@ def test_lecleach_export_preserves_exact_inlet(tmp_path, throat_radius):
     step = create_lecleach_horn(throat_radius, mouth_radius, length, tmp_path / "horn.step")
     gmsh.initialize()
     try:
+        gmsh.option.setString("Geometry.OCCTargetUnit", "M")
         gmsh.model.occ.importShapes(str(step))
         gmsh.model.occ.synchronize()
         areas = [gmsh.model.occ.getMass(dim, tag)

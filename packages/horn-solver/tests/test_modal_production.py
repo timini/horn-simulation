@@ -40,6 +40,8 @@ def test_modal_cad_rejects_unsupported_apertures_and_interiors(tmp_path,shape):
     import gmsh
     from horn_solver.modal_geometry import ModalGeometryError
     gmsh.initialize()
+    from horn_core.cad_units import set_step_units
+    set_step_units(gmsh)  # write true-size STEP (metre model)
     try:
         if shape=='square':gmsh.model.occ.addBox(-.02,-.02,0,.04,.04,.08)
         else:

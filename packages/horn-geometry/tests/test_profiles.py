@@ -25,7 +25,7 @@ from horn_geometry.generator import (
 class TestProfileSmoke:
     """Smoke tests: each profile creates a non-empty STEP file."""
 
-    @pytest.fixture(params=["conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"])
+    @pytest.fixture(params=["conical", "exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "lecleach", "cd"])
     def profile_name(self, request):
         return request.param
 
@@ -76,6 +76,7 @@ class TestProfileGeometricValidation:
         gmsh.initialize()
         gmsh.option.setNumber("General.Terminal", 0)
         gmsh.model.add("volume_check")
+        gmsh.option.setString("Geometry.OCCTargetUnit", "M")  # metres, honouring the file unit
         gmsh.model.occ.importShapes(str(step_file))
         gmsh.model.occ.synchronize()
 
@@ -128,23 +129,24 @@ class TestProfileGeometricValidation:
         return np.sum(np.diff(z) * np.pi * (r[1:]**2 + r[:-1]**2) / 2)
 
     def test_tractrix_volume(self, tmp_path):
-        step = create_tractrix_horn(
-            self.THROAT_R, self.MOUTH_R, self.LENGTH,
-            tmp_path / "tractrix.step", num_sections=40,
-        )
-        from horn_geometry.generator import create_tractrix_horn as _
-        # Build the same radius_func used internally
-        t = np.linspace(np.pi - 1e-6, np.pi / 2, 500)
-        y, x = np.sin(t), np.log(np.tan(t / 2)) + np.cos(t)
-        x -= x[0]
-        x_n, y_n = x / x[-1], y / y[-1]
-        def rf(z):
-            return self.THROAT_R + (self.MOUTH_R - self.THROAT_R) * float(
-                np.interp(z, x_n * self.LENGTH, y_n)
-            )
-        expected = self._numerical_volume(rf, self.LENGTH)
+        """Closed-form tractrix volume, V = (pi a^3/3)[(1 - r_t^2/a^2)^1.5 - (1 - r_m^2/a^2)^1.5].
+
+        For these radii the requested length exceeds the natural length, so the
+        tractrix constant a is larger than r_m; it is found here by matching the
+        closed-form axial span, independently of the generator.
+        """
+        from scipy.optimize import brentq
+        r_t, r_m, L = self.THROAT_R, self.MOUTH_R, self.LENGTH
+
+        def span(a):
+            x = lambda r: a * np.log((a + np.sqrt(a * a - r * r)) / r) - np.sqrt(a * a - r * r)
+            return x(r_t) - x(r_m)
+
+        a = brentq(lambda a: span(a) - L, r_m, 100 * r_m)
+        expected = np.pi * a**3 / 3 * ((1 - (r_t / a) ** 2) ** 1.5 - (1 - (r_m / a) ** 2) ** 1.5)
+        step = create_tractrix_horn(r_t, r_m, L, tmp_path / "tractrix.step", num_sections=40)
         actual = self._get_step_volume(step)
-        assert np.isclose(actual, expected, rtol=0.05), (
+        assert np.isclose(actual, expected, rtol=0.01), (
             f"Tractrix volume mismatch: expected={expected:.6e}, actual={actual:.6e}"
         )
 
@@ -179,28 +181,25 @@ class TestProfileGeometricValidation:
         )
 
     def test_cd_volume(self, tmp_path):
+        """Exponential throat to 0.3 L, then the cone tangent to it at the join."""
         import math
-        step = create_cd_horn(
-            self.THROAT_R, self.MOUTH_R, self.LENGTH,
-            tmp_path / "cd.step", num_sections=40,
-        )
-        frac = 0.3
-        z_t = frac * self.LENGTH
-        r_trans = self.THROAT_R * (self.MOUTH_R / self.THROAT_R) ** frac
-        def rf(z):
-            if z <= z_t:
-                return self.THROAT_R * math.exp(math.log(r_trans / self.THROAT_R) * z / z_t)
-            else:
-                return r_trans + (self.MOUTH_R - r_trans) * (z - z_t) / (self.LENGTH - z_t)
-        expected = self._numerical_volume(rf, self.LENGTH)
+        from scipy.optimize import brentq
+        r_t, r_m, L = self.THROAT_R, self.MOUTH_R, self.LENGTH
+        z_j = 0.3 * L
+        m = brentq(lambda m: r_t * math.exp(m * z_j) * (1 + m * (L - z_j)) - r_m, 0, 1000)
+        r_j = r_t * math.exp(m * z_j)
+        # Exponential part integrates in closed form; the cone is a frustum.
+        expected = (np.pi * r_t**2 * (math.exp(2 * m * z_j) - 1) / (2 * m)
+                    + np.pi * (L - z_j) * (r_j**2 + r_j * r_m + r_m**2) / 3)
+        step = create_cd_horn(r_t, r_m, L, tmp_path / "cd.step", num_sections=40)
         actual = self._get_step_volume(step)
-        assert np.isclose(actual, expected, rtol=0.02), (
+        assert np.isclose(actual, expected, rtol=0.01), (
             f"CD volume mismatch: expected={expected:.6e}, actual={actual:.6e}"
         )
 
     def test_throat_mouth_radii_match(self, tmp_path):
         """Verify that throat (z=0) and mouth (z=L) surfaces have correct areas."""
-        for profile in ["exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"]:
+        for profile in ["exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "cd"]:
             step = create_horn(
                 profile=profile,
                 throat_radius=self.THROAT_R,
@@ -212,6 +211,7 @@ class TestProfileGeometricValidation:
             gmsh.initialize()
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.model.add("area_check")
+            gmsh.option.setString("Geometry.OCCTargetUnit", "M")  # metres, honouring the file unit
             gmsh.model.occ.importShapes(str(step))
             gmsh.model.occ.synchronize()
 
@@ -231,7 +231,7 @@ class TestProfileGeometricValidation:
             expected_mouth = np.pi * self.MOUTH_R**2
             assert throat_area is not None, f"{profile}: no throat face found at z=0"
             assert mouth_area is not None, f"{profile}: no mouth face found at z=L"
-            tol = 0.02 if profile == "tractrix" else 0.01
+            tol = 0.01
             assert np.isclose(throat_area, expected_throat, rtol=tol), (
                 f"{profile} throat area: expected={expected_throat:.6e}, actual={throat_area:.6e}"
             )
@@ -248,7 +248,7 @@ class TestProfileMeshable:
     MOUTH_R = 0.15
     LENGTH = 0.3
 
-    @pytest.fixture(params=["conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"])
+    @pytest.fixture(params=["conical", "exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "lecleach", "cd"])
     def profile_name(self, request):
         return request.param
 
@@ -264,6 +264,7 @@ class TestProfileMeshable:
         gmsh.initialize()
         gmsh.option.setNumber("General.Terminal", 0)
         gmsh.model.add("mesh_check")
+        gmsh.option.setString("Geometry.OCCTargetUnit", "M")  # metres, honouring the file unit
         gmsh.model.occ.importShapes(str(step))
         gmsh.model.occ.synchronize()
         gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 0.01)

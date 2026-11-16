@@ -50,7 +50,7 @@ packages/
 
 ## Horn profiles
 
-7 flare profiles: `conical`, `exponential`, `hyperbolic`, `tractrix`, `os`, `lecleach`, `cd`
+7 flare profiles: `conical`, `exponential`, `hyperbolic` (hypex T=0, catenoidal), `tractrix`, `os`, `scaled_tractrix`, `cd`. `lecleach` is a deprecated alias of `scaled_tractrix`; it was never a Le Cleac'h horn. Profile maths lives only in `horn_core.profiles`.
 
 ## Testing
 
