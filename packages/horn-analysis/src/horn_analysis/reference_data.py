@@ -201,14 +201,19 @@ def _fetch(url):
 
 
 def _load_record_files(record, cache_dir, out):
-    """Fetch each catalogued file of a multi-file record, preferring a cache."""
+    """Fetch each catalogued file of a multi-file record, preferring a cache.
+
+    Without a cache directory, a source copy left by an earlier import into the
+    same output directory is reused. Hashes are checked by import_thl_record.
+    """
     files = {}
+    source = out/record['id']/'source'
     for entry in record['files']:
         name = entry['name']
         candidates = [Path(cache_dir)/record['id']/name, Path(cache_dir)/name] if cache_dir else []
+        candidates.append(source/name)
         cached = next((c for c in candidates if c.exists()), None)
         files[name] = cached.read_bytes() if cached else _fetch(f"{record['download_base_url']}/{name}/content")
-    source = out/record['id']/'source'
     source.mkdir(parents=True, exist_ok=True)
     return files, source
 
@@ -247,8 +252,8 @@ def main():
                 seen[key] = f"{record['id']}/{curve['source_member']}"
         (out/record['id']/'manifest.json').write_text(json.dumps(result, indent=2))
         summary.append(result)
-    (out/'inventory.json').write_text(json.dumps({'datasets': summary, 'unique_curve_files': len(seen), 'physical_validation_passed': False}, indent=2))
-    print(f'Imported {sum(len(r["curves"]) for r in summary)} curves ({len(seen)} unique files) from {len(summary)} archives')
+    (out/'inventory.json').write_text(json.dumps({'datasets': summary, 'unique_curves': len(seen), 'physical_validation_passed': False}, indent=2))
+    print(f'Imported {sum(len(r["curves"]) for r in summary)} curves ({len(seen)} unique curves) from {len(summary)} archives')
 
 
 if __name__ == '__main__':

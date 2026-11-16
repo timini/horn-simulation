@@ -125,3 +125,32 @@ def test_thl_grid_must_match_sample_rate(tmp_path):
     savemat(path, {'df': 10., 'rate': 44100., 'zl1': np.ones(8)+0j, 'zl2': np.ones(8)+0j}, format='4')
     with pytest.raises(ValueError, match='grid'):
         read_thl(path.read_bytes())
+
+
+def test_thl_record_main_imports_from_cache_then_reuses_source(tmp_path, monkeypatch):
+    import json
+    import sys
+    from horn_analysis import reference_data
+    raw, _ = _thl_bytes(tmp_path)
+    cache = tmp_path/'cache'; cache.mkdir()
+    (cache/'A.THL').write_bytes(raw)
+    record = {'id': 'thl', 'format': 'zenodo_files_thl', 'download_base_url': 'https://invalid.example/files',
+              'files': [{'name': 'A.THL', 'role': 'measurement', 'sha256': hashlib.sha256(raw).hexdigest()}]}
+    catalog = tmp_path/'catalog.json'
+    catalog.write_text(json.dumps({'references': [record]}))
+    out = tmp_path/'out'
+
+    def no_network(url):
+        raise AssertionError(f'unexpected download {url}')
+    monkeypatch.setattr(reference_data, '_fetch', no_network)
+    monkeypatch.setattr(sys, 'argv', ['x', '--catalog', str(catalog), '--output-dir', str(out), '--cache-dir', str(cache)])
+    reference_data.main()
+    inventory = json.loads((out/'inventory.json').read_text())
+    # Two channels of one file are two unique curves.
+    assert inventory['unique_curves'] == 2
+    assert (out/'thl'/'source'/'A.THL').read_bytes() == raw
+    first = (out/'thl'/'manifest.json').read_text()
+    # A second import without a cache reuses the verified source copy.
+    monkeypatch.setattr(sys, 'argv', ['x', '--catalog', str(catalog), '--output-dir', str(out)])
+    reference_data.main()
+    assert (out/'thl'/'manifest.json').read_text() == first
