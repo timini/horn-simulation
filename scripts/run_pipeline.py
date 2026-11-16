@@ -38,12 +38,89 @@ def source_hashes(run_dir=None):
             and (run_dir is None or not (ROOT/name).resolve().is_relative_to(Path(run_dir).resolve()))}
 
 
+IMAGE_NAMES = ("horn-solver", "horn-analysis", "horn-geometry")
+IMAGE_TAG = os.environ.get("HORN_IMAGE_TAG", "latest")
+
+
+def _image_data(name):
+    return json.loads(subprocess.check_output(["docker", "image", "inspect", f"{name}:{IMAGE_TAG}"]))[0]
+
+
 def inspect_images():
     images = {}
-    for name in ("horn-solver", "horn-analysis", "horn-geometry"):
-        data = json.loads(subprocess.check_output(["docker", "image", "inspect", name+":latest"]))[0]
+    for name in IMAGE_NAMES:
+        data = _image_data(name)
         images[name] = {"id": data["Id"], "repo_digests": data.get("RepoDigests", [])}
     return images
+
+
+def image_sources():
+    """Compare each image's build-time source label with the current checkout."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from image_source import LABEL, image_source_hash
+    sources = {}
+    for name in IMAGE_NAMES:
+        labels = (_image_data(name).get("Config") or {}).get("Labels") or {}
+        built, current = labels.get(LABEL), image_source_hash(name, ROOT)
+        sources[name] = {"built_from": built, "current": current, "stale": built != current}
+    return sources
+
+
+def stale_image_warnings(sources):
+    warnings = []
+    for name, source in sources.items():
+        if source["built_from"] is None:
+            warnings.append(f"{name}:{IMAGE_TAG} has no source label; rebuild it with 'just build' to check it is current")
+        elif source["stale"]:
+            warnings.append(f"{name}:{IMAGE_TAG} was built from other sources than this checkout; rebuild it with 'just build'")
+    return warnings
+
+
+def params_file_values(path):
+    """Top-level values of a Nextflow -params-file (JSON or YAML)."""
+    text = path.read_text()
+    if path.suffix.lower() == ".json":
+        return json.loads(text)
+    try:
+        import yaml
+        return yaml.safe_load(text) or {}
+    except ImportError:
+        values = {}
+        for line in text.splitlines():
+            match = re.match(r"^([A-Za-z_][\w-]*)\s*:\s*(.*?)\s*$", line)
+            if match:
+                values[match[1]] = match[2].split(" #")[0].strip().strip("'\"")
+        return values
+
+
+def option_value(tokens, key):
+    value = None
+    for i, token in enumerate(tokens):
+        if token == key and i+1 < len(tokens): value = tokens[i+1]
+        elif token.startswith(key+"="): value = token.split("=", 1)[1]
+    return value
+
+
+def hash_input(value):
+    path = (ROOT/value).resolve()
+    paths = sorted(path.rglob("*")) if path.is_dir() else [path]
+    return {str(f): digest(f) for f in paths if f.is_file()}
+
+
+def input_file_hashes(forwarded):
+    """Hash external inputs; command-line params override the params file."""
+    hashes, from_file = {}, {}
+    params_file = option_value(forwarded, "-params-file")
+    if params_file:
+        hashes["-params-file"] = hash_input(params_file)
+        from_file = params_file_values((ROOT/params_file).resolve())
+    for key, default in (("--drivers_db", "data/drivers"), ("--step_file", None), ("--horn_3d_png", None)):
+        value = option_value(forwarded, key)
+        if value is None:
+            value = from_file.get(key[2:], default)
+        if value:
+            hashes[key] = hash_input(str(value))
+    return hashes
 
 
 def java_environment():
@@ -89,8 +166,14 @@ def nextflow_identity(environment):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
+    global IMAGE_TAG
     parser.add_argument("--run-dir", type=Path)
+    parser.add_argument("--image-tag", default=IMAGE_TAG,
+                        help="Tag of the horn-* images to run (default: $HORN_IMAGE_TAG or latest)")
+    parser.add_argument("--require-current-images", action="store_true",
+                        help="Fail instead of warning when an image was built from other sources")
     options, forwarded = parser.parse_known_args()
+    IMAGE_TAG = options.image_tag
     if "--outdir" in forwarded or any(x.startswith("--outdir=") for x in forwarded):
         parser.error("Use --run-dir with this launcher; it owns the output directory")
     resume = "-resume" in forwarded
@@ -101,6 +184,11 @@ def main():
     if any(x in forwarded for x in ("-work-dir", "-w", "-log", "-c", "-C")):
         parser.error("The launcher owns work, log and container configuration paths")
     images, hashes = inspect_images(), source_hashes(run_dir)
+    sources = image_sources()
+    for warning in stale_image_warnings(sources):
+        print(f"WARNING: {warning}", file=sys.stderr, flush=True)
+    if options.require_current_images and any(s["stale"] for s in sources.values()):
+        parser.error("Docker images do not match this checkout (--require-current-images)")
     run_environment = java_environment()
     engine = nextflow_identity(run_environment)
     # Freeze the engine selected by a mutable Nextflow launcher for this run.
@@ -129,16 +217,7 @@ def main():
         resume_tokens = ["-resume", session_id]
     elif run_dir.exists():
         parser.error("Output directory already exists; use -resume or a new directory")
-    input_hashes = {}
-    for key, default in (("--drivers_db", "data/drivers"), ("--step_file", None), ("--horn_3d_png", None)):
-        value = default
-        for i, token in enumerate(forwarded):
-            if token == key and i+1 < len(forwarded): value = forwarded[i+1]
-            elif token.startswith(key+"="): value = token.split("=",1)[1]
-        if value:
-            path = (ROOT/value).resolve()
-            paths = sorted(path.rglob("*")) if path.is_dir() else [path]
-            input_hashes[key] = {str(f): digest(f) for f in paths if f.is_file()}
+    input_hashes = input_file_hashes(forwarded)
     if resume and previous.get("input_sha256") != input_hashes:
         parser.error("External input files changed; start a new run")
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -154,7 +233,8 @@ def main():
     manifest = {
         "schema_version": 1, "started_at": datetime.now(timezone.utc).isoformat(),
         "source_revision": subprocess.check_output(["git", "rev-parse", "HEAD"],cwd=ROOT,text=True).strip(),
-        "source_sha256": hashes, "input_sha256": input_hashes, "containers": images, "arguments": forwarded,
+        "source_sha256": hashes, "input_sha256": input_hashes, "containers": images,
+        "image_tag": IMAGE_TAG, "image_sources": sources, "arguments": forwarded,
         "command": command, "status": "running",
         "nextflow_engine": engine,
         "nextflow_java_home": run_environment.get("NXF_JAVA_HOME"), "validation_status": "experimental",

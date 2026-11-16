@@ -136,3 +136,6 @@ nf-test
 
 # Cross-software validation environment (openwind, bempp-cl)
 .venv-cross-software/
+
+# Pinned tool downloads (scripts/nf_test.sh)
+.tools/

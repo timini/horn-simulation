@@ -1,0 +1,19 @@
+{
+  "mode": "auto",
+  "target_f_low": 1000,
+  "target_f_high": 1200,
+  "throat_radius": 0.025,
+  "mouth_radius": 0.05,
+  "min_length": 0.07,
+  "max_length": 0.09,
+  "num_lengths": 2,
+  "profiles": "conical,exponential",
+  "drivers_db": "tests/data/my drivers ' database.json",
+  "num_intervals": 12,
+  "min_points_per_octave": 0,
+  "num_bands": 2,
+  "lem_top_n": 2,
+  "top_n": 1,
+  "refinement_budget": 1,
+  "mesh_size": 0.01
+}
