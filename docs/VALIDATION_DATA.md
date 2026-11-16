@@ -58,6 +58,66 @@ python3 scripts/benchmark_measured_impedance.py \
 
 The output includes the acoustic CAD, both raw FEM runs, frequency-transposed normalized exports, dense analytical prediction, per-measurement errors, provenance and a comparison plot. A compact frozen result is checked in as [`pipe_diagnostic_baseline.json`](../data/validation/pipe_diagnostic_baseline.json), including source hashes. Keep this failure as a baseline when adding loss/termination physics; do not tune thresholds until it passes. Reserve other materials and the conical measurements for held-out checks.
 
+## Conical horn reflectance standard (Hajicek and Neely)
+
+[Zenodo record 19710026](https://zenodo.org/records/19710026) (CC BY 4.0) holds the supplementary material for Hajicek, Harris, Nørgaard, Siegel and Neely, [JASA 2026](https://doi.org/10.1121/10.0043956). It is the first measured horn in the catalog with complete geometry. Catalog id `hajicek-neely-horn-reflectance`; each file is pinned by SHA-256 and fetched by the importer (format `zenodo_files_thl`). The record is about 6.5 MB, so it is not vendored.
+
+- Geometry (`spec.txt`, `fun_con.txt`, checked against `hrn_con.stl` and `cap_con.stl`): 7 mm throat tube 25 mm long, 120 mm cone to 28.57 mm diameter, 10 mm mouth cylinder, 2 mm wall, cap inner face 130 mm past the flare start.
+- Measurements: `22E27P01.THL` and `22E27P02.THL`, MATLAB level-4 files with probe load impedance on a 5.38 Hz grid up to 22 kHz, two probe channels each, in cgs acoustic ohms. The importer drops the DC bin (not a measurement) and changes nothing else. `13H26P26.THL` is an older 1 cm throat horn without full geometry; it is imported but not compared. `HornKren220531.mat` is processed data from a second system; catalogued only.
+- Not stated in the record: the termination per file and the probe insertion depth. From the data, P02 is capped (positive cap reflection, compliant low-frequency reactance) and P01 is open. The authors' time-of-flight procedure puts the probe 16.1 mm (P01) and 13.2 mm (P02) before the flare; our port reproduces both to 0.1 mm.
+- The downloaded MATLAB scripts were read as text, never run.
+
+### Frozen comparison
+
+`scripts/validate_horn_reflectance.py` fixes geometry, 25 °C air (the authors' temperature), loss model, band and limits in code, then writes and hashes predictions before it reads any measured value. Reflectance uses the nominal reference impedance `rho*c/S` of the 7 mm throat, never a value estimated from the data. Nothing is fitted. The probe plane for the windowed check is the authors' time-of-flight estimate, applied identically to model and measurement.
+
+| Check (100 Hz to 8 kHz) | Limit | Result |
+| --- | --- | --- |
+| Lossless TMM vs the authors' analytic infinite cone, same window | max abs error in abs(R) at most 0.02 | 4/4 pass, max 0.019 |
+| Windowed flare reflectance, TMM with Kirchhoff losses vs measurement | max abs error at most 0.05 | 0/4: 0.050 and 0.057 (capped), 0.055 and 0.121 (open) |
+| Untruncated abs(R), capped horn, nominal geometry | median at most 0.02, p95 at most 0.05 | 0/2: median 0.029 and 0.018, p95 0.106 and 0.071 |
+| Capped impedance magnitude, nominal probe plane | median at most 2 dB, p95 at most 4 dB | 0/2: median 9.9 dB, p95 24 dB |
+| Production FEM vs same-physics TMM, capped, 161 frequencies | p95 scaled complex error at most 0.05 | fail: 0.080 at 4 mm mesh, 0.082 at 2 mm |
+
+The windowed P02 zl1 case misses by 0.0004. The authors' own analytic cone gives similar errors against the measurement under our window (max 0.051, 0.049, 0.066, 0.132), so the misses are not specific to our TMM. Both open-mouth P01 channels sit below every model at low frequency (zl1 by about 0.06, zl2 by up to 0.12), as the authors' P01 figure also shows against their ideal cone.
+
+The capped impedance failure is mostly a resonance position error. Post-hoc diagnostics (added after the first run or after review, not gates) record peak frequencies and levels for each model:
+
+- Probe at the tube entrance (the frozen nominal model, probe to cap 155 mm): peaks 3.3 to 7.5 % low.
+- Authors' estimated probe plane with the cap at the geometric 130 mm (probe to cap about 143 mm): peaks 1.1 to 4.7 % high.
+- Authors' estimated probe plane with the cap at their corrected 135 mm (probe to cap about 148 mm): peaks between -1.5 % and +1.8 %. Impedance error falls to a median of 1.0 and 1.5 dB, but p95 is 5.4 and 6.0 dB, so this model would still miss the 4 dB p95 limit.
+
+The second model is inconsistent with its own probe plane: the time-of-flight estimate is the cap echo distance minus 135 mm, so it only fixes the total probe-to-cap length, about 148 mm. Once the model uses that length, the resonances line up. What the record does not state is how that length splits between throat tube insertion and cap seating.
+
+Peak levels do not agree closely. Measured P02 peaks are 30.8, 27.8, 26.7, 21.9, 26.7 and 26.2 dB (zl1) and 36.7, 28.5, 28.9, 20.1, 23.3 and 22.7 dB (zl2), in 20 log10 of the normalized impedance. Nominal TMM peaks differ from these by -4.6 to +5.1 dB, and the consistent 148 mm model by -6.3 to +9.2 dB, in both directions. Peak levels on a 5.38 Hz grid are also sensitive to where the grid falls on a sharp peak. These numbers neither confirm nor rule out the wall-loss model.
+
+FEM and TMM resonances coincide on the FEM grid, and the FEM result moved by less than 0.002 in the error statistic from 4 mm to 2 mm mesh, so the gap between FEM and TMM is not discretization error. It comes from near-resonance points where both curves are steep; we have not established which model is closer. FEM impedance-dB statistics against the measurement use only 161 points and are not comparable with the dense TMM numbers.
+
+Numerical side checks: TMM 600 against 1200 segments differs by at most 0.004 dB; Kirchhoff against thin-boundary-layer losses by at most 0.13 dB.
+
+What this shows: the TMM cone transformation matches the analytic cone. Resonance positions match once the model uses the probe-to-cap length the time-of-flight measures. Peak levels do not match, and no model reaches the frozen accuracy limits against these measurements. This tests a closed or open rigid duct seen from an ear-probe; it says nothing about radiation into free space, drivers or SPL. The summary is `data/validation/hajicek_horn_reflectance.json`. It is written by `scripts/summarise_horn_reflectance.py` from the run directories, unrounded: the base (TMM) run supplies protocol, gates and diagnostics, and each FEM run supplies only its `fem` block after its nominal predictions and imported manifest are checked against the base run. The FEM blocks come from runs of the previous script revision; the FEM code path did not change, so they were not rerun.
+
+The prediction hashes in the protocol are tied to the `horn-solver` image: a macOS host writes slightly different CSV bytes (differences around 1e-9), so a local rerun gives the same metrics but different hashes. `code_sha256` is keyed by repository-relative path.
+
+Reproduce:
+
+```sh
+# Imports every catalogued record. --cache-dir reuses earlier downloads; without it,
+# files already in <output-dir>/<id>/source are reused and the rest are downloaded.
+python -m horn_analysis.reference_data --catalog data/validation/references.json \
+  --output-dir results/references --cache-dir <download cache>
+# In horn-solver with the repository mounted at /workspace, so hashes match the summary:
+docker run --rm -v "$PWD":/workspace -w /workspace horn-solver:latest \
+  python3 scripts/validate_horn_reflectance.py \
+  --reference-dir results/references/hajicek-neely-horn-reflectance \
+  --output-dir results/hajicek-reflectance/tmm
+# FEM: add --with-fem [--fem-mesh 0.002] and a separate --output-dir
+python scripts/summarise_horn_reflectance.py --base-run results/hajicek-reflectance/tmm \
+  --fem-run mesh_4mm=<4 mm FEM run> --fem-run mesh_2mm=<2 mm FEM run>
+```
+
+The next useful input is how the measured probe-to-cap length splits between probe insertion depth and cap seating for each file, from the paper or the authors. With that, a geometry-consistent model could be compared under the same frozen limits, as a new protocol rather than a change to this one.
+
 ## Additional primary sources inspected
 
 | Source | Available evidence | Intended use / limitation |
