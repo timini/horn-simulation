@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Horn Simulation</title>
+<meta name="description" content="Open-source horn loudspeaker design pipeline: generate horn geometries, solve them with FEM, couple real drivers and rank the results.">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --fg: #1d2421;
+    --muted: #5b6662;
+    --line: #dfe3e0;
+    --card: #ffffff;
+    --accent: #0b6b5f;
+    --code-bg: #f0f2f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141816;
+      --fg: #e6ebe8;
+      --muted: #a2ada8;
+      --line: #2c3431;
+      --card: #1b201e;
+      --accent: #5cc4b2;
+      --code-bg: #222927;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 16px 64px; }
+  header { margin-bottom: 8px; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.4rem; margin: 48px 0 8px; padding-top: 16px; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.1rem; margin: 28px 0 8px; }
+  p { margin: 0 0 14px; }
+  .lede { font-size: 1.1rem; color: var(--muted); }
+  a { color: var(--accent); }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 8px; }
+  .links a {
+    display: inline-block; padding: 8px 14px; border: 1px solid var(--accent);
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+  }
+  .links a.primary { background: var(--accent); color: var(--bg); }
+  .note {
+    border-left: 3px solid var(--accent); background: var(--card);
+    padding: 10px 14px; margin: 18px 0; color: var(--muted); font-size: 0.95rem;
+  }
+  figure { margin: 18px 0 24px; }
+  figure img {
+    display: block; width: 100%; height: auto; border-radius: 6px;
+    border: 1px solid var(--line); background: #fff;
+  }
+  figcaption { font-size: 0.9rem; color: var(--muted); margin-top: 6px; }
+  .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px; margin: 16px 0;
+  }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+  .stat b { display: block; font-size: 1.25rem; }
+  .stat span { font-size: 0.85rem; color: var(--muted); }
+  .table-wrap { overflow-x: auto; margin: 12px 0 20px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 600; }
+  pre {
+    background: var(--code-bg); padding: 12px 14px; border-radius: 6px;
+    overflow-x: auto; font-size: 0.85rem; line-height: 1.5;
+  }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  ol, ul { padding-left: 22px; }
+  li { margin-bottom: 4px; }
+  footer { margin-top: 56px; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1>Horn Simulation</h1>
+  <p class="lede">An open-source pipeline for designing horn-loaded loudspeakers. You give it a frequency band. It generates horn shapes, solves them with finite element acoustics, couples them to real drivers and ranks the results.</p>
+  <div class="links">
+    <a class="primary" href="https://github.com/timini/horn-simulation">Source on GitHub</a>
+    <a href="https://timini.github.io/devblog/horn-simulation/">Read the devblog post</a>
+  </div>
+</header>
+
+<h2>What it does</h2>
+<p>The pipeline takes a target band, for example 800 to 1600 Hz. It builds candidate horns from seven profile families: conical, exponential, hyperbolic, tractrix, oblate spheroid, Le Cléac'h and constant directivity.</p>
+<p>A fast analytical screen (lumped-element and Webster models) cuts the candidates down. The shortlist is meshed with gmsh and solved with a FEniCSx Helmholtz solver. Each horn is then coupled to drivers from a database using their Thiele-Small parameters.</p>
+<p>Every driver and horn pair is scored on bandwidth coverage, ripple and output. A short refinement step tries nearby dimensions. The result is a self-contained HTML report, a STEP file of the winning horn's air volume and the response data.</p>
+<p>Nextflow runs the steps in Docker containers and solves frequency bands in parallel.</p>
+
+<div class="note">These are experimental predictions. The horn-loading model has passed one comparison against published measurements (below). The driver-to-horn interface and complete assemblies have not been physically validated. STEP files describe the air inside the horn, not a part you can print.</div>
+
+<h2>Example 1: 800 to 1600 Hz, automatic search</h2>
+<p>A small auto-mode run over a curated driver set. The analytical screen evaluated 189 horn candidates and scored 567 driver and horn pairs. Three went to FEM, plus two refinement trials. The winner is an 18Sound 6NMB420 cone driver on a short hyperbolic horn.</p>
+
+<div class="stats">
+  <div class="stat"><b>Hyperbolic</b><span>Selected profile</span></div>
+  <div class="stat"><b>65.0 mm</b><span>Throat diameter</span></div>
+  <div class="stat"><b>177.4 mm</b><span>Mouth diameter</span></div>
+  <div class="stat"><b>117.9 mm</b><span>Acoustic length</span></div>
+  <div class="stat"><b>1.5 dB</b><span>In-band ripple</span></div>
+  <div class="stat"><b>104.9 dB</b><span>Mean SPL, 2.83 V, 1 m</span></div>
+</div>
+
+<figure>
+  <img src="img/modal-geometry.png" alt="3D view and wall profile of the winning hyperbolic horn" loading="lazy" width="1400" height="625">
+  <figcaption>Winning horn geometry. Labels in the plot title are radii in mm.</figcaption>
+</figure>
+
+<figure>
+  <img src="img/modal-coupled-spl.png" alt="Predicted on-axis SPL of the top five driver and horn candidates" loading="lazy" width="1400" height="693">
+  <figcaption>Predicted on-axis output of the top five candidates at 2.83 V RMS and 1 m. The shaded area is the target band.</figcaption>
+</figure>
+
+<h3>Ranking</h3>
+<p>All five finalists use the same driver. The top two are a near tie.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>#</th><th>Profile</th><th>Throat R (mm)</th><th>Mouth R (mm)</th><th>Length (mm)</th><th>Score</th><th>Ripple (dB)</th><th>Mean (dB)</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Hyperbolic</td><td>32.5</td><td>88.7</td><td>117.9</td><td>0.875</td><td>1.5</td><td>104.9</td></tr>
+    <tr><td>2</td><td>Hyperbolic</td><td>32.5</td><td>88.7</td><td>107.2</td><td>0.872</td><td>1.5</td><td>104.7</td></tr>
+    <tr><td>3</td><td>Hyperbolic</td><td>32.5</td><td>79.8</td><td>107.2</td><td>0.843</td><td>2.2</td><td>104.5</td></tr>
+    <tr><td>4</td><td>Exponential</td><td>32.5</td><td>88.7</td><td>107.2</td><td>0.839</td><td>2.2</td><td>103.4</td></tr>
+    <tr><td>5</td><td>Le Cléac'h</td><td>32.5</td><td>88.7</td><td>107.2</td><td>0.816</td><td>2.8</td><td>103.7</td></tr>
+  </tbody>
+</table>
+</div>
+
+<figure>
+  <img src="img/modal-throat-impedance.png" alt="Throat impedance magnitude and phase by horn profile" loading="lazy" width="1400" height="693">
+  <figcaption>Throat acoustic impedance magnitude and phase for each profile, from the FEM solve.</figcaption>
+</figure>
+
+<p><a href="reports/800-1600-modal.html">Open the full generated report</a> (2.7 MB, self-contained) or <a href="https://github.com/timini/horn-simulation/tree/main/examples/800-1600-modal">browse the example files</a>.</p>
+
+<h2>Example 2: 6NMB420, 320 to 5000 Hz, 300 mm length limit</h2>
+<p>A wider band with a hard length limit. The selected design is an oblate spheroid (OS) horn for the 8 ohm 18Sound 6NMB420. A broad 700-geometry search found nothing within the ripple limit. A focused 175-geometry search with a narrower throat did. In total, 15 geometries received full FEM sweeps.</p>
+
+<div class="stats">
+  <div class="stat"><b>OS</b><span>Selected profile</span></div>
+  <div class="stat"><b>76 mm</b><span>Throat diameter</span></div>
+  <div class="stat"><b>244.8 mm</b><span>Mouth diameter</span></div>
+  <div class="stat"><b>300 mm</b><span>Acoustic length</span></div>
+  <div class="stat"><b>4.42 dB</b><span>Variation, 320 to 5000 Hz</span></div>
+  <div class="stat"><b>105.5 dB</b><span>Mean SPL, 2.83 V, 1 m</span></div>
+</div>
+
+<figure>
+  <img src="img/6nmb420-overview.png" alt="Horn profile, predicted response, electrical impedance and cone excursion for the 6NMB420 design" loading="lazy" width="1400" height="933">
+  <figcaption>Horn profile, predicted response, electrical impedance and cone excursion. The response shows two mesh sizes; the largest in-band difference between them is 0.244 dB. No EQ is applied.</figcaption>
+</figure>
+
+<p><a href="reports/6nmb420-320-5000.html">Open the generated report</a> or <a href="https://github.com/timini/horn-simulation/tree/main/examples/6nmb420-320-5000">browse the example files</a>, including the STEP file and response data.</p>
+
+<h2>Checked against measurement</h2>
+<p>The FEM horn model was compared with John Post's published 1994 measurements of an exponential horn's input impedance. The comparison limits were fixed before the solver ran. Nothing was fitted or shifted.</p>
+<p>Over 1 &le; ka &le; 5 (about 201 to 1,007 Hz), the finest mesh is within 0.497 dB in magnitude and 1.873 degrees in phase of the measured curve. Both mesh refinement checks also passed.</p>
+
+<figure>
+  <img src="img/post-comparison.png" alt="Measured and computed normalised resistance and reactance of the Post exponential horn" loading="lazy" width="1400" height="1089">
+  <figcaption>Measured (black) and computed throat resistance and reactance at three mesh sizes. <a href="https://github.com/timini/horn-simulation/blob/main/docs/POST_HIXSON_VALIDATION.md">Full write-up</a>.</figcaption>
+</figure>
+
+<h2>Run it yourself</h2>
+<p>You need Docker, <a href="https://github.com/casey/just">just</a>, <a href="https://www.nextflow.io/">Nextflow</a> and Java 17 to 22.</p>
+<pre><code>git clone https://github.com/timini/horn-simulation.git
+cd horn-simulation
+just build
+
+# Give it only a band; it derives the geometry
+just run-fullauto --target_f_low 500 --target_f_high 4000
+
+# Find the run and open outputs/auto/report/auto_report.html inside it
+just latest-run</code></pre>
+<p>Use <code>just run-auto</code> to fix the dimensions you already know, such as a maximum length or mouth size. Use <code>just run</code> to simulate a single horn, either with explicit dimensions or your own STEP file. Each run gets its own directory with a manifest of the source, inputs and container hashes.</p>
+
+<footer>
+  <p><a href="https://github.com/timini/horn-simulation">github.com/timini/horn-simulation</a> &middot; <a href="https://timini.github.io/devblog/horn-simulation/">devblog post</a> &middot; Figures and numbers are taken from the example outputs in the repository.</p>
+</footer>
+
+</main>
+</body>
+</html>
