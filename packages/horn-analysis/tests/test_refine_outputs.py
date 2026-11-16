@@ -48,4 +48,6 @@ def test_every_required_refine_output_exists_when_all_candidates_were_rejected(t
         matches = [p for alt in _expand_braces(pattern) for p in out_root.glob(alt)]
         assert matches, f"required output {pattern} has no file, so Nextflow would stop the run"
     audit = json.loads((out_root / "refinement/search_audit.json").read_text())
-    assert audit["reason"] == "no_feasible_seed"
+    # The search stream renamed this reason: the seed can now be the least-infeasible
+    # FEM row, so only a run with no measured row at all has no seed.
+    assert audit["reason"] == "no_seed_with_metrics"

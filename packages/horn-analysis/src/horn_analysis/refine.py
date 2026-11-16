@@ -93,8 +93,9 @@ def main():
         # minus the infeasibility for rejected ones, so a search that starts
         # from the least-infeasible FEM candidate still moves towards feasible.
         objective=lambda row: search_objective(row, a.max_ripple)
-        cache={geometry_key(seed):max(objective(row) for row in data['results']+data.get('rejected',[])
-                                      if row.get('horn_label')==r['horn_label'] and row.get('passband_ripple_db') is not None)}
+        cache={geometry_key(seed):max((objective(row) for row in data['results']+data.get('rejected',[])
+                                       if row.get('horn_label')==r['horn_label'] and row.get('passband_ripple_db') is not None),
+                                      default=objective(r))}
         all_rows=list(data['results']); rejected=list(data.get('rejected',[]))
         from horn_analysis.evaluation import radiation_domain_rejection
         low, high = design['sim_freq_range']
