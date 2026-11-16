@@ -86,10 +86,10 @@ class TestDeriveLengthRange:
 
 
 class TestDeriveSimulationFreqRange:
-    def test_extends_half_octave(self):
-        """Should extend by +/-0.5 octave."""
+    def test_extends_one_octave_below_and_half_an_octave_above(self):
+        """The low side reaches the octave at which the extension term saturates."""
         sim_min, sim_max = derive_simulation_freq_range(500, 4000)
-        assert sim_min == pytest.approx(500 / math.sqrt(2), rel=1e-6)
+        assert sim_min == pytest.approx(250, rel=1e-6)
         assert sim_max == pytest.approx(4000 * math.sqrt(2), rel=1e-6)
 
     def test_sim_range_brackets_target(self):

@@ -212,6 +212,7 @@ def prepare(out, ranking, driver, low, high, index, run_dir=None):
         if not np.isfinite(candidate[key]) or candidate[key] <= 0:
             raise ValueError(f'Invalid candidate {key}')
     origin=origin_files(run_dir,ranking,driver,candidate,low,high)
+    from horn_core.geometry_designer import derive_simulation_freq_range
     revision = clean_source_revision()
     solver_image=json.loads(origin['origin_manifest'].read_text())['containers']['horn-solver']['id']
     inspected=inspect_image(solver_image)
@@ -228,8 +229,8 @@ def prepare(out, ranking, driver, low, high, index, run_dir=None):
         solver_image_id=solver_image,
         source=source_identity(), inputs={p:sha(out/p) for p in ('ranking.json','driver.json',*origin)},
         candidate_index=index, candidate=candidate, target_band_hz=[low,high],
-        simulation_band_hz=[low/np.sqrt(2),high*np.sqrt(2)], cases=RELATIVE_CASES, limits=LIMITS,
-        protocol_version=PROTOCOL_VERSION, production_mesh_size_m=production_mesh_size(high*np.sqrt(2)),
+        simulation_band_hz=list(derive_simulation_freq_range(low,high)), cases=RELATIVE_CASES, limits=LIMITS,
+        protocol_version=PROTOCOL_VERSION, production_mesh_size_m=production_mesh_size(derive_simulation_freq_range(low,high)[1]),
         study_max_mesh_nodes=STUDY_MAX_MESH_NODES,
         scope='Numerical resolution of this fixed ideal candidate; no physical qualification'))
 

@@ -136,6 +136,8 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
         "f3_low_is_bound": low_bound, "f3_high_is_bound": high_bound,
         "f3_reference": "target_band_mean_minus_3db",
         "extension_octaves": extension,
+        # A sweep-bound f3 makes E, and so the extension term, a lower bound.
+        "extension_is_lower_bound": bool(low_bound or high_bound),
         "score_terms": terms,
         "avg_sensitivity_db": average,  # retained JSON key; reports label actual quantity
         "composite_score": 0.0 if reasons else score,

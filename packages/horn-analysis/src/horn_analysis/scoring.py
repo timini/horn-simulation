@@ -13,7 +13,12 @@ mapped linearly onto [0, 1] with fixed reference scales:
   ``E = log2(f_low / f3_low) + log2(f3_high / f_high)`` and the f3 points are
   3 dB below ``L_mean``, searched outward from the band edges over the full
   simulated sweep (negative E means the response is already 3 dB down
-  inside the band);
+  inside the band). The auto sweep runs one octave below f_low and half an
+  octave above f_high. An f3 that is not reached inside the sweep is set to
+  the sweep limit and flagged (``f3_low_is_bound``, ``f3_high_is_bound``),
+  so E and the term are lower bounds (``extension_is_lower_bound``). The
+  low limit alone gives E = 1 octave, where the term is already 1, so a
+  bound there only understates the score when the high side is short;
 * size: ``clip(0.5 - log2(V / V_ref) / 8, 0, 1)`` with ``V = pi r_mouth^2 L``
   and ``V_ref = pi (c / (2 pi f_low))^2 * c / (4 f_low)``, the cylinder of a
   ka = 1 mouth and a quarter-wave length at f_low.

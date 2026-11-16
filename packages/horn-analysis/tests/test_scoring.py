@@ -137,3 +137,33 @@ def test_scoring_description_separates_user_and_heuristic_bounds():
     assert summary["geometry_bounds"]["mouth_radius_m"]["source"] == "heuristic"
     assert summary["geometry_bounds"]["throat_radius_m"]["source"] == "driver_prescreen"
     assert "clip" in summary["formula"]
+
+
+def test_auto_sweep_finds_f3_low_up_to_an_octave_below_the_band():
+    """f3 at 0.75 octave below f_low is measured, not clipped to the sweep.
+
+    With the old half-octave margin every gentle roll-off saturated at
+    f_low/sqrt(2) and the low half of the extension term could not rank
+    designs.
+    """
+    from horn_core.geometry_designer import derive_simulation_freq_range
+    from horn_core.frequency_grid import merged_grid
+    low, high = derive_simulation_freq_range(800, 1600)
+    f = merged_grid(low, high, 8, 100)
+    target = TargetSpec(800, 1600)
+    octave = np.log2(f)
+    def rolloff(db_per_oct):
+        return 100. - db_per_oct*np.clip(np.log2(800) - octave, 0, None) - 24*np.clip(octave - np.log2(1600), 0, None)
+    four = evaluate_response(f, rolloff(4.), target)
+    five = evaluate_response(f, rolloff(5.), target)
+    assert not four["f3_low_is_bound"] and not four["extension_is_lower_bound"]
+    assert four["f3_low_hz"] == pytest.approx(800 * 2**-0.75, rel=1e-3)
+    assert five["f3_low_hz"] == pytest.approx(800 * 2**-0.6, rel=1e-3)
+    assert four["composite_score"] > five["composite_score"]
+
+
+def test_sweep_bound_f3_marks_extension_as_lower_bound():
+    flat_below = evaluate_response(F, response(slope_below_db_per_oct=0), TARGET)
+    assert flat_below["f3_low_is_bound"] and flat_below["extension_is_lower_bound"]
+    steep = evaluate_response(F, response(slope_below_db_per_oct=24, slope_above_db_per_oct=24), TARGET)
+    assert not steep["extension_is_lower_bound"]

@@ -335,7 +335,7 @@ def _render_rankings_rows(
             f"<td>{_profile_badge(r.get('profile') or r.get('horn_label', ''))}</td>"
             f"{geom_cols}"
             f"<td><strong>{_fmt(r.get('composite_score'), '.3f')}</strong>{' (near tie)' if r.get('comparison_status') == 'near_tie' else ''}</td>"
-            f"<td>{_fmt(r.get('extension_octaves'), '+.2f')}</td>"
+            f"<td>{'≥' if r.get('extension_is_lower_bound') else ''}{_fmt(r.get('extension_octaves'), '+.2f')}</td>"
             f"<td>{_fmt(r.get('passband_ripple_db'), '.1f')}{_chamber_note(r)}</td>"
             f"<td>{_fmt(r.get('avg_sensitivity_db'), '.1f')}</td>"
             f"<td>{f3l} \u2014 {f3h}</td>"
@@ -469,7 +469,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
   <th>#</th><th>Candidate ID (horn + driver)</th><th>Manufacturer</th><th>Model</th><th>Type</th><th>Size</th><th>Power (W)</th><th>Profile</th>
   {geometry_header_cols}
   <th>Score</th>
-  <th>Extension (oct)</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz; ≤/≥ = sweep bound)</th><th>Peak (dB)</th><th>Front chamber</th><th>Evidence status</th>
+  <th>Extension (oct; ≥ = lower bound)</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz; ≤/≥ = sweep bound)</th><th>Peak (dB)</th><th>Front chamber</th><th>Evidence status</th>
 </tr>
 </thead>
 <tbody>
@@ -664,6 +664,16 @@ def _render_rejections(summary: List[dict], n_rejected: int, no_feasible_reason:
             '<th>Closest miss</th><th>Largest excess</th><th>Unit</th></tr></thead><tbody>' + rows + '</tbody></table></div>')
 
 
+def _sweep_margins(derived_geometry: dict) -> str:
+    """Octaves swept below and above the target band, from the recorded values."""
+    import math
+    sr = derived_geometry.get("sim_freq_range") or []
+    low, high = derived_geometry.get("target_f_low"), derived_geometry.get("target_f_high")
+    if len(sr) != 2 or not low or not high or sr[0] <= 0:
+        return ""
+    return f" ({math.log2(low / sr[0]):.1f} octave below, {math.log2(sr[1] / high):.1f} above)"
+
+
 def _render_design_summary(derived_geometry: dict) -> str:
     """Render the Design Summary section with optimization parameters."""
     tr = derived_geometry.get("throat_radius_range", [])
@@ -705,7 +715,7 @@ def _render_design_summary(derived_geometry: dict) -> str:
         f'<dt>Ideal mouth radius</dt><dd>{_fmt(derived_geometry.get("ideal_mouth_radius"), ".4f")} m '
         f'(from c&#8320;/2&pi;f<sub>low</sub>)</dd>'
         f'<dt>Simulation freq range</dt><dd>{_fmt(sr[0] if sr else None, ".0f")} — '
-        f'{_fmt(sr[1] if len(sr) > 1 else None, ".0f")} Hz (&plusmn;0.5 octave)</dd>'
+        f'{_fmt(sr[1] if len(sr) > 1 else None, ".0f")} Hz{_sweep_margins(derived_geometry)}</dd>'
         f'<dt>Profiles</dt><dd>7 (conical, exponential, hyperbolic, tractrix, OS, axially scaled tractrix, CD)</dd>'
         f'<dt>Geometry candidates</dt><dd>{derived_geometry.get("candidate_count", "—")}</dd>'
         '</dl></div>'

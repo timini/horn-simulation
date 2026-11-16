@@ -9,8 +9,9 @@ Key formulas:
     (mouth circumference = wavelength at f_low)
   - Length range: quarter-wave to half-wave at f_low
     L_min = c0 / (4*f_low), L_max = c0 / (2*f_low)
-  - Simulation freq range: extend +/-0.5 octave beyond target band
-    to capture rolloff for accurate f3 detection
+  - Simulation freq range: one octave below and half an octave above the
+    target band, so the f3 points that the extension score uses are found
+    (see derive_simulation_freq_range)
 """
 
 import json
@@ -131,16 +132,29 @@ def derive_length_range(f_low: float) -> tuple:
     return (wavelength / 4, wavelength / 2)
 
 
+# Sweep margins beyond the target band, in octaves. The extension score term
+# clip(0.5 + E/2, 0, 1) saturates at E = 1 octave, so the low side is swept a
+# full octave: an f3 below f_low/2 already earns the whole term on its own and
+# reporting it as a bound costs nothing. Half an octave was not enough: in the
+# wave-2 runs nearly every feasible row had f3_low at the sweep minimum. The
+# low side is cheap because the mesh is sized for the top frequency and the
+# point count is fixed by num_intervals. The high side stays at half an
+# octave because raising the top frequency refines the mesh.
+SIM_LOW_MARGIN_OCTAVES = 1.0
+SIM_HIGH_MARGIN_OCTAVES = 0.5
+
+
 def derive_simulation_freq_range(
     f_low: float, f_high: float
 ) -> tuple:
-    """Extend target band by +/-0.5 octave for rolloff capture.
+    """Solver sweep for a target band: SIM_LOW_MARGIN_OCTAVES below f_low
+    and SIM_HIGH_MARGIN_OCTAVES above f_high.
 
-    This ensures the f3 points (where SPL drops 3dB) can be
-    accurately detected even if they fall outside the target band.
+    f3 points beyond these limits are reported as sweep bounds
+    (f3_low_is_bound, f3_high_is_bound) and the extension as a lower bound.
     """
-    sim_min = f_low / (2 ** 0.5)  # -0.5 octave
-    sim_max = f_high * (2 ** 0.5)  # +0.5 octave
+    sim_min = f_low / 2 ** SIM_LOW_MARGIN_OCTAVES
+    sim_max = f_high * 2 ** SIM_HIGH_MARGIN_OCTAVES
     return (sim_min, sim_max)
 
 

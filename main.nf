@@ -582,7 +582,7 @@ process merge_candidate_results {
     publishDir "${params.outdir}/auto", mode: 'copy'
 
     input:
-    tuple val(candidate_id), path(csv_files)
+    tuple val(candidate_id), path(csv_files), val(sim_min_freq), val(sim_max_freq)
 
     output:
     tuple val(candidate_id), path("${candidate_id}_{results.csv,rejected.json}")
@@ -595,8 +595,8 @@ process merge_candidate_results {
     else
         python3 -m horn_analysis.merge --files results_${candidate_id}_*.csv \
             --num-bands ${params.num_bands} \
-            --min-freq ${params.target_f_low / Math.sqrt(2)} \
-            --max-freq ${params.target_f_high * Math.sqrt(2)} \
+            --min-freq ${sim_min_freq} \
+            --max-freq ${sim_max_freq} \
             ${gridFlags()} \
             --output ${candidate_id}_results.csv
     fi
@@ -976,7 +976,8 @@ workflow auto {
 
     // 8. Group by candidate_id and merge bands
     ch_grouped = ch_band_results.groupTuple()
-    ch_merged = merge_candidate_results(ch_grouped)
+    // The merge checks the solver grid, so it takes the same sweep as the solves.
+    ch_merged = merge_candidate_results(ch_grouped.combine(ch_sim_range))
 
     // 9. Score and rank all driver-horn combinations
     ch_all_csvs = ch_merged.map { candidate_id, csv -> csv }.collect()
