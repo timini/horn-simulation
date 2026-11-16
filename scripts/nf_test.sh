@@ -8,6 +8,14 @@ SHA256=b7679eb90cdc9642bfa89e9634db02ce6e699de53ad35ef0e2f4847634fc1641
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEST="$ROOT/.tools/nf-test-$VERSION"
 
+# Select Java 17 to 22 the same way the launcher does, so nf-test and the
+# Nextflow it starts work without JAVA_HOME set in the shell.
+if java_home=$(python3 -c 'import sys; sys.path.insert(0, sys.argv[1]); import run_pipeline; print(run_pipeline.java_environment().get("NXF_JAVA_HOME", ""))' "$ROOT/scripts" 2> /dev/null) \
+        && [[ -n "$java_home" ]]; then
+    export JAVA_HOME="$java_home" NXF_JAVA_HOME="$java_home"
+    unset JAVA_CMD
+fi
+
 if [[ -n "${NF_TEST:-}" ]]; then
     exec "$NF_TEST" "$@"
 fi
