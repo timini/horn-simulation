@@ -62,7 +62,7 @@ Everything is under `outputs/auto/`.
 | `refinement/ranked_results.json` | Final ranking after refinement. |
 | `refinement/refine_<profile>_<n>.step`, `refinement/*_results.csv` | Geometry and solver output for each refinement evaluation. |
 | `refinement/search_audit.json` | Refinement seed and its source, every evaluation, budget use, bounds reached and widened. |
-| `report/auto_report.html` | Self-contained report. Start here. |
+| `report/auto_report.html` | Self-contained report. Start here. The rankings table shows each design's widest +-3 dB flat band; a leading ≥ marks a band that reaches the end of the sweep. |
 | `report/auto_summary.txt` | Plain-text summary. Each ranked design lists its widest +-1, +-2 and +-3 dB bands; `>=` marks a band that reaches the end of the sweep. |
 | `report/auto_ranking.json` | Feasible rows, sorted by score, with near-tie notes. |
 | `report/auto_comparison.png` | Coupled response of the top candidates. |

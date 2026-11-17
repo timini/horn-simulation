@@ -8,9 +8,11 @@ agree.
 
 The search runs over the whole sweep it is given. The response is linearly
 interpolated in log frequency onto a grid of every original sample plus a
-fixed step (1/96 octave by default), so band edges are resolved to that step
-and every original sample, including a narrow notch, still counts. Nothing is
-smoothed. A two-pointer sweep with running maximum and minimum finds the widest
+fixed step (1/96 octave by default). Every original sample, including a
+narrow notch, still counts. Nothing is smoothed. A band edge that falls
+between two solver samples comes from the linear interpolation, so its
+accuracy is set by the solver point density; the 1/96 octave step is only the
+grid quantisation. A two-pointer sweep with running maximum and minimum finds the widest
 window in linear time. When ``min_level_db`` is given, points below it break
 the band. A band that touches either end of the sweep may extend further, so
 it is flagged as a lower bound on the true width.
@@ -37,9 +39,9 @@ def widest_flat_band(frequencies, levels, tolerance_db, min_level_db=None,
     Returns a dict with ``f_low_hz``, ``f_high_hz``, ``octaves``, the corridor
     ``centre_level_db``, the log-frequency ``mean_level_db``, the number of
     original ``samples`` inside, and ``low_is_bound``/``high_is_bound`` when
-    the band reaches the end of the sweep. When no band holds at least
-    ``min_samples`` original samples, the frequencies are None and
-    ``octaves`` is 0. Equal widths are resolved towards the higher mean level.
+    the band reaches the end of the sweep. Only windows holding at least
+    ``min_samples`` original samples are candidates; when none does, the
+    frequencies are None and ``octaves`` is 0. Equal widths are resolved towards the higher mean level.
     """
     f = np.asarray(frequencies, dtype=float)
     y0 = np.asarray(levels, dtype=float)
@@ -54,6 +56,8 @@ def widest_flat_band(frequencies, levels, tolerance_db, min_level_db=None,
     y = np.interp(x, x0, y0)
     valid = np.ones(len(x), bool) if min_level_db is None else y >= min_level_db - 1e-12
     span = 2.0 * tolerance_db + 1e-9
+    # Cumulative count of original samples, to skip windows holding too few.
+    count = np.r_[0, np.cumsum(np.isin(x, x0))].tolist()
     # Cumulative trapezoid area for the window mean.
     area = np.r_[0.0, np.cumsum(0.5 * (y[1:] + y[:-1]) * np.diff(x))]
     xs, ys = x.tolist(), y.tolist()
@@ -78,7 +82,7 @@ def widest_flat_band(frequencies, levels, tolerance_db, min_level_db=None,
             if lo[0] < left:
                 lo.popleft()
         width = xs[right] - xs[left]
-        if width <= 0:
+        if width <= 0 or count[right + 1] - count[left] < min_samples:
             continue
         mean = (area[right] - area[left]) / width
         if best is None or width > best[0] + 1e-12 or (abs(width - best[0]) <= 1e-12 and mean > best[1]):
@@ -86,9 +90,7 @@ def widest_flat_band(frequencies, levels, tolerance_db, min_level_db=None,
     if best is None:
         return _empty(tolerance_db)
     width, mean, left, right = best
-    inside = int(np.count_nonzero((x0 >= x[left] - 1e-12) & (x0 <= x[right] + 1e-12)))
-    if inside < min_samples:
-        return _empty(tolerance_db)
+    inside = int(count[right + 1] - count[left])
     window = y[left:right + 1]
     return {"tolerance_db": float(tolerance_db), "f_low_hz": float(2.0 ** x[left]), "f_high_hz": float(2.0 ** x[right]),
             "octaves": float(width), "centre_level_db": float((window.max() + window.min()) / 2),

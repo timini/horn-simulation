@@ -62,7 +62,7 @@ def test_minimum_level_breaks_the_band():
 
 
 def test_ties_go_to_the_louder_band():
-    levels = np.where(F < 1000., 80., 90.)  # two equal two-decade halves
+    levels = np.where(F < 1000., 80., 90.)  # two equal one-decade halves
     band = widest_flat_band(F, levels, 1.)
     assert band["mean_level_db"] == pytest.approx(90., abs=0.1)
 
@@ -98,3 +98,27 @@ def test_ranking_rows_carry_the_flat_band_fields():
     capped = evaluate_response(F, levels, TargetSpec(500, 2000, min_output_db=99.9))
     assert capped["flat_band_min_level_db"] == 99.9
     assert capped["flat_band_3db_octaves"] < row["flat_band_3db_octaves"]
+
+
+def test_too_sparse_widest_window_falls_back_to_a_narrower_valid_band():
+    # The widest +-3 dB window (100-1000 Hz) holds only two solver samples;
+    # the narrower 1000-1030 Hz band holds four and must be returned.
+    band = widest_flat_band([100., 1000., 1010., 1020., 1030.], [90., 95., 80., 80., 80.], 3.)
+    assert band["samples"] >= 3
+    assert band["f_high_hz"] == pytest.approx(1030.)
+    assert band["f_low_hz"] < 1010.
+
+
+def test_edge_between_sparse_samples_is_the_linear_interpolation():
+    band = widest_flat_band([1000., 2000., 4000.], [0., 0., -20.], 3., min_samples=2)
+    # 6 dB of a 20 dB drop over one octave: 2 ** (1 + 0.3) kHz.
+    assert band["f_high_hz"] == pytest.approx(2000. * 2 ** 0.3, rel=0.01)
+
+
+def test_html_cell_marks_lower_bound_and_missing_band():
+    from horn_analysis.html_report import _flat_band_cell
+    row = {"flat_band_3db_octaves": 1.45, "flat_band_3db_low_hz": 566., "flat_band_3db_high_hz": 1543.,
+           "flat_band_3db_is_lower_bound": True}
+    assert _flat_band_cell(row) == "≥1.45 (566-1543)"
+    assert _flat_band_cell({"flat_band_3db_octaves": 0., "flat_band_3db_low_hz": None}) == "none"
+    assert _flat_band_cell({}) == "n/a"
