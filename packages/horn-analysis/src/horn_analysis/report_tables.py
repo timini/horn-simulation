@@ -66,6 +66,7 @@ REASON_DESCRIPTIONS = {
     "profile_geometry_infeasible": "Profile cannot reach the mouth in this length",
     "loft_accuracy_unmet": "STEP loft could not follow the profile closely enough",
     "cad_geometry_rejected": "STEP geometry rejected",
+    "band_boundary_mismatch": "Solver bands disagree where they join; mesh not resolved",
 }
 
 

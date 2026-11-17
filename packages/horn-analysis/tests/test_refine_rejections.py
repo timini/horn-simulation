@@ -23,6 +23,25 @@ def test_oversized_refinement_mesh_is_a_candidate_rejection(tmp_path, monkeypatc
         calls.append(args)
         raise error
 
+    _refine_one_seed(tmp_path, monkeypatch, run_simulation_from_step, calls, reason)
+
+
+def test_refinement_bands_that_do_not_join_are_a_candidate_rejection(tmp_path, monkeypatch):
+    from horn_analysis import merge
+    calls = []
+
+    def run_simulation_from_step(*args, **kwargs):
+        calls.append(args)
+
+    def merge_bands(*args, **kwargs):
+        raise merge.BandBoundaryMismatch(("mouth_p", 3830.4, .156, 1.6), 4)
+
+    monkeypatch.setattr(merge, "merge_bands", merge_bands)
+    _refine_one_seed(tmp_path, monkeypatch, run_simulation_from_step, calls, "band_boundary_mismatch")
+
+
+def _refine_one_seed(tmp_path, monkeypatch, run_simulation_from_step, calls, reason):
+
     fake = types.ModuleType("horn_solver.solver")
     fake.run_simulation_from_step = run_simulation_from_step
     monkeypatch.setitem(sys.modules, "horn_solver.solver", fake)

@@ -2,10 +2,56 @@
 import argparse
 from pathlib import Path
 import re
+import sys
 import numpy as np
 import pandas as pd
 from horn_core.acoustics import validate_band, validate_response, inlet_area_from_frame
 from horn_core.frequency_grid import DEFAULT_MIN_POINTS_PER_OCTAVE, band_edges, points_per_band as grid_points_per_band
+
+
+SPL_JUMP_LIMIT_DB = 0.5
+COMPLEX_RELATIVE_TOLERANCE = .05
+COMPLEX_SCALE_TOLERANCE = .01
+
+
+class BandBoundaryMismatch(ValueError):
+    """Neighbouring bands disagree at their shared frequency.
+
+    The bands of one candidate are solved on separate meshes, so a jump at a
+    shared frequency means at least one mesh is not resolved well enough.
+    ``quantity`` is ``spl`` (``jump`` in dB) or a complex column prefix
+    (``jump`` relative to the larger magnitude). ``excess_ratio`` is the jump
+    divided by the allowed difference, so anything above 1 failed.
+    """
+    reason = "band_boundary_mismatch"
+
+    def __init__(self, worst, failing_checks):
+        self.quantity, self.frequency_hz, self.jump, self.excess_ratio = worst
+        self.failing_checks = failing_checks
+        if self.quantity == "spl":
+            what = (f"Band boundary pressure mismatch exceeds {SPL_JUMP_LIMIT_DB} dB: "
+                    f"{self.jump:.2f} dB jump")
+        else:
+            what = (f"Band boundary complex {self.quantity} mismatch: {self.jump:.1%} relative jump, "
+                    f"{self.excess_ratio:.2f} times the allowed difference")
+        super().__init__(f"{what} at {self.frequency_hz:.1f} Hz "
+                         f"({failing_checks} failing boundary checks); refine mesh")
+
+    def summary(self):
+        return {"quantity": self.quantity, "frequency_hz": self.frequency_hz,
+                "jump": self.jump, "jump_unit": "dB" if self.quantity == "spl" else "relative",
+                "excess_ratio": self.excess_ratio, "failing_checks": self.failing_checks}
+
+
+def boundary_rejection(error, *, candidate_id, output=None):
+    """Rejection record for a candidate whose bands do not join."""
+    import json
+    record = {"candidate_id": candidate_id, "status": "rejected",
+              "rejection_reasons": [error.reason], "rejection_detail": str(error),
+              "band_boundary_mismatch": error.summary(), "bands": []}
+    if output is not None:
+        Path(output).write_text(json.dumps(record, indent=2))
+    return record
 
 
 def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output):
@@ -66,18 +112,26 @@ def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output
               "mouth_u": float(joined.mouth_area_m2.iloc[0])/characteristic}
     if joined.radiation_model.iloc[0]=='modal_baffled':
         scales.update({f'modal_v_{n}':1/characteristic for n in range(16)})
-    for _, rows in joined.groupby("frequency"):
+    failures = []
+    for frequency, rows in joined.groupby("frequency"):
         if len(rows) < 2:
             continue
-        if rows.spl.max()-rows.spl.min() > 0.5:
-            raise ValueError("Band boundary pressure mismatch exceeds 0.5 dB; refine mesh")
+        spl_jump = float(rows.spl.max()-rows.spl.min())
+        if spl_jump > SPL_JUMP_LIMIT_DB:
+            failures.append(("spl", float(frequency), spl_jump, spl_jump/SPL_JUMP_LIMIT_DB))
         for prefix, scale in scales.items():
             values = rows[prefix+"_real"].to_numpy()+1j*rows[prefix+"_imag"].to_numpy()
             # 5% relative complex difference plus 1% of a fixed unit-pressure
             # reference scale near zeros; phase jumps cannot hide behind SPL.
-            tolerance = .05*np.maximum(np.abs(values),abs(values[0])) + .01*scale
-            if np.any(np.abs(values-values[0]) > tolerance):
-                raise ValueError(f"Band boundary complex {prefix} mismatch; refine mesh")
+            difference = np.abs(values-values[0])
+            tolerance = COMPLEX_RELATIVE_TOLERANCE*np.maximum(np.abs(values),abs(values[0])) + COMPLEX_SCALE_TOLERANCE*scale
+            if np.any(difference > tolerance):
+                worst = int(np.argmax(difference/tolerance))
+                failures.append((prefix, float(frequency),
+                                 float(difference[worst]/max(np.abs(values).max(), 1e-300)),
+                                 float(difference[worst]/tolerance[worst])))
+    if failures:
+        raise BandBoundaryMismatch(max(failures, key=lambda f: f[3]), len(failures))
     joined = joined.drop_duplicates("frequency", keep="first")
     validate_response(joined.frequency, joined.spl)
     joined.to_csv(output, index=False)
@@ -106,7 +160,8 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--files", nargs="+")
     p.add_argument("--rejections", nargs="+", help="Per-band solver rejection JSON files")
-    p.add_argument("--candidate-id", help="Candidate label for --rejections")
+    p.add_argument("--candidate-id", help="Candidate label for --rejections or --rejection-file")
+    p.add_argument("--rejection-file", help="With --files: write a band_boundary_mismatch rejection here instead of failing")
     p.add_argument("--num-bands", type=int)
     p.add_argument("--min-freq", type=float)
     p.add_argument("--max-freq", type=float)
@@ -121,9 +176,18 @@ def main():
         return
     if not a.files or None in (a.num_bands, a.min_freq, a.max_freq, a.num_intervals):
         p.error("--files needs --num-bands, --min-freq, --max-freq and --num-intervals")
+    if a.rejection_file and not a.candidate_id:
+        p.error("--rejection-file needs --candidate-id")
     points = grid_points_per_band(a.min_freq, a.max_freq, a.num_bands, a.num_intervals, a.min_points_per_octave)
-    merge_bands(a.files, num_bands=a.num_bands, min_freq=a.min_freq, max_freq=a.max_freq,
-                points_per_band=points, output=a.output)
+    try:
+        merge_bands(a.files, num_bands=a.num_bands, min_freq=a.min_freq, max_freq=a.max_freq,
+                    points_per_band=points, output=a.output)
+    except BandBoundaryMismatch as error:
+        # In auto mode one unresolved candidate is rejected; the run continues.
+        if not a.rejection_file:
+            raise
+        boundary_rejection(error, candidate_id=a.candidate_id, output=a.rejection_file)
+        print(f"Rejected {a.candidate_id}: {error}", file=sys.stderr)
 
 
 if __name__ == "__main__":
