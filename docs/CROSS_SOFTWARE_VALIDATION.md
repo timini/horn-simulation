@@ -103,7 +103,7 @@ With a baffled mouth this horn's input impedance changes by only about 0.06 dB w
 | Profile | dB median (limit 0.25) | dB p95 | Phase p95 | Peaks, openwind and ours (Hz) | Result |
 | --- | --- | --- | --- | --- | --- |
 | conical | 0.256 | 0.652 | 3.9 | 345 / 338, 776 / 753 | Fail (median, peaks) |
-| exponential | 0.295 | 0.760 | 5.2 | 434 / 423, 715 / 692 | Fail (median, phase median, peaks) |
+| exponential | 0.295 | 0.760 | 5.1 | 434 / 423, 715 / 692 | Fail (median, phase median, peaks) |
 | hyperbolic | 0.258 | 0.848 | 5.5 | 496 / 491 | Fail (median) |
 | tractrix | 0.146 | 0.777 | 5.2 | 618 / 617 | Pass |
 | os | 0.223 | 0.656 | 4.2 | 380 / 370, 799 / 776 | Fail (peaks) |

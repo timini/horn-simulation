@@ -22,7 +22,7 @@ The settings keep the run short: three screened geometries go to FEM and refinem
 The numbers below are from run `20261117T005341Z-14e497b7`, at source revision `51427ee`. An earlier run at `4307d67` (`20261116T223748Z-45ab2da6`) gave an identical summary and rejection table. That earlier run took under two minutes on an Apple laptop. Run folders are not committed; rerun the command to reproduce them. Small differences can come from a different machine.
 
 1. **Driver screen.** Five of the seven curated drivers passed: the three cone drivers and two Peerless compression drivers.
-2. **Throats.** Five throat radii from 12.7 mm to 130.7 mm (the ka = 3.83 limit at 1600 Hz), including one that puts the 6NMB420's estimated front chamber corner at 1600 Hz.
+2. **Throats.** Five throat radii were proposed, from 12.7 mm to 130.7 mm (the ka = 3.83 limit at 1600 Hz). Four of them (12.7 to 50 mm) fit inside the mouth range; the 130.7 mm throat is larger than every mouth searched, so it gives no geometry. The four include one that puts the 6NMB420's estimated front chamber corner at 1600 Hz.
 3. **Grid and screen.** 230 geometries across the seven profiles, 1,150 driver pairs scored by the Webster screen. Three went to FEM: one `cd`, one exponential and one scaled tractrix.
 4. **FEM and ranking.** 25 driver and horn pairs were scored. Both Peerless drivers were rejected: the band is outside their rated usable band, and one also exceeds Xmax at 2.83 V.
 5. **Refinement.** Two more `cd` geometries, starting from the best FEM design.
