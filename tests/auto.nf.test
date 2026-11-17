@@ -42,7 +42,7 @@ nextflow_pipeline {
             assert report.contains("Synthetic motor (not a product)")
             assert !report.contains("Rejected high resonance fixture")
             assert report.contains("Mouth: 0.0500 m")
-            assert report.contains("Length: 0.070 — 0.090 m (search range)")
+            assert report.contains("Length: 0.070 to 0.090 m (search range)")
         }
     }
     test("No suitable drivers produces an explicit empty report") {
