@@ -4,9 +4,9 @@ Drivers are JSON files, one per driver, under version control. Choose a database
 
 | Folder | Contents |
 | --- | --- |
-| `data/drivers` | 1,454 drivers (1,342 labelled cone, 112 of unknown type) scraped from loudspeakerdatabase.com across nine manufacturers (18Sound, B&C, Beyma, Celestion, Ciare, Dayton, Eminence, LaVoce, SICA). The default. |
+| `data/drivers` | 2,137 drivers. 1,454 were scraped from loudspeakerdatabase.com (version 1 records; 669 of them now also carry power, sensitivity or band from driver-base). 683 are version 2 records imported from the open driver-base dataset (CC BY 4.0), across 12 manufacturers. The default. |
 | `data/drivers-curated` | Seven hand-checked records from manufacturer pages and datasheets: three cone drivers (18Sound 6NMB420, Celestion AF3010 and TF0512HE) and four Peerless compression drivers. See [its README](../data/drivers-curated/README.md). |
-| `data/drivers-incomplete` | Not loadable. Compression drivers whose public data lack a full Thiele-Small set, and scraped records removed from `data/drivers` with the reason. See [its README](../data/drivers-incomplete/README.md). |
+| `data/drivers-incomplete` | Not loadable. Compression drivers whose public data lack a full Thiele-Small set (including 368 from driver-base, one folder per manufacturer), and scraped records removed from `data/drivers` with the reason. See [its README](../data/drivers-incomplete/README.md). |
 
 None of these records is a physically qualified driver. Every one lacks a verified throat interface and a separate diaphragm mass and rear load, so rankings label them `insufficient_evidence`.
 
@@ -78,6 +78,16 @@ It does not work around bot protection. A site that blocks polite access is mark
 ```
 
 Adapters live in `horn_drivers/sources/`, one module per source, and register with `@register_adapter`. A `DriverSource` writes version 2 records to `data/drivers` (or `data/drivers-incomplete` with the reason); a `PriceSource` writes offers to `data/prices` and anything short of an exact match to a review CSV under `results/price-review/`.
+
+## Open datasets: driver-base
+
+[driver-base](https://github.com/JonathanDCohen/driver-base) compiles Thiele-Small, power, sensitivity and band values from manufacturer product pages and publishes them as one JSON file under CC BY 4.0. It is the only open driver dataset found with a licence that allows reuse (searched 2026-11-17). Attribution: Data from driver-base (https://github.com/JonathanDCohen/driver-base), licensed under CC BY 4.0. Changes made here: units converted to SI, values driver-base derived or inferred left out, records matched to this database.
+
+```sh
+.venv/bin/horn-sources run driver-base
+```
+
+The adapter (`horn_drivers/sources/driver_base.py`) reads the file pinned to one commit. Each field's provenance names the manufacturer page driver-base read, the date it read it, and the dataset URL (`via`). Records are matched to existing ones by manufacturer, model and impedance, or by a model-name prefix with Fs, Re, Bl, Sd and Mms within 1 %. A matched record is never overwritten: disagreements beyond 5 % (10 % for Le and Xmax) go to `data/sources/driver-base/conflicts.csv`. A matched scraped record that lacks power, sensitivity or band gets them added, with their own field provenance, only when Fs, Re, Bl and Sd agree. Dome tweeters, passive radiators, makers not on the canonical list (Jensen, HOQS) and model names that driver-base gives to more than one product are skipped. The last run's counts are in `data/sources/driver-base/summary.json`.
 
 ## Prices
 

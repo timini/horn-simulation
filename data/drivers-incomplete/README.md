@@ -4,6 +4,8 @@
 
 These records are not in a driver database directory and the pipeline cannot load them. They record what is still needed: measure the missing parameters (an impedance sweep with an added-mass or closed-box step gives Fs, Re, Le, Qms, Qes, Bl and Mms; Sd needs the diaphragm dimensions) or obtain them from the manufacturer, then enter the driver with `horn-add-driver`.
 
+The manufacturer folders (`18Sound/`, `BC/`, ...) hold version 2 records from the driver-base import, mostly compression drivers, with `incomplete_reason` naming the missing fields. They carry the power, sensitivity and band driver-base read from the manufacturer page.
+
 Four compression drivers with complete published parameters are in `data/drivers-curated/Peerless`.
 
 ## Scraped records removed from data/drivers
