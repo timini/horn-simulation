@@ -128,7 +128,7 @@ def test_price_source_writes_exact_offers_and_review_csv(tmp_path):
     offers = {o.driver_id: o for o in load_offers(tmp_path / "prices")}
     assert offers["eminence-beta-12a"].match_confidence == "exact"
     assert offers["eminence-beta-12a"].vat_included is True and offers["eminence-beta-12a"].region == "UK"
-    assert offers["bc-8ndl51"].match_confidence == "fuzzy"
+    assert "bc-8ndl51" not in offers           # below exact: review CSV only, never the price file
     rows = list(csv.DictReader(review.open()))
     assert {r["note"] for r in rows} == {"impedance not confirmed on both sides", "model not in the database"}
     assert (tmp_path / "prices" / "fake-shop" / "2026-11-17.jsonl").exists()

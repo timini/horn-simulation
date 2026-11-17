@@ -1,0 +1,4 @@
+{"products":{"current_page":1,"last_page":2,"data":[
+{"id":144363,"name":"WL4","slug":"BEYMA-WL4","unit":"pair","in_stock":true,"price":{"amount":"760.7900"},"selling_price":{"amount":"760.7900"},"short_description":"BEYMA WL4, 44.4mm (1.75in) Compression Driver, 105dB, 8 ohm."},
+{"id":144100,"name":"12P80Fe","slug":"BEYMA-12P80Fe","unit":"each","in_stock":false,"price":{"amount":"300.0000"},"selling_price":{"amount":"279.5000"},"short_description":"BEYMA 12P80Fe, 300mm (12in) Woofer, 97dB, 8 ohm."}
+]}}

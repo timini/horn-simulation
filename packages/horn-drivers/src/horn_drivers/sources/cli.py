@@ -4,6 +4,8 @@
     horn-sources robots [--only bc,thomann-uk]     # fetch and store robots.txt, update snapshot dates
     horn-sources fx                                 # ECB daily rates into data/prices/fx/
     horn-sources run <source_id> [--limit N]        # one approved adapter
+    horn-sources coverage [--manufacturers 18Sound,BC] [--driver-type cone]
+                                                    # drivers with at least one exact price
 
 All network access goes through PoliteFetcher with the registry rate limit.
 """
@@ -39,6 +41,42 @@ def snapshot_robots(entry: SourceEntry, fetcher, robots_dir: Path = ROBOTS_DIR) 
 
 
 
+def price_coverage(records, offers, manufacturers=None, driver_type=None) -> dict:
+    """Drivers in *records* with at least one exact or manual offer: overall, per region, per source."""
+    from horn_drivers.identity import canonical_manufacturer
+    from horn_drivers.prices import RANKABLE_MATCHES
+    wanted = {canonical_manufacturer(m) or m for m in manufacturers} if manufacturers else None
+    pilot = {}
+    for record in records:
+        maker = canonical_manufacturer(record.get("manufacturer")) or record.get("manufacturer")
+        if wanted and maker not in wanted:
+            continue
+        if driver_type and record.get("driver_type") != driver_type:
+            continue
+        pilot[record["driver_id"]] = maker
+    priced, by_region, by_source, by_maker = set(), {}, {}, {}
+    for offer in offers:
+        if offer.driver_id not in pilot or offer.match_confidence not in RANKABLE_MATCHES:
+            continue
+        priced.add(offer.driver_id)
+        by_region.setdefault(offer.region, set()).add(offer.driver_id)
+        by_source.setdefault(offer.source_id, set()).add(offer.driver_id)
+        by_maker.setdefault(pilot[offer.driver_id], set()).add(offer.driver_id)
+    makers = {}
+    for maker in sorted(set(pilot.values())):
+        total = sum(1 for m in pilot.values() if m == maker)
+        makers[maker] = {"drivers": total, "priced": len(by_maker.get(maker, ()))}
+    regions_per_driver = {}
+    for region, ids in by_region.items():
+        for driver_id in ids:
+            regions_per_driver[driver_id] = regions_per_driver.get(driver_id, 0) + 1
+    return {"drivers": len(pilot), "priced": len(priced),
+            "per_region": {k: len(v) for k, v in sorted(by_region.items())},
+            "per_source": {k: len(v) for k, v in sorted(by_source.items())},
+            "per_manufacturer": makers,
+            "in_two_or_more_regions": sum(1 for n in regions_per_driver.values() if n >= 2)}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
@@ -59,6 +97,11 @@ def main(argv=None):
                      help="Driver folders to match retailer listings against (repeatable).")
     run.add_argument("--prices-dir", type=Path, default=Path("data/prices"))
     run.add_argument("--review-csv", type=Path, default=None)
+    cover = sub.add_parser("coverage")
+    cover.add_argument("--prices-dir", type=Path, default=Path("data/prices"))
+    cover.add_argument("--db", type=Path, action="append", default=None)
+    cover.add_argument("--manufacturers", default=None, help="Comma list, for example 18Sound,BC,Celestion.")
+    cover.add_argument("--driver-type", default=None)
     args = parser.parse_args(argv)
 
     entries = load_source_registry(args.registry)
@@ -87,6 +130,15 @@ def main(argv=None):
             report.append(outcome)
             print(json.dumps(outcome))
         save_source_registry(entries, args.registry)
+        return 0
+
+    if args.command == "coverage":
+        from horn_drivers.loader import load_drivers_raw
+        from horn_drivers.prices import load_offers
+        records = [r for folder in (args.db or [Path("data/drivers"), Path("data/drivers-curated")])
+                   for r in load_drivers_raw(str(folder))]
+        makers = args.manufacturers.split(",") if args.manufacturers else None
+        print(json.dumps(price_coverage(records, load_offers(args.prices_dir), makers, args.driver_type), indent=2))
         return 0
 
     if args.command == "fx":

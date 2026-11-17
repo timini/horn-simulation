@@ -10,7 +10,9 @@ Prices live here, not in the driver records.
   `horn-sources fx`. Prices are converted only at ranking time, with the newest rate file
   dated on or before the ranking date.
 
-Only `exact` and `manual` matches are used in a run. An offer older than 30 days on the run
+Adapters write only `exact` matches here; anything weaker goes to
+`results/price-review/<source>-<date>.csv` for a person to check, and a checked offer can
+be added by hand as `manual`. Only `exact` and `manual` matches are used in a run. An offer older than 30 days on the run
 date is not used, and `horn-validate-drivers --prices data/prices` warns about it.
 Field rules and the loader are in `packages/horn-drivers/src/horn_drivers/prices.py`;
 see [docs/DRIVERS.md](../../docs/DRIVERS.md#prices).

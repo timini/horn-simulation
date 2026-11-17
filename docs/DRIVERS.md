@@ -63,7 +63,7 @@ New records from the source adapters use `"record_schema_version": 2`. The loade
 
 All fetching goes through `horn_drivers.fetch.PoliteFetcher`:
 
-- robots.txt is read for each host and disallowed paths are refused;
+- robots.txt is read for each host and disallowed paths are refused. A URL must pass both Python's `urllib.robotparser` and an RFC 9309 matcher that understands `*` and `$` (robotparser ignores wildcard rules such as `Disallow: *?filter=`);
 - one request at a time per host, at least the source delay (5 s for retailers, 10 s where robots.txt sets Crawl-delay 10, 30 s for loudspeakerdatabase.com) plus jitter;
 - every kept response is cached under `results/cache/<source>/` and not refetched inside the cache window (7 days for prices, 90 for Thiele-Small data);
 - two consecutive 429 or 403 responses stop the source for the run;
@@ -77,9 +77,28 @@ It does not work around bot protection. A site that blocks polite access is mark
 .venv/bin/horn-sources run thomann-uk --limit 20
 ```
 
-Adapters live in `horn_drivers/sources/`, one module per source, and register with `@register_adapter`. A `DriverSource` writes version 2 records to `data/drivers` (or `data/drivers-incomplete` with the reason); a `PriceSource` writes offers to `data/prices` and anything short of an exact match to a review CSV under `results/price-review/`.
+Adapters live in `horn_drivers/sources/`, one module per source, and register with `@register_adapter`. A `DriverSource` writes version 2 records to `data/drivers` (or `data/drivers-incomplete` with the reason); a `PriceSource` writes exact matches to `data/prices` and everything else (fuzzy or unmatched) only to a review CSV under `results/price-review/`.
 
 ## Prices
+
+### Retailer adapters
+
+| Source | Region, currency | How it reads prices |
+| --- | --- | --- |
+| `thomann-uk`, `thomann-de` | UK GBP, EU EUR, VAT included | Brand-and-size loudspeaker category pages from the sitemap; each holds a JSON block per product. A product page is fetched only when the category entry has no impedance and the model is in the database. The German site is used for EUR because the English pages on thomann.de sit under the disallowed `/intl/`. |
+| `lautsprechershop` | EU EUR, VAT included | Maker category pages from the English sitemap; one block per product with its order number and gross price. |
+| `bax-shop-uk` | UK GBP, VAT included | Loudspeaker product pages from the pro audio sitemap. |
+| `solen` | CA CAD, tax excluded | The shop's listing endpoint, which answers JSON when asked (`Accept: application/json`). Pair prices go to review. |
+| `madisound` | US USD, tax excluded | Product pages from the sitemap (JSON-LD offer). Stocks almost none of the pilot makers. |
+| `dayton-msrp` | US USD | MSRP on Dayton Audio's own product pages (pro audio category); a list price, not a shop offer. |
+
+Not scraped: Parts Express (pages need JavaScript; ask for a feed), the Eminence store (its `/agents.md` asks automated clients to sign requests with Shopify Web Bot Auth, which this project does not do), Loudspeakerfreaks (robots.txt disallows everything), Simply Speakers (robots.txt answers 403).
+
+Matching (`DriverIndex.match`): an offer is `exact` when the canonical manufacturer, the normalised model and the impedance agree with a database record and the listing's own title or product block names both maker and model. Impedance comes from the model name ("12NW76 8 Ohms"), a labelled spec line ("Impedance: 8 Ohm", never Re) or the product name. When the listing's model is not in the database, a database model named in the title is used, unless a revision suffix follows it ("Beta-12A-2"). Repair kits, diaphragms and other parts never match. A different impedance variant from the one in the database is not matched.
+
+`horn-sources coverage --manufacturers 18Sound,BC,Celestion,Beyma,Eminence --driver-type cone` counts drivers with at least one exact price, per region, source and maker.
+
+### Snapshots
 
 Prices are kept out of the driver records, in `data/prices/<source>/<YYYY-MM-DD>.jsonl`, one offer per line: `driver_id`, `source_id`, `url`, `sku`, `price`, `currency`, `vat_included`, `region`, `in_stock`, `retrieved_on`, `match_confidence`. The price is stored as listed, shipping excluded.
 

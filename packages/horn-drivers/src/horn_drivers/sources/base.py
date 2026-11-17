@@ -25,6 +25,7 @@ Store only facts: numbers, units, URL, date, SKU. No descriptions or images.
 """
 
 import csv
+import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -189,34 +190,90 @@ class DriverIndex:
                 self.exact[(manufacturer, model, impedance)] = record["driver_id"]
                 self.by_model.setdefault((manufacturer, model), []).append((impedance, record["driver_id"]))
 
+    def model_from_title(self, manufacturer: str, title: str) -> Optional[str]:
+        """The longest known model of *manufacturer* named in *title*, or None.
+
+        The title is split into letter-and-digit tokens and a model counts as
+        named when a run of consecutive tokens joins to its normalised form.
+        A run followed by a short revision token ("2", "II", "MK2") is
+        ambiguous (Beta-12A versus Beta-12A-2) and gives None unless the
+        longer name is itself a known model.
+        """
+        canonical = canonical_manufacturer(manufacturer)
+        known = {model for (maker, model) in self.by_model if maker == canonical}
+        if not known:
+            return None
+        tokens = re.findall(r"[A-Z0-9]+", title.upper().replace("&", " "))
+        best: Optional[Tuple[int, str]] = None
+        for start in range(len(tokens)):
+            joined = ""
+            for end in range(start, min(len(tokens), start + 6)):
+                joined += tokens[end]
+                if joined in known:
+                    following = tokens[end + 1] if end + 1 < len(tokens) else ""
+                    after = tokens[end + 2] if end + 2 < len(tokens) else ""
+                    if (_REVISION.fullmatch(following) and after not in _UNIT_WORDS
+                            and (joined + following) not in known):
+                        continue
+                    if best is None or len(joined) > best[0]:
+                        best = (len(joined), joined)
+        return best[1] if best else None
+
     def match(self, listing: Listing) -> Tuple[Optional[str], Optional[str], str]:
         """(driver_id, confidence, note). Confidence is "exact", "fuzzy" or None.
 
         Exact: canonical manufacturer, normalised model and impedance agree,
         and the title names both the manufacturer and the model. A listing
         without impedance whose model has a single variant is "fuzzy" and
-        goes to review. Anything else is unmatched.
+        goes to review. A part or kit for a driver (repair kit, diaphragm)
+        is never matched. When the listing's model is not in the index, a
+        known model named in the title is used (``model_from_title``).
+        Anything else is unmatched.
         """
         manufacturer = canonical_manufacturer(listing.manufacturer)
         if manufacturer is None:
             return None, None, f"unknown manufacturer {listing.manufacturer!r}"
+        if _ACCESSORY.search(listing.title) or _ACCESSORY.search(listing.model):
+            return None, None, "a part or kit for a driver, not the driver"
         model = normalise_model(listing.model, manufacturer)
         title = normalise_model(listing.title)
-        if model not in title:
+        from_title = ""
+        if (manufacturer, model) not in self.by_model:
+            found = self.model_from_title(manufacturer, listing.title)
+            if found:
+                model, from_title = found, f"model {found} read from the title; "
+        if not model or model not in title:
             return None, None, "title does not name the model"
         from horn_drivers.identity import manufacturer_aliases
         if not any(normalise_model(alias) in title for alias in manufacturer_aliases(manufacturer)):
             return None, None, "title does not name the manufacturer"
         impedance = float(listing.impedance_ohm) if listing.impedance_ohm else None
         if impedance is not None and (manufacturer, model, impedance) in self.exact:
-            return self.exact[(manufacturer, model, impedance)], "exact", ""
+            return self.exact[(manufacturer, model, impedance)], "exact", from_title.rstrip("; ")
         variants = self.by_model.get((manufacturer, model), [])
         if len(variants) == 1 and (impedance is None or variants[0][0] is None):
-            return variants[0][1], "fuzzy", "impedance not confirmed on both sides"
+            return variants[0][1], "fuzzy", from_title + "impedance not confirmed on both sides"
         if variants:
-            return None, None, "several variants and no impedance match"
+            known = sorted({str(v[0]) for v in variants})
+            return None, None, from_title + f"impedance {impedance} not among database variants {', '.join(known)}"
         return None, None, "model not in the database"
 
+    def knows_model(self, listing: Listing) -> bool:
+        """True when the listing's model (or one named in its title) is in the index."""
+        manufacturer = canonical_manufacturer(listing.manufacturer)
+        if manufacturer is None:
+            return False
+        if (manufacturer, normalise_model(listing.model, manufacturer)) in self.by_model:
+            return True
+        return self.model_from_title(manufacturer, listing.title) is not None
+
+
+_REVISION = re.compile(r"\d{1,2}|II|III|IV|MK\d*|V\d")
+# A listing for a part of a driver (recone or repair kit, diaphragm, gasket)
+# names the driver model too; it is never a price for the driver itself.
+_ACCESSORY = re.compile(r"\b(?:repair|recone|reconing|re-cone|diaphragms?|membranes?|ersatzmembran\w*|"
+                        r"reparatur\w*|spare|kit|gasket|grilles?|replacement\s+(?:cone|part))\b", re.IGNORECASE)
+_UNIT_WORDS = frozenset({"OHM", "OHMS", "INCH", "IN", "W", "WATT", "WATTS", "MM", "CM", "X"})
 
 REVIEW_FIELDS = ("source_id", "url", "title", "manufacturer", "model", "impedance_ohm", "sku",
                  "price", "currency", "candidate_driver_id", "confidence", "note", "retrieved_on")
@@ -234,6 +291,39 @@ class PriceSource(SourceAdapter):
     def parse_listing(self, page: FetchResult, ref: ProductRef) -> Optional[Listing]:
         """Facts from one product page, or None for a soft 404 / no single product."""
 
+    def parse_listings(self, page: FetchResult, ref: ProductRef) -> List[Listing]:
+        """Every product on a fetched page. A category page may hold many,
+        each read from its own product block; the default reads one product
+        page with ``parse_listing``. No network access."""
+        listing = self.parse_listing(page, ref)
+        return [listing] if listing is not None else []
+
+    def detail_ref(self, listing: Listing) -> Optional[ProductRef]:
+        """A product page to fetch when a category listing lacks the impedance.
+
+        ``run`` fetches it only when the model is in the driver index, and
+        uses the product page's own ``parse_listing`` result instead. The
+        default is None (no follow-up fetch)."""
+        return None
+
+    def _detail(self, detail: ProductRef, listing: Listing, retrieved_on: str,
+                summary: RunSummary) -> Tuple[Listing, str]:
+        """The product page's listing in place of *listing*, when it can be read."""
+        try:
+            page = self.fetch(detail)
+        except (DisallowedByRobots, ResponseTooLarge) as error:
+            summary.skipped.append((detail.url, str(error)))
+            return listing, retrieved_on
+        summary.pages += 1
+        if not page.ok:
+            summary.skipped.append((detail.url, f"HTTP {page.status}"))
+            return listing, retrieved_on
+        found = self.parse_listing(page, detail)
+        if found is None:
+            summary.skipped.append((detail.url, "product page shows no single product"))
+            return listing, retrieved_on
+        return found, page.retrieved_on
+
     def to_offer(self, listing: Listing, driver_id: str, confidence: str, retrieved_on: str) -> PriceOffer:
         return PriceOffer(driver_id=driver_id, source_id=self.source_id, url=listing.url, sku=listing.sku,
                           price=float(listing.price), currency=listing.currency,
@@ -244,31 +334,45 @@ class PriceSource(SourceAdapter):
     def run(self, index: DriverIndex, prices_dir: Path, review_csv: Path,
             limit: Optional[int] = None) -> RunSummary:
         """Discover, fetch, parse and match; write exact offers to the day's
-        snapshot and everything else to the review CSV (fuzzy offers are
-        written too, marked fuzzy, so the ranking ignores them until reviewed)."""
+        snapshot and everything else (fuzzy or unmatched) to the review CSV
+        only. A reviewer can add a checked offer by hand as "manual"."""
         summary = RunSummary(self.source_id)
         offers: List[PriceOffer] = []
         review_rows = []
-        for ref, page in self._pages(limit, summary):
-            listing = self.parse_listing(page, ref)
-            if listing is None:
-                summary.skipped.append((ref.url, "no single product on page"))
-                continue
-            driver_id, confidence, note = index.match(listing)
-            if confidence is not None:
-                offers.append(self.to_offer(listing, driver_id, confidence, page.retrieved_on))
-            if confidence != "exact":
-                review_rows.append({"source_id": self.source_id, "url": listing.url, "title": listing.title,
-                                    "manufacturer": listing.manufacturer, "model": listing.model,
-                                    "impedance_ohm": listing.impedance_ohm, "sku": listing.sku,
-                                    "price": listing.price, "currency": listing.currency,
-                                    "candidate_driver_id": driver_id, "confidence": confidence,
-                                    "note": note, "retrieved_on": page.retrieved_on})
+        seen = set()
+        try:
+            for ref, page in self._pages(limit, summary):
+                listings = self.parse_listings(page, ref)
+                if not listings:
+                    summary.skipped.append((ref.url, "no product on page"))
+                    continue
+                for listing in listings:
+                    retrieved_on = page.retrieved_on
+                    if listing.impedance_ohm is None and index.knows_model(listing):
+                        detail = self.detail_ref(listing)
+                        if detail is not None:
+                            listing, retrieved_on = self._detail(detail, listing, retrieved_on, summary)
+                    key = (listing.url, listing.sku, listing.model, listing.impedance_ohm)
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    driver_id, confidence, note = index.match(listing)
+                    if confidence == "exact":
+                        offers.append(self.to_offer(listing, driver_id, confidence, retrieved_on))
+                    else:
+                        review_rows.append({"source_id": self.source_id, "url": listing.url, "title": listing.title,
+                                            "manufacturer": listing.manufacturer, "model": listing.model,
+                                            "impedance_ohm": listing.impedance_ohm, "sku": listing.sku,
+                                            "price": listing.price, "currency": listing.currency,
+                                            "candidate_driver_id": driver_id, "confidence": confidence,
+                                            "note": note, "retrieved_on": retrieved_on})
+        except SourceBlocked as error:
+            summary.blocked_reason = str(error)
         if offers:
             for day in sorted({offer.retrieved_on for offer in offers}):
                 path = append_offers(prices_dir, self.source_id, [o for o in offers if o.retrieved_on == day], day)
                 summary.outputs.append(str(path))
-            summary.written = sum(1 for o in offers if o.match_confidence == "exact")
+            summary.written = len(offers)
         if review_rows:
             review_csv = Path(review_csv)
             review_csv.parent.mkdir(parents=True, exist_ok=True)
@@ -281,3 +385,4 @@ class PriceSource(SourceAdapter):
             summary.outputs.append(str(review_csv))
         summary.review = len(review_rows)
         return summary
+
