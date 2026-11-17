@@ -1,0 +1,86 @@
+{
+    "driver_id": "celestion-tf0510mr-8ohm",
+    "record_schema_version": 2,
+    "manufacturer": "Celestion",
+    "model_name": "TF0510MR",
+    "identity": {
+        "manufacturer": "Celestion",
+        "model": "TF0510MR",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 482.0,
+        "re_ohm": 7.87,
+        "le_h": 0.0002,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 30.0,
+        "peak_power_w": 60.0,
+        "sensitivity_db_1w1m": 93.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tf0510mr/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tf0510mr/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tf0510mr/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tf0510mr/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tf0510mr/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tf0510mr/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tf0510mr/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_low_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tf0510mr/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tf0510mr/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "5in",
+    "usable_f_low_hz": 400.0,
+    "usable_f_high_hz": 8000.0,
+    "parameter_source": "https://celestion.com/product/tf0510mr/",
+    "incomplete_reason": "missing bl_tm, sd_m2, mms_kg on the manufacturer page"
+}

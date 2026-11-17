@@ -1,0 +1,132 @@
+{
+    "driver_id": "18sound-12ntlw3500-16ohm",
+    "record_schema_version": 2,
+    "manufacturer": "18Sound",
+    "model_name": "12NTLW3500",
+    "identity": {
+        "manufacturer": "18Sound",
+        "model": "12NTLW3500",
+        "variant": {
+            "impedance_ohm": 16.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 57.0,
+        "re_ohm": 11.3,
+        "qes": 0.56,
+        "qms": 11.7,
+        "qts": 0.54,
+        "sd_m2": 0.0531,
+        "xmax_m": 0.0079,
+        "mms_kg": 0.077,
+        "bl_tm": 23.5,
+        "le_h": 0.00062,
+        "nominal_impedance_ohm": 16.0,
+        "power_w": 900.0,
+        "peak_power_w": 1800.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "bl_tm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_low_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "12in",
+    "usable_f_low_hz": 50.0,
+    "usable_f_high_hz": 3000.0,
+    "parameter_source": "https://www.eighteensound.it/en/products/lf-driver/12-0/16/12ntlw3500-16ohm",
+    "provenance": {
+        "notes": [
+            "Sensitivity 95 dB: the drive note names 8 ohm for a 16 ohm model, so the 1 W figure is unknown; not stored."
+        ]
+    }
+}

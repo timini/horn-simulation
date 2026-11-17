@@ -1,0 +1,134 @@
+{
+    "driver_id": "18sound-15nd940-8ohm",
+    "record_schema_version": 2,
+    "manufacturer": "18Sound",
+    "model_name": "15ND940",
+    "identity": {
+        "manufacturer": "18Sound",
+        "model": "15ND940",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 38.0,
+        "re_ohm": 5.4,
+        "qes": 0.29,
+        "qms": 7.5,
+        "qts": 0.28,
+        "sd_m2": 0.08814,
+        "xmax_m": 0.0095,
+        "mms_kg": 0.108,
+        "bl_tm": 21.9,
+        "le_h": 0.0007,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 600.0,
+        "peak_power_w": 1200.0,
+        "sensitivity_db_1w1m": 99.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "bl_tm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "derived"
+        },
+        "usable_f_low_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "15in",
+    "usable_f_low_hz": 38.0,
+    "usable_f_high_hz": 3500.0,
+    "parameter_source": "https://www.eighteensound.it/en/products/lf-driver/15-0/8/15ND940"
+}

@@ -1,33 +1,140 @@
 {
     "driver_id": "bc-12fw64",
+    "record_schema_version": 2,
     "manufacturer": "BC",
     "model_name": "12FW64",
+    "identity": {
+        "manufacturer": "BC",
+        "model": "12FW64",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
     "driver_type": "cone",
     "parameters": {
         "fs_hz": 55.0,
         "re_ohm": 5.2,
-        "bl_tm": 15.5,
-        "sd_m2": 0.0522,
-        "mms_kg": 0.047,
-        "le_h": 0.001,
-        "qts": 0.29,
-        "nominal_impedance_ohm": 8.0,
-        "xmax_m": 0.005,
+        "qes": 0.32,
         "qms": 3.5,
-        "qes": 0.32
+        "qts": 0.29,
+        "sd_m2": 0.0522,
+        "xmax_m": 0.005,
+        "mms_kg": 0.047,
+        "bl_tm": 15.5,
+        "le_h": 0.001,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 250.0,
+        "peak_power_w": 500.0,
+        "sensitivity_db_1w1m": 98.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page",
+            "note": "manufacturer Mms; the previous value may have been Mmd"
+        },
+        "bl_tm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "derived"
+        },
+        "usable_f_low_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
     },
     "nominal_diameter": "12in",
-    "parameter_source": "https://loudspeakerdatabase.com/BC/12FW64",
-    "record_schema_version": 1,
+    "usable_f_low_hz": 55.0,
+    "usable_f_high_hz": 3000.0,
+    "parameter_source": "https://www.bcspeakers.com/en/products/lf-driver/12/8/12FW64",
     "provenance": {
-        "retrieved_on": "2026-02-26",
-        "retrieved_on_basis": "Date of commit 3f212b1, which wrote this record. The scrape date itself was not recorded.",
-        "source_kind": "third_party_aggregator",
-        "capture_method": "Legacy scrape of loudspeakerdatabase.com (before scraper schema 3). parameter_source was reconstructed from the manufacturer slug and model name.",
-        "known_limitations": [
-            "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
-            "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
-            "Band, power handling, Rms and sensitivity were not captured."
+        "notes": [
+            "Replaces the loudspeakerdatabase record retrieved 2026-02-26. Previous values that differ by more than 5 % (10 % for Le and Xmax) are kept under field_provenance conflicts."
         ]
     }
 }

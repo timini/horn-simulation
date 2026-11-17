@@ -12,3 +12,11 @@ Four compression drivers with complete published parameters are in `data/drivers
 
 - `copied_pages_not_restored`: 376 Faital, B&C and 18Sound records whose stored page was a copy of another driver's page. They were removed in 396f2d2. A re-scrape was attempted on 2026-11-15, but the site answered HTTP 429 to every request, so none has been restored. To restore them, run `horn-scrape-drivers --manufacturers Faital,BC,18Sound` when the site responds; the scraper refuses a page that names a different driver.
 - `inconsistent_source_values`: 7 records whose own values contradict each other (Qts far from Qms*Qes/(Qms+Qes), or a page shared by two unrelated models). Their scraped values and the validator's reason are kept. Each needs the manufacturer datasheet.
+
+## Manufacturer records that failed checks
+
+The per-maker folders (`Celestion/`, `Beyma/`) hold records from the manufacturer adapters (`horn-sources run <id>`) that could not be loaded. Each has `incomplete_reason`; most lack a value on the product page, or show it without a unit, which is left out rather than guessed. The pipeline does not read these folders.
+
+## Conflict reports
+
+`conflicts/<makers>-<date>.csv` lists every field where a manufacturer value replaced an older value in `data/drivers` that differed by more than 5 % (10 % for Le and Xmax). The older value is also kept in the record under `field_provenance.<field>.conflicts`. Written by `horn-sources merge`.

@@ -1,0 +1,134 @@
+{
+    "driver_id": "bc-12ndl76-16ohm",
+    "record_schema_version": 2,
+    "manufacturer": "BC",
+    "model_name": "12NDL76",
+    "identity": {
+        "manufacturer": "BC",
+        "model": "12NDL76",
+        "variant": {
+            "impedance_ohm": 16.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 50.0,
+        "re_ohm": 10.2,
+        "qes": 0.3,
+        "qms": 3.8,
+        "qts": 0.27,
+        "sd_m2": 0.0522,
+        "xmax_m": 0.007,
+        "mms_kg": 0.056,
+        "bl_tm": 24.7,
+        "le_h": 0.0017,
+        "nominal_impedance_ohm": 16.0,
+        "power_w": 400.0,
+        "peak_power_w": 800.0,
+        "sensitivity_db_1w1m": 100.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "bl_tm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "derived"
+        },
+        "usable_f_low_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "12in",
+    "usable_f_low_hz": 50.0,
+    "usable_f_high_hz": 2000.0,
+    "parameter_source": "https://www.bcspeakers.com/en/products/lf-driver/12/16/12NDL76"
+}
