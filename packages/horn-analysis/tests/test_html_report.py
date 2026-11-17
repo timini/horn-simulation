@@ -152,19 +152,19 @@ def test_variable_throats_appear_in_table_summary_and_candidate_renders(report_i
     text = generate_html_report(**report_inputs, mouth_radius=.1, length=.2,
                                derived_geometry={'throat_radius_range':[.012,.024],
                                                  'mouth_radius_range':[.1,.1], 'length_range':[.2,.2]})
-    assert 'Throat radius: 0.0120 — 0.0240 m (search range)' in text
+    assert 'Throat radius: 0.0120 to 0.0240 m (search range)' in text
     # Builder dimensions in the ranking table are in millimetres.
     assert '<th>Throat R (mm)</th>' in text
     assert '<td>12.0</td>' in text and '<td>18.0</td>' in text
-    assert '<dt>Throat radius range</dt><dd>0.0120 — 0.0240 m</dd>' in text
+    assert '<dt>Throat radius range</dt><dd>0.0120 to 0.0240 m</dd>' in text
     assert set(rendered) == set(radii)
     assert 'Mouth: 0.1000 m' in text
     assert 'Length: 0.200 m' in text
 
 
 @pytest.mark.parametrize('mouth_bounds,length_bounds,mouth_text,length_text', [
-    ([.1, .1], [.2, .3], '0.1000 m', '0.200 — 0.300 m (search range)'),
-    ([.1, .15], [.2, .2], '0.1000 — 0.1500 m (search range)', '0.200 m'),
+    ([.1, .1], [.2, .3], '0.1000 m', '0.200 to 0.300 m (search range)'),
+    ([.1, .15], [.2, .2], '0.1000 to 0.1500 m (search range)', '0.200 m'),
 ])
 def test_fixed_and_variable_dimensions_display_independently(report_inputs, mouth_bounds, length_bounds, mouth_text, length_text):
     text = generate_html_report(**report_inputs, derived_geometry={

@@ -307,9 +307,9 @@ def _render_rankings_rows(
         f3l = format_kpi(r, "f3_low_hz")
         f3h = format_kpi(r, "f3_high_hz")
         drv = drivers.get(r.get("driver_id", ""))
-        drv_type = html.escape(drv.driver_type or "—") if drv else "—"
-        drv_size = html.escape(drv.nominal_diameter or "—") if drv else "—"
-        drv_power = _fmt(getattr(drv, "power_w", None), ".0f") if drv else "—"
+        drv_type = html.escape(drv.driver_type or "n/a") if drv else "n/a"
+        drv_size = html.escape(drv.nominal_diameter or "n/a") if drv else "n/a"
+        drv_power = _fmt(getattr(drv, "power_w", None), ".0f") if drv else "n/a"
 
         geom_cols = ""
         if show_geometry:
@@ -435,7 +435,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
 {radiation_caveat}
 {evidence_summary}</div>
 <p class="subtitle">
-  Target: {target_low:.0f} Hz — {target_high:.0f} Hz &nbsp;|&nbsp;
+  Target: {target_low:.0f} to {target_high:.0f} Hz &nbsp;|&nbsp;
   Throat radius: {throat_display} &nbsp;|&nbsp;
   Mouth: {mouth_radius} &nbsp;|&nbsp;
   Length: {horn_length} &nbsp;|&nbsp;
@@ -480,7 +480,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
 
 {rejection_section}
 
-<h2>Estimated observer output — top candidates</h2>
+<h2>Estimated observer output: top candidates</h2>
 <div class="plot"><img src="{plot_coupled_spl}" alt="Coupled SPL comparison"></div>
 
 {electrical_section}
@@ -677,7 +677,7 @@ def _sweep_margins(derived_geometry: dict) -> str:
 def _render_design_summary(derived_geometry: dict) -> str:
     """Render the Design Summary section with optimization parameters."""
     tr = derived_geometry.get("throat_radius_range", [])
-    throat_desc = " — ".join(_fmt(v, ".4f") for v in tr) + " m" if tr else "Unknown"
+    throat_desc = " to ".join(_fmt(v, ".4f") for v in tr) + " m" if tr else "Unknown"
     mr = derived_geometry.get("mouth_radius_range", [])
     lr = derived_geometry.get("length_range", [])
     sr = derived_geometry.get("sim_freq_range", [])
@@ -690,7 +690,7 @@ def _render_design_summary(derived_geometry: dict) -> str:
         mouth_desc = f'{_fmt(mr[0], ".3f")} m <span style="color:#059669;font-weight:600">(fixed)</span>'
     else:
         mouth_desc = (
-            f'{_fmt(mr[0] if mr else None, ".4f")} — '
+            f'{_fmt(mr[0] if mr else None, ".4f")} to '
             f'{_fmt(mr[1] if len(mr) > 1 else None, ".4f")} m '
             f'<span style="color:#2563eb;font-weight:600">(optimized)</span>'
         )
@@ -699,7 +699,7 @@ def _render_design_summary(derived_geometry: dict) -> str:
         length_desc = f'{_fmt(lr[0], ".3f")} m <span style="color:#059669;font-weight:600">(fixed)</span>'
     else:
         length_desc = (
-            f'{_fmt(lr[0] if lr else None, ".4f")} — '
+            f'{_fmt(lr[0] if lr else None, ".4f")} to '
             f'{_fmt(lr[1] if len(lr) > 1 else None, ".4f")} m '
             f'<span style="color:#2563eb;font-weight:600">(optimized, &lambda;/4 to &lambda;/2)</span>'
         )
@@ -707,17 +707,17 @@ def _render_design_summary(derived_geometry: dict) -> str:
     return (
         '<h2>Design Summary</h2>\n'
         '<div class="design-summary"><dl>'
-        f'<dt>Target frequency band</dt><dd>{_fmt(derived_geometry.get("target_f_low"), ".0f")} — '
+        f'<dt>Target frequency band</dt><dd>{_fmt(derived_geometry.get("target_f_low"), ".0f")} to '
         f'{_fmt(derived_geometry.get("target_f_high"), ".0f")} Hz</dd>'
         f'<dt>Throat radius range</dt><dd>{throat_desc}</dd>'
         f'<dt>Mouth radius</dt><dd>{mouth_desc}</dd>'
         f'<dt>Length</dt><dd>{length_desc}</dd>'
         f'<dt>Ideal mouth radius</dt><dd>{_fmt(derived_geometry.get("ideal_mouth_radius"), ".4f")} m '
         f'(from c&#8320;/2&pi;f<sub>low</sub>)</dd>'
-        f'<dt>Simulation freq range</dt><dd>{_fmt(sr[0] if sr else None, ".0f")} — '
+        f'<dt>Simulation freq range</dt><dd>{_fmt(sr[0] if sr else None, ".0f")} to '
         f'{_fmt(sr[1] if len(sr) > 1 else None, ".0f")} Hz{_sweep_margins(derived_geometry)}</dd>'
         f'<dt>Profiles</dt><dd>7 (conical, exponential, hyperbolic, tractrix, OS, axially scaled tractrix, CD)</dd>'
-        f'<dt>Geometry candidates</dt><dd>{derived_geometry.get("candidate_count", "—")}</dd>'
+        f'<dt>Geometry candidates</dt><dd>{derived_geometry.get("candidate_count", "n/a")}</dd>'
         '</dl></div>'
     )
 
@@ -861,7 +861,7 @@ def generate_html_report(
                     seen.add(key)
                     title = (
                         f"{profile.capitalize()} ({horn_label})"
-                        f" — throat {tr*1000:.1f}, mouth {mr*1000:.1f}, L {ln*1000:.0f} mm"
+                        f": throat {tr*1000:.1f}, mouth {mr*1000:.1f}, L {ln*1000:.0f} mm"
                     )
                     b64 = fig_to_b64_3d(
                         throat_radius=tr,
@@ -913,8 +913,8 @@ def generate_html_report(
 
     # LEM prescreen stats
     if lem_results:
-        lem_total = lem_results.get("total_evaluated", "—")
-        lem_pairs = lem_results.get("total_pairs", "—")
+        lem_total = lem_results.get("total_evaluated", "n/a")
+        lem_pairs = lem_results.get("total_pairs", "n/a")
         lem_passed = len(lem_results.get("filtered_candidate_ids", []))
         design_summary_section += (
             '<h2>LEM Prescreening</h2>\n'
@@ -928,7 +928,7 @@ def generate_html_report(
 
     radii = (derived_geometry or {}).get("throat_radius_range") or [r["throat_radius"] for r in all_ranked if r.get("throat_radius") is not None]
     if radii:
-        throat_display = (f"{min(radii):.4f} — {max(radii):.4f} m (search range)"
+        throat_display = (f"{min(radii):.4f} to {max(radii):.4f} m (search range)"
                           if min(radii) != max(radii) else f"{radii[0]:.4f} m")
     else:
         throat_display = "not available" if show_geometry or throat_radius is None else f"{throat_radius:.4f} m"
@@ -941,14 +941,14 @@ def generate_html_report(
                 lo, hi = min(bounds), max(bounds)
                 if lo == hi:
                     return f"{lo:.{precision}f} m"
-                return f"{lo:.{precision}f} — {hi:.{precision}f} m (search range)"
+                return f"{lo:.{precision}f} to {hi:.{precision}f} m (search range)"
             return f"{fixed_value:.{precision}f} m" if fixed_value is not None else "not available"
 
         mouth_display = dimension_display("mouth_radius_range", mouth_radius, 4)
         length_display = dimension_display("length_range", length, 3)
     else:
-        mouth_display = f"{mouth_radius:.4f} m" if mouth_radius is not None else "—"
-        length_display = f"{length:.3f} m" if length is not None else "—"
+        mouth_display = f"{mouth_radius:.4f} m" if mouth_radius is not None else "n/a"
+        length_display = f"{length:.3f} m" if length is not None else "n/a"
 
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
@@ -972,7 +972,7 @@ def generate_html_report(
         "builder_section": _render_builder(top_results, builder_files or {}, drivers),
         "rejection_section": rejection_section,
         "electrical_section": electrical_section,
-        "assessment_status": "Experimental candidates — not validated recommendations" if top_results else "No feasible design in the evaluated set",
+        "assessment_status": "Experimental candidates, not validated recommendations" if top_results else "No feasible design in the evaluated set",
         "observer_summary": ("The observer integrates the nonuniform axisymmetric aperture velocity in an infinite baffle."
                              if top_results and all(r.get("output_metric")=="modal_baffled_on_axis" for r in top_results)
                              else "The observer estimate assumes a uniformly moving circular aperture in an infinite baffle."),

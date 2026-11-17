@@ -14,7 +14,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 – registers 3D projection
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401, registers 3D projection
 
 from horn_analysis import plot_theme
 
@@ -114,7 +114,7 @@ def render_horn_3d(
     ax3d.set_xlabel("Axial position (m)")
     ax3d.set_ylabel("X (m)")
     ax3d.set_zlabel("Y (m)")
-    ax3d.set_title(f"{_profile_label(profile)} Horn — 3D View")
+    ax3d.set_title(f"{_profile_label(profile)} Horn: 3D View")
     ax3d.view_init(elev=20, azim=-60)
 
     # Equal aspect ratio for all three axes
@@ -154,7 +154,7 @@ def render_horn_3d(
 
         ax2d.set_xlabel("Axial position (mm)")
         ax2d.set_ylabel("Radius (mm)")
-        ax2d.set_title(f"{_profile_label(profile)} Horn — Wall Profile")
+        ax2d.set_title(f"{_profile_label(profile)} Horn: Wall Profile")
         ax2d.set_aspect("equal", adjustable="datalim")
         plot_theme.setup_grid(ax2d)
 
