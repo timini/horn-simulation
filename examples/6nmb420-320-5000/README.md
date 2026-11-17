@@ -10,6 +10,14 @@ These figures were produced with an ideal area transformer at the throat (no fro
 
 Mesh and frequency checks passed: maximum in-band SPL change 0.244 dB, impedance magnitude 0.397 dB and phase 1.609°, with 0.088 dB interpolation difference after doubling the frequency samples. This compares 8 and 6 mm meshes using the same 40-section CAD; it does not establish every form of discretization error.
 
+## Rerun on the current code
+
+Run `20261117T083223Z-24deb54e` (source revision `c962ded`, pipeline code as at `51427ee`) repeated the focused search command under Reproduce below. It took about 2.5 hours of task time. The Webster screen scored 160 geometries; an exponential and a tractrix horn went to FEM, and six refinement trials followed, all exponential.
+
+With the estimated 139 cm3 front chamber, every design exceeds the 6 dB ripple limit. The best ranked is an exponential horn with a 76 mm throat, 261.0 mm mouth and 300 mm length: 13.1 dB ripple, 104.1 dB mean level, and an upper f3 of 3.16 kHz. Without a chamber the same horn gives 4.9 dB and 105.4 dB. The designs are kept and ranked only because the failure comes from the estimated chamber (`estimated_chamber_reasons: target_band_ripple_exceeded`, evidence gap `response_limited_by_estimated_front_chamber`). Refinement ended at the 300 mm length cap.
+
+This agrees with the re-ranking of the archived OS response above. The band depends on the real adapter volume. The files in this folder are unchanged and still describe the archived OS design.
+
 ## Limits
 
 The ideal model uses a lossless horn, infinite rigid baffle, modal mouth radiation, and [manufacturer driver parameters](https://www.eighteensound.it/es/products/lf-driver/6-5/8/6NMB420). The real adapter, rear arrangement, separated moving/rear air masses and cone breakup are uncharacterized. No off-axis coverage, distortion, maximum-SPL or physical assembly qualification is claimed. Source measurements would be needed before treating this as a dependable production assembly.

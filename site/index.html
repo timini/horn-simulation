@@ -196,25 +196,36 @@
 </div>
 
 <h2>Example 2: 6NMB420, 320 to 5000 Hz, 300 mm length limit</h2>
-<p>A wide band with a hard length limit, for the 8 ohm 18Sound 6NMB420. The archived result is an oblate spheroid (OS) horn. A broad 700-geometry search found nothing within the ripple limit; a focused 175-geometry search with a narrower throat did. In total 15 geometries received full FEM sweeps.</p>
+<p>A wide band with a hard length limit, for one driver, the 8 ohm 18Sound 6NMB420, with a fixed 76 mm throat. This example shows the pipeline reporting that a request does not work with the driver as modelled.</p>
+<p>The search scored 160 geometries with the Webster screen, sent an exponential and a tractrix horn to FEM and ran six refinement trials. Every design is over the 6 dB ripple limit once the estimated front chamber is included. They are kept and ranked only because the failure comes from the estimate, and each is flagged <code>response_limited_by_estimated_front_chamber</code>.</p>
 
 <div class="stats">
-  <div class="stat"><b>OS</b><span>Selected profile</span></div>
+  <div class="stat"><b>Exponential</b><span>Best ranked profile</span></div>
   <div class="stat"><b>76 mm</b><span>Throat diameter</span></div>
-  <div class="stat"><b>244.8 mm</b><span>Mouth diameter</span></div>
-  <div class="stat"><b>300 mm</b><span>Length</span></div>
-  <div class="stat"><b>4.42 dB</b><span>Variation, 320 to 5000 Hz, no chamber</span></div>
-  <div class="stat"><b>105.5 dB</b><span>Mean level, 2.83 V, 1 m, no chamber</span></div>
+  <div class="stat"><b>261.0 mm</b><span>Mouth diameter</span></div>
+  <div class="stat"><b>300 mm</b><span>Length, at the cap</span></div>
+  <div class="stat"><b>13.1 dB</b><span>Ripple, 320 to 5000 Hz</span></div>
+  <div class="stat"><b>104.1 dB</b><span>Mean level, 2.83 V, 1 m</span></div>
 </div>
 
-<div class="note">This result predates the front chamber model: it treats the throat as an ideal area transformer. Re-ranking its saved FEM response with the estimated 139 cm<sup>3</sup> chamber gives about 13 dB variation at 103.9 dB, which exceeds the 6 dB limit. A current run would keep the design only as flagged by the estimate, and might choose another. A rerun on the current code is pending. Treat these numbers as an archived record, not a current recommendation.</div>
+<p>With the estimated 139 cm<sup>3</sup> chamber the response falls 3 dB below the band mean at 3.16 kHz, well short of 5 kHz. Without a chamber the same horn gives 4.9 dB ripple and 105.4 dB, inside the limit. So the answer depends on the real adapter: a phase plug or cone filler that removes most of that air volume could make this band workable. Measure it and give it as <code>front_chamber_volume_cm3</code> before trusting either result. Refinement ended at the length cap.</p>
 
 <figure>
-  <img src="img/6nmb420-overview.png" alt="Horn profile, predicted response, electrical impedance and cone excursion for the 6NMB420 design" loading="lazy" width="1400" height="933">
-  <figcaption>Horn profile, predicted response without a front chamber, electrical impedance and cone excursion. The response shows two mesh sizes; the largest in-band difference between them is 0.244 dB. No EQ is applied.</figcaption>
+  <img src="img/6nmb420-comparison.png" alt="Predicted on-axis level of the top five 6NMB420 horns from 200 Hz to 7 kHz" loading="lazy" width="1785" height="1486">
+  <figcaption>Top five horns with the estimated front chamber, 2.83 V RMS, 1 m on axis. Run <code>20261117T083223Z-24deb54e</code>, source revision <code>c962ded</code>; the pipeline code is the same as at <code>51427ee</code>.</figcaption>
 </figure>
 
-<p><a href="reports/6nmb420-320-5000.html">Open the archived report</a> or <a href="https://github.com/timini/horn-simulation/tree/main/examples/6nmb420-320-5000">browse the example files</a>, including the STEP file, response data and manifests.</p>
+<p><a href="reports/6nmb420-320-5000-current.html">Open the report for this run</a>.</p>
+
+<h3>The archived result for the same request</h3>
+<p>An earlier, larger search for this request was made before the front chamber model existed. It chose an oblate spheroid horn: 76 mm throat, 244.8 mm mouth, 300 mm long, 4.42 dB variation and 105.5 dB with an ideal throat. Re-ranking its saved FEM response with the estimated chamber gives about 13 dB, the same picture as the run above. It is kept unchanged as a record, with its STEP file, numerical checks and manifests.</p>
+
+<figure>
+  <img src="img/6nmb420-overview.png" alt="Horn profile, predicted response, electrical impedance and cone excursion for the archived 6NMB420 design" loading="lazy" width="1400" height="933">
+  <figcaption>Archived design: horn profile, response without a front chamber at two mesh sizes (largest in-band difference 0.244 dB), electrical impedance and cone excursion. No EQ.</figcaption>
+</figure>
+
+<p><a href="reports/6nmb420-320-5000.html">Open the archived report</a> or <a href="https://github.com/timini/horn-simulation/tree/main/examples/6nmb420-320-5000">browse the example files</a>.</p>
 
 <h2>What a run gives you</h2>
 <p>An auto run writes a self-contained HTML report and the files behind it. <a href="https://github.com/timini/horn-simulation/blob/main/docs/OUTPUTS.md">OUTPUTS</a> lists every file and column.</p>
