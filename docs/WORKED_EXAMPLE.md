@@ -19,7 +19,7 @@ The settings keep the run short: three screened geometries go to FEM and refinem
 
 ## What happened
 
-The numbers below are from run `20261116T223748Z-45ab2da6`, at source revision `4307d67` (the pipeline code is the same as at `ba3cb10`). It took under two minutes on an Apple laptop. Run folders are not committed; rerun the command to reproduce them. Small differences can come from a different machine.
+The numbers below are from run `20261117T005341Z-14e497b7`, at source revision `51427ee`. An earlier run at `4307d67` (`20261116T223748Z-45ab2da6`) gave an identical summary and rejection table. That earlier run took under two minutes on an Apple laptop. Run folders are not committed; rerun the command to reproduce them. Small differences can come from a different machine.
 
 1. **Driver screen.** Five of the seven curated drivers passed: the three cone drivers and two Peerless compression drivers.
 2. **Throats.** Five throat radii from 12.7 mm to 130.7 mm (the ka = 3.83 limit at 1600 Hz), including one that puts the 6NMB420's estimated front chamber corner at 1600 Hz.
