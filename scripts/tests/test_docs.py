@@ -1,5 +1,6 @@
 """Documentation checks: relative links resolve, and USAGE.md covers main.nf and the justfile."""
 import re
+import subprocess
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -13,12 +14,17 @@ LINK = re.compile(r"!?\[[^\]]*\]\((<[^>]+>|[^)\s]+)(?:\s+\"[^\"]*\")?\)")
 
 
 def markdown_files():
-    files = []
-    for path in sorted(ROOT.rglob("*.md")):
-        if SKIP_DIRS.intersection(path.relative_to(ROOT).parts):
-            continue
-        files.append(path)
-    return files
+    """Tracked Markdown files, so local untracked notes do not fail the checks.
+
+    Outside a git checkout, every Markdown file not under SKIP_DIRS.
+    """
+    try:
+        listed = subprocess.run(["git", "ls-files", "-z", "*.md"], cwd=ROOT, capture_output=True,
+                                text=True, check=True).stdout.split("\0")
+        return sorted(ROOT / name for name in listed if name and (ROOT / name).is_file())
+    except (OSError, subprocess.CalledProcessError):
+        return [path for path in sorted(ROOT.rglob("*.md"))
+                if not SKIP_DIRS.intersection(path.relative_to(ROOT).parts)]
 
 
 def relative_links(text, with_anchor=False):
