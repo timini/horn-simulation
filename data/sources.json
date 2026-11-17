@@ -122,6 +122,26 @@
       ]
     },
     {
+      "id": "dayton-msrp",
+      "name": "Dayton Audio list prices (MSRP)",
+      "kind": "retailer",
+      "base_url": "https://www.daytonaudio.com",
+      "approval_status": "approved",
+      "min_delay_s": 5,
+      "cache_days": 7,
+      "robots_url": null,
+      "robots_snapshot_date": "2026-11-17",
+      "terms_url": null,
+      "approval_note": "Same site as the dayton manufacturer entry; robots.txt allows category and product pages. Product pages state the MSRP, a manufacturer list price (sales are through Parts Express).",
+      "region": "US",
+      "currency": "USD",
+      "vat_included": false,
+      "status_note": "",
+      "notes": [
+        "MSRP is a list price, not a shop offer; treat it as a ceiling."
+      ]
+    },
+    {
       "id": "faital",
       "name": "Faital Pro",
       "kind": "manufacturer",
@@ -458,7 +478,7 @@
       "name": "Eminence direct store",
       "kind": "retailer",
       "base_url": "https://eminence.com",
-      "approval_status": "approved",
+      "approval_status": "pending",
       "min_delay_s": 10,
       "cache_days": 7,
       "robots_url": null,
@@ -468,7 +488,7 @@
       "region": "US",
       "currency": "USD",
       "vat_included": false,
-      "status_note": "",
+      "status_note": "2026-11-17: the store's /agents.md asks server-to-server agent traffic to identify itself with Shopify Web Bot Auth (signed requests), also for reading public pages. This project does not implement it, so the store was not crawled. Fetched only robots.txt, sitemap.xml, the product sitemap and agents.md.",
       "notes": []
     },
     {
@@ -486,7 +506,7 @@
       "region": "US",
       "currency": "USD",
       "vat_included": false,
-      "status_note": "",
+      "status_note": "2026-11-17: not scraped (pages need JavaScript). Needs a product feed from the retailer.",
       "notes": []
     },
     {
@@ -494,13 +514,13 @@
       "name": "Bax-shop UK",
       "kind": "retailer",
       "base_url": "https://www.bax-shop.co.uk",
-      "approval_status": "pending",
+      "approval_status": "approved",
       "min_delay_s": 5,
       "cache_days": 7,
       "robots_url": null,
       "robots_snapshot_date": "2026-11-17",
-      "terms_url": null,
-      "approval_note": "robots.txt and terms not checked.",
+      "terms_url": "https://www.bax-shop.co.uk/security-and-privacy/general-terms-conditions",
+      "approval_note": "robots.txt allows product pages and the sitemap (search pages are disallowed and not used). General terms and disclaimer checked on 2026-11-17: no clause on automated access.",
       "region": "UK",
       "currency": "GBP",
       "vat_included": true,
