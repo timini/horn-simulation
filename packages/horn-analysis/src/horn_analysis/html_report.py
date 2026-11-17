@@ -44,7 +44,7 @@ def _badge_for(profile: str) -> dict:
 
 # -- Helpers ----------------------------------------------------------------
 
-def _fmt(value, fmt: str = ".1f", fallback: str = "\u2014") -> str:
+def _fmt(value, fmt: str = ".1f", fallback: str = "n/a") -> str:
     """Safely format an Optional numeric value."""
     if value is None:
         return fallback
@@ -83,7 +83,7 @@ def _plot_coupled_spl_comparison(
     else:
         _no_data(ax, "No feasible design in evaluated candidates")
     ax.set_ylabel("SPL (dB)")
-    ax.set_title("Estimated observer output \u2014 Top Candidates")
+    ax.set_title("Estimated observer output: Top Candidates")
     plot_theme.setup_grid(ax)
     fig.tight_layout()
     return plot_theme.fig_to_b64(fig)
@@ -339,7 +339,7 @@ def _render_rankings_rows(
             f"<td>{_flat_band_cell(r)}</td>"
             f"<td>{_fmt(r.get('passband_ripple_db'), '.1f')}{_chamber_note(r)}</td>"
             f"<td>{_fmt(r.get('avg_sensitivity_db'), '.1f')}</td>"
-            f"<td>{f3l} \u2014 {f3h}</td>"
+            f"<td>{f3l} to {f3h}</td>"
             f"<td>{_fmt(kpi.get('peak_spl_db'), '.1f')}</td>"
             f"<td>{chamber_cell}</td>"
             f"<td>{html.escape(_STATUS_LABELS.get(status, status.replace('_', ' ')))}</td>"
@@ -356,7 +356,7 @@ def _flat_band_cell(r) -> str:
     if low is None or high is None:
         return "none"
     mark = "≥" if r.get("flat_band_3db_is_lower_bound") else ""
-    return f"{mark}{r['flat_band_3db_octaves']:.2f} ({low:.0f}-{high:.0f})"
+    return f"{mark}{r['flat_band_3db_octaves']:.2f} ({low:.0f} to {high:.0f} Hz)"
 
 
 def _render_drivers_rows(drivers: Dict[str, DriverParameters]) -> str:
@@ -523,7 +523,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
 </table>
 </div>
 
-<div class="footer">Horn Auto-Select Report &mdash; generated {timestamp}</div>
+<div class="footer">Horn Auto-Select Report, generated {timestamp}</div>
 
 </div>
 </body>
@@ -853,16 +853,16 @@ def generate_html_report(
     show_geometry = derived_geometry is not None
 
     # Summary card values
-    best_score = _fmt(top_results[0]["composite_score"], ".3f") if top_results else "\u2014"
+    best_score = _fmt(top_results[0]["composite_score"], ".3f") if top_results else "n/a"
     best_bw = _fmt(
         max((r.get("extension_octaves") for r in top_results if r.get("extension_octaves") is not None), default=None), "+.2f"
-    ) if top_results else "\u2014"
+    ) if top_results else "n/a"
     best_sens = _fmt(
         max((r.get("avg_sensitivity_db", 0) for r in top_results), default=None), ".1f"
-    ) if top_results else "\u2014"
+    ) if top_results else "n/a"
     best_ripple = _fmt(
         min((r.get("passband_ripple_db", 99) for r in top_results), default=None), ".1f"
-    ) if top_results else "\u2014"
+    ) if top_results else "n/a"
 
     # Generate 3D horn geometry renders from top-ranked candidates
     geometry_html = ""

@@ -51,7 +51,8 @@ def coupled_observer(frame, driver, target, legacy_radius=None):
     return result(pressure_level(observer), observer, "uniform_baffled_piston_on_axis")
 
 
-def evaluate_response(frequencies, levels, target, driver=None, throat_area=None, length=None, mouth_radius=None, operating_point=None):
+def evaluate_response(frequencies, levels, target, driver=None, throat_area=None, length=None, mouth_radius=None, operating_point=None,
+                      flat_bands=True):
     f = validate_response(frequencies, levels)
     levels = np.asarray(levels)
     if f[0] > target.f_low_hz or f[-1] < target.f_high_hz:
@@ -129,11 +130,15 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
     terms = score_terms(target, average, ripple, extension, mouth_radius, length)
     score = weighted_score(target, terms)
     interface = {} if driver is None else {"driver_interface": interface_summary(driver, throat_area)}
-    from horn_analysis.flat_band import flat_band_fields
     # Widest +-1/2/3 dB bands over the full sweep; reported only, not scored.
-    flat_bands = flat_band_fields(f, levels, target.min_output_db)
+    # The Webster screen skips them: it evaluates every pair and they cost
+    # far more than the rest of this function and swell lem_results.json.
+    band_fields = {}
+    if flat_bands:
+        from horn_analysis.flat_band import flat_band_fields
+        band_fields = flat_band_fields(f, levels, target.min_output_db)
     return {
-        **operating_limits, **interface, **flat_bands,
+        **operating_limits, **interface, **band_fields,
         "passband_ripple_db": ripple,
         "f3_low_hz": f3_low, "f3_high_hz": f3_high,
         "f3_low_is_bound": low_bound, "f3_high_is_bound": high_bound,
@@ -190,7 +195,9 @@ def assess_with_chamber_policy(driver, evaluate, target):
     ideal = evaluate(replace(driver, front_chamber_volume_m3=0.0, front_chamber_area_m2=None))
     assessment["without_front_chamber"] = {k: ideal[k] for k in (
         "passband_ripple_db", "avg_sensitivity_db", "extension_octaves", "f3_low_hz", "f3_high_hz",
-        "flat_band_3db_octaves", "rejection_reasons")}
+        "rejection_reasons")}
+    if "flat_band_3db_octaves" in ideal:  # absent on Webster screen rows
+        assessment["without_front_chamber"]["flat_band_3db_octaves"] = ideal["flat_band_3db_octaves"]
     chamber_only = [r for r in reasons if r not in ideal["rejection_reasons"]]
     if not chamber_only:
         return assessment

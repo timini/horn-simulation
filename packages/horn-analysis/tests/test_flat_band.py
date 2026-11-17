@@ -100,6 +100,13 @@ def test_ranking_rows_carry_the_flat_band_fields():
     assert capped["flat_band_3db_octaves"] < row["flat_band_3db_octaves"]
 
 
+def test_webster_screen_rows_skip_the_flat_band_fields():
+    levels = _bandpass(F, 300., 3000., order=4) + 100.
+    row = evaluate_response(F, levels, TargetSpec(500, 2000), flat_bands=False)
+    assert not any(key.startswith("flat_band_") for key in row)
+    assert format_flat_bands(row) == ""
+
+
 def test_too_sparse_widest_window_falls_back_to_a_narrower_valid_band():
     # The widest +-3 dB window (100-1000 Hz) holds only two solver samples;
     # the narrower 1000-1030 Hz band holds four and must be returned.
@@ -119,6 +126,6 @@ def test_html_cell_marks_lower_bound_and_missing_band():
     from horn_analysis.html_report import _flat_band_cell
     row = {"flat_band_3db_octaves": 1.45, "flat_band_3db_low_hz": 566., "flat_band_3db_high_hz": 1543.,
            "flat_band_3db_is_lower_bound": True}
-    assert _flat_band_cell(row) == "≥1.45 (566-1543)"
+    assert _flat_band_cell(row) == "≥1.45 (566 to 1543 Hz)"
     assert _flat_band_cell({"flat_band_3db_octaves": 0., "flat_band_3db_low_hz": None}) == "none"
     assert _flat_band_cell({}) == "n/a"

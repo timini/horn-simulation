@@ -114,7 +114,7 @@ def flat_band_fields(frequencies, levels, min_level_db=None, tolerances_db=DEFAU
 
 
 def format_flat_bands(row, tolerances_db=DEFAULT_TOLERANCES_DB):
-    """One plain-text line, for example '+-3 dB: 0.95 oct, 410-790 Hz'; '' when absent."""
+    """One plain-text line, for example '+-3 dB: 0.95 oct, 410 to 790 Hz'; '' when absent."""
     parts = []
     for tolerance in tolerances_db:
         key = f"flat_band_{tolerance:g}db"
@@ -125,5 +125,5 @@ def format_flat_bands(row, tolerances_db=DEFAULT_TOLERANCES_DB):
             parts.append(f"+-{tolerance:g} dB: none")
             continue
         mark = ">=" if row.get(f"{key}_is_lower_bound") else ""
-        parts.append(f"+-{tolerance:g} dB: {mark}{row[f'{key}_octaves']:.2f} oct, {low:.0f}-{high:.0f} Hz")
+        parts.append(f"+-{tolerance:g} dB: {mark}{row[f'{key}_octaves']:.2f} oct, {low:.0f} to {high:.0f} Hz")
     return "; ".join(parts)
