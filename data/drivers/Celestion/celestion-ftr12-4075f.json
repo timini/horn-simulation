@@ -1,0 +1,199 @@
+{
+    "driver_id": "celestion-ftr12-4075f",
+    "record_schema_version": 2,
+    "manufacturer": "Celestion",
+    "model_name": "FTR12-4075F",
+    "identity": {
+        "manufacturer": "Celestion",
+        "model": "FTR12-4075F",
+        "variant": {
+            "impedance_ohm": 4.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 37.1,
+        "re_ohm": 2.9,
+        "bl_tm": 12.58,
+        "sd_m2": 0.053098,
+        "mms_kg": 0.0823,
+        "le_h": 0.00083,
+        "qms": 3.987,
+        "qes": 0.292,
+        "qts": 0.272,
+        "xmax_m": 0.009,
+        "cms_m_per_n": 0.00022,
+        "rms_kg_per_s": 4.81,
+        "nominal_impedance_ohm": 4.0,
+        "power_w": 700.0,
+        "sensitivity_db_1w1m": 95.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "fs_hz",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "bl_tm": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "bl_tm",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "sd_m2": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sd_cm2",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "mms_kg": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "mms_g",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "le_h": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "le_mh",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "qms": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qms",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "qes": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qes",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "qts": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qts",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "xmax_m": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "xmax_mm",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "cms_m_per_n": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "cms_mm_per_n",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "rms_kg_per_s": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "rms_ns_per_m",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sensitivity_db_1w_1m",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "usable_f_low_hz": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_low_hz",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "usable_f_high_hz": {
+            "source_id": "driver-base",
+            "url": "https://celestion.com/product/ftr12-4075f/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_high_hz",
+            "upstream_spec_source": "html_div_pairs"
+        }
+    },
+    "nominal_diameter": "12in",
+    "usable_f_low_hz": 60.0,
+    "usable_f_high_hz": 600.0,
+    "parameter_source": "https://celestion.com/product/ftr12-4075f/",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'celestion__ftr12_4075f__4ohm'.",
+            "Derived or inferred driver-base values not imported: power_program_watts."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+}

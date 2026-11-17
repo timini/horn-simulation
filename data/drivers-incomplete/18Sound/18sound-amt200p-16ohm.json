@@ -1,0 +1,59 @@
+{
+    "driver_id": "18sound-amt200p-16ohm",
+    "record_schema_version": 2,
+    "manufacturer": "18Sound",
+    "model_name": "AMT200P",
+    "identity": {
+        "manufacturer": "18Sound",
+        "model": "AMT200P",
+        "variant": {
+            "impedance_ohm": 16.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "compression",
+    "parameters": {
+        "nominal_impedance_ohm": 16.0,
+        "power_w": 60.0,
+        "sensitivity_db_1w1m": 103.5
+    },
+    "field_provenance": {
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/hf-driver/6-5/16/amt200p",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "html_prose"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/hf-driver/6-5/16/amt200p",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "html_prose"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/hf-driver/6-5/16/amt200p",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sensitivity_db_1w_1m",
+            "upstream_spec_source": "html_prose"
+        }
+    },
+    "parameter_source": "https://www.eighteensound.it/en/products/hf-driver/6-5/16/amt200p",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'hf_compression', canonical_id 'eighteensound__amt200p__16ohm'.",
+            "Derived or inferred driver-base values not imported: power_program_watts."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'hf_compression', from the manufacturer's product category",
+    "incomplete_reason": "missing Thiele/Small fields: fs_hz, re_ohm, bl_tm, sd_m2, mms_kg, le_h"
+}

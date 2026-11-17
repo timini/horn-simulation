@@ -14,7 +14,9 @@
         "nominal_impedance_ohm": 8.0,
         "xmax_m": 0.0039,
         "qms": 2.07,
-        "qes": 0.76
+        "qes": 0.76,
+        "power_w": 50.0,
+        "peak_power_w": 150.0
     },
     "nominal_diameter": "6in",
     "parameter_source": "https://loudspeakerdatabase.com/Ciare/HW129",
@@ -27,7 +29,32 @@
         "known_limitations": [
             "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
             "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
-            "Band, power handling, Rms and sensitivity were not captured."
-        ]
+            "Band, sensitivity, rms not captured."
+        ],
+        "supplemented_fields": [
+            "peak_power_w",
+            "power_w"
+        ],
+        "supplemented_from": "driver-base (CC BY 4.0) values read from the manufacturer page; see field_provenance for each field."
+    },
+    "field_provenance": {
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/5/8/HW129",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "inline_js"
+        },
+        "peak_power_w": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/5/8/HW129",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_program_watts",
+            "upstream_spec_source": "inline_js"
+        }
     }
 }

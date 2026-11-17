@@ -1,0 +1,208 @@
+{
+    "driver_id": "sb-acoustics-nero-8mwn400d",
+    "record_schema_version": 2,
+    "manufacturer": "SB Acoustics",
+    "model_name": "NERO-8MWN400D",
+    "identity": {
+        "manufacturer": "SB Acoustics",
+        "model": "NERO-8MWN400D",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 63.0,
+        "re_ohm": 5.2,
+        "bl_tm": 11.9,
+        "sd_m2": 0.02087,
+        "mms_kg": 0.0284,
+        "le_h": 0.00025,
+        "qms": 4.07,
+        "qes": 0.41,
+        "qts": 0.38,
+        "xmax_m": 0.0067,
+        "cms_m_per_n": 0.00023,
+        "rms_kg_per_s": 2.75,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 400.0,
+        "peak_power_w": 800.0,
+        "sensitivity_db_1w1m": 93.5
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "fs_hz",
+            "upstream_spec_source": "pdf_table"
+        },
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "pdf_table"
+        },
+        "bl_tm": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "bl_tm",
+            "upstream_spec_source": "pdf_table"
+        },
+        "sd_m2": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sd_cm2",
+            "upstream_spec_source": "pdf_table"
+        },
+        "mms_kg": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "mms_g",
+            "upstream_spec_source": "pdf_table"
+        },
+        "le_h": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "le_mh",
+            "upstream_spec_source": "pdf_table"
+        },
+        "qms": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qms",
+            "upstream_spec_source": "pdf_table"
+        },
+        "qes": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qes",
+            "upstream_spec_source": "pdf_table"
+        },
+        "qts": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qts",
+            "upstream_spec_source": "pdf_table"
+        },
+        "xmax_m": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "xmax_mm",
+            "upstream_spec_source": "pdf_table"
+        },
+        "cms_m_per_n": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "cms_mm_per_n",
+            "upstream_spec_source": "pdf_table"
+        },
+        "rms_kg_per_s": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "rms_ns_per_m",
+            "upstream_spec_source": "pdf_table"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "pdf_table"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "pdf_table"
+        },
+        "peak_power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_program_watts",
+            "upstream_spec_source": "pdf_table"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sensitivity_db_1w_1m",
+            "upstream_spec_source": "pdf_table"
+        },
+        "usable_f_low_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_low_hz",
+            "upstream_spec_source": "pdf_table"
+        },
+        "usable_f_high_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_high_hz",
+            "upstream_spec_source": "pdf_table"
+        }
+    },
+    "nominal_diameter": "8in",
+    "usable_f_low_hz": 62.0,
+    "usable_f_high_hz": 8700.0,
+    "parameter_source": "https://www.sbaudience.com/index.php/products/woofers/nero-8mwn400d/",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'sbaudience__nero_8mwn400d__8ohm'."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+}

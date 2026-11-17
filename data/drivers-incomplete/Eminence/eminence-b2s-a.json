@@ -1,0 +1,26 @@
+{
+    "driver_id": "eminence-b2s-a",
+    "record_schema_version": 2,
+    "manufacturer": "Eminence",
+    "model_name": "B2S A",
+    "identity": {
+        "manufacturer": "Eminence",
+        "model": "B2S A",
+        "variant": {
+            "impedance_ohm": null,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "compression",
+    "parameters": {},
+    "field_provenance": {},
+    "parameter_source": null,
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'hf_compression', canonical_id 'eminence__b2s_a__b2s_a'."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'hf_compression', from the manufacturer's product category",
+    "incomplete_reason": "missing Thiele/Small fields: fs_hz, re_ohm, bl_tm, sd_m2, mms_kg, le_h"
+}

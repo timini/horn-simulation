@@ -1,0 +1,98 @@
+{
+    "driver_id": "sb-acoustics-bianco-34cd-pk",
+    "record_schema_version": 2,
+    "manufacturer": "SB Acoustics",
+    "model_name": "BIANCO-34CD-PK",
+    "identity": {
+        "manufacturer": "SB Acoustics",
+        "model": "BIANCO-34CD-PK",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "compression",
+    "parameters": {
+        "re_ohm": 6.0,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 30.0,
+        "peak_power_w": 60.0,
+        "sensitivity_db_1w1m": 105.0
+    },
+    "field_provenance": {
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/compression-drivers/bianco-34cd-pk/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "pdf_table"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/compression-drivers/bianco-34cd-pk/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "pdf_table"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/compression-drivers/bianco-34cd-pk/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "pdf_table"
+        },
+        "peak_power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/compression-drivers/bianco-34cd-pk/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_program_watts",
+            "upstream_spec_source": "pdf_table"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/compression-drivers/bianco-34cd-pk/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sensitivity_db_1w_1m",
+            "upstream_spec_source": "pdf_table"
+        },
+        "usable_f_low_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/compression-drivers/bianco-34cd-pk/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_low_hz",
+            "upstream_spec_source": "pdf_table"
+        },
+        "usable_f_high_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.sbaudience.com/index.php/products/compression-drivers/bianco-34cd-pk/",
+            "retrieved_on": "2026-11-06",
+            "method": "pdf",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_high_hz",
+            "upstream_spec_source": "pdf_table"
+        }
+    },
+    "usable_f_low_hz": 1000.0,
+    "usable_f_high_hz": 20000.0,
+    "parameter_source": "https://www.sbaudience.com/index.php/products/compression-drivers/bianco-34cd-pk/",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'hf_compression', canonical_id 'sbaudience__bianco_34cd_pk__8ohm'."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'hf_compression', from the manufacturer's product category",
+    "incomplete_reason": "missing Thiele/Small fields: fs_hz, bl_tm, sd_m2, mms_kg, le_h"
+}

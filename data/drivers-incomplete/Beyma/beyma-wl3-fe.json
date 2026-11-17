@@ -1,0 +1,108 @@
+{
+    "driver_id": "beyma-wl3-fe",
+    "record_schema_version": 2,
+    "manufacturer": "Beyma",
+    "model_name": "WL3/Fe",
+    "identity": {
+        "manufacturer": "Beyma",
+        "model": "WL3/Fe",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "compression",
+    "parameters": {
+        "re_ohm": 4.3,
+        "bl_tm": 4.8,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 70.0,
+        "peak_power_w": 140.0,
+        "sensitivity_db_1w1m": 102.0
+    },
+    "field_provenance": {
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/compression-driver-wave-guide/1WL3FE8/guia-ondas-wl-3-fe-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "bl_tm": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/compression-driver-wave-guide/1WL3FE8/guia-ondas-wl-3-fe-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "bl_tm",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/compression-driver-wave-guide/1WL3FE8/guia-ondas-wl-3-fe-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/compression-driver-wave-guide/1WL3FE8/guia-ondas-wl-3-fe-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "peak_power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/compression-driver-wave-guide/1WL3FE8/guia-ondas-wl-3-fe-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_program_watts",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/compression-driver-wave-guide/1WL3FE8/guia-ondas-wl-3-fe-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sensitivity_db_1w_1m",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "usable_f_low_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/compression-driver-wave-guide/1WL3FE8/guia-ondas-wl-3-fe-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_low_hz",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "usable_f_high_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/compression-driver-wave-guide/1WL3FE8/guia-ondas-wl-3-fe-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_high_hz",
+            "upstream_spec_source": "html_div_pairs"
+        }
+    },
+    "usable_f_low_hz": 1000.0,
+    "usable_f_high_hz": 18000.0,
+    "parameter_source": "https://www.beyma.com/en/products/c/compression-driver-wave-guide/1WL3FE8/guia-ondas-wl-3-fe-8-oh/",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'hf_compression', canonical_id 'beyma__wl3_fe__8ohm'."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'hf_compression', from the manufacturer's product category",
+    "incomplete_reason": "missing Thiele/Small fields: fs_hz, sd_m2, mms_kg, le_h"
+}

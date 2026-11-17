@@ -1,0 +1,169 @@
+{
+    "driver_id": "ciare-hs251-8ohm",
+    "record_schema_version": 2,
+    "manufacturer": "Ciare",
+    "model_name": "HS251",
+    "identity": {
+        "manufacturer": "Ciare",
+        "model": "HS251",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 30.0,
+        "re_ohm": 5.8,
+        "bl_tm": 19.91,
+        "sd_m2": 0.0346,
+        "mms_kg": 0.07913,
+        "le_h": 0.00403,
+        "qms": 7.21,
+        "qes": 0.43,
+        "qts": 0.4,
+        "xmax_m": 0.01,
+        "cms_m_per_n": 0.00038,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 100.0,
+        "peak_power_w": 200.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "fs_hz",
+            "upstream_spec_source": "inline_js"
+        },
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "inline_js"
+        },
+        "bl_tm": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "bl_tm",
+            "upstream_spec_source": "inline_js"
+        },
+        "sd_m2": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sd_cm2",
+            "upstream_spec_source": "inline_js"
+        },
+        "mms_kg": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "mms_g",
+            "upstream_spec_source": "inline_js"
+        },
+        "le_h": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "le_mh",
+            "upstream_spec_source": "inline_js"
+        },
+        "qms": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qms",
+            "upstream_spec_source": "inline_js"
+        },
+        "qes": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qes",
+            "upstream_spec_source": "inline_js"
+        },
+        "qts": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qts",
+            "upstream_spec_source": "inline_js"
+        },
+        "xmax_m": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "xmax_mm",
+            "upstream_spec_source": "inline_js"
+        },
+        "cms_m_per_n": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "cms_mm_per_n",
+            "upstream_spec_source": "inline_js"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "inline_js"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "inline_js"
+        },
+        "peak_power_w": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_program_watts",
+            "upstream_spec_source": "inline_js"
+        }
+    },
+    "nominal_diameter": "10in",
+    "parameter_source": "https://ciare.com/en/products/lf-driver/10/8/HS251",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'ciare__hs251__8ohm'.",
+            "Derived or inferred driver-base values not imported: sensitivity_db_1w_1m."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+}
