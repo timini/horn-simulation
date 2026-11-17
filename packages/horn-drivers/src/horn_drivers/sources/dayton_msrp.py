@@ -29,6 +29,7 @@ _AVAILABILITY = re.compile(r'itemprop="availability"\s+href="https?://schema\.or
 class DaytonMSRP(PriceSource):
     source_id = "dayton-msrp"
     region, currency, vat_included = "US", "USD", False
+    price_kind = "list"
     categories: ClassVar[Tuple[str, ...]] = ("/category/161/pro-audio-drivers",)
 
     def discover(self, limit: Optional[int] = None) -> Iterator[ProductRef]:

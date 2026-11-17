@@ -5,7 +5,10 @@ Prices live here, not in the driver records.
 - `<source_id>/<YYYY-MM-DD>.jsonl`: one offer per line, appended by a retailer adapter
   (`horn-sources run <source_id>`). Fields: `driver_id`, `source_id`, `url`, `sku`, `price`,
   `currency`, `vat_included`, `region`, `in_stock`, `retrieved_on`, `match_confidence`
-  (`exact`, `manual` or `fuzzy`). The price is stored as listed, shipping excluded.
+  (`exact`, `manual` or `fuzzy`), `price_kind` (`offer` for a shop price, `list` for a maker's
+  list price such as `dayton-msrp`; a line without it counts as `offer`). A list price is used
+  for a driver only when no shop offer exists in the region. The price is stored as listed,
+  shipping excluded.
 - `fx/ecb-<rate date>.json`: European Central Bank euro reference rates, fetched with
   `horn-sources fx`. Prices are converted only at ranking time, with the newest rate file
   dated on or before the ranking date.

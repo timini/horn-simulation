@@ -199,12 +199,17 @@ class DriverIndex:
         ambiguous (Beta-12A versus Beta-12A-2) and gives None unless the
         longer name is itself a known model.
         """
+        found = self._title_model(manufacturer, title)
+        return found[0] if found else None
+
+    def _title_model(self, manufacturer: str, title: str) -> Optional[Tuple[str, str]]:
+        """(model, the token after it in the title) for ``model_from_title``."""
         canonical = canonical_manufacturer(manufacturer)
         known = {model for (maker, model) in self.by_model if maker == canonical}
         if not known:
             return None
         tokens = re.findall(r"[A-Z0-9]+", title.upper().replace("&", " "))
-        best: Optional[Tuple[int, str]] = None
+        best: Optional[Tuple[str, str]] = None
         for start in range(len(tokens)):
             joined = ""
             for end in range(start, min(len(tokens), start + 6)):
@@ -215,9 +220,9 @@ class DriverIndex:
                     if (_REVISION.fullmatch(following) and after not in _UNIT_WORDS
                             and (joined + following) not in known):
                         continue
-                    if best is None or len(joined) > best[0]:
-                        best = (len(joined), joined)
-        return best[1] if best else None
+                    if best is None or len(joined) > len(best[0]):
+                        best = (joined, following)
+        return best
 
     def match(self, listing: Listing) -> Tuple[Optional[str], Optional[str], str]:
         """(driver_id, confidence, note). Confidence is "exact", "fuzzy" or None.
@@ -226,8 +231,11 @@ class DriverIndex:
         and the title names both the manufacturer and the model. A listing
         without impedance whose model has a single variant is "fuzzy" and
         goes to review. A part or kit for a driver (repair kit, diaphragm)
-        is never matched. When the listing's model is not in the index, a
-        known model named in the title is used (``model_from_title``).
+        is never matched, and neither is a B-Stock, used, demo or
+        refurbished item. When the listing's model is not in the index, a
+        known model named in the title is used (``model_from_title``); it
+        counts only when the token after it in the title cannot be a model
+        suffix (Legend BP 1525 A could be a different product from BP1525).
         Anything else is unmatched.
         """
         manufacturer = canonical_manufacturer(listing.manufacturer)
@@ -235,13 +243,19 @@ class DriverIndex:
             return None, None, f"unknown manufacturer {listing.manufacturer!r}"
         if _ACCESSORY.search(listing.title) or _ACCESSORY.search(listing.model):
             return None, None, "a part or kit for a driver, not the driver"
+        if any(_CONDITION.search(text) for text in (listing.title, listing.model, listing.url)):
+            return None, None, "B-Stock, used, demo or refurbished item, not a new driver"
         model = normalise_model(listing.model, manufacturer)
         title = normalise_model(listing.title)
         from_title = ""
         if (manufacturer, model) not in self.by_model:
-            found = self.model_from_title(manufacturer, listing.title)
+            found = self._title_model(manufacturer, listing.title)
             if found:
-                model, from_title = found, f"model {found} read from the title; "
+                model, following = found
+                if not _plain_tail(following):
+                    return None, None, (f"model {model} read from the title is followed by {following!r}, "
+                                        "which may be a model suffix")
+                from_title = f"model {model} read from the title; "
         if not model or model not in title:
             return None, None, "title does not name the model"
         from horn_drivers.identity import manufacturer_aliases
@@ -273,7 +287,28 @@ _REVISION = re.compile(r"\d{1,2}|II|III|IV|MK\d*|V\d")
 # names the driver model too; it is never a price for the driver itself.
 _ACCESSORY = re.compile(r"\b(?:repair|recone|reconing|re-cone|diaphragms?|membranes?|ersatzmembran\w*|"
                         r"reparatur\w*|spare|kit|gasket|grilles?|replacement\s+(?:cone|part))\b", re.IGNORECASE)
+# A second-hand or returned item is not a price for a new driver. Thomann
+# marks returns "B-Stock" in the title and "_b_stock" in the URL.
+_CONDITION = re.compile(r"(?:\bb[-_ ]?(?:stock|ware)\b|\bused\b|\bdemo\b|\brefurbished\b|\bex[-_ ]display\b|"
+                        r"\bgebraucht\b|\bsecond[-_ ]hand\b|\bvorf\u00fchr\w*|_b_stock)", re.IGNORECASE)
 _UNIT_WORDS = frozenset({"OHM", "OHMS", "INCH", "IN", "W", "WATT", "WATTS", "MM", "CM", "X"})
+
+_SHORT_WORDS = frozenset({"MID", "SUB", "LOW", "FOR", "AND", "THE"})
+
+
+def _plain_tail(token: str) -> bool:
+    """True when *token*, the one after a model read from a title, cannot be a
+    model suffix: the end of the title, a number (revision numbers are
+    already refused), a unit word or a value with its unit ("8OHM"), or a
+    word of four or more letters ("SPEAKER") or a short descriptive word
+    ("MID", "FOR"). Other short letter tokens ("A", "LF", "CX") or letters
+    with digits ("LF2") may name another product."""
+    if not token or token.isdigit() or token in _UNIT_WORDS or token in _SHORT_WORDS:
+        return True
+    if re.fullmatch(r"\d+(?:[.,]\d+)?(?:OHMS?|W|WATTS?|MM|CM|IN|INCH)", token):
+        return True
+    return token.isalpha() and len(token) >= 4
+
 
 REVIEW_FIELDS = ("source_id", "url", "title", "manufacturer", "model", "impedance_ohm", "sku",
                  "price", "currency", "candidate_driver_id", "confidence", "note", "retrieved_on")
@@ -286,6 +321,7 @@ class PriceSource(SourceAdapter):
     region: ClassVar[str] = ""             # key of horn_drivers.prices.REGION_CURRENCY
     currency: ClassVar[str] = ""
     vat_included: ClassVar[Optional[bool]] = None
+    price_kind: ClassVar[str] = "offer"    # "list" for a maker's list price (MSRP)
 
     @abstractmethod
     def parse_listing(self, page: FetchResult, ref: ProductRef) -> Optional[Listing]:
@@ -329,7 +365,7 @@ class PriceSource(SourceAdapter):
                           price=float(listing.price), currency=listing.currency,
                           vat_included=self.vat_included if listing.vat_included is None else listing.vat_included,
                           region=self.region, in_stock=listing.in_stock, retrieved_on=retrieved_on,
-                          match_confidence=confidence)
+                          match_confidence=confidence, price_kind=self.price_kind)
 
     def run(self, index: DriverIndex, prices_dir: Path, review_csv: Path,
             limit: Optional[int] = None) -> RunSummary:

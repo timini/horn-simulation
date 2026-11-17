@@ -112,6 +112,38 @@ def test_title_fallback_finds_multiword_models_but_not_revisions():
     assert idx.model_from_title("Eminence", "Eminence Beta-12A 12 inch") == "BETA12A"
 
 
+def test_title_fallback_sends_a_possible_model_suffix_to_review():
+    idx = DriverIndex([record("Eminence", "Legend BP1525", 8.0), record("Celestion", "Truvox 0615", 8.0)])
+    suffixed = Listing(url="https://s.test/a", title="Eminence Legend BP 1525 A", manufacturer="Eminence",
+                       model="Legend BP 1525 A", price=160.0, currency="GBP", impedance_ohm=8.0)
+    driver_id, confidence, note = idx.match(suffixed)
+    assert (driver_id, confidence) == (None, None) and "suffix" in note
+    for title in ("Eminence Legend BP 1525 8 Ohm", "Eminence Legend BP 1525 Speaker", "Eminence Legend BP 1525"):
+        plain = Listing(url="https://s.test/b", title=title, manufacturer="Eminence", model="Legend BP 1525 x",
+                        price=160.0, currency="GBP", impedance_ohm=8.0)
+        assert idx.match(plain)[1] == "exact", title
+    described = Listing(url="https://s.test/c", title="Celestion Truvox 0615 Mid/bass driver, 8 Ohm",
+                        manufacturer="Celestion", model="Truvox", price=44.0, currency="GBP", impedance_ohm=8.0)
+    assert idx.match(described)[1] == "exact"
+
+
+@pytest.mark.parametrize("title, url", [
+    ("B&C 12NDL88 8 Ohms B-Stock", "https://s.test/bc_12ndl88_8_ohms_b_stock.htm"),
+    ("B&C 12NDL88 8 Ohm", "https://s.test/bc_12ndl88_8_ohms_b_stock.htm"),
+    ("B&C 12NDL88 8 Ohm B-Ware", "https://s.test/x"),
+    ("B&C 12NDL88 8 Ohm (used)", "https://s.test/x"),
+    ("B&C 12NDL88 8 Ohm demo", "https://s.test/x"),
+    ("B&C 12NDL88 8 Ohm refurbished", "https://s.test/x"),
+])
+def test_b_stock_and_used_items_never_match(title, url):
+    listing = Listing(url=url, title=title, manufacturer="B&C", model="12NDL88", price=150.0, currency="GBP",
+                      impedance_ohm=8.0)
+    assert index().match(listing)[:2] == (None, None)
+    new = Listing(url="https://s.test/bc_12ndl88_8_ohms.htm", title="B&C 12NDL88 8 Ohm", manufacturer="B&C",
+                  model="12NDL88", price=215.0, currency="GBP", impedance_ohm=8.0)
+    assert index().match(new)[:2] == ("bc-12ndl88", "exact")
+
+
 def test_parts_and_kits_never_match_the_driver():
     kit = Listing(url="https://s.test", title="Celestion Repair Kit for FTX1225", manufacturer="Celestion",
                   model="Repair", price=90.0, currency="EUR", impedance_ohm=8.0)
@@ -207,6 +239,8 @@ def test_dayton_msrp_and_madisound_product_pages():
     listing = DaytonMSRP(FakeFetcher("dayton-msrp")).parse_listing(page(url, fixture("dayton_product.html")), ProductRef(url))
     assert (listing.model, listing.price, listing.impedance_ohm, listing.in_stock) == ("PA310-8", 142.99, 8.0, True)
     assert index().match(listing)[:2] == ("dayton-pa310-8", "exact")
+    shop = DaytonMSRP(FakeFetcher("dayton-msrp"))
+    assert shop.to_offer(listing, "dayton-pa310-8", "exact", "2026-11-17").price_kind == "list"
     url = "https://www.madisoundspeakerstore.com/special-sale/eminence-alphalite-6b-16-ohm-6.5-pro-midbass/"
     listing = Madisound(FakeFetcher("madisound")).parse_listing(page(url, fixture("madisound_product.html")), ProductRef(url))
     assert (listing.manufacturer, listing.model, listing.price, listing.impedance_ohm) == ("Eminence", "AlphaLite-6B", 19.0, 16.0)

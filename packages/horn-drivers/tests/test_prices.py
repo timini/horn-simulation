@@ -122,3 +122,21 @@ def test_validator_cli_checks_prices(tmp_path, monkeypatch, capsys):
         validator.main()
     assert exit_info.value.code == 0
     assert "older than 30 days" in capsys.readouterr().out
+
+
+def test_list_price_is_used_only_without_a_shop_offer(tmp_path):
+    cheap_list = PriceOffer(**{**offer(driver="d1", source="maker-msrp", price=50).to_json(), "price_kind": "list"})
+    append_offers(tmp_path, "maker-msrp", [cheap_list, PriceOffer(**{**cheap_list.to_json(), "driver_id": "d2"})],
+                  "2026-11-10")
+    append_offers(tmp_path, "thomann-uk", [offer(driver="d1", price=80)], "2026-11-10")
+    snap = price_snapshot(tmp_path, ["d1", "d2"], "UK", as_of=DAY)
+    assert (snap["offers"]["d1"]["price"], snap["offers"]["d1"]["price_kind"]) == (80, "offer")
+    assert (snap["offers"]["d2"]["price"], snap["offers"]["d2"]["price_kind"]) == (50, "list")
+    with pytest.raises(ValueError, match="price_kind"):
+        PriceOffer(**{**offer().to_json(), "price_kind": "sale"})
+
+
+def test_line_without_price_kind_loads_as_offer():
+    data = offer().to_json()
+    del data["price_kind"]
+    assert PriceOffer.from_json(data).price_kind == "offer"
