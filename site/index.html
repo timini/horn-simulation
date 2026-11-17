@@ -156,7 +156,25 @@
 
 <p><a href="reports/800-1600.html">Open the full generated report</a> (3.4 MB, self-contained) or read the <a href="https://github.com/timini/horn-simulation/blob/main/docs/WORKED_EXAMPLE.md">worked example</a>, which walks through the same run. Run <code>20261117T005341Z-14e497b7</code>, source revision <code>51427ee</code>.</p>
 
-<!--SIZECAP-->
+<div class="panel">
+<h3>The same band with a 100 mm length cap</h3>
+<p>Adding <code>--max_length 0.1</code> moves the length search to 40 to 100 mm. That is below the quarter-wave sizing rule for 800 Hz, and the report says so: by that rule horn loading weakens below about 858 Hz. It also says the model does not show that shortfall for the winner, whose lower f3 is 649 Hz.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>#</th><th>Horn</th><th>Length (mm)</th><th>Score</th><th>Ripple (dB)</th><th>Mean (dB)</th><th>Lower f3 (Hz)</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>refine_conical_0001</td><td>63.0</td><td>0.789</td><td>1.40</td><td>103.74</td><td>649</td></tr>
+    <tr><td>2</td><td>auto_con_0025</td><td>70.0</td><td>0.789</td><td>1.66</td><td>103.84</td><td>621</td></tr>
+    <tr><td>3</td><td>auto_cd_0214</td><td>100.0</td><td>0.781</td><td>2.47</td><td>104.15</td><td>532</td></tr>
+  </tbody>
+</table>
+</div>
+<p>All three use the 6NMB420 with the same 72.1 mm throat and 177.4 mm mouth, and are near ties. A conical horn 63 mm long scores about the same as the 118 mm <code>cd</code> horn above: 0.4 dB less level and flatter in band, with less extension below it. Run <code>20261117T083036Z-36f3461c</code>; <a href="reports/800-1600-max-length-100mm.html">open its report</a>.</p>
+<figure>
+  <img src="img/800-1600-max-length-comparison.png" alt="Predicted on-axis level of the top five pairs with a 100 mm length cap" loading="lazy" width="1785" height="1486">
+  <figcaption>Top five pairs with the 100 mm cap, 2.83 V RMS, 1 m on axis.</figcaption>
+</figure>
+</div>
 
 <div class="panel">
 <h3>An impossible request: at least 140 dB</h3>
