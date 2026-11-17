@@ -54,6 +54,10 @@ validate-drivers:
     .venv/bin/horn-validate-drivers --db data/drivers | tail -3
     .venv/bin/horn-validate-drivers --db data/drivers-curated | tail -3
 
+# Regenerate docs/DRIVER_COVERAGE.md from the driver and price files (no network)
+driver-coverage:
+    .venv/bin/python scripts/driver_coverage.py --out docs/DRIVER_COVERAGE.md
+
 # Run the pipeline through the launcher in single mode: just run --throat_radius 0.025 --mouth_radius 0.1 --length 0.2
 run *ARGS:
     python3 scripts/run_pipeline.py {{ARGS}}

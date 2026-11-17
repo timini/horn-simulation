@@ -4,9 +4,9 @@ Drivers are JSON files, one per driver, under version control. Choose a database
 
 | Folder | Contents |
 | --- | --- |
-| `data/drivers` | 2,117 drivers. 1,454 were scraped from loudspeakerdatabase.com (version 1 records; 649 of them now also carry power, sensitivity or band from driver-base). 663 are version 2 records imported from the open driver-base dataset (CC BY 4.0), across 12 manufacturers. The default. |
+| `data/drivers` | 2,122 drivers. 1,205 are version 1 records scraped from loudspeakerdatabase.com (408 of them also carry power, sensitivity or band from driver-base). 917 are version 2 records: 403 read from the B&C, 18 Sound, Celestion and Beyma product pages and 514 imported from the open driver-base dataset (CC BY 4.0). Counts per maker, source and field are in [DRIVER_COVERAGE.md](DRIVER_COVERAGE.md). The default. |
 | `data/drivers-curated` | Seven hand-checked records from manufacturer pages and datasheets: three cone drivers (18Sound 6NMB420, Celestion AF3010 and TF0512HE) and four Peerless compression drivers. See [its README](../data/drivers-curated/README.md). |
-| `data/drivers-incomplete` | Not loadable. Compression drivers whose public data lack a full Thiele-Small set (including 388 from driver-base, one folder per manufacturer: 368 compression drivers and 20 records whose values contradict each other), and scraped records removed from `data/drivers` with the reason. See [its README](../data/drivers-incomplete/README.md). |
+| `data/drivers-incomplete` | Not loadable. Compression drivers whose public data lack a full Thiele-Small set, records whose values contradict each other or duplicate another maker's page, manufacturer records without a full set (one folder per manufacturer, each file with `incomplete_reason`), and scraped records removed from `data/drivers` with the reason. Manufacturer conflict lists are under `conflicts/`. See [its README](../data/drivers-incomplete/README.md). |
 
 None of these records is a physically qualified driver. Every one lacks a verified throat interface and a separate diaphragm mass and rear load, so rankings label them `insufficient_evidence`.
 
@@ -128,6 +128,38 @@ Matching (`DriverIndex.match`): an offer is `exact` when the canonical manufactu
 Prices are kept out of the driver records, in `data/prices/<source>/<YYYY-MM-DD>.jsonl`, one offer per line: `driver_id`, `source_id`, `url`, `sku`, `price`, `currency`, `vat_included`, `region`, `in_stock`, `retrieved_on`, `match_confidence`, `price_kind` (`offer` for a shop price, `list` for a maker's list price; a line without it is an `offer`). The price is stored as listed, shipping excluded.
 
 With `--price_region`, a run takes for each driver the latest offer per source in that region, ignores offers older than 30 days and matches that are only `fuzzy`, converts other currencies with the stored ECB rate file (`data/prices/fx/`, newest on or before the run date) and keeps the cheapest, preferring shop offers over list prices and offers in stock. `--max_price` then drops drivers above the limit or without a current offer. Price is shown, never scored. `horn-validate-drivers --db data/drivers --prices data/prices` checks the snapshot files and warns about offers older than 30 days, unknown drivers and fuzzy matches.
+
+## Refresh data and prices
+
+Every step goes through `PoliteFetcher` (see [Sources and polite fetching](#sources-and-polite-fetching)). A rerun inside a source's cache window (90 days for Thiele-Small data, 7 days for prices) reads `results/cache/<source>/` and makes no requests, so rerunning a step to fix a parser is free. Run one source at a time and keep the log:
+
+```sh
+mkdir -p results/logs
+# 1. robots.txt copies and ECB rates
+.venv/bin/horn-sources robots
+.venv/bin/horn-sources fx
+# 2. manufacturer pages, staged, then merged (manufacturer values win)
+for s in bc eighteensound celestion beyma; do
+  .venv/bin/horn-sources run "$s" --db results/staging/drivers --incomplete data/drivers-incomplete \
+    > "results/logs/$s.log" 2>&1
+done
+.venv/bin/horn-sources merge --staged results/staging/drivers
+# 3. driver-base, after the manufacturer merge so it matches against those records
+.venv/bin/horn-sources run driver-base > results/logs/driver-base.log 2>&1
+# 4. retailer prices; dayton-msrp shares a host with dayton, so never run them at the same time
+for s in thomann-uk thomann-de lautsprechershop bax-shop-uk solen madisound dayton-msrp; do
+  .venv/bin/horn-sources run "$s" > "results/logs/$s.log" 2>&1
+done
+# 5. checks and the coverage page
+.venv/bin/horn-validate-drivers --db data/drivers --prices data/prices
+just driver-coverage
+```
+
+A full price refresh takes a few hours because of the per-request delay (5 s plus jitter); run it in the background and wait for it, do not shorten the delay. A price run writes one snapshot file per source per day; older files stay as history. Look at the review CSVs in `results/price-review/` before adding a `manual` match by hand.
+
+When a source answers 429 or 403 twice in a row the run stops that source and says so. Do not retry it the same day and do not work around it (no other User-Agent, proxy, browser cookies or headless browser). Set the source's `approval_status` to `blocked` in `data/sources.json` with a dated `status_note`; the coverage page lists it. loudspeakerdatabase.com is approved but has not been scraped again: retry `horn-scrape-drivers` only once its health check (`origin_is_healthy`) passes, at the 30 s delay.
+
+After a refresh, commit the data folders, `data/prices`, `data/sources.json`, `data/sources/` and `docs/DRIVER_COVERAGE.md` together, with the counts from the logs in the commit message.
 
 ## Add a driver from a datasheet
 
