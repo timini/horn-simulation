@@ -36,6 +36,7 @@ def generate_auto_report(
     rejected: Optional[List[dict]] = None,
     rejection_stage: Optional[str] = None,
     step_files: Optional[Dict[str, str]] = None,
+    pricing: Optional[dict] = None,
 ) -> Path:
     """Generate the auto-select report with rankings, plots, and CSVs.
 
@@ -60,6 +61,8 @@ def generate_auto_report(
         rejection_stage: Where those rows were rejected, e.g. "FEM" or
             "analytical prescreen".
         step_files: horn_label -> STEP path to show for each ranked horn.
+        pricing: Run pricing summary from ranked_results.json; rows carry
+            their own ``price``. Shown in the summary and HTML, never scored.
 
     Returns:
         Path to the output directory.
@@ -201,6 +204,8 @@ def generate_auto_report(
                      for w in refinement.get("widened_bounds", []))
     if scoring.get("front_chamber_policy"):
         lines.append("Front chamber: " + scoring["front_chamber_policy"])
+    from horn_analysis.pricing import describe_pricing, format_price
+    lines.extend(describe_pricing(pricing))
 
     if lem_results:
         lines.extend([
@@ -226,6 +231,18 @@ def generate_auto_report(
                       f"Extension: {result['extension_octaves']:+.2f} oct  "
                       f"Ripple: {result['passband_ripple_db']:.1f} dB  "
                       f"Mean output level: {result['avg_sensitivity_db']:.1f} dB")
+        drv = drivers.get(result["driver_id"])
+        if drv is not None:
+            lines.append("     Driver rating: "
+                         + (f"{drv.power_w:g} W nominal" if drv.power_w is not None else "nominal power not recorded")
+                         + (f", {drv.peak_power_w:g} W peak" if drv.peak_power_w is not None else "")
+                         + (f"; sensitivity {drv.sensitivity_db_1w1m:.1f} dB at 1 W, 1 m (datasheet)"
+                            if drv.sensitivity_db_1w1m is not None else "; sensitivity not recorded"))
+        if pricing:
+            price = result.get("price")
+            lines.append("     Price: " + format_price(price)
+                         + (f" ({price['source_id']}, {price['retrieved_on']}, {price['url']})" if price else "")
+                         + ("; cheapest feasible" if result.get("cheapest_feasible") else ""))
         if all(result.get(key) is not None for key in ("throat_radius", "mouth_radius", "length")):
             lines.append(f"     Throat radius: {result['throat_radius']*1e3:.2f} mm; mouth radius: {result['mouth_radius']*1e3:.2f} mm; length: {result['length']*1e3:.2f} mm")
         files = builder_files.get(result["horn_label"], {})
@@ -299,6 +316,7 @@ def generate_auto_report(
         rejected=rejected,
         rejection_stage=rejection_stage,
         builder_files=builder_files,
+        pricing=pricing,
     )
     (out / "auto_report.html").write_text(html_report)
 

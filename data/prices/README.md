@@ -13,4 +13,4 @@ Prices live here, not in the driver records.
 Only `exact` and `manual` matches are used in a run. An offer older than 30 days on the run
 date is not used, and `horn-validate-drivers --prices data/prices` warns about it.
 Field rules and the loader are in `packages/horn-drivers/src/horn_drivers/prices.py`;
-see [docs/DRIVERS.md](../../docs/DRIVERS.md).
+see [docs/DRIVERS.md](../../docs/DRIVERS.md#prices).

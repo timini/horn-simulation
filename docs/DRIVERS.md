@@ -33,9 +33,57 @@ None of these records is a physically qualified driver. Every one lacks a verifi
 }
 ```
 
-Parameters are SI. The loader also accepts these unit-suffixed keys and converts them: `sd_cm2`, `vas_l`, `mms_g`, `le_mh`, `xmax_mm`, `exit_area_cm2`, `exit_diameter_mm`, `front_chamber_volume_cm3`, `front_chamber_area_cm2`, `rear_chamber_volume_cm3` and `power_aes_watts`. A value orders of magnitude off is rejected with a hint about the unit. Missing Mms is not replaced with the dry Mmd, and program power is never used as continuous power.
+Parameters are SI. `power_w` is the nominal (AES, RMS or continuous) rating and `peak_power_w` the peak or program rating; the loader never uses one for the other. `sensitivity_db_1w1m` is the datasheet sensitivity in dB SPL at 1 W and 1 m; it is shown in the report but not used in the score. The validator warns when a cone driver's stated sensitivity is more than 4 dB from the Thiele-Small reference efficiency (sheets mix the 1 W and 2.83 V conventions). The usable band may sit at the top level or inside `parameters`.
+
+The loader also accepts these unit-suffixed keys and converts them: `sd_cm2`, `vas_l`, `mms_g`, `le_mh`, `xmax_mm`, `exit_area_cm2`, `exit_diameter_mm`, `front_chamber_volume_cm3`, `front_chamber_area_cm2`, `rear_chamber_volume_cm3` and `power_aes_watts`. A value orders of magnitude off is rejected with a hint about the unit. Missing Mms is not replaced with the dry Mmd, and program power is never used as continuous power.
 
 `driver_type` is `cone`, `compression` or `unknown`. A compression driver's throat is its exit (`exit_diameter_mm` or `exit_area_cm2`).
+
+### Record schema version 2
+
+New records from the source adapters use `"record_schema_version": 2`. The loader reads versions 1 and 2. Version 2 keeps every version 1 field and adds:
+
+```json
+{
+  "identity": {"manufacturer": "BC", "model": "8NDL51",
+               "variant": {"impedance_ohm": 8.0, "coil": null}, "aliases": ["8NDL51-8"]},
+  "field_provenance": {
+    "fs_hz": {"source_id": "bc", "url": "https://www.bcspeakers.com/...", "retrieved_on": "2026-11-17", "method": "page"}
+  }
+}
+```
+
+- `identity.manufacturer` must be a canonical name from `horn_drivers.identity.MANUFACTURERS`, which matches the folder names (`BC` for B&C, `18Sound` for Eighteen Sound). Aliases there cover retailer spellings. `aliases` holds retailer SKUs and model spellings for matching.
+- `field_provenance` gives the source of each stored field. `method` is `page`, `pdf`, `derived` or `manual`. Every stored Fs, Re, Bl, Sd, Mms and Le needs an entry (an error otherwise); other fields without one get a warning. An entry may list `conflicts`, the values that lost to a better source.
+- `horn_drivers.records.make_record` builds a version 2 record and checks its structure.
+
+## Sources and polite fetching
+
+`data/sources.json` lists every site the project may fetch from: id, kind (`manufacturer`, `aggregator`, `retailer`, `reference`), base URL, robots.txt snapshot date, terms URL, approval status, minimum delay and cache window. Only `approved` sources run. `horn-sources robots` refreshes the robots.txt copies in `data/sources/robots/`.
+
+All fetching goes through `horn_drivers.fetch.PoliteFetcher`:
+
+- robots.txt is read for each host and disallowed paths are refused;
+- one request at a time per host, at least the source delay (5 s for retailers, 10 s where robots.txt sets Crawl-delay 10, 30 s for loudspeakerdatabase.com) plus jitter;
+- every kept response is cached under `results/cache/<source>/` and not refetched inside the cache window (7 days for prices, 90 for Thiele-Small data);
+- two consecutive 429 or 403 responses stop the source for the run;
+- the User-Agent names the project and its public repository.
+
+It does not work around bot protection. A site that blocks polite access is marked `blocked` in the registry. Adapters store facts only (numbers, units, URL, date, SKU), never descriptions or images.
+
+```sh
+.venv/bin/horn-sources list
+.venv/bin/horn-sources fx                       # ECB rates into data/prices/fx/
+.venv/bin/horn-sources run thomann-uk --limit 20
+```
+
+Adapters live in `horn_drivers/sources/`, one module per source, and register with `@register_adapter`. A `DriverSource` writes version 2 records to `data/drivers` (or `data/drivers-incomplete` with the reason); a `PriceSource` writes offers to `data/prices` and anything short of an exact match to a review CSV under `results/price-review/`.
+
+## Prices
+
+Prices are kept out of the driver records, in `data/prices/<source>/<YYYY-MM-DD>.jsonl`, one offer per line: `driver_id`, `source_id`, `url`, `sku`, `price`, `currency`, `vat_included`, `region`, `in_stock`, `retrieved_on`, `match_confidence`. The price is stored as listed, shipping excluded.
+
+With `--price_region`, a run takes for each driver the latest offer per source in that region, ignores offers older than 30 days and matches that are only `fuzzy`, converts other currencies with the stored ECB rate file (`data/prices/fx/`, newest on or before the run date) and keeps the cheapest, preferring offers in stock. `--max_price` then drops drivers above the limit or without a current offer. Price is shown, never scored. `horn-validate-drivers --db data/drivers --prices data/prices` checks the snapshot files and warns about offers older than 30 days, unknown drivers and fuzzy matches.
 
 ## Add a driver from a datasheet
 

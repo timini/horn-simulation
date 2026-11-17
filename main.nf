@@ -70,6 +70,9 @@ params.score_weights = null  // Optional: e.g. "sensitivity=0.625,ripple=0.25,ex
 params.lem_top_n = 10       // Number of top candidates to pass from LEM prescreen to FEM
 params.min_diameter = null  // Optional: minimum driver nominal diameter (inches)
 params.max_diameter = null  // Optional: maximum driver nominal diameter (inches)
+params.price_region = null  // Optional: show the cheapest current offer per driver in this region (UK, EU, US, CA, ...)
+params.max_price = null     // Optional: keep only drivers with a current offer at or below this, in the region's currency (needs price_region)
+params.prices_dir = "data/prices" // Price snapshots folder; read only when price_region is set
 params.throat_fractions = null  // Optional CSV (e.g. "0.1,0.3,0.65,1.0") to override prescreen throat sampling
 params.max_length = null    // Optional cap/extension of derived length range upper bound (m)
 params.min_length = null    // Optional override of derived length range lower bound (m)
@@ -407,6 +410,7 @@ process prescreen_drivers {
     val target_f_low
     val target_f_high
     path drivers_db, stageAs: 'driver_database'
+    path prices_dir, stageAs: 'price_snapshots'
 
     output:
     path "prescreen_result.json"
@@ -417,6 +421,7 @@ process prescreen_drivers {
     def min_dia_flag = params.min_diameter != null ? "--min-diameter ${params.min_diameter}" : ""
     def max_dia_flag = params.max_diameter != null ? "--max-diameter ${params.max_diameter}" : ""
     def throat_fractions_flag = params.throat_fractions != null ? "--throat-fractions ${params.throat_fractions}" : ""
+    def price_flags = params.price_region != null ? "--prices-dir ${prices_dir} --price-region ${params.price_region}" + (params.max_price != null ? " --max-price ${params.max_price}" : "") : ""
     """
     python3 -m horn_analysis.prescreen \
         --drivers-db ${drivers_db} \
@@ -427,6 +432,7 @@ process prescreen_drivers {
         ${min_dia_flag} \
         ${max_dia_flag} \
         ${throat_fractions_flag} \
+        ${price_flags} \
         --output prescreen_result.json
     """
 }
@@ -446,7 +452,7 @@ from pathlib import Path
 from horn_analysis.auto_report import generate_auto_report
 from horn_analysis.scoring import TargetSpec, describe_scoring
 target = TargetSpec(${params.target_f_low}, ${params.target_f_high}, voltage_rms=${params.voltage_rms}, observation_distance_m=${params.observation_distance}, max_ripple_db=${params.max_ripple_db}, max_compression_ratio=${params.max_compression_ratio}, ${scoringTargetArgs()}, test_power_w=${params.test_power_w ?: 'None'})
-reasons = {"no_drivers_passed_prescreen": "No drivers passed the initial screening for this request.", "size_constraints_exclude_search_range": "No geometry remains within the requested size limits and current search range.", "no_mouth_larger_than_throat": "The searched mouth sizes are no larger than the throat.", "profile_geometry_infeasible": "Every searched geometry is impossible for its profile, for example a tractrix shorter than its natural length.", "no_geometry_in_radiation_domain": "No searched geometry lies within the selected radiation model domain."}
+reasons = {"no_drivers_passed_prescreen": "No drivers passed the initial screening for this request.", "no_drivers_within_max_price": "No driver with a current offer at or below max_price in price_region passed the initial screening.", "size_constraints_exclude_search_range": "No geometry remains within the requested size limits and current search range.", "no_mouth_larger_than_throat": "The searched mouth sizes are no larger than the throat.", "profile_geometry_infeasible": "Every searched geometry is impossible for its profile, for example a tractrix shorter than its natural length.", "no_geometry_in_radiation_domain": "No searched geometry lies within the selected radiation model domain."}
 metadata = json.loads(Path("${empty_metadata}").read_text())
 rejected = metadata.get("rankings", [])
 count = metadata.get("total_evaluated", 0)
@@ -679,7 +685,10 @@ rejected = [r for r in all_results if not r.get('model_feasible', False)] + solv
 all_results = [r for r in all_results if r.get('model_feasible', False)]
 all_results.sort(key=lambda r: r['composite_score'], reverse=True)
 from horn_analysis.search import annotate_comparable_candidates
+feasible = all_results
 all_results = annotate_comparable_candidates(all_results[:${params.top_n}])
+from horn_analysis.pricing import annotate_ranking
+pricing = annotate_ranking(feasible, all_results, prescreen.get('pricing'))
 
 output = {
     'total_candidates': total_candidates,
@@ -690,6 +699,7 @@ output = {
     'status': 'experimental_candidates' if all_results else 'no_feasible_design',
     'validation_status': 'independent_validation_pending',
     'scoring': describe_scoring(target, json.loads(Path('${design_json}').read_text()), ${userBoundsArgs()}),
+    'pricing': pricing,
 }
 Path('ranked_results.json').write_text(json.dumps(output, indent=2))
 print(f'Ranked {total_scored} driver-horn combinations ({total_candidates} geometries)')
@@ -801,6 +811,7 @@ generate_auto_report(
     rejected=ranked_data.get('rejected', []),
     rejection_stage='FEM',
     step_files=step_files,
+    pricing=ranked_data.get('pricing'),
 )
 "
     """
@@ -905,10 +916,13 @@ workflow single {
 workflow auto {
     // 1. Pre-screen drivers
     ch_drivers_db = Channel.value(file(params.drivers_db))
+    // Prices are read only with price_region; otherwise the committed folder is staged unused.
+    ch_prices = Channel.value(params.price_region != null ? file(params.prices_dir, checkIfExists: true) : file("${projectDir}/data/prices"))
     ch_prescreen = prescreen_drivers(
         params.target_f_low,
         params.target_f_high,
         ch_drivers_db,
+        ch_prices,
     )
 
     ch_driver_branches = ch_prescreen.branch { path ->
@@ -924,7 +938,10 @@ workflow auto {
         eligible: new groovy.json.JsonSlurper().parse(json).candidate_count > 0
         empty: true
     }
-    ch_empty_drivers = ch_driver_branches.empty.map { path -> tuple('no_drivers_passed_prescreen', path) }
+    ch_empty_drivers = ch_driver_branches.empty.map { path ->
+        def screen = new groovy.json.JsonSlurper().parse(path)
+        tuple(screen.pricing?.max_price != null ? 'no_drivers_within_max_price' : 'no_drivers_passed_prescreen', path)
+    }
     ch_empty_geometry = ch_geometry_branches.empty.map { csv, json ->
         def data = new groovy.json.JsonSlurper().parse(json)
         tuple(data.reason, json)
@@ -1033,7 +1050,9 @@ workflow {
     if (!(params.min_points_per_octave >= 0 && Double.isFinite(params.min_points_per_octave as double))) error "min_points_per_octave must be finite and nonnegative"
     if (params.min_output_db != null && !Double.isFinite(params.min_output_db as double)) error "min_output_db must be finite"
     if (params.score_weights != null && !(params.score_weights.toString().replaceAll(/\s/, '') ==~ /(sensitivity|ripple|extension|size)=[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?(,(sensitivity|ripple|extension|size)=[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)*/)) error "score_weights must look like sensitivity=0.625,ripple=0.25,extension=0.125,size=0"
-    for (key in ['throat_radius', 'mouth_radius', 'length', 'min_length', 'max_length', 'min_mouth_radius', 'max_mouth_radius', 'test_power_w']) {
+    if (params.price_region != null && !(params.price_region in ['UK', 'EU', 'US', 'CA', 'AU', 'CH', 'JP', 'NO', 'SE', 'DK', 'PL'])) error "price_region must be one of UK, EU, US, CA, AU, CH, JP, NO, SE, DK, PL"
+    if (params.max_price != null && params.price_region == null) error "max_price needs price_region (the price is in that region's currency)"
+    for (key in ['throat_radius', 'mouth_radius', 'length', 'min_length', 'max_length', 'min_mouth_radius', 'max_mouth_radius', 'test_power_w', 'max_price']) {
         if (params[key] != null && !(params[key] > 0 && Double.isFinite(params[key] as double))) error "${key} must be finite and positive"
     }
     def outputRoot = new File(params.outdir as String)

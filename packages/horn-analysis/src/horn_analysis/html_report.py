@@ -298,6 +298,7 @@ def _render_rankings_rows(
     ranked_results: List[dict],
     drivers: Dict[str, DriverParameters],
     show_geometry: bool = False,
+    show_price: bool = False,
 ) -> str:
     from horn_analysis.report_tables import candidate_id
     rows = []
@@ -342,9 +343,31 @@ def _render_rankings_rows(
             f"<td>{_fmt(kpi.get('peak_spl_db'), '.1f')}</td>"
             f"<td>{chamber_cell}</td>"
             f"<td>{html.escape(_STATUS_LABELS.get(status, status.replace('_', ' ')))}</td>"
+            f"{_price_cell(r) if show_price else ''}"
             f"</tr>"
         )
     return "\n".join(rows)
+
+
+def _price_cell(row) -> str:
+    price = row.get("price")
+    if not price:
+        return "<td>no current offer</td>"
+    from horn_analysis.pricing import format_price
+    link = f'<a href="{html.escape(price["url"])}">{html.escape(price["source_id"])}</a>'
+    return (f"<td>{html.escape(format_price(price))}<br><small>{link}, {html.escape(price['retrieved_on'])}"
+            + (", in stock" if price.get("in_stock") else ", out of stock" if price.get("in_stock") is False else "")
+            + "</small>" + ("<br><strong>cheapest feasible</strong>" if row.get("cheapest_feasible") else "") + "</td>")
+
+
+def _render_pricing(pricing: Optional[dict]) -> str:
+    """Price region, snapshot dates, sources and the cheapest feasible design."""
+    if not pricing:
+        return ""
+    from horn_analysis.pricing import describe_pricing
+    lines = describe_pricing(pricing)
+    items = "".join(f"<li>{html.escape(line.strip())}</li>" for line in lines)
+    return f'<div class="scoring"><h3>Prices</h3><ul>{items}</ul></div>'
 
 
 def _render_drivers_rows(drivers: Dict[str, DriverParameters]) -> str:
@@ -368,6 +391,8 @@ def _render_drivers_rows(drivers: Dict[str, DriverParameters]) -> str:
             f"<td>{_fmt(drv.qes, '.2f')}</td>"
             f"<td>{_fmt(drv.qts, '.2f')}</td>"
             f"<td>{_fmt(ebp, '.0f')}</td>"
+            f"<td>{_fmt(drv.power_w, '.0f')}</td>"
+            f"<td>{_fmt(drv.sensitivity_db_1w1m, '.1f')}</td>"
             f"</tr>"
         )
     return "\n".join(rows)
@@ -463,6 +488,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
 
 <h2>Rankings</h2>
 {scoring_section}
+{pricing_section}
 <div class="table-wrap">
 <table>
 <thead>
@@ -470,7 +496,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
   <th>#</th><th>Candidate ID (horn + driver)</th><th>Manufacturer</th><th>Model</th><th>Type</th><th>Size</th><th>Power (W)</th><th>Profile</th>
   {geometry_header_cols}
   <th>Score</th>
-  <th>Extension (oct; ≥ = lower bound)</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz; ≤/≥ = sweep bound)</th><th>Peak (dB)</th><th>Front chamber</th><th>Evidence status</th>
+  <th>Extension (oct; ≥ = lower bound)</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz; ≤/≥ = sweep bound)</th><th>Peak (dB)</th><th>Front chamber</th><th>Evidence status</th>{price_header}
 </tr>
 </thead>
 <tbody>
@@ -503,6 +529,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
 <tr>
   <th>Manufacturer</th><th>Model</th><th>Fs (Hz)</th><th>Re (&Omega;)</th><th>BL (T&middot;m)</th>
   <th>Sd (cm&sup2;)</th><th>Mms (g)</th><th>Le (mH)</th><th>Qms</th><th>Qes</th><th>Qts</th><th>EBP</th>
+  <th>Power (W)</th><th>Sensitivity (dB, 1 W, 1 m)</th>
 </tr>
 </thead>
 <tbody>
@@ -808,6 +835,7 @@ def generate_html_report(
     rejected: Optional[List[dict]] = None,
     rejection_stage: Optional[str] = None,
     builder_files: Optional[Dict[str, dict]] = None,
+    pricing: Optional[dict] = None,
 ) -> str:
     """Generate a self-contained HTML report string.
 
@@ -833,6 +861,8 @@ def generate_html_report(
         rejected: Rejected rows, summarised by reason with margins.
         rejection_stage: Where those rows were rejected (for example "FEM").
         builder_files: horn_label -> {"profile_csv": path, "step": path}.
+        pricing: Run pricing summary (horn_analysis.pricing.annotate_ranking);
+            adds a price column and a prices note. Price is not scored.
 
     Returns:
         Complete HTML document as a string.
@@ -930,7 +960,7 @@ def generate_html_report(
                                            no_feasible_reason if not top_results else None, rejection_stage)
 
     # Render tables
-    rankings_rows = _render_rankings_rows(top_results, drivers, show_geometry=show_geometry)
+    rankings_rows = _render_rankings_rows(top_results, drivers, show_geometry=show_geometry, show_price=bool(pricing))
     drivers_rows = _render_drivers_rows(drivers)
 
     # Conditional sections for fullauto
@@ -1024,6 +1054,8 @@ def generate_html_report(
         "geometry_header_cols": geometry_header_cols,
         "geometry_section": geometry_section,
         "rankings_rows": rankings_rows,
+        "price_header": "<th>Price (as listed, shipping excluded)</th>" if pricing else "",
+        "pricing_section": _render_pricing(pricing),
         "scoring_section": _render_scoring(scoring or describe_scoring(target, derived_geometry), all_ranked),
         "plot_coupled_spl": plot_coupled_spl,
         "plot_raw_spl": plot_raw_spl,
