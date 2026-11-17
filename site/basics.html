@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Horn Basics</title>
+<meta name="description" content="Short explanations of what a horn does, why driver and horn must be chosen together, and the terms used in the reports.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="topnav" aria-label="Site"><div>
+  <a class="brand" href="index.html">Horn Simulation</a>
+  <a href="index.html">Home</a>
+  <a href="basics.html" aria-current="page">Horn basics</a>
+  <a href="example.html">Worked example</a>
+  <a href="examples.html">More examples</a>
+  <a href="https://github.com/timini/horn-simulation">GitHub</a>
+</div></nav>
+<main>
+
+<p class="eyebrow">Background</p>
+<h1>Horn basics</h1>
+<p class="lede">Enough to read the reports and the examples. Each part is short. The <a href="#glossary">glossary</a> at the end repeats the key terms.</p>
+
+<h2 id="horn">What a horn does</h2>
+<p>A loudspeaker cone is small compared with the wavelengths it has to make. On its own it pushes the air without gripping it well, so most of the amplifier's power ends up as heat in the voice coil and little becomes sound.</p>
+<p>A horn is a duct that starts small at the driver (the <strong>throat</strong>) and opens out gradually to a large <strong>mouth</strong>. It works like a gearbox for sound, an acoustic transformer: at the throat a small area of air carries high pressure and moves quickly. By the mouth the same power is spread over a large area at low pressure and low velocity. The cone, pushing on the narrow throat, moves less than it would in open air. The driver now has something to push against. Two things follow:</p>
+<ul>
+  <li><strong>Higher efficiency.</strong> More of the input power turns into sound, so the same driver plays louder for the same voltage.</li>
+  <li><strong>Controlled directivity.</strong> The walls aim the sound into a chosen angle, at frequencies where the mouth is large compared with the wavelength. Below that the horn spreads sound more widely.</li>
+</ul>
+
+<h3 id="cutoff">Cutoff: why size matters</h3>
+<p>A horn only works above a lower limit, its <strong>cutoff</strong>. Two things set it:</p>
+<ul>
+  <li><strong>The flare.</strong> A slow flare loads the driver to lower frequencies. A fast flare cuts off higher. A slow flare needs a longer horn to reach the same mouth size.</li>
+  <li><strong>The mouth.</strong> If the mouth is small compared with the wavelength, sound reflects from it back down the horn. The reflections make peaks and dips in the response. A common rule of thumb is a mouth circumference of about one wavelength at the lowest frequency. At 500 Hz that is a mouth about 22 cm across.</li>
+</ul>
+<p>That is why low frequencies need big horns, and why a size limit often decides what is possible. The profile names (exponential, tractrix, conical and so on) describe the shape of the flare between throat and mouth.</p>
+
+<h2 id="pairing">Why driver and horn are chosen together</h2>
+<p>A horn that works well with one driver can work badly with another. The search tries every pair because of these interactions:</p>
+<dl class="glossary">
+  <dt>Throat size against cone area</dt>
+  <dd>The ratio of the driver's radiating area (Sd) to the throat area (St) is the <strong>compression ratio</strong>. More compression raises loading and output, but also raises the air pressure at the throat (more distortion) and tends to limit the top end. The tool rejects pairs above a ratio of 10 by default. A throat wider than the cone (ratio below 1) gives no compression at all, and is flagged.</dd>
+  <dt>The front chamber</dt>
+  <dd>Between a cone and a throat there is a pocket of air: the inside of the cone closed by the adapter plate. That air acts like a spring and, with the throat, forms a low-pass filter. A big chamber on a small throat can cut the top of the band. The tool estimates this volume when the driver data has none, and labels the result as estimated.</dd>
+  <dt>Driver resonance and moving mass</dt>
+  <dd>The driver's Thiele-Small parameters (resonance, damping, moving mass, motor strength) decide where it can drive the horn's load evenly. A driver tuned for a bass box may not suit a midrange horn.</dd>
+  <dt>Resonances and ripple</dt>
+  <dd>Reflections from the mouth, the front chamber filter and the driver's own resonance each add bumps to the response. Whether those bumps land inside your band depends on the pair, not on either part alone. The result shows up as ripple.</dd>
+  <dt>Excursion</dt>
+  <dd>Below the horn's cutoff the cone is barely loaded and moves further. If it would move beyond its linear limit (Xmax) at the drive level you ask for, the pair is rejected.</dd>
+</dl>
+
+<h2 id="numbers">The numbers in a report</h2>
+<dl class="glossary">
+  <dt>Sensitivity at 2.83 V, 1 m</dt>
+  <dd>The sound level in dB SPL one metre in front of the horn, on its axis, when the driver gets 2.83 V RMS. That voltage is 1 W into 8 ohms (2 W into 4 ohms). The tool reports the average level across your band, called mean level or mean SPL. Higher is louder for the same amplifier.</dd>
+  <dt>Ripple</dt>
+  <dd>The difference in dB between the highest and lowest level inside your band. 2 dB of ripple means the response stays within a 2 dB window. Lower is flatter.</dd>
+  <dt>f3</dt>
+  <dd>The frequencies, below and above the band (or inside it, if the band edge is already 3 dB down), where the level falls 3 dB below the band's mean. They show how far the useful response reaches. A value written as "at least" or "at most" means the simulation's sweep stopped before the level fell that far.</dd>
+  <dt>Score</dt>
+  <dd>A weighted sum used to rank the pairs that pass every limit. By default it rewards level most, then low ripple, then extension past the band. Scores within 0.02 of each other are marked as near ties. You can change the weights.</dd>
+</dl>
+
+<h2 id="glossary">Glossary</h2>
+<dl class="glossary">
+  <dt>Throat, mouth, length</dt>
+  <dd>The narrow end at the driver, the wide open end, and the distance between them along the axis. The examples give diameters unless they say radius.</dd>
+  <dt>Flare profile</dt>
+  <dd>The shape of the wall from throat to mouth. The tool tries seven: conical, exponential, tractrix, hyperbolic, oblate spheroidal (os), a scaled tractrix, and cd (an exponential throat blended into a cone).</dd>
+  <dt>Thiele-Small parameters</dt>
+  <dd>The small set of numbers a driver datasheet gives (Fs, Qts, Sd, Bl, Mms and others) that describe how it moves and how it loads an amplifier.</dd>
+  <dt>Webster model (1D)</dt>
+  <dd>A fast approximation that treats the sound in the horn as a plane wave travelling along it. Good for screening thousands of designs.</dd>
+  <dt>FEM (3D axisymmetric)</dt>
+  <dd>The finite element method. It solves the sound field inside the full horn shape, taking advantage of the horn being round. Slower, more detailed, and used on the shortlist.</dd>
+  <dt>Rejected or flagged</dt>
+  <dd>A pair that breaks one of your limits is rejected and listed with the margin. If it only breaks a limit because of an estimated front chamber, it is flagged and kept, because the real chamber could be smaller. The examples point out where this happened.</dd>
+  <dt>Experimental prediction</dt>
+  <dd>The label every result carries. It means the model has not yet been checked against a measured horn and driver assembly.</dd>
+  <dt>STEP file</dt>
+  <dd>A 3D CAD file. The tool's STEP is the shape of the air inside the horn, not a part you can print. You add walls, flanges and the driver adapter yourself.</dd>
+</dl>
+
+<p>The physics behind the tool is written up in <a href="https://github.com/timini/horn-simulation/blob/main/docs/PHYSICS.md">PHYSICS</a>, and the search and score rules in <a href="https://github.com/timini/horn-simulation/blob/main/docs/SEARCH_AND_SCORING.md">SEARCH_AND_SCORING</a>.</p>
+
+<footer>
+  <a href="https://github.com/timini/horn-simulation">github.com/timini/horn-simulation</a> &middot; MIT licence
+</footer>
+</main>
+</body>
+</html>

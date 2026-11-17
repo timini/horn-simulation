@@ -39,3 +39,101 @@ def test_rejection_files_must_name_a_reason(tmp_path):
     bad.write_text(json.dumps({"status": "rejected", "rejection_reasons": []}))
     with pytest.raises(ValueError, match="reason"):
         merge.merge_rejections([bad], candidate_id="x", output=tmp_path / "out.json")
+
+
+def _band(path, low, high, mouth_p=1.):
+    import numpy as np
+    import pandas as pd
+    pd.DataFrame({"frequency": np.geomspace(low, high, 3), "spl": 94., "z_real": 420., "z_imag": 0.,
+                  "schema_version": 2, "inlet_area_m2": .01, "mouth_area_m2": .02,
+                  "mouth_u_real": .0001, "mouth_u_imag": 0., "mouth_p_real": mouth_p, "mouth_p_imag": 0.,
+                  "radiation_model": "plane_wave", "phasor_convention": "exp(+iwt)_rms",
+                  "bc_mode": "dirichlet"}).to_csv(path, index=False)
+    return path
+
+
+def _merge_argv(tmp_path, files, *extra):
+    return ["merge", "--files", *map(str, files), "--num-bands", "2", "--min-freq", "100",
+            "--max-freq", "1000", "--num-intervals", "6", "--min-points-per-octave", "0",
+            "--output", str(tmp_path / "c_results.csv"), *extra]
+
+
+def test_bands_that_do_not_join_reject_the_candidate_with_the_mismatch_size(tmp_path, monkeypatch):
+    edge = 1000 ** .5 * 10
+    # Mouth pressure steps from 1.00 to 1.15 Pa at the join, about the 15.6%
+    # jump seen between an unresolved 10 elements per wavelength band and its
+    # finer neighbour in a real auto run.
+    files = [_band(tmp_path / "results_c_0.csv", 100, edge),
+             _band(tmp_path / "results_c_1.csv", edge, 1000, mouth_p=1.15)]
+    rejection = tmp_path / "c_rejected.json"
+    monkeypatch.setattr(sys, "argv", _merge_argv(tmp_path, files, "--candidate-id", "c",
+                                                 "--rejection-file", str(rejection)))
+    merge.main()
+    assert not (tmp_path / "c_results.csv").exists()
+    record = json.loads(rejection.read_text())
+    assert record["status"] == "rejected"
+    assert record["rejection_reasons"] == ["band_boundary_mismatch"]
+    worst = record["band_boundary_mismatch"]
+    assert worst["quantity"] == "mouth_p"
+    assert worst["frequency_hz"] == pytest.approx(edge)
+    assert worst["jump"] == pytest.approx(.15 / 1.15)
+    assert worst["excess_ratio"] > 1
+    assert "mouth_p" in record["rejection_detail"] and "Hz" in record["rejection_detail"]
+    rows = rejection_rows(record, {"profile": "os", "length": "0.2"}, {"d"})
+    assert rows[0]["rejection_reasons"] == ["band_boundary_mismatch"]
+
+
+def test_mismatch_still_fails_without_a_rejection_file(tmp_path, monkeypatch):
+    edge = 1000 ** .5 * 10
+    files = [_band(tmp_path / "results_c_0.csv", 100, edge),
+             _band(tmp_path / "results_c_1.csv", edge, 1000, mouth_p=1.15)]
+    monkeypatch.setattr(sys, "argv", _merge_argv(tmp_path, files))
+    with pytest.raises(merge.BandBoundaryMismatch, match="complex mouth_p mismatch"):
+        merge.main()
+
+
+def test_jump_within_tolerance_still_merges(tmp_path, monkeypatch):
+    edge = 1000 ** .5 * 10
+    files = [_band(tmp_path / "results_c_0.csv", 100, edge),
+             _band(tmp_path / "results_c_1.csv", edge, 1000, mouth_p=1.04)]
+    rejection = tmp_path / "c_rejected.json"
+    monkeypatch.setattr(sys, "argv", _merge_argv(tmp_path, files, "--candidate-id", "c",
+                                                 "--rejection-file", str(rejection)))
+    merge.main()
+    assert (tmp_path / "c_results.csv").exists() and not rejection.exists()
+
+
+def test_other_merge_faults_still_stop_the_run(tmp_path, monkeypatch):
+    files = [_band(tmp_path / "results_c_0.csv", 100, 1000 ** .5 * 10)]
+    monkeypatch.setattr(sys, "argv", _merge_argv(tmp_path, files, "--candidate-id", "c",
+                                                 "--rejection-file", str(tmp_path / "r.json")))
+    with pytest.raises(ValueError, match="Incomplete simulation"):
+        merge.main()
+
+
+def test_mesh_rejections_are_reported_as_a_mesh_problem_not_an_empty_brief(tmp_path):
+    from horn_analysis.auto_report import generate_auto_report
+    from horn_analysis.report_tables import mesh_rejection_note, rejection_summary
+    from horn_analysis.scoring import TargetSpec
+    record = merge.boundary_rejection(
+        merge.BandBoundaryMismatch(("mouth_p", 3830.41, .156, 1.6), 4), candidate_id="auto_exp_0068")
+    worse = merge.boundary_rejection(
+        merge.BandBoundaryMismatch(("spl", 3830.38, 39.2, 78.4), 2), candidate_id="auto_tra_0150")
+    rows = (rejection_rows(record, {"profile": "exponential"}, {"a", "b"})
+            + rejection_rows(worse, {"profile": "tractrix"}, {"a"}))
+    assert rows[0]["band_boundary_mismatch"]["excess_ratio"] == pytest.approx(1.6)
+
+    target = TargetSpec(500, 4000)
+    [entry] = rejection_summary(rows, target)
+    assert entry["closest_excess"] == pytest.approx(1.6) and entry["largest_excess"] == pytest.approx(78.4)
+    assert entry["unit"] == "times allowed"
+    note = mesh_rejection_note(rows)
+    assert note.startswith("2 simulated horns were rejected") and "3830 Hz" in note and "--mesh_size" in note
+    assert mesh_rejection_note([{"rejection_reasons": ["target_band_ripple_exceeded"]}]) is None
+
+    generate_auto_report([], {}, {}, None, target, str(tmp_path), rejected=rows, rejection_stage="FEM")
+    summary = (tmp_path / "auto_summary.txt").read_text()
+    assert "Horns evaluated: none" in summary
+    assert "Reason: 2 simulated horns were rejected" in summary
+    assert "band_boundary_mismatch: 3, 1.60 times allowed, 78.40 times allowed" in summary
+    assert "--mesh_size" in (tmp_path / "auto_report.html").read_text()

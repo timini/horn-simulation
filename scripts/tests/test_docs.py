@@ -1,6 +1,7 @@
-"""Documentation checks: relative links resolve, and USAGE.md covers main.nf and the justfile."""
+"""Documentation checks: relative links resolve in the docs and the site, and USAGE.md covers main.nf and the justfile."""
 import re
 import subprocess
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -134,3 +135,65 @@ def test_usage_lists_every_just_recipe():
     text = USAGE.read_text(encoding="utf-8")
     missing = [r for r in recipes if r != "default" and f"`just {r}" not in text]
     assert not missing, f"docs/USAGE.md does not list: {missing}"
+
+
+class _SiteRefs(HTMLParser):
+    """Collects href and src values and element ids from one HTML page."""
+
+    def __init__(self):
+        super().__init__()
+        self.refs, self.ids = [], set()
+
+    def handle_starttag(self, tag, attrs):
+        for name, value in attrs:
+            if name in ("href", "src") and value:
+                self.refs.append(value)
+            elif name == "id" and value:
+                self.ids.add(value)
+
+
+def _parse_site_page(path):
+    parser = _SiteRefs()
+    parser.feed(path.read_text(encoding="utf-8"))
+    return parser
+
+
+def test_site_pages_exist():
+    assert {"index.html", "basics.html", "example.html", "examples.html"} <= {p.name for p in (ROOT / "site").glob("*.html")}
+
+
+def test_site_local_links_and_anchors_resolve():
+    broken = []
+    for page in sorted((ROOT / "site").glob("*.html")):
+        for ref in _parse_site_page(page).refs:
+            if re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*:", ref) or ref.startswith("//"):
+                continue
+            path, _, anchor = ref.partition("#")
+            target = page if not path else page.parent / unquote(path)
+            if not target.is_file():
+                broken.append(f"{page.name}: {ref}")
+            elif anchor and target.suffix == ".html" and target.parent == page.parent \
+                    and anchor not in _parse_site_page(target).ids:
+                broken.append(f"{page.name}: {ref} (no such id)")
+    assert not broken, "Broken site links:\n" + "\n".join(broken)
+
+
+def test_site_pages_have_no_long_dashes_or_arrows():
+    pattern = re.compile("[\u2013\u2014\u2192]|&[mn]dash;|&rarr;|&#0*(8211|8212|8594);|&#x0*(2013|2014|2192);",
+                         re.IGNORECASE)
+    files = sorted(p for ext in ("*.html", "*.svg") for p in (ROOT / "site").rglob(ext))
+    offending = [str(p.relative_to(ROOT / "site")) for p in files if pattern.search(p.read_text(encoding="utf-8"))]
+    assert not offending, f"Em or en dashes or arrows in: {offending}"
+
+
+def test_site_does_not_link_run_folders():
+    offending = [f"{page.name}: {ref}" for page in sorted((ROOT / "site").glob("*.html"))
+                 for ref in _parse_site_page(page).refs if re.match(r"^(\./|(\.\./)+)?results/", ref)]
+    assert not offending, "Links to uncommitted run folders:\n" + "\n".join(offending)
+
+
+def test_every_site_report_and_image_is_used():
+    used = {ref.partition("#")[0] for page in (ROOT / "site").glob("*.html") for ref in _parse_site_page(page).refs}
+    unused = [str(p.relative_to(ROOT / "site")) for folder in ("reports", "img")
+              for p in sorted((ROOT / "site" / folder).iterdir()) if str(p.relative_to(ROOT / "site")) not in used]
+    assert not unused, f"Files in site/ that no page references: {unused}"

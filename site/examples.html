@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>More Examples</title>
+<meta name="description" content="Five horn briefs run against the full driver database: the constraints, the result, why it won and the caveats, including one brief with no answer.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="topnav" aria-label="Site"><div>
+  <a class="brand" href="index.html">Horn Simulation</a>
+  <a href="index.html">Home</a>
+  <a href="basics.html">Horn basics</a>
+  <a href="example.html">Worked example</a>
+  <a href="examples.html" aria-current="page">More examples</a>
+  <a href="https://github.com/timini/horn-simulation">GitHub</a>
+</div></nav>
+<main>
+
+<p class="eyebrow">Examples</p>
+<h1>Five briefs, five answers</h1>
+<p class="lede">Each example starts from a brief a builder might write, runs it against the full database of 1454 drivers, and reports what came back. Not every brief has a clean answer. Those are shown as they are.</p>
+
+<div class="note">All results are experimental predictions. Every number here comes from the run's <code>refinement/ranked_results.json</code> or its report. Diameters are given unless a value says radius. The linked reports give radii. Levels are on axis at 1 m for 2.83 V. Terms are explained in <a href="basics.html">horn basics</a>.</div>
+
+<ol class="toc">
+  <li><a href="#pa-mid">Compact PA midrange horn</a></li>
+  <li><a href="#hifi-upper">Small hi-fi upper-mid waveguide (no answer)</a></li>
+  <li><a href="#low-mid">Large low-mid horn</a></li>
+  <li><a href="#loud">High-output vocal horn (does not strictly pass)</a></li>
+  <li><a href="#flat">Flattest possible midrange</a></li>
+  <li><a href="#crashes">Runs that stopped and were rerun</a></li>
+  <li><a href="#removed">Runs no longer shown</a></li>
+</ol>
+
+<!-- 1 -->
+<h2 id="pa-mid">1. Compact PA midrange horn</h2>
+<section class="example">
+<p><strong>Why:</strong> a two-way PA top box, so the horn has to fit a typical cabinet.</p>
+<h3>Constraints</h3>
+<ul>
+  <li>Band 500 to 4000 Hz.</li>
+  <li>Horn length at most 250 mm. Mouth diameter at most 350 mm.</li>
+  <li>Ripple at most 3 dB.</li>
+  <li>Default ranking: level first, then flatness.</li>
+</ul>
+<pre><code>python3 scripts/run_pipeline.py --mode auto --target_f_low 500 --target_f_high 4000 \
+  --max_length 0.25 --max_mouth_radius 0.175 --max_ripple_db 3 --mesh_size 0.006</code></pre>
+<h3>Result</h3>
+<p>LaVoce FSN041.00-4 on a scaled tractrix horn (<code>refine_scaled_tractrix_0004</code>).</p>
+<div class="stats">
+  <div class="stat"><b>88.8 mm</b><span>Throat</span></div>
+  <div class="stat"><b>245 mm</b><span>Mouth</span></div>
+  <div class="stat"><b>250 mm</b><span>Length, at the limit</span></div>
+  <div class="stat"><b>2.95 dB</b><span>Ripple, 500 to 4000 Hz</span></div>
+  <div class="stat"><b>101.9 dB</b><span>Mean level</span></div>
+  <div class="stat"><b>280 Hz to at least 5657 Hz</b><span>f3 points</span></div>
+</div>
+<figure class="plot">
+  <img src="img/pa-mid-winner-spl.svg" alt="Predicted level of the LaVoce FSN041.00-4 on the scaled tractrix horn from 250 to 5657 Hz, between about 101 and 104 dB across the shaded 500 to 4000 Hz band" loading="lazy" width="640" height="300">
+  <figcaption>Predicted level of the winner. The shaded area is the target band.</figcaption>
+</figure>
+<h3>Why it won</h3>
+<p>Of the 11440 driver and horn pairs the 3D model scored, 11425 failed the 3 dB ripple limit. Among the ten stored ranked pairs, this is the only one that passes with or without the estimated front chamber (2.95 dB with it, 3.00 dB without). The other nine pass only if the chamber is left out, so they are flagged rather than rejected. The refinement step found this shape by widening the throat of an earlier candidate from 80.7 to 88.8 mm.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>#</th><th>Driver</th><th>Horn</th><th class="num">Ripple (dB)</th><th class="num">Mean (dB)</th><th class="num">Score</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>LaVoce FSN041.00-4</td><td>refine_scaled_tractrix_0004</td><td class="num">2.95</td><td class="num">101.9</td><td class="num">0.750</td></tr>
+    <tr><td>2</td><td>Ciare PM135ND</td><td>same horn</td><td class="num">4.04</td><td class="num">101.9</td><td class="num">0.728</td></tr>
+    <tr><td>3</td><td>Ciare PM135ND</td><td>auto_sca_0237</td><td class="num">4.97</td><td class="num">102.5</td><td class="num">0.697</td></tr>
+  </tbody>
+</table></div>
+<h3>Caveats</h3>
+<ul>
+  <li>It passes with only 0.05 dB to spare, and sits on the 250 mm length limit. Length is what holds it back.</li>
+  <li>The cone is smaller than the throat (Sd/St 0.90), so there is no compression, and the throat is wide enough that sideways duct modes can propagate above about 2.3 kHz, inside the band. Treat the throat end as an adapter or phase plug question, not a finished design.</li>
+  <li>The first attempt stopped on a solver check; see <a href="#crashes">below</a>. The rerun used a 6 mm mesh, which changes accuracy, not the brief.</li>
+</ul>
+<p><a href="reports/500-4000-pa-mid.html">Open the full report</a> (2.0 MB).</p>
+</section>
+
+<!-- 2 -->
+<h2 id="hifi-upper">2. Small hi-fi upper-mid waveguide</h2>
+<section class="example">
+<p><strong>Why:</strong> a shallow waveguide that sits on a domestic speaker baffle.</p>
+<h3>Constraints</h3>
+<ul>
+  <li>Band 1000 to 8000 Hz.</li>
+  <li>Horn length at most 120 mm. Mouth diameter at most 250 mm.</li>
+  <li>Ripple at most 3 dB.</li>
+</ul>
+<pre><code>python3 scripts/run_pipeline.py --mode auto --target_f_low 1000 --target_f_high 8000 \
+  --drivers_db data/drivers --max_length 0.12 --max_mouth_radius 0.125 --max_ripple_db 3 \
+  --mesh_size 0.003</code></pre>
+<h3>Result: no design fits</h3>
+<p>All 3616 pairs the 3D model scored were rejected, every one for ripple. Nothing else failed. The closest miss:</p>
+<div class="stats">
+  <div class="stat"><b>Ciare NDI3.21</b><span>Driver</span></div>
+  <div class="stat"><b>52.0 mm</b><span>Throat</span></div>
+  <div class="stat"><b>132.2 mm</b><span>Mouth</span></div>
+  <div class="stat"><b>120 mm</b><span>Length, at the limit</span></div>
+  <div class="stat"><b>3.37 dB</b><span>Ripple, 0.37 dB over</span></div>
+  <div class="stat"><b>95.1 dB</b><span>Mean level</span></div>
+</div>
+<p>There is no plot, because nothing passed and the report only draws ranked pairs.</p>
+<h3>Why this is still a useful answer</h3>
+<p>The near misses all use the full 120 mm length and the widest throat the driver screen allowed. The mouth never came near its 250 mm limit; smaller mouths did better. So the length limit is what blocks a pass, not the mouth. If you can allow a deeper waveguide, or accept about 3.5 dB of ripple, try again. The Ciare NDI3.21 had the lowest ripple on every one of the 16 horns solved in 3D, so it is the driver to look at first.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Closest misses</th><th>Horn</th><th class="num">Ripple (dB)</th><th class="num">Mean (dB)</th></tr></thead>
+  <tbody>
+    <tr><td>Ciare NDI3.21</td><td>refine_scaled_tractrix_0004</td><td class="num">3.37</td><td class="num">95.1</td></tr>
+    <tr><td>Ciare NDI3.21</td><td>refine_scaled_tractrix_0005</td><td class="num">3.70</td><td class="num">95.5</td></tr>
+    <tr><td>Ciare NDI3.21</td><td>refine_scaled_tractrix_0000</td><td class="num">3.77</td><td class="num">95.6</td></tr>
+  </tbody>
+</table></div>
+<h3>Caveats</h3>
+<ul>
+  <li>The f3 points of the closest miss sit on the ends of the sweep, so its real extension is unknown.</li>
+  <li>The first attempt stopped on a solver check; see <a href="#crashes">below</a>. The rerun used a uniform 3 mm mesh and took about 98 minutes.</li>
+</ul>
+<p><a href="reports/1000-8000-hifi-upper.html">Open the report</a> (0.3 MB). It lists the rejections and margins.</p>
+</section>
+
+<!-- 3 -->
+<h2 id="low-mid">3. Large low-mid horn</h2>
+<section class="example">
+<p><strong>Why:</strong> a three-way system where the horn takes over from the bass bin.</p>
+<h3>Constraints</h3>
+<ul>
+  <li>Band 250 to 1000 Hz.</li>
+  <li>Horn length at most 600 mm. Mouth diameter at most 600 mm.</li>
+  <li>Ripple at most 4 dB.</li>
+</ul>
+<pre><code>python3 scripts/run_pipeline.py --mode auto --target_f_low 250 --target_f_high 1000 \
+  --drivers_db data/drivers --max_length 0.6 --max_mouth_radius 0.3 --max_ripple_db 4</code></pre>
+<h3>Result</h3>
+<p>Ciare CM206ND, an 8 inch cone, on a hyperbolic horn (<code>refine_hyperbolic_0004</code>).</p>
+<div class="stats">
+  <div class="stat"><b>93.3 mm</b><span>Throat</span></div>
+  <div class="stat"><b>462 mm</b><span>Mouth</span></div>
+  <div class="stat"><b>540 mm</b><span>Length</span></div>
+  <div class="stat"><b>1.45 dB</b><span>Ripple, 250 to 1000 Hz</span></div>
+  <div class="stat"><b>111.2 dB</b><span>Mean level</span></div>
+  <div class="stat"><b>219 Hz to at least 1414 Hz</b><span>f3 points</span></div>
+</div>
+<figure class="plot">
+  <img src="img/low-mid-winner-spl.svg" alt="Predicted level of the Ciare CM206ND on the hyperbolic horn from 125 to 1414 Hz, between about 110.5 and 112 dB across the shaded 250 to 1000 Hz band" loading="lazy" width="640" height="300">
+  <figcaption>Predicted level of the winner. The shaded area is the target band.</figcaption>
+</figure>
+<h3>Why it won</h3>
+<p>It has the highest level among the ten ranked pairs, with ripple well inside the 4 dB limit, and it extends below the band to 219 Hz. None of its dimensions is at a limit. All ten ranked pairs score within 0.02 of each other, so they are near ties. The real finding is a family: a hyperbolic horn with a mouth about 460 mm across, 540 to 600 mm long, and a midrange cone: an 8 inch CM206ND, or a 6 inch SICA 6M2CP at rank 6.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>#</th><th>Driver</th><th>Horn</th><th class="num">Length (mm)</th><th class="num">Ripple (dB)</th><th class="num">Mean (dB)</th><th class="num">Lower f3 (Hz)</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Ciare CM206ND</td><td>refine_hyperbolic_0004</td><td class="num">540</td><td class="num">1.45</td><td class="num">111.2</td><td class="num">219</td></tr>
+    <tr><td>2</td><td>Ciare CM206ND</td><td>refine_hyperbolic_0005</td><td class="num">540</td><td class="num">1.55</td><td class="num">110.8</td><td class="num">208</td></tr>
+    <tr><td>5</td><td>Ciare CM206ND</td><td>refine_hyperbolic_0001</td><td class="num">600</td><td class="num">2.04</td><td class="num">110.7</td><td class="num">191</td></tr>
+  </tbody>
+</table></div>
+<p>Rank 5, at 600 mm, reaches 191 Hz but has 2.04 dB of ripple.</p>
+<h3>Caveats</h3>
+<ul>
+  <li>The front chamber is estimated at 297.5 cm<sup>3</sup>. Here the estimate helps: without it the ripple is 2.54 dB, still inside the limit.</li>
+  <li>The sweep stopped at 1414 Hz, so the real upper f3 is unknown.</li>
+  <li>The first attempt ran out of memory in Nextflow while reading a 942 MB intermediate file. It was resumed with more memory (<code>NXF_OPTS="-Xms512m -Xmx8g"</code>) and finished. A full-database run with a wide geometry grid may need the same.</li>
+</ul>
+<p><a href="reports/250-1000-low-mid.html">Open the full report</a> (3.2 MB).</p>
+</section>
+
+<!-- 4 -->
+<h2 id="loud">4. High-output vocal horn</h2>
+<section class="example">
+<p><strong>Why:</strong> speech reinforcement, where level matters more than size.</p>
+<h3>Constraints</h3>
+<ul>
+  <li>Band 800 to 3000 Hz.</li>
+  <li>At least 106 dB everywhere in the band at 2.83 V and 1 m.</li>
+  <li>Survive a 50 W stress check: reject drivers that would pass Xmax.</li>
+  <li>Horn length at most 400 mm. No mouth limit.</li>
+  <li>Ripple at most 6 dB (the default).</li>
+</ul>
+<pre><code>python3 scripts/run_pipeline.py --mode auto --target_f_low 800 --target_f_high 3000 \
+  --drivers_db data/drivers --min_output_db 106 --test_power_w 50 --max_length 0.4 \
+  --mesh_size 0.008</code></pre>
+<div class="note"><strong>This brief is not strictly met.</strong> No pair reaches 106 dB across the band. The pairs below are ranked only because their failures depend on the estimated front chamber, and the tool flags such failures instead of rejecting them. Read the result as "the closest the database gets, if the real chamber is small".</div>
+<h3>Result</h3>
+<p>Ciare 6.38MR3, a 6.5 inch cone, on a hyperbolic horn (<code>refine_hyperbolic_0002</code>).</p>
+<div class="stats">
+  <div class="stat"><b>71.4 mm</b><span>Throat</span></div>
+  <div class="stat"><b>177.4 mm</b><span>Mouth</span></div>
+  <div class="stat"><b>279 mm</b><span>Length</span></div>
+  <div class="stat"><b>101.85 dB</b><span>Lowest level in band, 4.15 dB short</span></div>
+  <div class="stat"><b>105.6 dB</b><span>Mean level</span></div>
+  <div class="stat"><b>6.17 dB</b><span>Ripple, over the 6 dB limit</span></div>
+</div>
+<figure class="plot">
+  <img src="img/loud-vocal-winner-spl.svg" alt="Predicted level of the Ciare 6.38MR3 on the hyperbolic horn from 400 to 4243 Hz. Across the shaded 800 to 3000 Hz band it falls from about 108 dB to about 102 dB" loading="lazy" width="640" height="300">
+  <figcaption>Predicted level of the top pair, with the estimated front chamber. The level falls across the band, which is why it misses the 106 dB floor at the top.</figcaption>
+</figure>
+<h3>Why it came first</h3>
+<p>Every pair that does not depend on an estimated chamber was rejected for missing the 106 dB floor. The nearest of those fell 1.05 dB short. The 6.5 inch Ciare cones were the only drivers that got near the floor in a horn no longer than 400 mm. Refinement lengthened the best 3D candidate from 254 to 279 mm, which cut its ripple from 6.99 to 6.17 dB.</p>
+<p>Without the estimated chamber the same pair gives a 107.6 dB mean and 2.29 dB ripple, and fails nothing. So the answer depends on how the driver is mounted: an adapter or phase plug that leaves little air in front of the cone is needed before this could work.</p>
+<h3>Caveats</h3>
+<ul>
+  <li>At 50 W the cone passes Xmax by 0.006 mm, at frequencies up to 879 Hz. That is inside the band, so a high-pass filter at 800 Hz would not fix it.</li>
+  <li>The run checked excursion at 50 W but not the driver's power rating; the driver record has no power rating, so the power check could not run. The in-band input power at the 50 W setting is about 69 W.</li>
+  <li>The mouth ended on the upper edge of the range the tool searched (177.4 mm), because no mouth limit was given. A larger mouth was not tried.</li>
+  <li>The first attempt stopped on a solver check; see <a href="#crashes">below</a>. The rerun used an 8 mm mesh.</li>
+</ul>
+<p><a href="reports/800-3000-loud-vocal.html">Open the full report</a> (3.3 MB).</p>
+</section>
+
+<!-- 5 -->
+<h2 id="flat">5. Flattest possible midrange</h2>
+<section class="example">
+<p><strong>Why:</strong> a studio monitor midrange where a flat response comes first.</p>
+<h3>Constraints</h3>
+<ul>
+  <li>Band 400 to 2000 Hz.</li>
+  <li>Ripple at most 2 dB.</li>
+  <li>Horn length at most 400 mm. Mouth diameter at most 450 mm.</li>
+  <li>Rank for flatness: score weights sensitivity 0.25, ripple 0.625, extension 0.125, size 0. The default swaps the first two.</li>
+</ul>
+<pre><code>python3 scripts/run_pipeline.py --mode auto --target_f_low 400 --target_f_high 2000 \
+  --drivers_db data/drivers --max_ripple_db 2 --max_length 0.4 --max_mouth_radius 0.225 \
+  --score_weights sensitivity=0.25,ripple=0.625,extension=0.125,size=0</code></pre>
+<h3>Result</h3>
+<p>Ciare CM135ND on an exponential horn (<code>refine_exponential_0003</code>).</p>
+<div class="stats">
+  <div class="stat"><b>106.3 mm</b><span>Throat</span></div>
+  <div class="stat"><b>315 mm</b><span>Mouth</span></div>
+  <div class="stat"><b>176 mm</b><span>Length</span></div>
+  <div class="stat"><b>1.92 dB</b><span>Ripple, 400 to 2000 Hz</span></div>
+  <div class="stat"><b>105.0 dB</b><span>Mean level</span></div>
+  <div class="stat"><b>359 Hz to at least 2828 Hz</b><span>f3 points</span></div>
+</div>
+<figure class="plot">
+  <img src="img/flat-mid-winner-spl.svg" alt="Predicted level of the Ciare CM135ND on the exponential horn from 200 to 2828 Hz, between about 104 and 106 dB across the shaded 400 to 2000 Hz band" loading="lazy" width="640" height="300">
+  <figcaption>Predicted level of the winner. The shaded area is the target band.</figcaption>
+</figure>
+<h3>Why it won</h3>
+<p>A 2 dB limit is hard: of 16448 pairs scored in 3D, only 21 escaped rejection, and at least 5 of the ten ranked are over 2 dB once the estimated chamber is included. The winner is not one of those. It holds 1.92 dB with the chamber and 1.94 dB without, and it is the loudest of the ranked pairs that stay under 2 dB with the chamber included. The flattest ranked pair was the Ciare PM135ND on the same horn at 1.85 dB, but it is 2.7 dB quieter. The top five are near ties.</p>
+<p>The horn came out far smaller than the limits: 176 mm long against 400 mm, and a 315 mm mouth against 450 mm.</p>
+<h3>Caveats</h3>
+<ul>
+  <li>Only 0.08 dB of margin on ripple.</li>
+  <li>The cone is smaller than the throat (Sd/St 0.91), so there is no compression, and the throat is wide enough for sideways modes to matter near the top of the band.</li>
+  <li>Ranks 2, 3, 8, 9 and 10 exceed 2 dB with the estimated chamber and are kept only as flagged results.</li>
+  <li>The sweep stopped at 2828 Hz, so the real upper f3 is unknown.</li>
+</ul>
+<p><a href="reports/400-2000-flat-mid.html">Open the full report</a> (2.9 MB).</p>
+</section>
+
+<h2 id="crashes">Runs that stopped and were rerun</h2>
+<p>Three of these briefs (the PA midrange, the hi-fi waveguide and the vocal horn) stopped on their first attempt with the error "Band boundary complex mouth_p mismatch; refine mesh". The solver splits the frequency sweep into bands and uses a finer mesh for higher bands. Where two bands meet, the results must agree. For a candidate in each run they did not agree, because the two bands used different mesh sizes, and the run stopped.</p>
+<p>Each was rerun from scratch with a single, finer <code>--mesh_size</code>. That is a solver accuracy setting. It does not change the brief. The results on this page come from the reruns.</p>
+<p>The crash is now fixed on the main branch: a candidate that fails this check is rejected with its reason instead of stopping the run. The run now finishes, but those candidates are rejected, and the summary says the mesh is the cause. For these briefs a smaller <code>--mesh_size</code> is still needed to get a design. The low-mid run stopped for a different reason, a Java memory limit, described in <a href="#low-mid">its caveats</a>.</p>
+
+<h2 id="removed">Runs no longer shown</h2>
+<p>Earlier versions of this site showed two more runs. Neither produced a design that meets its brief, so their reports have been removed:</p>
+<ul>
+  <li><strong>800 to 1600 Hz at 140 dB</strong> (run <code>20261117T044425Z-a28f31bf</code>). A deliberately impossible request, used to show the rejection table. The best pair was about 40 dB short. It shows the rejection report working, but it is not a design.</li>
+  <li><strong>18Sound 6NMB420, 320 to 5000 Hz, 300 mm long</strong> (run <code>20261117T083223Z-24deb54e</code>). Every design went over the 6 dB ripple limit once the estimated front chamber was included, with 13.1 dB for the top one. It was ranked only because the failure came from an estimate. Without the chamber the same horn gives 4.9 dB, so the outcome depends on a real, measured adapter.</li>
+</ul>
+<p>The hi-fi example above also found no design. It stays because it answers its brief: with these limits nothing fits, and the report says which limit to relax.</p>
+
+<footer>
+  Runs: <code>example-pa-mid-mesh6</code>, <code>example-hifi-upper-mesh3</code>, <code>example-low-mid</code>, <code>example-loud-vocal-mesh8</code>, <code>example-flat-mid</code>. Run folders are not committed; the commands above reproduce them. <a href="https://github.com/timini/horn-simulation">github.com/timini/horn-simulation</a>
+</footer>
+</main>
+</body>
+</html>

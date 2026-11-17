@@ -227,9 +227,10 @@ def test_report_states_score_formula_weights_and_band_referenced_f3(report_input
     scoring = describe_scoring(target, {"length_range": [.1, .2]}, {"max_length": .2})
     text = generate_html_report(**{**report_inputs, "target": target}, scoring=scoring)
     assert "Extension (oct; ≥ = lower bound)" in text and "BW Cov." not in text
+    assert "&plusmn;3 dB flat band" in text
     assert "+0.40" in text
     # Rankings show f3 from the target-band reference, not the peak-lobe KPI.
-    assert "<td>430 \u2014 \u22654600</td>" in text and "<td>520 \u2014" not in text
+    assert "<td>430 to \u22654600</td>" in text and "<td>520 to" not in text
     assert "clip((L_mean-60)/60,0,1)" in text
     assert "size 0.167" in text
     assert "heuristic range with a user limit" in text

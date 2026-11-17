@@ -585,6 +585,8 @@ process run_candidate_simulation {
 }
 
 process merge_candidate_results {
+    // A candidate whose bands disagree at a shared frequency (an unresolved
+    // mesh) is written as a band_boundary_mismatch rejection, not a failed run.
     publishDir "${params.outdir}/auto", mode: 'copy'
 
     input:
@@ -604,7 +606,8 @@ process merge_candidate_results {
             --min-freq ${sim_min_freq} \
             --max-freq ${sim_max_freq} \
             ${gridFlags()} \
-            --output ${candidate_id}_results.csv
+            --output ${candidate_id}_results.csv \
+            --candidate-id ${candidate_id} --rejection-file ${candidate_id}_rejected.json
     fi
     """
 }
