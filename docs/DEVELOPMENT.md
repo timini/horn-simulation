@@ -51,7 +51,7 @@ On x86 the solver entrypoint sets `OPENBLAS_CORETYPE=Nehalem` unless you set it 
 
 ## Nextflow
 
-The pipeline needs Nextflow 24.10.x (`manifest.nextflowVersion` in `nextflow.config`) and Java 17 to 22. The launcher finds a suitable Java on its own. To run Nextflow or nf-test directly, point `JAVA_HOME` and `NXF_JAVA_HOME` at a Java 21 install, for example `export JAVA_HOME=/opt/homebrew/opt/openjdk@21 NXF_JAVA_HOME=$JAVA_HOME` with Homebrew.
+The pipeline needs Nextflow 24.10.x (`manifest.nextflowVersion` in `nextflow.config`) and Java 17 to 22. The launcher and `scripts/nf_test.sh` find a suitable Java on their own. To run Nextflow or the nf-test binary directly, point `JAVA_HOME` and `NXF_JAVA_HOME` at a Java 21 install, for example `export JAVA_HOME=/opt/homebrew/opt/openjdk@21 NXF_JAVA_HOME=$JAVA_HOME` with Homebrew.
 
 ```sh
 just test-nextflow

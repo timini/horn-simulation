@@ -35,13 +35,16 @@ Details: [STATUS](docs/STATUS.md) and [VALIDATION](docs/VALIDATION.md).
 - [Docker](https://docs.docker.com/get-docker/), running. Give it at least 8 GB of memory.
 - [just](https://github.com/casey/just).
 - Python 3.10 or newer, as `python3`.
-- Java 17 to 22 for Nextflow; 21 is recommended. On macOS: `brew install openjdk@21`. The launcher finds it without changing your shell.
+- Java 17 to 22 for Nextflow; 21 is recommended. On macOS: `brew install openjdk@21`. The launcher and `just test-nextflow` find it without changing your shell. To call `nextflow` yourself, point `JAVA_HOME` at it: `export JAVA_HOME=/opt/homebrew/opt/openjdk@21 NXF_JAVA_HOME=$JAVA_HOME`.
 - [Nextflow](https://www.nextflow.io/) 24.10.x. The pipeline refuses other versions. To install 24.10.5:
 
   ```sh
   curl -fL https://github.com/nextflow-io/nextflow/releases/download/v24.10.5/nextflow -o nextflow
-  chmod +x nextflow && mv nextflow ~/.local/bin/    # any folder on your PATH
+  chmod +x nextflow
+  mkdir -p ~/.local/bin && mv nextflow ~/.local/bin/
   ```
+
+  `~/.local/bin` is not on the macOS PATH by default. Add it (`export PATH="$HOME/.local/bin:$PATH"` in `~/.zshrc`), or move the file to a folder that is already on your PATH.
 
 - Optional, for the local tests and driver tools: [uv](https://docs.astral.sh/uv/).
 - Optional: nf-test. `just test-nextflow` downloads the pinned version itself.
@@ -83,6 +86,7 @@ Open `outputs/single_report.html` (single mode) or `outputs/auto/report/auto_rep
 ```sh
 uv sync --all-packages --extra test
 just test-local          # package tests without Docker
+.venv/bin/python -m pytest scripts/tests   # launcher, scripts and documentation checks
 just test                # package tests in Docker
 just test-nextflow       # workflow tests
 ```

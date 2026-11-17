@@ -57,7 +57,7 @@ Launcher options (put them before the pipeline parameters):
 | `--image-tag TAG` | Run `horn-*:TAG` images built with `just build TAG`. The environment variable `HORN_IMAGE_TAG` does the same. |
 | `--require-current-images` | Fail instead of warning when an image does not match the checkout. CI uses this. |
 | `-resume` | Resume the run in `--run-dir`. |
-| `-params-file FILE` | Read parameters from a JSON or YAML file. Its hash is recorded. A value given on the command line wins. |
+| `-params-file FILE` | Read parameters from a JSON or YAML file. Its hash is recorded. A value given on the command line wins. JSON is the safer choice: without PyYAML (it is in `.venv`) the launcher reads only flat `key: value` YAML lines when it hashes the input files a params file names. |
 
 The launcher owns `--outdir`, `-work-dir`, `-log` and `-c`; passing them is an error.
 
@@ -95,7 +95,7 @@ Nothing under `results/` is deleted automatically. Before removing a run, check 
 
 ### Direct Nextflow
 
-You can call Nextflow yourself, but you must choose a fresh output folder and you lose the launcher's manifest and checks:
+You can call Nextflow yourself, but you must choose a fresh output folder and you lose the launcher's manifest and checks. Nextflow then uses your shell's Java, so point `JAVA_HOME` at Java 17 to 22 first (for example `export JAVA_HOME=/opt/homebrew/opt/openjdk@21 NXF_JAVA_HOME=$JAVA_HOME`):
 
 ```sh
 nextflow run main.nf -profile docker --outdir results/manual-example/outputs
