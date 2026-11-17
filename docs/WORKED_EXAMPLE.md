@@ -15,7 +15,7 @@ just latest-run
 
 `just latest-run` prints the run folder. Open `outputs/auto/report/auto_report.html` inside it.
 
-The settings keep the run short: three screened geometries go to FEM and refinement gets two extra solves. Drive is 2.83 V RMS, the observer is 1 m on axis, the mouth model is `modal_baffled` and the ripple limit is 6 dB, all defaults. A larger budget may find a different design. This run does not show a global optimum.
+The settings keep the run short: three screened geometries go to FEM and refinement gets two extra solves. Drive is 2.83 V RMS, the observer is 1 m on axis, the mouth model is `modal_baffled` and the ripple limit is 6 dB, all defaults. A larger budget may find a different design. This run does not show a global optimum. Refinement used its whole budget and stopped with the winning mouth on the upper edge of its heuristic search range (88.71 mm radius; `refinement/search_audit.json` lists `mouth_radius_high` under `bound_sides_reached`). With budget left over, refinement would widen that edge by 25 % and try larger mouths.
 
 ## What happened
 

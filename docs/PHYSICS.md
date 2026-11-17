@@ -6,7 +6,7 @@ All phasors are RMS with time dependence exp(+iwt). Air is c = 343 m/s and rho =
 
 ## Model in one paragraph
 
-A three-dimensional finite element model solves the linear wave equation inside a rigid, axisymmetric air volume (the horn). The mouth radiates into an infinite rigid baffle. This gives the horn's throat impedance and the transfer from throat to mouth. A lumped driver model (Thiele-Small motor, optional front and rear chambers) is then attached to the throat impedance for each driver, which gives the diaphragm motion, electrical impedance and the on-axis pressure at the listening distance. Everything is linear. Nonlinear distortion, heating, wall vibration, finite baffles and cabinets are not modelled.
+A three-dimensional finite element model solves the linear wave equation inside a rigid, axisymmetric air volume (the horn). With the default models, the mouth radiates into an infinite rigid baffle. This gives the horn's throat impedance and the transfer from throat to mouth. A lumped driver model (Thiele-Small motor, optional front and rear chambers) is then attached to the throat impedance for each driver, which gives the diaphragm motion, electrical impedance and the on-axis pressure at the listening distance. Everything is linear. Nonlinear distortion, heating, wall vibration, finite baffles and cabinets are not modelled.
 
 ## Interior solve
 

@@ -6,7 +6,7 @@ Until now the solver was checked mostly against itself, analytic formulas and on
 - [bempp-cl](https://bempp.com/) 0.4.2 (MIT): three-dimensional boundary elements for exterior radiation, numba backend.
 - [Hornresp](https://www.hornresp.net/) (freeware, Windows): a widely used horn loudspeaker simulator. It could not be run here (no Wine), so input sheets and a comparison script are provided for a manual run.
 
-Neither openwind nor bempp-cl is a dependency of the project packages. They run in a separate environment from `validation/cross_software/requirements.txt`.
+Neither openwind nor bempp-cl is a dependency of the project packages. They run in a separate environment from `validation/cross_software/requirements.txt`. The scripts are `openwind_compare.py` (record `data/validation/cross_software_openwind.json`), `bempp_compare.py` (`cross_software_bempp.json`) and `fem_compare.py` (`cross_software_fem.json`), all in `validation/cross_software/`.
 
 The openwind, bempp-cl and Hornresp tolerances were committed (799c0e2) before the first comparison was run, and none was changed afterwards. Checks added later each had their tolerance fixed in the script before that check first ran:
 

@@ -61,7 +61,7 @@ The short version: the numerical solver agrees with independent solvers and with
 
 ## Cross-software
 
-All from [CROSS_SOFTWARE_VALIDATION](CROSS_SOFTWARE_VALIDATION.md), run with `just validate-cross-software` and `just validate-cross-software-fem`. Records: `data/validation/cross_software_openwind.json`, `cross_software_bempp.json`, `cross_software_fem.json`. Scripts in `validation/cross_software/` and `validation/hornresp/`.
+All from [CROSS_SOFTWARE_VALIDATION](CROSS_SOFTWARE_VALIDATION.md). `just validate-cross-software` runs `validation/cross_software/openwind_compare.py`, which writes `data/validation/cross_software_openwind.json`, `validation/cross_software/bempp_compare.py`, which writes `data/validation/cross_software_bempp.json`, and `validation/hornresp/hornresp_records.py`. `just validate-cross-software-fem` runs `validation/cross_software/fem_compare.py` on archived runs and writes `data/validation/cross_software_fem.json`.
 
 | Comparison | Result |
 | --- | --- |
