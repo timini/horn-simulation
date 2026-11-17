@@ -1,0 +1,10 @@
+User-agent: *
+
+Sitemap: https://www.lautsprechershop.de/sitemap_de.xml
+Sitemap: https://www.lautsprechershop.de/sitemap_en.xml
+Sitemap: https://www.lautsprechershop.de/sitemap_es.xml
+Sitemap: https://www.lautsprechershop.de/sitemap_fr.xml
+Sitemap: https://www.lautsprechershop.de/sitemap_it.xml
+
+Allow: /
+

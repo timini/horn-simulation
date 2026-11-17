@@ -12,6 +12,7 @@ dependencies = [
 horn-scrape-drivers = "horn_drivers.scraper:main"
 horn-validate-drivers = "horn_drivers.validator:main"
 horn-add-driver = "horn_drivers.add_driver:main"
+horn-sources = "horn_drivers.sources.cli:main"
 
 [project.optional-dependencies]
 test = ["pytest", "requests", "beautifulsoup4"]

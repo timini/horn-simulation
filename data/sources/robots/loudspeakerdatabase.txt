@@ -1,0 +1,36 @@
+User-agent: MJ12bot
+Disallow: /
+
+# http://commoncrawl.org/
+User-agent: CCBot
+Disallow: /
+
+# https://www.babbar.tech/crawler
+User-agent: barkrowler
+Disallow: /
+
+# https://opensiteexplorer.org/dotbot
+User-agent: dotbot
+Disallow: /
+
+# https://seranking.com/backlinks-crawler
+User-agent: SERankingBacklinksBot
+Disallow: /
+
+# https://help.qwant.com/bot/
+User-agent: Qwantbot
+Crawl-delay: 30
+
+# https://dataforseo.com/dataforseo-bot
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: KeenableBot
+User-agent: Keenable-User
+Disallow: /
+
+# https://www.linkup.so/bot
+User-agent: LinkupBot
+Disallow: /
+User-agent: Linkup-User
+Disallow: /

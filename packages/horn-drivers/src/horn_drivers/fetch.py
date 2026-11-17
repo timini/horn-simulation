@@ -174,7 +174,9 @@ class PoliteFetcher:
             cached = FetchResult(robots_url, status, content, _content_type(resp), self._now_iso(), False)
             if status is not None:
                 self._store(cached)
-        if cached.status == 200:
+        if cached.status == 200 and _is_html(cached):
+            parser.allow_all = True          # home page served for /robots.txt: no rules
+        elif cached.status == 200:
             parser.parse(cached.text.splitlines())
         elif cached.status in (401, 403):
             parser.disallow_all = True       # access to robots.txt itself refused
@@ -212,8 +214,12 @@ class PoliteFetcher:
         cached = self.cached(url, max_age_days)
         if cached is not None:
             return cached
-        if not self.allowed(url):
+        if urlsplit(url).path != "/robots.txt" and not self.allowed(url):
             raise DisallowedByRobots(f"robots.txt disallows {url} for {ROBOTS_AGENT}")
+        self.robots(url)
+        cached = self.cached(url, max_age_days)   # the robots check may have just fetched this URL
+        if cached is not None:
+            return cached
         delay = self.crawl_delay(url)
 
         resp = self._raw_get(url, delay)
@@ -256,6 +262,11 @@ class PoliteFetcher:
         """Run summary for logs and the source report."""
         return {"source_id": self.source_id, "requests_made": self.requests_made,
                 "blocked": self.blocked_reason is not None, "blocked_reason": self.blocked_reason}
+
+
+def _is_html(result: FetchResult) -> bool:
+    head = result.content[:512].lstrip().lower()
+    return "html" in result.content_type.lower() or head.startswith((b"<!doctype", b"<html"))
 
 
 def _content_type(resp) -> str:

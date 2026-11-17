@@ -152,3 +152,35 @@ def test_request_returns_final_response_when_asked():
     session = Session({"u": [(404, b"", {})]})
     assert scraper.request(session, "u", delay=0) is None
     assert scraper.request(session, "u", delay=0, return_response=True).status_code == 404
+
+
+def test_fetching_robots_txt_itself_is_one_request(tmp_path):
+    f, session, _ = fetcher(tmp_path, {"https://shop.test/robots.txt": [(200, ROBOTS, {})]})
+    assert f.get("https://shop.test/robots.txt").ok
+    assert session.calls == ["https://shop.test/robots.txt"]
+
+
+def test_robots_txt_is_fetchable_even_when_it_disallows_everything(tmp_path):
+    f, session, _ = fetcher(tmp_path, {"https://shop.test/robots.txt": [(200, b"User-agent: *\nDisallow: /\n", {})]})
+    assert f.get("https://shop.test/robots.txt").ok
+    with pytest.raises(DisallowedByRobots):
+        f.get("https://shop.test/product")
+    assert session.calls == ["https://shop.test/robots.txt"]
+
+
+def test_html_served_as_robots_means_no_rules(tmp_path):
+    routes = {"https://shop.test/robots.txt": [(200, b"<!DOCTYPE html><html>Disallow: /</html>", {"Content-Type": "text/html"})],
+              "https://shop.test/p": [(200, b"p", {})]}
+    f, _, _ = fetcher(tmp_path, routes)
+    assert f.get("https://shop.test/p").ok
+
+
+def test_cli_robots_snapshot_skips_html(tmp_path):
+    from horn_drivers.sources.cli import snapshot_robots
+    from horn_drivers.sources.registry import SourceEntry
+    entry = SourceEntry(id="shop", name="Shop", kind="manufacturer", base_url="https://shop.test",
+                        approval_status="approved", min_delay_s=5, cache_days=90)
+    routes = {"https://shop.test/robots.txt": [(200, b"<html>home</html>", {"Content-Type": "text/html"})]}
+    f, _, _ = fetcher(tmp_path, routes)
+    outcome = snapshot_robots(entry, f, tmp_path / "robots")
+    assert outcome["note"].startswith("served an HTML page") and not (tmp_path / "robots" / "shop.txt").exists()

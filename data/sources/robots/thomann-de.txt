@@ -1,0 +1,34 @@
+User-agent: *
+Disallow: */classified_category*?wghky
+Disallow: */classified_category*&wghky
+Disallow: */classified_search.html
+Disallow: /pics/classified/
+Disallow: /thumb/*/pics/classified/
+Disallow: */basket_add.html
+Disallow: */basket_edit.html
+Disallow: */basket_del.html
+Disallow: /intl/
+Disallow: */cableguy.html
+Disallow: */woodpicker.html
+Disallow: */wishlist.html
+Disallow: /static/wa/*
+Disallow: *?filter=
+Disallow: *&filter=
+Disallow: /casefactory*?*cid=
+Disallow: */prod_cbundle_*.html
+Disallow: */cat_rank.html
+Allow: */classified_category*?pg=
+
+User-agent: Storebot-Google
+User-agent: Mediapartners-Google
+User-agent: AdsBot-Google
+User-agent: AdsBot-Google-Mobile-Apps
+Allow: /intl/
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+Sitemap: https://www.thomann.de/sitemap.xml
