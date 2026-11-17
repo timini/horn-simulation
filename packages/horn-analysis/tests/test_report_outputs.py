@@ -150,6 +150,7 @@ def test_example_report_labels_profile_and_builder_data(tmp_path, monkeypatch):
     assert "File paths are relative to the folder that holds this report" in text
     assert "exceeded only because of an estimated front chamber is still ranked" in text
     assert f"Throat radius: {rows[0]['throat_radius']*1e3:.2f} mm" in summary
+    assert "Widest flat band over the sweep: +-1 dB:" in summary and "+-3 dB:" in summary
     # Experimental label, reading guide, formula, bound sources, chamber and evidence status.
     assert "Experimental prediction." in text and "EXPERIMENTAL PREDICTION" in summary
     assert "<h2>How to read this report</h2>" in text

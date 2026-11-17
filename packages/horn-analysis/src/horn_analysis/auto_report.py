@@ -183,6 +183,7 @@ def generate_auto_report(
         f"Total candidates scored: {scored_display}",
     ]
 
+    from horn_analysis.flat_band import format_flat_bands
     weights = scoring["weights"]
     lines.extend(["", "Score: " + scoring["formula"],
                   "Weights: " + ", ".join(f"{k} {v:.3f}" for k, v in weights.items()) + f" ({scoring['weights_source']})"])
@@ -226,6 +227,9 @@ def generate_auto_report(
                       f"Extension: {result['extension_octaves']:+.2f} oct  "
                       f"Ripple: {result['passband_ripple_db']:.1f} dB  "
                       f"Mean output level: {result['avg_sensitivity_db']:.1f} dB")
+        flat = format_flat_bands(result)
+        if flat:
+            lines.append(f"     Widest flat band over the sweep: {flat}")
         if all(result.get(key) is not None for key in ("throat_radius", "mouth_radius", "length")):
             lines.append(f"     Throat radius: {result['throat_radius']*1e3:.2f} mm; mouth radius: {result['mouth_radius']*1e3:.2f} mm; length: {result['length']*1e3:.2f} mm")
         files = builder_files.get(result["horn_label"], {})
