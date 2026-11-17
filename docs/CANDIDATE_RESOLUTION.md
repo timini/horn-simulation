@@ -46,6 +46,21 @@ The host needs NumPy and the comparison stage additionally needs pandas and the 
 
 A pass supports numerical exploration of that candidate within the stated model and band. It does not turn an acoustic air-volume STEP into a mounting drawing, establish rear-load or phase-plug behaviour, or replace the two complete assembly references required by [the roadmap](STATUS.md#remaining-work).
 
+## Current worked example candidate
+
+Run on 2026-11-17 at source revision `b79ba1c` (protocol 2, modal_baffled mouth, P1). The originating run was the [worked example](WORKED_EXAMPLE.md) command, executed in a clean checkout of that revision. It chose the same winner as the worked example: `refine_cd_0001` with the 18Sound 6NMB420, 2.08 dB ripple and 104.13 dB. The production mesh size h0 was 10 mm, so the three mesh cases were 10, 6 and 4 mm. Solved one case at a time (`solve --jobs 1`). All six comparisons passed.
+
+| Refinement | Maximum output change (dB) | Maximum throat impedance change (dB) | Maximum phase change (degrees) |
+| --- | --- | --- | --- |
+| Original ranking to 201-point baseline | 0.006620 | 0.01262 | 0.07275 |
+| Mesh 10 to 6 mm | 0.06051 | 0.09177 | 0.6252 |
+| Mesh 6 to 4 mm | 0.03162 | 0.04112 | 0.3510 |
+| Loft 20 to 40 sections | 0.0004867 | 0.0008628 | 0.007999 |
+| Loft 40 to 80 sections | 0.0003028 | 0.0009668 | 0.003471 |
+| Frequency 101 to 201 points | 0.006703 | 0.01266 | 0.07317 |
+
+Target-band ripple changed by 0.005501 dB from the originating grid to the baseline, and by 0.002892 dB when doubling frequency sampling on the finest geometry. Meshes contained 11,351 to 106,917 tetrahedra. All residuals were below 2e-13 and relative power imbalance below 1e-11. The study folder is not committed; rerun the commands above at that revision to reproduce it. The archived study below is a different, earlier candidate and its numbers are unchanged.
+
 ## Executed 800 to 1600 Hz example
 
 All six new solves, the originating response and all six comparisons passed for the hyperbolic/18Sound 6NMB420 candidate in the [worked example](WORKED_EXAMPLE.md). The full comparison band was approximately 566 to 2263 Hz.
