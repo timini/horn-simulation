@@ -28,6 +28,9 @@ from typing import Dict, Iterable, List, Optional, Tuple
 STALE_AFTER_DAYS = 30
 MATCH_CONFIDENCE = ("exact", "manual", "fuzzy")
 RANKABLE_MATCHES = ("exact", "manual")
+# "offer": a shop's selling price. "list": a maker's list price (MSRP), used
+# for a driver only when no shop offer for it exists in the region.
+PRICE_KINDS = ("offer", "list")
 FX_DIR = "fx"
 ECB_DAILY_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
 # Region code -> the currency a buyer there pays in. Prices for a region are
@@ -37,7 +40,9 @@ REGION_CURRENCY = {
     "CH": "CHF", "JP": "JPY", "NO": "NOK", "SE": "SEK", "DK": "DKK", "PL": "PLN",
 }
 OFFER_FIELDS = ("driver_id", "source_id", "url", "sku", "price", "currency", "vat_included",
-                "region", "in_stock", "retrieved_on", "match_confidence")
+                "region", "in_stock", "retrieved_on", "match_confidence", "price_kind")
+# Fields an older snapshot line may lack, with the value it then takes.
+OFFER_DEFAULTS = {"price_kind": "offer"}
 
 
 @dataclass(frozen=True)
@@ -53,6 +58,7 @@ class PriceOffer:
     in_stock: Optional[bool]
     retrieved_on: str            # YYYY-MM-DD
     match_confidence: str        # exact | manual | fuzzy
+    price_kind: str = "offer"    # offer | list
 
     def __post_init__(self):
         errors = offer_errors(asdict(self))
@@ -67,10 +73,10 @@ class PriceOffer:
         unknown = set(data) - set(OFFER_FIELDS)
         if unknown:
             raise ValueError(f"unknown offer fields: {', '.join(sorted(unknown))}")
-        missing = [name for name in OFFER_FIELDS if name not in data]
+        missing = [name for name in OFFER_FIELDS if name not in data and name not in OFFER_DEFAULTS]
         if missing:
             raise ValueError(f"missing offer fields: {', '.join(missing)}")
-        return cls(**{name: data[name] for name in OFFER_FIELDS})
+        return cls(**{name: data.get(name, OFFER_DEFAULTS.get(name)) for name in OFFER_FIELDS})
 
     @property
     def date(self) -> _dt.date:
@@ -99,6 +105,8 @@ def offer_errors(data: dict) -> List[str]:
         errors.append("sku must be a string or null")
     if data.get("match_confidence") not in MATCH_CONFIDENCE:
         errors.append(f"match_confidence must be one of {', '.join(MATCH_CONFIDENCE)}")
+    if data.get("price_kind", "offer") not in PRICE_KINDS:
+        errors.append(f"price_kind must be one of {', '.join(PRICE_KINDS)}")
     try:
         _dt.date.fromisoformat(str(data.get("retrieved_on")))
     except ValueError:
@@ -280,13 +288,14 @@ def price_snapshot(prices_dir: Path, driver_ids: Iterable[str], region: str, *,
          "fx": {"source_url", "rate_date"} | None,
          "offers": {driver_id: {"price", "currency", "listed_price", "listed_currency",
                                 "fx_rate", "vat_included", "in_stock", "source_id",
-                                "url", "sku", "retrieved_on", "match_confidence"}},
+                                "url", "sku", "retrieved_on", "match_confidence", "price_kind"}},
          "unpriced": [driver_id, ...], "over_max_price": [driver_id, ...],
          "snapshot_dates": [YYYY-MM-DD, ...], "sources": [source_id, ...],
          "invalid_lines_skipped": int}
 
-    An in-stock offer is preferred over a cheaper one that is out of stock
-    (stock unknown counts as in stock). Offers in another currency are
+    A shop offer is preferred over a maker's list price, and an in-stock
+    offer over a cheaper one that is out of stock (stock unknown counts as
+    in stock). Offers in another currency are
     converted with the stored ECB rate; without a rate file they are skipped
     and the driver may end up unpriced.
     """
@@ -307,11 +316,11 @@ def price_snapshot(prices_dir: Path, driver_ids: Iterable[str], region: str, *,
                 converted = offer.price if offer.currency == currency else fx.convert(offer.price, offer.currency, currency)
             except (AttributeError, KeyError):
                 continue
-            candidates.append((offer.in_stock is False, converted, offer.source_id, offer))
+            candidates.append((offer.price_kind == "list", offer.in_stock is False, converted, offer.source_id, offer))
         if not candidates:
             unpriced.append(driver_id)
             continue
-        out_of_stock, converted, _, offer = min(candidates)
+        _, _, converted, _, offer = min(candidates)
         offers[driver_id] = {
             "price": round(converted, 2), "currency": currency,
             "listed_price": offer.price, "listed_currency": offer.currency,
@@ -319,6 +328,7 @@ def price_snapshot(prices_dir: Path, driver_ids: Iterable[str], region: str, *,
             "vat_included": offer.vat_included, "in_stock": offer.in_stock,
             "source_id": offer.source_id, "url": offer.url, "sku": offer.sku,
             "retrieved_on": offer.retrieved_on, "match_confidence": offer.match_confidence,
+            "price_kind": offer.price_kind,
         }
         if max_price is not None and converted > max_price:
             over.append(driver_id)

@@ -24,7 +24,7 @@ def _summary(row: dict) -> dict:
             "manufacturer": row.get("manufacturer"), "model_name": row.get("model_name"),
             "composite_score": row.get("composite_score"), "price": price["price"],
             "currency": price["currency"], "source_id": price["source_id"], "url": price["url"],
-            "retrieved_on": price["retrieved_on"]}
+            "retrieved_on": price["retrieved_on"], "price_kind": price.get("price_kind", "offer")}
 
 
 def cheapest_feasible(rows: Iterable[dict], previous: Optional[dict] = None) -> Optional[dict]:
@@ -75,6 +75,8 @@ def format_price(price: Optional[dict]) -> str:
     text = f"{price['price']:.2f} {price['currency']}"
     if price.get("listed_currency") and price["listed_currency"] != price["currency"]:
         text += f" (listed {price['listed_price']:.2f} {price['listed_currency']})"
+    if price.get("price_kind") == "list":
+        text += " list price, no shop offer"
     return text
 
 
@@ -97,7 +99,8 @@ def describe_pricing(summary: Optional[dict]) -> List[str]:
     cheapest = summary.get("cheapest_feasible")
     if cheapest:
         lines.append(f"  Cheapest feasible: {cheapest['horn_label']} + {cheapest['driver_id']} at "
-                     f"{cheapest['price']:.2f} {cheapest['currency']} ({cheapest['source_id']}, "
+                     f"{cheapest['price']:.2f} {cheapest['currency']} "
+                     f"({'list price, ' if cheapest.get('price_kind') == 'list' else ''}{cheapest['source_id']}, "
                      f"{cheapest['retrieved_on']}), score {cheapest['composite_score']:.3f}.")
     else:
         lines.append("  Cheapest feasible: no feasible design has a current price.")
