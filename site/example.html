@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Worked Example: 800 to 1600 Hz</title>
+<meta name="description" content="Step by step through one Horn Simulation run: the command, the search, the winning 6NMB420 horn, why the others lost, what a length cap changes and how to build from the files.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="topnav" aria-label="Site"><div>
+  <a class="brand" href="index.html">Horn Simulation</a>
+  <a href="index.html">Home</a>
+  <a href="basics.html">Horn basics</a>
+  <a href="example.html" aria-current="page">Worked example</a>
+  <a href="examples.html">More examples</a>
+  <a href="https://github.com/timini/horn-simulation">GitHub</a>
+</div></nav>
+
+<main>
+
+<header>
+  <p class="eyebrow">Worked example</p>
+  <h1>A horn for 800 to 1600 Hz</h1>
+  <p class="lede">One real run, from the command to the files you would build from. Every number on this page comes from run <code>20261117T005341Z-14e497b7</code> (source revision <code>51427ee</code>) unless another run is named.</p>
+</header>
+
+<div class="panel">
+<h3>In short</h3>
+<p>The question was which driver, on which horn, gives the most level and a flat response from 800 to 1600 Hz, using seven hand-checked drivers. The answer is an 18Sound 6NMB420 6.5 inch cone on a horn 117.9 mm long, with a 72.1 mm throat and a 177.4 mm mouth (diameters). It is predicted to stay within 2.08 dB across the band at 104.13 dB for 2.83 V at 1 m. The two compression drivers that reached the 3D stage were rejected because the band starts below their rated range. If you are new to the terms, read <a href="basics.html">horn basics</a> first.</p>
+</div>
+
+<div class="note">This is an experimental prediction. The winning driver's front chamber is estimated, not measured, and no horn and driver assembly from this project has been measured yet. See <a href="#caveats">caveats</a>.</div>
+
+<p>On this page:</p>
+<ol>
+  <li><a href="#question">The question</a></li>
+  <li><a href="#search">What the search did</a></li>
+  <li><a href="#winner">The winning design</a></li>
+  <li><a href="#runners-up">Why the runners-up lost</a></li>
+  <li><a href="#rejected">What was rejected</a></li>
+  <li><a href="#size-cap">Adding a length cap</a></li>
+  <li><a href="#front-chamber">Why the old winner no longer wins</a></li>
+  <li><a href="#build">The files and how to build</a></li>
+  <li><a href="#caveats">Caveats</a></li>
+</ol>
+
+<h2 id="question">1. The question</h2>
+<p>"Which of my drivers, on which horn, gives the most level and the flattest response from 800 to 1600 Hz?" As a command:</p>
+<pre><code>just run-auto --target_f_low 800 --target_f_high 1600 --drivers_db data/drivers-curated \
+  --lem_top_n 3 --refinement_budget 2 --num_bands 2 --num_intervals 101 --mesh_size 0.01</code></pre>
+<dl class="flags">
+  <dt>--target_f_low 800 --target_f_high 1600</dt>
+  <dd>The band the horn must cover. Ripple and mean level are measured over it. The solver sweeps wider, from 400 to 2263 Hz, to find the f3 points.</dd>
+  <dt>--drivers_db data/drivers-curated</dt>
+  <dd>The seven hand-checked driver records: three cone drivers and four Peerless compression drivers.</dd>
+  <dt>--lem_top_n 3</dt>
+  <dd>Send three horns from the fast screen to the 3D solver.</dd>
+  <dt>--refinement_budget 2</dt>
+  <dd>Allow two extra 3D solves to adjust the best design.</dd>
+  <dt>--num_bands 2</dt>
+  <dd>Split each solve into two frequency bands that run in parallel.</dd>
+  <dt>--num_intervals 101</dt>
+  <dd>101 frequency points in the sweep.</dd>
+  <dt>--mesh_size 0.01</dt>
+  <dd>Largest mesh element 10 mm. The solver uses a finer size where the wavelength needs it.</dd>
+</dl>
+<p>Everything else is a default: 2.83 V RMS drive, a microphone 1 m away on axis, the <code>modal_baffled</code> mouth model (an infinite baffle), a 6 dB ripple limit and a compression ratio limit of 10. The search budget is small on purpose so the run is quick. A larger budget may find a different design.</p>
+
+<h2 id="search">2. What the search did</h2>
+<ol class="steps">
+  <li><b>Driver screen: 5 of 7 kept.</b> The 18Sound 6NMB420, Celestion AF3010 and TF0512HE, and the Peerless DFM-2535R00 and DFM-2544R00 passed. The Peerless DFL-2525R00 (Fs 1597 Hz) and DFM-2535R01 (Fs 2026 Hz) resonate above the screen's limit of 1.5 times 800 Hz.</li>
+  <li><b>Throats: 5 proposed, 4 used.</b> Radii of 12.7, 24.7, 36.1, 50.0 and 130.7 mm. The largest is the size where the first axisymmetric duct mode reaches 1600 Hz (ka = 3.83). It is wider than every mouth searched, so it produced no horn. The 36.1 mm radius throat (72.1 mm diameter) was proposed because it puts the 6NMB420's estimated front chamber corner at 1600 Hz.</li>
+  <li><b>Geometry grid: 230 horns.</b> Mouth radius from 47.8 to 88.7 mm and length from 107.2 to 214.4 mm, three values each, derived from 800 Hz. Crossed with the throats and the seven profiles that gives 33 horns per profile (32 tractrix).</li>
+  <li><b>Webster screen: 1,150 pairs.</b> Every horn with every kept driver, scored with a one-dimensional model. Three horns went to the 3D solver: a <code>cd</code>, an exponential and a scaled tractrix, all with the 36.1 mm radius (72.1 mm diameter) throat.</li>
+  <li><b>3D FEM: 25 pairs scored.</b> The five solved horns (three from the screen, two from refinement) times the five drivers. Ten pairs were rejected, all of them Peerless.</li>
+  <li><b>Refinement: 2 more horns.</b> Starting from the best 3D design (<code>auto_cd_0221</code>), it first tried a smaller mouth (score 0.758, worse), then a longer horn at the full mouth (score 0.791, better). That used the whole budget. The mouth ended on the upper edge of its search range, so a larger budget would have tried bigger mouths.</li>
+</ol>
+<p>Sources: <code>prescreen_result.json</code>, <code>design.json</code>, <code>candidates.csv</code>, <code>lem_results.json</code> and <code>refinement/search_audit.json</code> in the run's <code>outputs/auto/</code> folder.</p>
+
+<h2 id="winner">3. The winning design</h2>
+<p>The 18Sound 6NMB420, a 6.5 inch cone driver, on a <code>cd</code> horn: an exponential throat that blends into a cone.</p>
+<div class="stats">
+  <div class="stat"><b>72.12 mm</b><span>Throat diameter</span></div>
+  <div class="stat"><b>177.42 mm</b><span>Mouth diameter</span></div>
+  <div class="stat"><b>117.91 mm</b><span>Length</span></div>
+  <div class="stat"><b>2.08 dB</b><span>Ripple, 800 to 1600 Hz</span></div>
+  <div class="stat"><b>104.13 dB</b><span>Mean level, 2.83 V, 1 m</span></div>
+  <div class="stat"><b>485 to 2024 Hz</b><span>f3 points</span></div>
+</div>
+<div class="table-wrap">
+<table>
+  <tbody>
+    <tr><th>In-band level</th><td>103.15 to 105.23 dB. Peak 106.4 dB at 684 Hz, below the band.</td></tr>
+    <tr><th>Extension past the band</th><td>1.06 octaves in total</td></tr>
+    <tr><th>Electrical impedance</th><td>5.5 to 6.2 ohm in band</td></tr>
+    <tr><th>Peak cone excursion</th><td>0.028 mm in band at 2.83 V; Xmax is 3 mm</td></tr>
+    <tr><th>Input power</th><td>1.45 W at most in band at 2.83 V; rated 200 W</td></tr>
+    <tr><th>Group delay</th><td>0.03 to 0.35 ms in band</td></tr>
+    <tr><th>Front chamber</th><td>Estimated 139.4 cm<sup>3</sup> (the open cone closed by a flat plate); Sd / throat area 3.18; corner 1600 Hz</td></tr>
+    <tr><th>Score</th><td>0.791. Status <code>insufficient_evidence</code>: the model finds no limit broken, but driver data are missing.</td></tr>
+  </tbody>
+</table>
+</div>
+<p>The score is the published formula with default weights. For this design: 0.625 &times; (104.13 &minus; 60) / 60 for level, plus 0.25 &times; (1 &minus; 2.08 / 12) for ripple, plus 0.125 &times; 1 for extension (any extension of one octave or more earns the full term). That gives 0.460 + 0.207 + 0.125 = 0.791.</p>
+
+<figure class="plot">
+  <img src="img/800-1600-winner-spl.svg" alt="Predicted level of the winning pair from 400 to 2263 Hz. Inside the shaded 800 to 1600 Hz band it stays between about 103 and 105 dB" loading="lazy" width="640" height="300">
+  <figcaption>The winner alone: predicted on-axis level at 2.83 V and 1 m, drawn from <code>coupled_01_18sound-6nmb420_refine_cd_0001.csv</code>. The shaded area is the target band.</figcaption>
+</figure>
+
+<figure class="wide">
+  <img src="img/800-1600-comparison.png" alt="Predicted on-axis level from 400 Hz to 2.3 kHz for the top five pairs, all using the 6NMB420. The winner is flattest across the shaded 800 to 1600 Hz band" loading="lazy" width="1785" height="1486">
+  <figcaption>Frequency response of the top five pairs at 2.83 V RMS and 1 m on axis. The shaded area is the target band.</figcaption>
+</figure>
+
+<figure class="wide">
+  <img src="img/800-1600-electrical.png" alt="Electrical impedance magnitude, peak cone excursion against the 3 mm Xmax, and group delay for the top five pairs" loading="lazy" width="1100" height="1210">
+  <figcaption>Electrical impedance, cone excursion against Xmax and group delay. Excursion is far below Xmax at 2.83 V. This is a linear check, not a maximum output or thermal prediction.</figcaption>
+</figure>
+
+<figure class="wide">
+  <img src="img/800-1600-beamwidth.png" alt="Predicted beamwidth against frequency for the top five horns" loading="lazy" width="1635" height="735">
+  <figcaption>Predicted beamwidth in an infinite baffle. Experimental and not validated.</figcaption>
+</figure>
+
+<h2 id="runners-up">4. Why the runners-up lost</h2>
+<p>All of the top five use the 6NMB420 and the 72.1 mm diameter throat. The first three are within 0.02 of each other, which the report marks as a near tie. Treat them as equivalent.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>#</th><th>Horn</th><th>Profile</th><th class="num">Mouth dia. (mm)</th><th class="num">Length (mm)</th><th class="num">Ripple (dB)</th><th class="num">Mean (dB)</th><th class="num">f3 (Hz)</th><th class="num">Score</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>refine_cd_0001</td><td>cd</td><td class="num">177.4</td><td class="num">117.9</td><td class="num">2.08</td><td class="num">104.13</td><td class="num">485 to 2024</td><td class="num">0.791</td></tr>
+    <tr><td>2</td><td>auto_cd_0221</td><td>cd</td><td class="num">177.4</td><td class="num">107.2</td><td class="num">2.36</td><td class="num">104.14</td><td class="num">512 to 2033</td><td class="num">0.785</td></tr>
+    <tr><td>3</td><td>auto_exp_0057</td><td>exponential</td><td class="num">177.4</td><td class="num">107.2</td><td class="num">2.71</td><td class="num">104.24</td><td class="num">524 to 1932</td><td class="num">0.772</td></tr>
+    <tr><td>4</td><td>refine_cd_0000</td><td>cd</td><td class="num">159.7</td><td class="num">107.2</td><td class="num">3.35</td><td class="num">103.56</td><td class="num">496 to 1964</td><td class="num">0.758</td></tr>
+    <tr><td>5</td><td>auto_sca_0189</td><td>scaled tractrix</td><td class="num">177.4</td><td class="num">160.8</td><td class="num">3.69</td><td class="num">103.59</td><td class="num">414 to 2157</td><td class="num">0.752</td></tr>
+  </tbody>
+</table>
+</div>
+<ul>
+  <li><b>#2</b> is the same <code>cd</code> horn 10.7 mm shorter. It has 0.28 dB more ripple, which is the whole gap.</li>
+  <li><b>#3</b>, the exponential horn, is 0.1 dB louder but 0.63 dB less flat, and it extends less at both ends (0.88 against 1.06 octaves).</li>
+  <li><b>#4</b> has a smaller mouth. Against #2, the same horn with the full mouth, it loses 0.6 dB of level and adds 1.0 dB of ripple.</li>
+  <li><b>#5</b>, the long scaled tractrix, extends furthest (414 to 2157 Hz). The score gives no credit past one octave of extension, so that buys nothing. It loses on ripple and level.</li>
+</ul>
+<p>The other two cone drivers were feasible but quieter. The best Celestion TF0512HE pair gives 96.8 dB (score 0.692) and the best AF3010 pair 90.8 dB (0.652). With the default weights, 7 dB less level outweighs any ripple advantage.</p>
+<p>Source: <code>refinement/ranked_results.json</code> and <code>report/auto_summary.txt</code>.</p>
+
+<h2 id="rejected">5. What was rejected and why</h2>
+<p>Ten pairs failed a hard limit. All are the two Peerless compression drivers, on each of the five horns.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Reason</th><th class="num">Pairs</th><th>Margin</th></tr></thead>
+  <tbody>
+    <tr><td>Target band outside the driver's usable band</td><td class="num">10</td><td>Both drivers are rated from 1500 Hz; the band starts at 800 Hz</td></tr>
+    <tr><td>Excursion above Xmax at 2.83 V</td><td class="num">5</td><td>DFM-2535R00 only: about 0.16 mm against a 0.1 mm Xmax, over by 0.06 mm on every horn</td></tr>
+  </tbody>
+</table>
+</div>
+<p>A rejected pair is not hidden. The report lists it with the limit and the margin, so you can tell a near miss from a hopeless one. Source: <code>report/auto_rejections.json</code>.</p>
+
+<h2 id="size-cap">6. Adding a length cap</h2>
+<p>Suppose the horn must fit in 100 mm. Add one flag:</p>
+<pre><code>just run-auto --target_f_low 800 --target_f_high 1600 --drivers_db data/drivers-curated \
+  --max_length 0.1 --lem_top_n 3 --refinement_budget 2 --num_bands 2 --num_intervals 101 --mesh_size 0.01</code></pre>
+<p>The length search moves to 40 to 100 mm. The screen scored 221 horns and 1,105 pairs and sent three to the 3D solver. The report warns that 100 mm is below the quarter-wave sizing rule for 800 Hz, which suggests horn loading weakens below about 858 Hz. It also says the model does not show that shortfall for the winner.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>#</th><th>Horn</th><th class="num">Length (mm)</th><th class="num">Ripple (dB)</th><th class="num">Mean (dB)</th><th class="num">Lower f3 (Hz)</th><th class="num">Score</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>refine_conical_0001</td><td class="num">63.0</td><td class="num">1.40</td><td class="num">103.74</td><td class="num">649</td><td class="num">0.789</td></tr>
+    <tr><td>2</td><td>auto_con_0025</td><td class="num">70.0</td><td class="num">1.66</td><td class="num">103.84</td><td class="num">621</td><td class="num">0.789</td></tr>
+    <tr><td>3</td><td>auto_cd_0214</td><td class="num">100.0</td><td class="num">2.47</td><td class="num">104.15</td><td class="num">532</td><td class="num">0.781</td></tr>
+  </tbody>
+</table>
+</div>
+<p>The winner is a plain conical horn 63 mm long, with the same driver, throat and mouth. Compared with the uncapped <code>cd</code> horn it is 55 mm shorter, 0.4 dB quieter and 0.7 dB flatter in band, and it gives up extension below the band (649 Hz against 485 Hz). The scores are 0.791 and 0.789, so on this score the shorter horn costs almost nothing. Run <code>20261117T083036Z-36f3461c</code>; <a href="reports/800-1600-max-length-100mm.html">open its report</a>.</p>
+<figure class="wide">
+  <img src="img/800-1600-max-length-comparison.png" alt="Predicted on-axis level of the top five pairs when the horn length is capped at 100 mm" loading="lazy" width="1785" height="1486">
+  <figcaption>Top five pairs with the 100 mm cap, 2.83 V RMS, 1 m on axis.</figcaption>
+</figure>
+
+<h2 id="front-chamber">7. Why the old winner no longer wins</h2>
+<p>Earlier versions of the pipeline treated the throat as an ideal connection to the driver. For this same command they chose a hyperbolic horn with a 65.0 mm throat diameter, 177.4 mm mouth diameter and 117.9 mm length, at 1.49 dB ripple and 104.88 dB (archived in <a href="https://github.com/timini/horn-simulation/tree/main/examples/800-1600-modal">examples/800-1600-modal</a>).</p>
+<p>A real cone driver has air between the cone and the throat: the open cone, closed by the adapter plate. That volume acts as a low-pass filter. Its corner frequency rises with throat area and falls with chamber volume. The pipeline now estimates the volume for cone drivers that have no measured value: 139 cm<sup>3</sup> for the 6NMB420.</p>
+<ul>
+  <li>On the old 65 mm diameter throat the corner falls near 1.3 kHz, inside the band. The same horn now gives about 6.4 dB ripple, over the 6 dB limit. Because that failure comes only from an estimate, such a design is flagged rather than rejected, and the current search does not propose that throat.</li>
+  <li>The current search proposes a throat that puts the corner at 1600 Hz, the top of the band. That is the 72.1 mm diameter throat the winner uses.</li>
+  <li>The chamber still changes the answer for the winner: without it the same horn gives 3.23 dB ripple and 102.33 dB, against 2.08 dB and 104.13 dB with it.</li>
+</ul>
+<p>The real adapter will differ. A spacer adds volume; a phase plug or cone filler removes it. Measure it, put it in the driver record as <code>front_chamber_volume_cm3</code> and rerun before you trust either answer.</p>
+
+<h2 id="build">8. The files and how to build</h2>
+<p>Inside the run's <code>outputs/auto/</code> folder:</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>File</th><th>What it is</th></tr></thead>
+  <tbody>
+    <tr><td><code>refinement/refine_cd_0001.step</code></td><td>The winner's air volume at true size in millimetres, for CAD.</td></tr>
+    <tr><td><code>report/profile_01_refine_cd_0001.csv</code></td><td>The wall radius <code>r_mm</code> at 101 positions <code>z_mm</code> from the throat.</td></tr>
+    <tr><td><code>report/coupled_01_18sound-6nmb420_refine_cd_0001.csv</code></td><td>Level, impedance, excursion, input and acoustic power, and group delay per frequency.</td></tr>
+    <tr><td><code>report/auto_report.html</code></td><td>The self-contained report. <a href="reports/800-1600.html">This run's report</a>.</td></tr>
+    <tr><td><code>refinement/ranked_results.json</code>, <code>report/auto_rejections.json</code>, <code>refinement/search_audit.json</code></td><td>The ranking with score terms, the rejections with margins and the refinement trail.</td></tr>
+  </tbody>
+</table>
+</div>
+<figure class="narrow">
+  <img src="img/800-1600-winner-profiles.svg" alt="True-scale cross-section of the two winning horn walls. The cd horn curves gently from a 36 mm throat radius to an 88.7 mm mouth radius over 117.9 mm. The capped conical horn reaches the same mouth in 63 mm with straight walls" loading="lazy" width="440" height="560">
+  <figcaption>The two winners drawn from their profile CSVs at true scale.</figcaption>
+</figure>
+<p>To build it:</p>
+<ol>
+  <li>Import the STEP into CAD, or loft the profile CSV. It describes the air passage only.</li>
+  <li>Add a wall thickness outward from that surface, a mouth flange or baffle, and a throat flange that matches the driver's bolt pattern.</li>
+  <li>Design the adapter between the cone and the 72.1 mm diameter throat. Measure the air volume it leaves in front of the cone and rerun with that value, because the response depends on it.</li>
+  <li>Measure the result. A measurement of a built horn and driver is the evidence this project most needs.</li>
+</ol>
+
+<h2 id="caveats">9. Caveats</h2>
+<ul>
+  <li>The front chamber is a geometric estimate. The winner's evidence gaps are <code>driver_interface_unverified</code>, <code>moving_mass_and_rear_load_not_separated</code>, <code>front_chamber_volume_estimated</code> and <code>front_chamber_not_lumped_in_band</code>.</li>
+  <li>Excursion and power come from a linear model at 2.83 V. They are not a maximum SPL or thermal prediction.</li>
+  <li>Directivity assumes an infinite baffle and has not been validated.</li>
+  <li>The search was small and ended with the mouth at the edge of its range. It is not a global optimum. The top three are near ties.</li>
+  <li>The 3D solver has passed comparisons with independent codes and one measured horn, and failed others. See <a href="index.html#status">how far you can trust it</a>.</li>
+</ul>
+<p>The same walkthrough in the repository: <a href="https://github.com/timini/horn-simulation/blob/main/docs/WORKED_EXAMPLE.md">WORKED_EXAMPLE</a>. Search rules: <a href="https://github.com/timini/horn-simulation/blob/main/docs/SEARCH_AND_SCORING.md">SEARCH_AND_SCORING</a>. Files: <a href="https://github.com/timini/horn-simulation/blob/main/docs/OUTPUTS.md">OUTPUTS</a>.</p>
+
+<div class="cta">
+  <a class="primary" href="index.html#run">Run it yourself</a>
+  <a href="reports/800-1600.html">Open the full report</a>
+  <a href="https://github.com/timini/horn-simulation">GitHub repository</a>
+</div>
+
+<footer>
+  <p><a href="https://github.com/timini/horn-simulation">github.com/timini/horn-simulation</a> &middot; Runs <code>20261117T005341Z-14e497b7</code> and <code>20261117T083036Z-36f3461c</code>. Run folders are not committed; the commands above reproduce them.</p>
+</footer>
+
+</main>
+</body>
+</html>
