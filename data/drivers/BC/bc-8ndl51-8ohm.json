@@ -1,0 +1,134 @@
+{
+    "driver_id": "bc-8ndl51-8ohm",
+    "record_schema_version": 2,
+    "manufacturer": "BC",
+    "model_name": "8NDL51",
+    "identity": {
+        "manufacturer": "BC",
+        "model": "8NDL51",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 66.0,
+        "re_ohm": 5.3,
+        "qes": 0.41,
+        "qms": 3.6,
+        "qts": 0.37,
+        "sd_m2": 0.022,
+        "xmax_m": 0.007,
+        "mms_kg": 0.028,
+        "bl_tm": 12.4,
+        "le_h": 0.0005,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 200.0,
+        "peak_power_w": 400.0,
+        "sensitivity_db_1w1m": 94.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "bl_tm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "derived"
+        },
+        "usable_f_low_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "8in",
+    "usable_f_low_hz": 65.0,
+    "usable_f_high_hz": 3000.0,
+    "parameter_source": "https://www.bcspeakers.com/en/products/lf-driver/8/8/8NDL51"
+}

@@ -72,6 +72,9 @@ class Listing:
     vat_included: Optional[bool] = None    # None: use the source's registry value
 
 
+PARSE_ERROR_LIMIT = 2
+
+
 @dataclass
 class RunSummary:
     source_id: str
@@ -80,13 +83,19 @@ class RunSummary:
     incomplete: int = 0
     skipped: List[Tuple[str, str]] = field(default_factory=list)   # (url, reason)
     review: int = 0
+    parse_errors: int = 0                  # pages whose parser raised; also listed in skipped
     blocked_reason: Optional[str] = None
     outputs: List[str] = field(default_factory=list)
 
+    def too_many_parse_errors(self) -> bool:
+        """True when parser exceptions look like an adapter bug, not odd pages:
+        more than PARSE_ERROR_LIMIT pages and more than 5 % of fetched pages."""
+        return self.parse_errors > PARSE_ERROR_LIMIT and self.parse_errors > 0.05 * max(self.pages, 1)
+
     def to_dict(self) -> dict:
         return {"source_id": self.source_id, "pages": self.pages, "written": self.written,
-                "incomplete": self.incomplete, "skipped": len(self.skipped), "review": self.review,
-                "blocked_reason": self.blocked_reason, "outputs": self.outputs}
+                "incomplete": self.incomplete, "skipped": len(self.skipped), "parse_errors": self.parse_errors,
+                "review": self.review, "blocked_reason": self.blocked_reason, "outputs": self.outputs}
 
 
 class SourceAdapter(ABC):
@@ -147,7 +156,13 @@ class DriverSource(SourceAdapter):
         from horn_drivers.loader import _driver_from_dict
         summary = RunSummary(self.source_id)
         for ref, page in self._pages(limit, summary):
-            result = self.parse_driver(page, ref)
+            try:
+                result = self.parse_driver(page, ref)
+            except (KeyError, ValueError, TypeError, AttributeError) as error:
+                # A page the parser does not understand is skipped with the reason, not fatal.
+                summary.skipped.append((ref.url, f"parse error: {type(error).__name__}: {error}"))
+                summary.parse_errors += 1
+                continue
             if result.record is None:
                 summary.skipped.append((ref.url, result.reason or "no record"))
                 continue

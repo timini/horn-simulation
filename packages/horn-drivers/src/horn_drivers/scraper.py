@@ -771,11 +771,24 @@ def _save_state(state_path: Optional[Path], state: dict) -> None:
         _atomic_json(state_path, state)
 
 
-def _save_driver(db_dir: Path, driver: dict) -> None:
+def _save_driver(db_dir: Path, driver: dict) -> bool:
+    """Write a scraped record, unless the file already holds manufacturer data.
+
+    A version 2 record whose values come from a manufacturer adapter wins over
+    the aggregator (source plan conflict rule), so the scraper leaves it alone.
+    Returns False when the write was skipped.
+    """
     manufacturer, driver_id = driver["manufacturer"], driver["driver_id"]
     _validate_component(manufacturer)
     _validate_component(driver_id)
+    existing = _existing_driver(db_dir, manufacturer, driver_id)
+    sources = {entry.get("source_id") for entry in (existing.get("field_provenance") or {}).values()
+               if isinstance(entry, dict)}
+    if existing.get("record_schema_version") == 2 and sources - {"loudspeakerdatabase"}:
+        print(f"  keeping {manufacturer}/{driver_id}: it holds manufacturer data ({', '.join(sorted(sources))})")
+        return False
     _atomic_json(db_dir/manufacturer/f"{driver_id}.json", driver)
+    return True
 
 
 def scrape_all(

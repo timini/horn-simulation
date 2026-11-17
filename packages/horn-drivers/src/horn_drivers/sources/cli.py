@@ -4,6 +4,7 @@
     horn-sources robots [--only bc,thomann-uk]     # fetch and store robots.txt, update snapshot dates
     horn-sources fx                                 # ECB daily rates into data/prices/fx/
     horn-sources run <source_id> [--limit N]        # one approved adapter
+    horn-sources merge --staged DIR [--only BC,18Sound]   # merge staged manufacturer records into --db
 
 All network access goes through PoliteFetcher with the registry rate limit.
 """
@@ -33,6 +34,9 @@ def snapshot_robots(entry: SourceEntry, fetcher, robots_dir: Path = ROBOTS_DIR) 
         # Some sites answer /robots.txt with their home page. That is not a
         # robots file (no rules apply) and its content is not stored.
         outcome["note"] = "served an HTML page, not a robots file"
+        (robots_dir / f"{entry.id}.no-robots.txt").write_text(
+            f"{url} returned HTTP {result.status} with an HTML page, not a robots file, on "
+            f"{result.retrieved_on}. No robots rules apply; the fetcher treats the host as allow-all.\n")
     elif result.ok:
         (robots_dir / f"{entry.id}.txt").write_bytes(result.content)
     return outcome
@@ -59,7 +63,24 @@ def main(argv=None):
                      help="Driver folders to match retailer listings against (repeatable).")
     run.add_argument("--prices-dir", type=Path, default=Path("data/prices"))
     run.add_argument("--review-csv", type=Path, default=None)
+    merge = sub.add_parser("merge", help="Merge staged manufacturer records into a driver folder.")
+    merge.add_argument("--staged", type=Path, required=True, help="Folder the adapter runs wrote (<maker>/<id>.json).")
+    merge.add_argument("--db", type=Path, default=Path("data/drivers"))
+    merge.add_argument("--only", default=None, help="Comma list of canonical manufacturer folders, e.g. BC,18Sound.")
+    merge.add_argument("--report", type=Path, default=None,
+                       help="Conflict report CSV (default data/drivers-incomplete/conflicts/<makers>-<date>.csv).")
+    merge.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
+
+    if args.command == "merge":
+        from horn_drivers.merge import default_report_path, load_staged, merge_staged
+        makers = args.only.split(",") if args.only else None
+        staged = load_staged(args.staged, makers)
+        label = "-".join(sorted({r["manufacturer"] for r in staged})).lower() or "none"
+        report = args.report or default_report_path(Path("data/drivers-incomplete/conflicts"), label)
+        summary = merge_staged(staged, args.db, report, dry_run=args.dry_run)
+        print(json.dumps(summary.to_dict(), indent=2))
+        return 0
 
     entries = load_source_registry(args.registry)
     if args.command == "list":
@@ -106,8 +127,14 @@ def main(argv=None):
         summary = adapter.run(DriverIndex(records), args.prices_dir, review, limit=args.limit)
     else:
         summary = adapter.run(args.db, args.incomplete, limit=args.limit)
-    print(json.dumps({**summary.to_dict(), "fetch": adapter.fetcher.status()}, indent=2))
-    return 0 if summary.blocked_reason is None else 2
+    print(json.dumps({**summary.to_dict(), "skipped_detail": summary.skipped, "fetch": adapter.fetcher.status()},
+                     indent=2))
+    if summary.blocked_reason is not None:
+        return 2
+    if summary.too_many_parse_errors():
+        print(f"{summary.parse_errors} pages raised parser errors; check the adapter.", file=sys.stderr)
+        return 3
+    return 0
 
 
 if __name__ == "__main__":

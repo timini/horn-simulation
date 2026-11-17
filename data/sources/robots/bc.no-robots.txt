@@ -1,0 +1,1 @@
+https://www.bcspeakers.com/robots.txt returned HTTP 200 with an HTML page, not a robots file, on 2026-11-17. No robots rules apply; the fetcher treats the host as allow-all.

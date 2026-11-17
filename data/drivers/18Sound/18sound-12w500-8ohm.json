@@ -1,0 +1,134 @@
+{
+    "driver_id": "18sound-12w500-8ohm",
+    "record_schema_version": 2,
+    "manufacturer": "18Sound",
+    "model_name": "12W500",
+    "identity": {
+        "manufacturer": "18Sound",
+        "model": "12W500",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 46.0,
+        "re_ohm": 5.2,
+        "qes": 0.38,
+        "qms": 6.02,
+        "qts": 0.36,
+        "sd_m2": 0.0531,
+        "xmax_m": 0.004,
+        "mms_kg": 0.0365,
+        "bl_tm": 12.1,
+        "le_h": 0.00112,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 350.0,
+        "peak_power_w": 500.0,
+        "sensitivity_db_1w1m": 99.5
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "bl_tm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "derived"
+        },
+        "usable_f_low_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "12in",
+    "usable_f_low_hz": 50.0,
+    "usable_f_high_hz": 6000.0,
+    "parameter_source": "https://www.eighteensound.it/en/products/lf-driver/12-0/8/12W500"
+}

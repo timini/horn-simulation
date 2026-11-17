@@ -112,12 +112,18 @@ class TestShippedDatabaseHygiene:
         assert copies == []
 
     def test_every_record_has_provenance(self, db):
+        """Version 1: a source URL and date. Version 2: a valid provenance entry per stored field."""
+        from horn_drivers.records import check_structure
         missing = []
         for d in load_drivers_raw(str(db)):
             provenance = d.get("provenance") or {}
-            if not (str(d.get("parameter_source", "")).startswith("http")
-                    and provenance.get("retrieved_on")
-                    and d.get("record_schema_version") == 1):
+            if d.get("record_schema_version") == 2:
+                errors, _ = check_structure(d)
+                if errors or set(d["parameters"]) - set(d["field_provenance"]):
+                    missing.append(d["driver_id"])
+            elif not (str(d.get("parameter_source", "")).startswith("http")
+                      and provenance.get("retrieved_on")
+                      and d.get("record_schema_version") == 1):
                 missing.append(d["driver_id"])
         assert missing == [], missing[:10]
 

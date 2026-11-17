@@ -156,6 +156,10 @@ def check_structure(record: dict) -> Tuple[List[str], List[str]]:
             errors.append(f"field_provenance.{name}.retrieved_on {entry['retrieved_on']!r} is not an ISO date")
         if entry["method"] != "manual" and not str(entry["url"]).startswith(("http://", "https://")):
             errors.append(f"field_provenance.{name}.url is not an http(s) URL")
+        for conflict in entry.get("conflicts") or []:
+            if isinstance(conflict, dict):
+                warnings.append(f"{name}: {entry['source_id']} value {params.get(name)!r} kept; "
+                                f"{conflict.get('source_id')} gave {conflict.get('value')!r}")
     for name in ESSENTIAL_PROVENANCE_FIELDS:
         if params.get(name) is not None and name not in provenance:
             errors.append(f"{name} has no field_provenance entry")

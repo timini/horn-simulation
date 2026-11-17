@@ -1,33 +1,134 @@
 {
     "driver_id": "bc-14ds88",
+    "record_schema_version": 2,
     "manufacturer": "BC",
     "model_name": "14DS88",
+    "identity": {
+        "manufacturer": "BC",
+        "model": "14DS88",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
     "driver_type": "cone",
     "parameters": {
         "fs_hz": 44.0,
         "re_ohm": 5.6,
-        "bl_tm": 36.9,
-        "sd_m2": 0.0707,
-        "mms_kg": 0.17,
-        "le_h": 0.0020499999999999997,
-        "qts": 0.18,
-        "nominal_impedance_ohm": 8.0,
-        "xmax_m": 0.011,
+        "qes": 0.19,
         "qms": 8.0,
-        "qes": 0.19
+        "qts": 0.18,
+        "sd_m2": 0.0707,
+        "xmax_m": 0.011,
+        "mms_kg": 0.17,
+        "bl_tm": 36.9,
+        "le_h": 0.00205,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 700.0,
+        "peak_power_w": 1400.0
     },
-    "nominal_diameter": "15in",
-    "parameter_source": "https://loudspeakerdatabase.com/BC/14DS88",
-    "record_schema_version": 1,
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page",
+            "note": "manufacturer Mms; the previous value may have been Mmd"
+        },
+        "bl_tm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_low_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "13.5in",
+    "usable_f_low_hz": 45.0,
+    "usable_f_high_hz": 1200.0,
+    "parameter_source": "https://www.bcspeakers.com/en/products/lf-driver/13.5/8/14DS88",
     "provenance": {
-        "retrieved_on": "2026-02-26",
-        "retrieved_on_basis": "Date of commit 3f212b1, which wrote this record. The scrape date itself was not recorded.",
-        "source_kind": "third_party_aggregator",
-        "capture_method": "Legacy scrape of loudspeakerdatabase.com (before scraper schema 3). parameter_source was reconstructed from the manufacturer slug and model name.",
-        "known_limitations": [
-            "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
-            "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
-            "Band, power handling, Rms and sensitivity were not captured."
+        "notes": [
+            "Sensitivity 97.3 dB stated without a drive level; not stored.",
+            "Replaces the loudspeakerdatabase record retrieved 2026-02-26. Previous values that differ by more than 5 % (10 % for Le and Xmax) are kept under field_provenance conflicts."
         ]
     }
 }
