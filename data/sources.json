@@ -13,7 +13,7 @@
       "robots_url": null,
       "robots_snapshot_date": "2026-11-17",
       "terms_url": null,
-      "approval_note": "Listed in the 2026-11-17 source plan; robots.txt allows product pages.",
+      "approval_note": "Listed in the 2026-11-17 source plan. The site has no robots.txt: on 2026-11-17 /robots.txt served the HTML home page, so no robots rules apply.",
       "region": null,
       "currency": null,
       "vat_included": null,

@@ -25,7 +25,6 @@
         "bl_tm": 15.28,
         "le_h": 0.00115,
         "cms_m_per_n": 0.000271,
-        "rms_kg_per_s": 0.001804,
         "nominal_impedance_ohm": 8.0,
         "power_w": 300.0,
         "peak_power_w": 600.0,
@@ -99,12 +98,6 @@
             "retrieved_on": "2026-11-17",
             "method": "page"
         },
-        "rms_kg_per_s": {
-            "source_id": "celestion",
-            "url": "https://celestion.com/product/cf1025bmb/",
-            "retrieved_on": "2026-11-17",
-            "method": "page"
-        },
         "nominal_impedance_ohm": {
             "source_id": "celestion",
             "url": "https://celestion.com/product/cf1025bmb/",
@@ -148,6 +141,7 @@
     "parameter_source": "https://celestion.com/product/cf1025bmb/",
     "provenance": {
         "notes": [
+            "rms_kg_per_s shown as 1.804 mm/N, a unit of another quantity; not stored.",
             "Replaces the loudspeakerdatabase record retrieved 2026-02-26. Previous values that differ by more than 5 % (10 % for Le and Xmax) are kept under field_provenance conflicts."
         ]
     }

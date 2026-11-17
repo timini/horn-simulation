@@ -26,7 +26,6 @@
         "mms_kg": 0.013,
         "bl_tm": 10.6,
         "le_h": 0.0002,
-        "cms_m_per_n": 0.000136,
         "rms_kg_per_s": 3.6,
         "nominal_impedance_ohm": 8.0,
         "power_w": 170.0,
@@ -94,12 +93,6 @@
             "retrieved_on": "2026-11-17",
             "method": "page"
         },
-        "cms_m_per_n": {
-            "source_id": "beyma",
-            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
-            "retrieved_on": "2026-11-17",
-            "method": "page"
-        },
         "rms_kg_per_s": {
             "source_id": "beyma",
             "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
@@ -146,5 +139,10 @@
     "nominal_diameter": "6.5in",
     "usable_f_low_hz": 90.0,
     "usable_f_high_hz": 8000.0,
-    "parameter_source": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/"
+    "parameter_source": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+    "provenance": {
+        "notes": [
+            "page Cms 0.000136 m/N gives Fs 119.7 Hz against the stated 100 Hz; differs by more than 10 %, so not stored."
+        ]
+    }
 }

@@ -28,7 +28,6 @@
         "bl_tm": 23.0,
         "le_h": 0.0011,
         "cms_m_per_n": 0.000143,
-        "rms_kg_per_s": 3.5,
         "nominal_impedance_ohm": 8.0,
         "power_w": 700.0,
         "peak_power_w": 1400.0,
@@ -110,12 +109,6 @@
             "retrieved_on": "2026-11-17",
             "method": "page"
         },
-        "rms_kg_per_s": {
-            "source_id": "beyma",
-            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/112P80FEV28/altavoz-12p80fe-v2-8-oh/",
-            "retrieved_on": "2026-11-17",
-            "method": "page"
-        },
         "nominal_impedance_ohm": {
             "source_id": "beyma",
             "url": "https://www.beyma.com/en/products/c/low-mid-frequency/112P80FEV28/altavoz-12p80fe-v2-8-oh/",
@@ -159,6 +152,7 @@
     "parameter_source": "https://www.beyma.com/en/products/c/low-mid-frequency/112P80FEV28/altavoz-12p80fe-v2-8-oh/",
     "provenance": {
         "notes": [
+            "page Rms 3.5 kg/s against 3.16 kg/s from Fs, Mms and Qms; differs by more than 10 %, so not stored.",
             "Replaces the loudspeakerdatabase record retrieved 2026-02-26. Previous values that differ by more than 5 % (10 % for Le and Xmax) are kept under field_provenance conflicts."
         ]
     }
