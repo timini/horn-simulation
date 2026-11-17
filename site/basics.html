@@ -24,8 +24,8 @@
 <p class="lede">Enough to read the reports and the examples. Each part is short. The <a href="#glossary">glossary</a> at the end repeats the key terms.</p>
 
 <h2 id="horn">What a horn does</h2>
-<p>A loudspeaker cone is small compared with the wavelengths it has to make. On its own it pushes the air without gripping it well, so most of the amplifier's power moves the cone and little becomes sound.</p>
-<p>A horn is a duct that starts small at the driver (the <strong>throat</strong>) and opens out gradually to a large <strong>mouth</strong>. It works like a gearbox for sound, an acoustic transformer: at the throat the air moves with high pressure and small motion, and by the mouth the same power is spread over a large area of slow-moving air. The driver now has something to push against. Two things follow:</p>
+<p>A loudspeaker cone is small compared with the wavelengths it has to make. On its own it pushes the air without gripping it well, so most of the amplifier's power ends up as heat in the voice coil and little becomes sound.</p>
+<p>A horn is a duct that starts small at the driver (the <strong>throat</strong>) and opens out gradually to a large <strong>mouth</strong>. It works like a gearbox for sound, an acoustic transformer: at the throat a small area of air carries high pressure and moves quickly. By the mouth the same power is spread over a large area at low pressure and low velocity. The cone, pushing on the narrow throat, moves less than it would in open air. The driver now has something to push against. Two things follow:</p>
 <ul>
   <li><strong>Higher efficiency.</strong> More of the input power turns into sound, so the same driver plays louder for the same voltage.</li>
   <li><strong>Controlled directivity.</strong> The walls aim the sound into a chosen angle, at frequencies where the mouth is large compared with the wavelength. Below that the horn spreads sound more widely.</li>
@@ -61,7 +61,7 @@
   <dt>Ripple</dt>
   <dd>The difference in dB between the highest and lowest level inside your band. 2 dB of ripple means the response stays within a 2 dB window. Lower is flatter.</dd>
   <dt>f3</dt>
-  <dd>The frequencies, below and above the band, where the level falls 3 dB below the band's mean. They show how far the useful response reaches. A value written as "at least" or "at most" means the simulation's sweep stopped before the level fell that far.</dd>
+  <dd>The frequencies, below and above the band (or inside it, if the band edge is already 3 dB down), where the level falls 3 dB below the band's mean. They show how far the useful response reaches. A value written as "at least" or "at most" means the simulation's sweep stopped before the level fell that far.</dd>
   <dt>Score</dt>
   <dd>A weighted sum used to rank the pairs that pass every limit. By default it rewards level most, then low ripple, then extension past the band. Scores within 0.02 of each other are marked as near ties. You can change the weights.</dd>
 </dl>

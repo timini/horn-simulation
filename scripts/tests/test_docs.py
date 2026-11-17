@@ -179,14 +179,16 @@ def test_site_local_links_and_anchors_resolve():
 
 
 def test_site_pages_have_no_long_dashes_or_arrows():
-    offending = [str(p.relative_to(ROOT / "site")) for p in sorted((ROOT / "site").rglob("*.html"))
-                 if re.search("[\u2013\u2014\u2192]|&[mn]dash;|&rarr;", p.read_text(encoding="utf-8"))]
+    pattern = re.compile("[\u2013\u2014\u2192]|&[mn]dash;|&rarr;|&#0*(8211|8212|8594);|&#x0*(2013|2014|2192);",
+                         re.IGNORECASE)
+    files = sorted(p for ext in ("*.html", "*.svg") for p in (ROOT / "site").rglob(ext))
+    offending = [str(p.relative_to(ROOT / "site")) for p in files if pattern.search(p.read_text(encoding="utf-8"))]
     assert not offending, f"Em or en dashes or arrows in: {offending}"
 
 
 def test_site_does_not_link_run_folders():
     offending = [f"{page.name}: {ref}" for page in sorted((ROOT / "site").glob("*.html"))
-                 for ref in _parse_site_page(page).refs if re.match(r"^(\./)?results/", ref)]
+                 for ref in _parse_site_page(page).refs if re.match(r"^(\./|(\.\./)+)?results/", ref)]
     assert not offending, "Links to uncommitted run folders:\n" + "\n".join(offending)
 
 

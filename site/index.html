@@ -38,7 +38,7 @@
 <p>It covers ordinary single-driver horns that are round in cross-section, with rigid walls, loaded from the front. It does not design cabinets, crossovers, bass reflex boxes or multiple-entry horns.</p>
 
 <h2 id="what">What it does for you</h2>
-<p>Choosing a horn and a driver by hand means guessing a throat size, a flare, a length and a mouth, then checking whether a given driver works with it. Each guess takes a simulation, and there are hundreds of drivers. This tool does the guessing and checking for you.</p>
+<p>Choosing a horn and a driver by hand means guessing a throat size, a flare, a length and a mouth, then checking whether a given driver works with it. Each guess takes a simulation, and there are over a thousand drivers. This tool does the guessing and checking for you.</p>
 <ol class="steps">
   <li><strong>You give the brief.</strong> A frequency band, for example 500 to 4000 Hz, and optional limits: maximum length, maximum mouth size, how much ripple you accept, a minimum level, a power to survive.</li>
   <li><strong>It screens the drivers.</strong> The database holds 1454 driver records with their Thiele-Small parameters. Drivers that cannot work in the band are dropped. Throat sizes are proposed to suit the rest.</li>
@@ -57,7 +57,7 @@
   </div>
   <div class="card">
     <h3><a href="examples.html">Five briefs, five answers</a></h3>
-    <p>A compact PA midrange, a shallow hi-fi waveguide, a big low-mid horn, a loud vocal horn and the flattest midrange. One found nothing, one only passes because of a flagged estimate. Each is explained in plain words.</p>
+    <p>A compact PA midrange, a shallow hi-fi waveguide, a big low-mid horn, a loud vocal horn and the flattest midrange. One found nothing, and one is ranked only because its failures depend on an estimated front chamber. Each is explained in plain words.</p>
   </div>
 </div>
 
@@ -99,7 +99,7 @@ just latest-run</code></pre>
 
 <h2 id="contribute">How to help</h2>
 <ul>
-  <li><strong>Measure something.</strong> The thing this project needs most is a built horn and driver measured with a known setup. If you build one of its designs, please share the measurement in an <a href="https://github.com/timini/horn-simulation/issues">issue</a>. <a href="https://github.com/timini/horn-simulation/issues/81">Issue 81</a> tracks this work.</li>
+  <li><strong>Measure something.</strong> The thing this project needs most is a built horn and driver measured with a known setup. If you build one of its designs, please share the measurement in an <a href="https://github.com/timini/horn-simulation/issues">issue</a>. <a href="https://github.com/timini/horn-simulation/issues/81">Issue 81</a> tracks validation.</li>
   <li><strong>Improve driver data.</strong> A measured front chamber volume for a driver and adapter is worth more than an estimate. <a href="https://github.com/timini/horn-simulation/blob/main/docs/DRIVERS.md">DRIVERS</a> explains the record format and how to add one.</li>
   <li><strong>Compare with other software.</strong> Hornresp input sheets are in the repository but have not been run, because Hornresp needs Windows.</li>
   <li><strong>Code and docs.</strong> Open an issue before a larger change. <a href="https://github.com/timini/horn-simulation/blob/main/docs/DEVELOPMENT.md">DEVELOPMENT</a> covers the layout, tests and CI.</li>

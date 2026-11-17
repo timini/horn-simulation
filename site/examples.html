@@ -23,7 +23,7 @@
 <h1>Five briefs, five answers</h1>
 <p class="lede">Each example starts from a brief a builder might write, runs it against the full database of 1454 drivers, and reports what came back. Not every brief has a clean answer. Those are shown as they are.</p>
 
-<div class="note">All results are experimental predictions. Every number here comes from the run's <code>refinement/ranked_results.json</code> or its report. Diameters are given unless a value says radius. Levels are on axis at 1 m for 2.83 V. Terms are explained in <a href="basics.html">horn basics</a>.</div>
+<div class="note">All results are experimental predictions. Every number here comes from the run's <code>refinement/ranked_results.json</code> or its report. Diameters are given unless a value says radius. The linked reports give radii. Levels are on axis at 1 m for 2.83 V. Terms are explained in <a href="basics.html">horn basics</a>.</div>
 
 <ol class="toc">
   <li><a href="#pa-mid">Compact PA midrange horn</a></li>
@@ -63,7 +63,7 @@
   <figcaption>Predicted level of the winner. The shaded area is the target band.</figcaption>
 </figure>
 <h3>Why it won</h3>
-<p>Of the 11440 driver and horn pairs the 3D model scored, 11425 failed the 3 dB ripple limit. Among the ten that were ranked, this is the only one that passes with or without the estimated front chamber (2.95 dB with it, 3.00 dB without). The other nine pass only if the chamber is left out, so they are flagged rather than rejected. The refinement step found this shape by widening the throat of an earlier candidate from 80.7 to 88.8 mm.</p>
+<p>Of the 11440 driver and horn pairs the 3D model scored, 11425 failed the 3 dB ripple limit. Among the ten stored ranked pairs, this is the only one that passes with or without the estimated front chamber (2.95 dB with it, 3.00 dB without). The other nine pass only if the chamber is left out, so they are flagged rather than rejected. The refinement step found this shape by widening the throat of an earlier candidate from 80.7 to 88.8 mm.</p>
 <div class="table-wrap"><table>
   <thead><tr><th>#</th><th>Driver</th><th>Horn</th><th class="num">Ripple (dB)</th><th class="num">Mean (dB)</th><th class="num">Score</th></tr></thead>
   <tbody>
@@ -75,7 +75,7 @@
 <h3>Caveats</h3>
 <ul>
   <li>It passes with only 0.05 dB to spare, and sits on the 250 mm length limit. Length is what holds it back.</li>
-  <li>The cone is smaller than the throat (Sd/St 0.90), so there is no compression, and the throat is wide enough for sideways modes to appear near 4 kHz. Treat the throat end as an adapter or phase plug question, not a finished design.</li>
+  <li>The cone is smaller than the throat (Sd/St 0.90), so there is no compression, and the throat is wide enough that sideways duct modes can propagate above about 2.3 kHz, inside the band. Treat the throat end as an adapter or phase plug question, not a finished design.</li>
   <li>The first attempt stopped on a solver check; see <a href="#crashes">below</a>. The rerun used a 6 mm mesh, which changes accuracy, not the brief.</li>
 </ul>
 <p><a href="reports/500-4000-pa-mid.html">Open the full report</a> (2.0 MB).</p>
@@ -150,7 +150,7 @@
   <figcaption>Predicted level of the winner. The shaded area is the target band.</figcaption>
 </figure>
 <h3>Why it won</h3>
-<p>It has the highest level among the ten ranked pairs, with ripple well inside the 4 dB limit, and it extends below the band to 219 Hz. None of its dimensions is at a limit. All ten ranked pairs score within 0.02 of each other, so they are near ties. The real finding is a family: a hyperbolic horn with a mouth about 460 mm across, 540 to 600 mm long, and an 8 inch midrange cone (the CM206ND, or the SICA 6M2CP at rank 6).</p>
+<p>It has the highest level among the ten ranked pairs, with ripple well inside the 4 dB limit, and it extends below the band to 219 Hz. None of its dimensions is at a limit. All ten ranked pairs score within 0.02 of each other, so they are near ties. The real finding is a family: a hyperbolic horn with a mouth about 460 mm across, 540 to 600 mm long, and a midrange cone: an 8 inch CM206ND, or a 6 inch SICA 6M2CP at rank 6.</p>
 <div class="table-wrap"><table>
   <thead><tr><th>#</th><th>Driver</th><th>Horn</th><th class="num">Length (mm)</th><th class="num">Ripple (dB)</th><th class="num">Mean (dB)</th><th class="num">Lower f3 (Hz)</th></tr></thead>
   <tbody>
@@ -159,7 +159,7 @@
     <tr><td>5</td><td>Ciare CM206ND</td><td>refine_hyperbolic_0001</td><td class="num">600</td><td class="num">2.04</td><td class="num">110.7</td><td class="num">191</td></tr>
   </tbody>
 </table></div>
-<p>The longer horns reach lower but give up about half a dB of flatness.</p>
+<p>Rank 5, at 600 mm, reaches 191 Hz but has 2.04 dB of ripple.</p>
 <h3>Caveats</h3>
 <ul>
   <li>The front chamber is estimated at 297.5 cm<sup>3</sup>. Here the estimate helps: without it the ripple is 2.54 dB, still inside the limit.</li>
@@ -205,7 +205,7 @@
 <h3>Caveats</h3>
 <ul>
   <li>At 50 W the cone passes Xmax by 0.006 mm, at frequencies up to 879 Hz. That is inside the band, so a high-pass filter at 800 Hz would not fix it.</li>
-  <li>The run checked excursion at 50 W but not the driver's power rating; the result has no value for that check. The in-band input power at the 50 W setting is about 69 W.</li>
+  <li>The run checked excursion at 50 W but not the driver's power rating; the driver record has no power rating, so the power check could not run. The in-band input power at the 50 W setting is about 69 W.</li>
   <li>The mouth ended on the upper edge of the range the tool searched (177.4 mm), because no mouth limit was given. A larger mouth was not tried.</li>
   <li>The first attempt stopped on a solver check; see <a href="#crashes">below</a>. The rerun used an 8 mm mesh.</li>
 </ul>
@@ -254,9 +254,9 @@
 </section>
 
 <h2 id="crashes">Runs that stopped and were rerun</h2>
-<p>Three of these briefs (the PA midrange, the hi-fi waveguide and the vocal horn) stopped on their first attempt with the error "Band boundary complex mouth_p mismatch; refine mesh". The solver splits the frequency sweep into bands and uses a finer mesh for higher bands. Where two bands meet, the results must agree. For one candidate in each run they differed slightly, because the two bands used different mesh sizes, and the run stopped.</p>
+<p>Three of these briefs (the PA midrange, the hi-fi waveguide and the vocal horn) stopped on their first attempt with the error "Band boundary complex mouth_p mismatch; refine mesh". The solver splits the frequency sweep into bands and uses a finer mesh for higher bands. Where two bands meet, the results must agree. For a candidate in each run they did not agree, because the two bands used different mesh sizes, and the run stopped.</p>
 <p>Each was rerun from scratch with a single, finer <code>--mesh_size</code>. That is a solver accuracy setting. It does not change the brief. The results on this page come from the reruns.</p>
-<p>The crash is now fixed in the code: a candidate that fails this check is rejected with its reason instead of stopping the run. The fix is waiting to be merged into the main branch; until then a smaller <code>--mesh_size</code> avoids the problem. The low-mid run stopped for a different reason, a Java memory limit, described in <a href="#low-mid">its caveats</a>.</p>
+<p>The crash is now fixed in the code: a candidate that fails this check is rejected with its reason instead of stopping the run. The fix is waiting to be merged into the main branch. After the fix the run finishes, but those candidates are rejected. For these briefs a smaller <code>--mesh_size</code> is still needed to get a design. The low-mid run stopped for a different reason, a Java memory limit, described in <a href="#low-mid">its caveats</a>.</p>
 
 <h2 id="removed">Runs no longer shown</h2>
 <p>Earlier versions of this site showed two more runs. Neither produced a design that meets its brief, so their reports have been removed:</p>
