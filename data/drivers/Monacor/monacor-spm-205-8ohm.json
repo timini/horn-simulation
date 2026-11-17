@@ -162,7 +162,8 @@
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'monacor__spm_205__8ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts."
+            "Derived or inferred driver-base values not imported: power_program_watts.",
+            "driver-base warn_flags: range_reject:freq_low_hz=3.0."
         ]
     },
     "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"

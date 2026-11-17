@@ -1,11 +1,11 @@
 {
-    "driver_id": "monacor-sp-302pa",
+    "driver_id": "monacor-cf18vjd",
     "record_schema_version": 2,
     "manufacturer": "Monacor",
-    "model_name": "SP-302PA",
+    "model_name": "CF18VJD",
     "identity": {
         "manufacturer": "Monacor",
-        "model": "SP-302PA",
+        "model": "CF18VJD",
         "variant": {
             "impedance_ohm": 8.0,
             "coil": null
@@ -14,25 +14,25 @@
     },
     "driver_type": "cone",
     "parameters": {
-        "fs_hz": 45.0,
-        "re_ohm": 7.7,
-        "bl_tm": 10.5,
-        "sd_m2": 0.0542,
-        "mms_kg": 0.057,
-        "le_h": 0.0005,
-        "qms": 2.2,
-        "qes": 1.47,
-        "qts": 0.89,
-        "xmax_m": 0.0025,
-        "cms_m_per_n": 0.00015,
+        "fs_hz": 34.5,
+        "re_ohm": 6.13,
+        "bl_tm": 32.59,
+        "sd_m2": 0.013412,
+        "mms_kg": 0.26542,
+        "le_h": 0.00187,
+        "qms": 4.573,
+        "qes": 0.332,
+        "qts": 0.309,
+        "xmax_m": 0.012,
+        "cms_m_per_n": 8e-05,
         "nominal_impedance_ohm": 8.0,
-        "power_w": 100.0,
-        "sensitivity_db_1w1m": 90.0
+        "power_w": 1600.0,
+        "sensitivity_db_1w1m": 97.0
     },
     "field_provenance": {
         "fs_hz": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -41,7 +41,7 @@
         },
         "re_ohm": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -50,7 +50,7 @@
         },
         "bl_tm": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -59,7 +59,7 @@
         },
         "sd_m2": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -68,7 +68,7 @@
         },
         "mms_kg": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -77,7 +77,7 @@
         },
         "le_h": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -86,7 +86,7 @@
         },
         "qms": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -95,7 +95,7 @@
         },
         "qes": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -104,7 +104,7 @@
         },
         "qts": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -113,7 +113,7 @@
         },
         "xmax_m": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -122,7 +122,7 @@
         },
         "cms_m_per_n": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -131,7 +131,7 @@
         },
         "nominal_impedance_ohm": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -140,7 +140,7 @@
         },
         "power_w": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -149,21 +149,42 @@
         },
         "sensitivity_db_1w1m": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "sensitivity_db_1w_1m",
             "upstream_spec_source": "html_table"
+        },
+        "usable_f_low_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_low_hz",
+            "upstream_spec_source": "html_table"
+        },
+        "usable_f_high_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_high_hz",
+            "upstream_spec_source": "html_table"
         }
     },
-    "nominal_diameter": "12in",
-    "parameter_source": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-302pa/",
+    "nominal_diameter": "6in",
+    "usable_f_low_hz": 25.0,
+    "usable_f_high_hz": 1500.0,
+    "parameter_source": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
     "provenance": {
         "notes": [
-            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'monacor__sp_302pa__8ohm'.",
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'monacor__cf18vjd__8ohm'.",
             "Derived or inferred driver-base values not imported: power_program_watts."
         ]
     },
-    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category",
+    "incomplete_reason": "inconsistent Thiele/Small values: page Vas 146 L but Sd, Fs and Mms give 2.04 L"
 }

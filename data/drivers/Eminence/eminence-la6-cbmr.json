@@ -24,7 +24,6 @@
         "qes": 1.24,
         "qts": 0.89,
         "xmax_m": 0.0002,
-        "cms_m_per_n": 1e-05,
         "nominal_impedance_ohm": 8.0,
         "power_w": 150.0,
         "peak_power_w": 300.0,
@@ -121,15 +120,6 @@
             "upstream_field": "xmax_mm",
             "upstream_spec_source": "html_table"
         },
-        "cms_m_per_n": {
-            "source_id": "driver-base",
-            "url": "https://eminence.com/products/la6_cbmr",
-            "retrieved_on": "2026-11-02",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "cms_mm_per_n",
-            "upstream_spec_source": "html_table"
-        },
         "nominal_impedance_ohm": {
             "source_id": "driver-base",
             "url": "https://eminence.com/products/la6_cbmr",
@@ -191,7 +181,9 @@
     "parameter_source": "https://eminence.com/products/la6_cbmr",
     "provenance": {
         "notes": [
-            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'eminence__la6_cbmr__8ohm'."
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'eminence__la6_cbmr__8ohm'.",
+            "Cms not imported: Fs 460 Hz but Mms and Cms give 531 Hz, while Qes agrees with Mms.",
+            "driver-base warn_flags: fs_hz_high_for_lf_woofer:460.0."
         ]
     },
     "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"

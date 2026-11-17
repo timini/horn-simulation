@@ -172,7 +172,8 @@
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'eighteensound__8nm610__8ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts."
+            "Derived or inferred driver-base values not imported: power_program_watts.",
+            "driver-base warn_flags: fs_hz_high_for_lf_woofer:260.0."
         ]
     },
     "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"

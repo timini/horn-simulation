@@ -165,5 +165,6 @@
             "Derived or inferred driver-base values not imported: power_program_watts, sensitivity_db_1w_1m."
         ]
     },
-    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category",
+    "incomplete_reason": "inconsistent Thiele/Small values: page Vas 0.484 L but Sd, Fs and Mms give 13.6 L"
 }

@@ -171,7 +171,8 @@
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'fullrange', canonical_id 'dayton__dlm25_4__4ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts."
+            "Derived or inferred driver-base values not imported: power_program_watts.",
+            "driver-base warn_flags: range_reject:vas_liters=0.005."
         ]
     },
     "type_source": "driver-base driver_kind 'fullrange', from the manufacturer's product category"

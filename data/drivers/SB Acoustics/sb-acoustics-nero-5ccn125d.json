@@ -185,7 +185,7 @@
             "upstream_spec_source": "pdf_table"
         }
     },
-    "nominal_diameter": "4in",
+    "nominal_diameter": "5in",
     "usable_f_low_hz": 355.0,
     "usable_f_high_hz": 20000.0,
     "parameter_source": "https://www.sbaudience.com/index.php/products/woofers/nero-5ccn125d/",

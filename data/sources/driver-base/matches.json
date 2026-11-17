@@ -1242,19 +1242,6 @@
   ]
  },
  {
-  "canonical_id": "eighteensound__18lw2400__8ohm",
-  "driver_id": "18sound-18lw2400wp",
-  "path": "data/drivers/18Sound/18sound-18lw2400wp.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
-  "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "sensitivity_db_1w1m",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
- },
- {
   "canonical_id": "eighteensound__18lw2420__4ohm",
   "driver_id": "18sound-18lw2420",
   "path": "data/drivers/18Sound/18sound-18lw2420.json",
@@ -2845,13 +2832,7 @@
   "conflicting_fields": [
    "mms_kg"
   ],
-  "filled": [
-   "power_w",
-   "peak_power_w",
-   "sensitivity_db_1w1m",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "beyma__12cmv3__8ohm",
@@ -3073,13 +3054,7 @@
   "conflicting_fields": [
    "mms_kg"
   ],
-  "filled": [
-   "power_w",
-   "peak_power_w",
-   "sensitivity_db_1w1m",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "beyma__12wr400__8ohm",
@@ -3310,13 +3285,7 @@
   "conflicting_fields": [
    "mms_kg"
   ],
-  "filled": [
-   "power_w",
-   "peak_power_w",
-   "sensitivity_db_1w1m",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "beyma__15mcs500__8ohm",
@@ -4063,12 +4032,7 @@
   "path": "data/drivers/Celestion/celestion-an2075.json",
   "matched_by": "manufacturer, model and impedance",
   "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "sensitivity_db_1w1m",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "celestion__an2775__8ohm",
@@ -4076,12 +4040,7 @@
   "path": "data/drivers/Celestion/celestion-an2775.json",
   "matched_by": "manufacturer, model and impedance",
   "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "sensitivity_db_1w1m",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "celestion__an3510__8ohm",
@@ -4089,12 +4048,7 @@
   "path": "data/drivers/Celestion/celestion-an3510.json",
   "matched_by": "manufacturer, model and impedance",
   "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "sensitivity_db_1w1m",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "celestion__bl10_100x__8ohm",
@@ -4128,12 +4082,7 @@
   "path": "data/drivers/Celestion/celestion-bl15-300x-8.json",
   "matched_by": "manufacturer, model and impedance",
   "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "sensitivity_db_1w1m",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "celestion__bn10_200x__8ohm",
@@ -4908,12 +4857,7 @@
   "path": "data/drivers/Celestion/celestion-tf0510.json",
   "matched_by": "manufacturer, model and impedance",
   "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "sensitivity_db_1w1m",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "celestion__tf0512he__8ohm",
@@ -5348,7 +5292,7 @@
   "canonical_id": "celestion__tsq1845__8ohm",
   "driver_id": "celestion-tsq1845",
   "path": "data/drivers/Celestion/celestion-tsq1845.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -5361,7 +5305,7 @@
   "canonical_id": "celestion__tsq2145__8ohm",
   "driver_id": "celestion-tsq2145",
   "path": "data/drivers/Celestion/celestion-tsq2145.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -5374,7 +5318,7 @@
   "canonical_id": "celestion__tsq2460_4__4ohm",
   "driver_id": "celestion-tsq2460",
   "path": "data/drivers/Celestion/celestion-tsq2460.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -5402,12 +5346,7 @@
   "path": "data/drivers/Ciare/ciare-cm100.json",
   "matched_by": "manufacturer, model and impedance",
   "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "peak_power_w",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "ciare__cm132__4ohm",
@@ -5603,58 +5542,6 @@
   ]
  },
  {
-  "canonical_id": "ciare__csw7012evo__2ohm",
-  "driver_id": "ciare-csw7012",
-  "path": "data/drivers/Ciare/ciare-csw7012.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
-  "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "peak_power_w",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
- },
- {
-  "canonical_id": "ciare__csw7015evo__2ohm",
-  "driver_id": "ciare-csw7015",
-  "path": "data/drivers/Ciare/ciare-csw7015.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
-  "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "peak_power_w",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
- },
- {
-  "canonical_id": "ciare__csw7112evo__1ohm",
-  "driver_id": "ciare-csw7112",
-  "path": "data/drivers/Ciare/ciare-csw7112.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
-  "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "peak_power_w",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
- },
- {
-  "canonical_id": "ciare__csw7115evo__1ohm",
-  "driver_id": "ciare-csw7115",
-  "path": "data/drivers/Ciare/ciare-csw7115.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
-  "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "peak_power_w",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
- },
- {
   "canonical_id": "ciare__cw131__4ohm",
   "driver_id": "ciare-cw131",
   "path": "data/drivers/Ciare/ciare-cw131.json",
@@ -5739,12 +5626,7 @@
   "path": "data/drivers/Ciare/ciare-cxi160.json",
   "matched_by": "manufacturer, model and impedance",
   "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "peak_power_w",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "ciare__cxi200__4ohm",
@@ -5789,7 +5671,7 @@
   "canonical_id": "ciare__fxi12_50w__4ohm",
   "driver_id": "ciare-fxi12-50w-4",
   "path": "data/drivers/Ciare/ciare-fxi12-50w-4.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -5887,7 +5769,7 @@
   "canonical_id": "ciare__hsb322__2ohm",
   "driver_id": "ciare-hsb322-22",
   "path": "data/drivers/Ciare/ciare-hsb322-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -5900,7 +5782,7 @@
   "canonical_id": "ciare__hsb322__4ohm",
   "driver_id": "ciare-hsb322-44",
   "path": "data/drivers/Ciare/ciare-hsb322-44.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -5911,7 +5793,7 @@
   "canonical_id": "ciare__hsg160__2ohm",
   "driver_id": "ciare-hsg160-22",
   "path": "data/drivers/Ciare/ciare-hsg160-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -5924,7 +5806,7 @@
   "canonical_id": "ciare__hsg160__4ohm",
   "driver_id": "ciare-hsg160-44",
   "path": "data/drivers/Ciare/ciare-hsg160-44.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -5937,7 +5819,7 @@
   "canonical_id": "ciare__hsg200__2ohm",
   "driver_id": "ciare-hsg200-22",
   "path": "data/drivers/Ciare/ciare-hsg200-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -5950,7 +5832,7 @@
   "canonical_id": "ciare__hsg200__4ohm",
   "driver_id": "ciare-hsg200-44",
   "path": "data/drivers/Ciare/ciare-hsg200-44.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -6121,7 +6003,7 @@
   "canonical_id": "ciare__hwb130__4ohm",
   "driver_id": "ciare-hwb130-4",
   "path": "data/drivers/Ciare/ciare-hwb130-4.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -6145,7 +6027,7 @@
   "canonical_id": "ciare__hwb160__4ohm",
   "driver_id": "ciare-hwb160-4",
   "path": "data/drivers/Ciare/ciare-hwb160-4.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -6171,7 +6053,7 @@
   "canonical_id": "ciare__hwb200__4ohm",
   "driver_id": "ciare-hwb200-4",
   "path": "data/drivers/Ciare/ciare-hwb200-4.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -6207,7 +6089,7 @@
   "canonical_id": "ciare__hwg130__4ohm",
   "driver_id": "ciare-hwg130-4",
   "path": "data/drivers/Ciare/ciare-hwg130-4.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -6233,7 +6115,7 @@
   "canonical_id": "ciare__hwg160__4ohm",
   "driver_id": "ciare-hwg160-4",
   "path": "data/drivers/Ciare/ciare-hwg160-4.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -6294,7 +6176,7 @@
   "canonical_id": "ciare__ndh18_4s__4ohm",
   "driver_id": "ciare-ndh18-4s-4",
   "path": "data/drivers/Ciare/ciare-ndh18-4s-4.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -6521,7 +6403,7 @@
   "canonical_id": "ciare__pw455__4ohm",
   "driver_id": "ciare-pw455-4",
   "path": "data/drivers/Ciare/ciare-pw455-4.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -6573,7 +6455,7 @@
   "canonical_id": "ciare__pwa12_64__4ohm",
   "driver_id": "ciare-pwa12-64-4",
   "path": "data/drivers/Ciare/ciare-pwa12-64-4.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -6739,11 +6621,7 @@
    "le_h",
    "xmax_m"
   ],
-  "filled": [
-   "power_w",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "dayton__ce32a_8__8ohm",
@@ -6751,11 +6629,7 @@
   "path": "data/drivers/Dayton/dayton-ce32a-8.json",
   "matched_by": "manufacturer, model and impedance",
   "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "dayton__ce40_4__4ohm",
@@ -7375,7 +7249,7 @@
   "canonical_id": "dayton__ls10_44__4ohm",
   "driver_id": "dayton-ls10-44",
   "path": "data/drivers/Dayton/dayton-ls10-44.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -7435,7 +7309,7 @@
   "canonical_id": "dayton__mx10_22__2ohm",
   "driver_id": "dayton-mx10-22",
   "path": "data/drivers/Dayton/dayton-mx10-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -7447,7 +7321,7 @@
   "canonical_id": "dayton__mx12_22__2ohm",
   "driver_id": "dayton-mx12-22",
   "path": "data/drivers/Dayton/dayton-mx12-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -7459,7 +7333,7 @@
   "canonical_id": "dayton__mx15_22__2ohm",
   "driver_id": "dayton-mx15-22",
   "path": "data/drivers/Dayton/dayton-mx15-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -7471,7 +7345,7 @@
   "canonical_id": "dayton__mx5_22__2ohm",
   "driver_id": "dayton-mx5-22",
   "path": "data/drivers/Dayton/dayton-mx5-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -7483,7 +7357,7 @@
   "canonical_id": "dayton__mx6_22__2ohm",
   "driver_id": "dayton-mx6-22",
   "path": "data/drivers/Dayton/dayton-mx6-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -7521,11 +7395,7 @@
   "path": "data/drivers/Dayton/dayton-nd140-4.json",
   "matched_by": "manufacturer, model and impedance",
   "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
+  "filled": []
  },
  {
   "canonical_id": "dayton__nd140_8__8ohm",
@@ -8047,7 +7917,7 @@
   "canonical_id": "dayton__rss315ho_44__4ohm",
   "driver_id": "dayton-rss315ho-44",
   "path": "data/drivers/Dayton/dayton-rss315ho-44.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -8131,7 +8001,7 @@
   "canonical_id": "dayton__ss10_22__2ohm",
   "driver_id": "dayton-ss10-22",
   "path": "data/drivers/Dayton/dayton-ss10-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -8143,7 +8013,7 @@
   "canonical_id": "dayton__ss12_22__2ohm",
   "driver_id": "dayton-ss12-22",
   "path": "data/drivers/Dayton/dayton-ss12-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -8155,7 +8025,7 @@
   "canonical_id": "dayton__ss15_22__2ohm",
   "driver_id": "dayton-ss15-22",
   "path": "data/drivers/Dayton/dayton-ss15-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -8167,7 +8037,7 @@
   "canonical_id": "dayton__ss18_22__2ohm",
   "driver_id": "dayton-ss18-22",
   "path": "data/drivers/Dayton/dayton-ss18-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -8179,7 +8049,7 @@
   "canonical_id": "dayton__ss8_22__2ohm",
   "driver_id": "dayton-ss8-22",
   "path": "data/drivers/Dayton/dayton-ss8-22.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
+  "matched_by": "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",
@@ -8664,19 +8534,6 @@
   ]
  },
  {
-  "canonical_id": "eminence__nsw6021_124_21_speaker__1ohm",
-  "driver_id": "eminence-nsw6021-124",
-  "path": "data/drivers/Eminence/eminence-nsw6021-124.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
-  "conflicting_fields": [],
-  "filled": [
-   "peak_power_w",
-   "sensitivity_db_1w1m",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
- },
- {
   "canonical_id": "eminence__omega_pro_12_2kw8__8ohm",
   "driver_id": "eminence-omega-pro-12-2kw-8",
   "path": "data/drivers/Eminence/eminence-omega-pro-12-2kw-8.json",
@@ -8695,20 +8552,6 @@
   "driver_id": "eminence-omega-pro-15a",
   "path": "data/drivers/Eminence/eminence-omega-pro-15a.json",
   "matched_by": "manufacturer, model and impedance",
-  "conflicting_fields": [],
-  "filled": [
-   "power_w",
-   "peak_power_w",
-   "sensitivity_db_1w1m",
-   "usable_f_low_hz",
-   "usable_f_high_hz"
-  ]
- },
- {
-  "canonical_id": "eminence__sigma_pro_18a__8ohm",
-  "driver_id": "eminence-sigma-pro-18a-2",
-  "path": "data/drivers/Eminence/eminence-sigma-pro-18a-2.json",
-  "matched_by": "model prefix and Fs, Re, Bl, Sd, Mms within 1 %",
   "conflicting_fields": [],
   "filled": [
    "power_w",

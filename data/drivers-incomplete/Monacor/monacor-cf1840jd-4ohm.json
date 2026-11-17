@@ -1,179 +1,190 @@
 {
-    "driver_id": "18sound-6nd410-16ohm",
+    "driver_id": "monacor-cf1840jd-4ohm",
     "record_schema_version": 2,
-    "manufacturer": "18Sound",
-    "model_name": "6ND410",
+    "manufacturer": "Monacor",
+    "model_name": "CF1840JD",
     "identity": {
-        "manufacturer": "18Sound",
-        "model": "6ND410",
+        "manufacturer": "Monacor",
+        "model": "CF1840JD",
         "variant": {
-            "impedance_ohm": 16.0,
+            "impedance_ohm": 4.0,
             "coil": null
         },
         "aliases": []
     },
     "driver_type": "cone",
     "parameters": {
-        "fs_hz": 149.0,
-        "re_ohm": 10.6,
-        "bl_tm": 13.0,
-        "sd_m2": 0.0143,
-        "mms_kg": 0.0088,
-        "le_h": 0.00014,
-        "qms": 4.14,
-        "qes": 0.55,
-        "qts": 0.48,
-        "xmax_m": 0.002,
-        "nominal_impedance_ohm": 16.0,
-        "power_w": 180.0,
-        "sensitivity_db_1w1m": 102.0
+        "fs_hz": 37.0,
+        "re_ohm": 5.29,
+        "bl_tm": 24.76,
+        "sd_m2": 0.013412,
+        "mms_kg": 0.2174,
+        "le_h": 0.00116,
+        "qms": 4.372,
+        "qes": 0.437,
+        "qts": 0.397,
+        "xmax_m": 0.0125,
+        "cms_m_per_n": 9e-05,
+        "nominal_impedance_ohm": 4.0,
+        "power_w": 1200.0,
+        "sensitivity_db_1w1m": 97.0
     },
     "field_provenance": {
         "fs_hz": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "fs_hz",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "re_ohm": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "re_ohm",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "bl_tm": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "bl_tm",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "sd_m2": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "sd_cm2",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "mms_kg": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "mms_g",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "le_h": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "le_mh",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "qms": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "qms",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "qes": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "qes",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "qts": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "qts",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "xmax_m": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "xmax_mm",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
+        },
+        "cms_m_per_n": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "cms_mm_per_n",
+            "upstream_spec_source": "html_table"
         },
         "nominal_impedance_ohm": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "impedance_nominal_ohm",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "power_w": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "power_aes_watts",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "sensitivity_db_1w1m": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "sensitivity_db_1w_1m",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "usable_f_low_hz": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "freq_low_hz",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         },
         "usable_f_high_hz": {
             "source_id": "driver-base",
-            "url": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "freq_high_hz",
-            "upstream_spec_source": "html_prose"
+            "upstream_spec_source": "html_table"
         }
     },
     "nominal_diameter": "6in",
-    "usable_f_low_hz": 200.0,
-    "usable_f_high_hz": 8000.0,
-    "parameter_source": "https://www.eighteensound.it/en/products/lf-driver/6-5/16/6nd410%20-%2016ohm",
+    "usable_f_low_hz": 30.0,
+    "usable_f_high_hz": 2500.0,
+    "parameter_source": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf1840jd-4/",
     "provenance": {
         "notes": [
-            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'eighteensound__6nd410__16ohm'.",
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'monacor__cf1840jd__4ohm'.",
             "Derived or inferred driver-base values not imported: power_program_watts."
         ]
     },
-    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category",
+    "incomplete_reason": "inconsistent Thiele/Small values: page Vas 155 L but Sd, Fs and Mms give 2.17 L"
 }

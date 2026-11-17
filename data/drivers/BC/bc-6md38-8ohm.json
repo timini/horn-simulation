@@ -155,14 +155,15 @@
             "upstream_spec_source": "html_grid"
         }
     },
-    "nominal_diameter": "6in",
+    "nominal_diameter": "6.5in",
     "usable_f_low_hz": 130.0,
     "usable_f_high_hz": 6000.0,
     "parameter_source": "https://www.bcspeakers.com/en/products/lf-driver/6.5/8/6MD38",
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'bcspeakers__6md38__8ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts, sensitivity_db_1w_1m."
+            "Derived or inferred driver-base values not imported: power_program_watts, sensitivity_db_1w_1m.",
+            "driver-base warn_flags: fs_hz_high_for_lf_woofer:130.0."
         ]
     },
     "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"

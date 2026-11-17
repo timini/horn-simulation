@@ -175,7 +175,7 @@
             "upstream_spec_source": "json_api"
         }
     },
-    "nominal_diameter": "6in",
+    "nominal_diameter": "6.5in",
     "usable_f_low_hz": 70.0,
     "usable_f_high_hz": 700.0,
     "parameter_source": "https://products.peerless-audio.com/api/driver/233",

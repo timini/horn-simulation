@@ -24,7 +24,6 @@
         "qes": 0.64,
         "qts": 0.49,
         "xmax_m": 0.002,
-        "cms_m_per_n": 0.0008,
         "nominal_impedance_ohm": 4.0,
         "power_w": 30.0,
         "sensitivity_db_1w1m": 90.0
@@ -120,15 +119,6 @@
             "upstream_field": "xmax_mm",
             "upstream_spec_source": "html_table"
         },
-        "cms_m_per_n": {
-            "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/hi-fi-speakers-/sp-60-4/",
-            "retrieved_on": "2026-10-18",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "cms_mm_per_n",
-            "upstream_spec_source": "html_table"
-        },
         "nominal_impedance_ohm": {
             "source_id": "driver-base",
             "url": "https://www.monacor.com/products/components/speaker-technology/hi-fi-speakers-/sp-60-4/",
@@ -157,12 +147,14 @@
             "upstream_spec_source": "html_table"
         }
     },
-    "nominal_diameter": "3in",
+    "nominal_diameter": "4in",
     "parameter_source": "https://www.monacor.com/products/components/speaker-technology/hi-fi-speakers-/sp-60-4/",
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'monacor__sp_60__4ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts."
+            "Derived or inferred driver-base values not imported: power_program_watts.",
+            "Cms not imported: Fs 65 Hz but Mms and Cms give 89 Hz, while Qes agrees with Mms.",
+            "driver-base warn_flags: range_reject:freq_low_hz=3.0."
         ]
     },
     "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"

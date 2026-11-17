@@ -165,14 +165,15 @@
             "upstream_spec_source": "html_table"
         }
     },
-    "nominal_diameter": "3in",
+    "nominal_diameter": "4in",
     "usable_f_low_hz": 60.0,
     "usable_f_high_hz": 6000.0,
     "parameter_source": "https://www.daytonaudio.com/product/2202/pcs115-8-4-poly-cone-woofer-8-ohm",
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'dayton__pcs115_8__8ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts, sensitivity_db_1w_1m."
+            "Derived or inferred driver-base values not imported: power_program_watts, sensitivity_db_1w_1m.",
+            "driver-base warn_flags: range_reject:vas_liters=0.0625."
         ]
     },
     "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"

@@ -24,7 +24,6 @@
         "qes": 0.372,
         "qts": 0.349,
         "xmax_m": 0.016,
-        "cms_m_per_n": 0.00088,
         "rms_kg_per_s": 8.19,
         "nominal_impedance_ohm": 8.0,
         "power_w": 1800.0,
@@ -121,15 +120,6 @@
             "upstream_field": "xmax_mm",
             "upstream_spec_source": "html_div_pairs"
         },
-        "cms_m_per_n": {
-            "source_id": "driver-base",
-            "url": "https://celestion.com/product/tsq1545-2/",
-            "retrieved_on": "2026-10-18",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "cms_mm_per_n",
-            "upstream_spec_source": "html_div_pairs"
-        },
         "rms_kg_per_s": {
             "source_id": "driver-base",
             "url": "https://celestion.com/product/tsq1545-2/",
@@ -192,7 +182,8 @@
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'celestion__tsq1545__8ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts."
+            "Derived or inferred driver-base values not imported: power_program_watts.",
+            "Cms not imported: Fs 39 Hz but Mms and Cms give 12.4 Hz, while Qes agrees with Mms."
         ]
     },
     "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"

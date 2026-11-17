@@ -195,7 +195,7 @@
             "upstream_spec_source": "html_div_pairs"
         }
     },
-    "nominal_diameter": "6in",
+    "nominal_diameter": "6.5in",
     "usable_f_low_hz": 70.0,
     "usable_f_high_hz": 9000.0,
     "parameter_source": "https://www.beyma.com/en/products/c/low-mid-frequency/106P2FE6/altavoz-6p200fe-16-oh/",

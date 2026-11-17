@@ -185,14 +185,15 @@
             "upstream_spec_source": "html_table"
         }
     },
-    "nominal_diameter": "2in",
+    "nominal_diameter": "3in",
     "usable_f_low_hz": 125.0,
     "usable_f_high_hz": 20000.0,
     "parameter_source": "https://faitalpro.com/en/products/LF_Loudspeakers/product_details/index.php?id=40900015",
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'faital__2fe22__8ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts."
+            "Derived or inferred driver-base values not imported: power_program_watts.",
+            "driver-base warn_flags: fs_hz_high_for_lf_woofer:125.0."
         ]
     },
     "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"

@@ -14,7 +14,10 @@
         "nominal_impedance_ohm": 8.0,
         "xmax_m": 0.007,
         "qms": 4.1,
-        "qes": 0.26
+        "qes": 0.26,
+        "power_w": 700.0,
+        "peak_power_w": 1400.0,
+        "sensitivity_db_1w1m": 99.0
     },
     "nominal_diameter": "12in",
     "parameter_source": "https://loudspeakerdatabase.com/Beyma/12MC700Nd",
@@ -27,7 +30,64 @@
         "known_limitations": [
             "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
             "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
-            "Band, power handling, Rms and sensitivity were not captured."
-        ]
+            "Rms not captured."
+        ],
+        "supplemented_fields": [
+            "peak_power_w",
+            "power_w",
+            "sensitivity_db_1w1m",
+            "usable_f_high_hz",
+            "usable_f_low_hz"
+        ],
+        "supplemented_from": "driver-base (CC BY 4.0) values read from the manufacturer page; see field_provenance for each field."
+    },
+    "usable_f_low_hz": 60.0,
+    "usable_f_high_hz": 4000.0,
+    "field_provenance": {
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/112MC70ND8/altavoz-12mc700nd-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "peak_power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/112MC70ND8/altavoz-12mc700nd-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_program_watts",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/112MC70ND8/altavoz-12mc700nd-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sensitivity_db_1w_1m",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "usable_f_low_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/112MC70ND8/altavoz-12mc700nd-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_low_hz",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "usable_f_high_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/112MC70ND8/altavoz-12mc700nd-8-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_high_hz",
+            "upstream_spec_source": "html_div_pairs"
+        }
     }
 }

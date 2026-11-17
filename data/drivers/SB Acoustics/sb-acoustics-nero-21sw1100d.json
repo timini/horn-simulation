@@ -195,7 +195,7 @@
             "upstream_spec_source": "pdf_table"
         }
     },
-    "nominal_diameter": "18in",
+    "nominal_diameter": "21in",
     "usable_f_low_hz": 32.0,
     "usable_f_high_hz": 2600.0,
     "parameter_source": "https://www.sbaudience.com/index.php/products/subwoofers/nero-21sw1100d/",

@@ -145,7 +145,8 @@
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "power_aes_watts",
-            "upstream_spec_source": "json_api"
+            "upstream_spec_source": "json_api",
+            "power_standard": "not AES (driver-base warn flag power_std_non_aes)"
         },
         "sensitivity_db_1w1m": {
             "source_id": "driver-base",
@@ -175,14 +176,15 @@
             "upstream_spec_source": "json_api"
         }
     },
-    "nominal_diameter": "6in",
+    "nominal_diameter": "6.5in",
     "usable_f_low_hz": 40.0,
     "usable_f_high_hz": 4000.0,
     "parameter_source": "https://products.peerless-audio.com/api/driver/289",
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'peerless__sds_p830657__8ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts."
+            "Derived or inferred driver-base values not imported: power_program_watts.",
+            "driver-base warn_flags: power_std_non_aes."
         ]
     },
     "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"

@@ -1,169 +1,160 @@
 {
-    "driver_id": "ciare-cs160-4ohm",
+    "driver_id": "sb-acoustics-sb34swpl76-3-dv",
     "record_schema_version": 2,
-    "manufacturer": "Ciare",
-    "model_name": "CS160",
+    "manufacturer": "SB Acoustics",
+    "model_name": "SB34SWPL76-3-DV",
     "identity": {
-        "manufacturer": "Ciare",
-        "model": "CS160",
+        "manufacturer": "SB Acoustics",
+        "model": "SB34SWPL76-3-DV",
         "variant": {
-            "impedance_ohm": 4.0,
+            "impedance_ohm": 2.0,
             "coil": null
         },
         "aliases": []
     },
     "driver_type": "cone",
     "parameters": {
-        "fs_hz": 62.0,
-        "re_ohm": 3.6,
-        "bl_tm": 3.66,
-        "sd_m2": 0.0133,
-        "mms_kg": 0.011,
-        "le_h": 0.00015,
-        "qms": 3.05,
-        "qes": 0.6,
-        "qts": 0.5,
-        "xmax_m": 0.004,
-        "cms_m_per_n": 0.0006,
-        "nominal_impedance_ohm": 4.0,
-        "power_w": 40.0,
-        "peak_power_w": 120.0
+        "fs_hz": 27.5,
+        "re_ohm": 2.0,
+        "bl_tm": 9.7,
+        "sd_m2": 0.0458,
+        "mms_kg": 0.231,
+        "le_h": 0.0014,
+        "qms": 5.62,
+        "qes": 0.52,
+        "qts": 0.48,
+        "cms_m_per_n": 0.00014,
+        "rms_kg_per_s": 7.1,
+        "nominal_impedance_ohm": 2.0,
+        "power_w": 300.0
     },
     "field_provenance": {
         "fs_hz": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "fs_hz",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
         },
         "re_ohm": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "re_ohm",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
         },
         "bl_tm": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "bl_tm",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
         },
         "sd_m2": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "sd_cm2",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
         },
         "mms_kg": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "mms_g",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
         },
         "le_h": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "le_mh",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
         },
         "qms": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "qms",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
         },
         "qes": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "qes",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
         },
         "qts": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "qts",
-            "upstream_spec_source": "inline_js"
-        },
-        "xmax_m": {
-            "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "xmax_mm",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
         },
         "cms_m_per_n": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "cms_mm_per_n",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
+        },
+        "rms_kg_per_s": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "rms_ns_per_m",
+            "upstream_spec_source": "html_prose"
         },
         "nominal_impedance_ohm": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "impedance_nominal_ohm",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
         },
         "power_w": {
             "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
+            "url": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
+            "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "power_aes_watts",
-            "upstream_spec_source": "inline_js"
-        },
-        "peak_power_w": {
-            "source_id": "driver-base",
-            "url": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
-            "retrieved_on": "2026-11-05",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "power_program_watts",
-            "upstream_spec_source": "inline_js"
+            "upstream_spec_source": "html_prose"
         }
     },
-    "nominal_diameter": "6in",
-    "parameter_source": "https://ciare.com/en/products/lf-driver/6.5/4/CS160",
+    "nominal_diameter": "12in",
+    "parameter_source": "https://sbacoustics.com/product/12in-sb34swpl76-3-dv/",
     "provenance": {
         "notes": [
-            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'ciare__cs160__4ohm'.",
-            "Derived or inferred driver-base values not imported: sensitivity_db_1w_1m."
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'sbacoustics__sb34swpl76_3_dv__2ohm'.",
+            "Derived or inferred driver-base values not imported: power_program_watts, sensitivity_db_1w_1m, xmax_mm."
         ]
     },
-    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category",
+    "incomplete_reason": "inconsistent Thiele/Small values: Qes 0.52 but Fs, Mms, Re and Bl give 0.848"
 }

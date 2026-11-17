@@ -155,13 +155,15 @@
             "upstream_spec_source": "html_table"
         }
     },
+    "nominal_diameter": "2in",
     "usable_f_low_hz": 137.0,
     "usable_f_high_hz": 20000.0,
     "parameter_source": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'fullrange', canonical_id 'dayton__ce38mb_32__32ohm'.",
-            "Derived or inferred driver-base values not imported: sensitivity_db_1w_1m."
+            "Derived or inferred driver-base values not imported: sensitivity_db_1w_1m.",
+            "driver-base warn_flags: range_reject:depth_mm=5.6, range_reject:net_weight_kg=0.013607759999999998, range_reject:power_aes_watts=0.25, impedance_unusual:32.0."
         ]
     },
     "type_source": "driver-base driver_kind 'fullrange', from the manufacturer's product category"

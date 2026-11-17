@@ -161,7 +161,8 @@
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'fullrange', canonical_id 'dayton__ce40_20f_8__8ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts, sensitivity_db_1w_1m."
+            "Derived or inferred driver-base values not imported: power_program_watts, sensitivity_db_1w_1m.",
+            "driver-base warn_flags: range_reject:qes=11.9, range_reject:vas_liters=0.008, range_reject:depth_mm=6.1, range_reject:net_weight_kg=0.00453592."
         ]
     },
     "type_source": "driver-base driver_kind 'fullrange', from the manufacturer's product category"

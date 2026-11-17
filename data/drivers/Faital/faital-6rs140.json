@@ -185,7 +185,7 @@
             "upstream_spec_source": "html_table"
         }
     },
-    "nominal_diameter": "6in",
+    "nominal_diameter": "6.5in",
     "usable_f_low_hz": 60.0,
     "usable_f_high_hz": 6000.0,
     "parameter_source": "https://faitalpro.com/en/products/LF_Loudspeakers/product_details/index.php?id=101020140",

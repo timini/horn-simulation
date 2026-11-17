@@ -1,11 +1,11 @@
 {
-    "driver_id": "monacor-cf18vjd",
+    "driver_id": "dayton-pcs175-8",
     "record_schema_version": 2,
-    "manufacturer": "Monacor",
-    "model_name": "CF18VJD",
+    "manufacturer": "Dayton",
+    "model_name": "PCS175-8",
     "identity": {
-        "manufacturer": "Monacor",
-        "model": "CF18VJD",
+        "manufacturer": "Dayton",
+        "model": "PCS175-8",
         "variant": {
             "impedance_ohm": 8.0,
             "coil": null
@@ -14,26 +14,25 @@
     },
     "driver_type": "cone",
     "parameters": {
-        "fs_hz": 34.5,
-        "re_ohm": 6.13,
-        "bl_tm": 32.59,
-        "sd_m2": 0.013412,
-        "mms_kg": 0.26542,
-        "le_h": 0.00187,
-        "qms": 4.573,
-        "qes": 0.332,
-        "qts": 0.309,
-        "xmax_m": 0.012,
-        "cms_m_per_n": 8e-05,
+        "fs_hz": 56.0,
+        "re_ohm": 6.6,
+        "bl_tm": 5.6,
+        "sd_m2": 0.0143,
+        "mms_kg": 0.0155,
+        "le_h": 0.00125,
+        "qms": 3.0,
+        "qes": 1.15,
+        "qts": 0.83,
+        "xmax_m": 0.00225,
+        "cms_m_per_n": 0.00052,
         "nominal_impedance_ohm": 8.0,
-        "power_w": 1600.0,
-        "sensitivity_db_1w1m": 97.0
+        "power_w": 30.0
     },
     "field_provenance": {
         "fs_hz": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "fs_hz",
@@ -41,8 +40,8 @@
         },
         "re_ohm": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "re_ohm",
@@ -50,8 +49,8 @@
         },
         "bl_tm": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "bl_tm",
@@ -59,8 +58,8 @@
         },
         "sd_m2": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "sd_cm2",
@@ -68,8 +67,8 @@
         },
         "mms_kg": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "mms_g",
@@ -77,8 +76,8 @@
         },
         "le_h": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "le_mh",
@@ -86,8 +85,8 @@
         },
         "qms": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "qms",
@@ -95,8 +94,8 @@
         },
         "qes": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "qes",
@@ -104,8 +103,8 @@
         },
         "qts": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "qts",
@@ -113,8 +112,8 @@
         },
         "xmax_m": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "xmax_mm",
@@ -122,8 +121,8 @@
         },
         "cms_m_per_n": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "cms_mm_per_n",
@@ -131,8 +130,8 @@
         },
         "nominal_impedance_ohm": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "impedance_nominal_ohm",
@@ -140,26 +139,17 @@
         },
         "power_w": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "power_aes_watts",
             "upstream_spec_source": "html_table"
         },
-        "sensitivity_db_1w1m": {
-            "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "sensitivity_db_1w_1m",
-            "upstream_spec_source": "html_table"
-        },
         "usable_f_low_hz": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "freq_low_hz",
@@ -167,8 +157,8 @@
         },
         "usable_f_high_hz": {
             "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
-            "retrieved_on": "2026-10-18",
+            "url": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
+            "retrieved_on": "2026-08-22",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "freq_high_hz",
@@ -176,14 +166,15 @@
         }
     },
     "nominal_diameter": "6in",
-    "usable_f_low_hz": 25.0,
-    "usable_f_high_hz": 1500.0,
-    "parameter_source": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/cf18vjd-8/",
+    "usable_f_low_hz": 50.0,
+    "usable_f_high_hz": 5300.0,
+    "parameter_source": "https://www.daytonaudio.com/product/2204/pcs175-8-6-1-2-poly-cone-woofer-8-ohm",
     "provenance": {
         "notes": [
-            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'monacor__cf18vjd__8ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts."
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'dayton__pcs175_8__8ohm'.",
+            "Derived or inferred driver-base values not imported: power_program_watts, sensitivity_db_1w_1m."
         ]
     },
-    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category",
+    "incomplete_reason": "inconsistent Thiele/Small values: page Vas 0.523 L but Sd, Fs and Mms give 15.1 L"
 }

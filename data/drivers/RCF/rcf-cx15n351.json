@@ -182,7 +182,8 @@
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'coax', canonical_id 'rcf__cx15n351__8ohm'.",
-            "Coaxial driver: the parameters are for the low-frequency section."
+            "Coaxial driver: the parameters are for the low-frequency section.",
+            "driver-base warn_flags: xmech_xmax_ratio_high:39.0/6.0."
         ]
     },
     "type_source": "driver-base driver_kind 'coax', from the manufacturer's product category"

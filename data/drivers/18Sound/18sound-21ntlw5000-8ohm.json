@@ -165,7 +165,7 @@
             "upstream_spec_source": "html_prose"
         }
     },
-    "nominal_diameter": "18in",
+    "nominal_diameter": "21in",
     "usable_f_low_hz": 30.0,
     "usable_f_high_hz": 1800.0,
     "parameter_source": "https://www.eighteensound.it/en/products/lf-driver/21-0/8/21ntlw5000",

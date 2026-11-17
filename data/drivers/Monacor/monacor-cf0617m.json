@@ -24,7 +24,6 @@
         "qes": 0.481,
         "qts": 0.451,
         "xmax_m": 0.0027,
-        "cms_m_per_n": 0.0001,
         "nominal_impedance_ohm": 8.0,
         "power_w": 200.0,
         "sensitivity_db_1w1m": 96.0
@@ -120,15 +119,6 @@
             "upstream_field": "xmax_mm",
             "upstream_spec_source": "html_table"
         },
-        "cms_m_per_n": {
-            "source_id": "driver-base",
-            "url": "https://www.monacor.com/products/components/speaker-technology/pa-midrange-speakers-/cf0617m-8/",
-            "retrieved_on": "2026-10-18",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "cms_mm_per_n",
-            "upstream_spec_source": "html_table"
-        },
         "nominal_impedance_ohm": {
             "source_id": "driver-base",
             "url": "https://www.monacor.com/products/components/speaker-technology/pa-midrange-speakers-/cf0617m-8/",
@@ -175,14 +165,15 @@
             "upstream_spec_source": "html_table"
         }
     },
-    "nominal_diameter": "6in",
+    "nominal_diameter": "6.5in",
     "usable_f_low_hz": 300.0,
     "usable_f_high_hz": 7000.0,
     "parameter_source": "https://www.monacor.com/products/components/speaker-technology/pa-midrange-speakers-/cf0617m-8/",
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'fullrange', canonical_id 'monacor__cf0617m__8ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts."
+            "Derived or inferred driver-base values not imported: power_program_watts.",
+            "Cms not imported: Fs 116.6 Hz but Mms and Cms give 148 Hz, while Qes agrees with Mms."
         ]
     },
     "type_source": "driver-base driver_kind 'fullrange', from the manufacturer's product category"

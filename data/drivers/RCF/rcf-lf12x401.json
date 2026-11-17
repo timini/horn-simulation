@@ -181,7 +181,8 @@
     "parameter_source": "https://www.rcf.it/en/products/product-detail/lf12x401",
     "provenance": {
         "notes": [
-            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'rcf__lf12x401__8ohm'."
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'rcf__lf12x401__8ohm'.",
+            "driver-base warn_flags: xmech_xmax_ratio_high:60.0/9.0."
         ]
     },
     "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"

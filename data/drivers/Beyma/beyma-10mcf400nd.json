@@ -201,7 +201,8 @@
     "parameter_source": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCF40ND8/altavoz-10mcf400nd-8-oh/",
     "provenance": {
         "notes": [
-            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'beyma__10mcf400nd__8ohm'."
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'beyma__10mcf400nd__8ohm'.",
+            "driver-base warn_flags: fs_hz_high_for_lf_woofer:260.0."
         ]
     },
     "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"

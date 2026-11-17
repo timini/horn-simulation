@@ -191,7 +191,8 @@
     "provenance": {
         "notes": [
             "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'hf_compression', canonical_id 'celestion__tfx0515_16__16ohm'.",
-            "Derived or inferred driver-base values not imported: power_program_watts."
+            "Derived or inferred driver-base values not imported: power_program_watts.",
+            "driver-base warn_flags: fs_hz_low_for_hf:110.0."
         ]
     },
     "type_source": "driver-base driver_kind 'hf_compression', from the manufacturer's product category"

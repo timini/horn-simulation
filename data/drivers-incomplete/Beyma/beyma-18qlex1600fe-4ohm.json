@@ -1,38 +1,40 @@
 {
-    "driver_id": "rcf-mb12n251",
+    "driver_id": "beyma-18qlex1600fe-4ohm",
     "record_schema_version": 2,
-    "manufacturer": "RCF",
-    "model_name": "MB12N251",
+    "manufacturer": "Beyma",
+    "model_name": "18QLEX1600Fe",
     "identity": {
-        "manufacturer": "RCF",
-        "model": "MB12N251",
+        "manufacturer": "Beyma",
+        "model": "18QLEX1600Fe",
         "variant": {
-            "impedance_ohm": 8.0,
+            "impedance_ohm": 4.0,
             "coil": null
         },
         "aliases": []
     },
     "driver_type": "cone",
     "parameters": {
-        "fs_hz": 50.0,
-        "re_ohm": 5.1,
-        "bl_tm": 15.0,
-        "sd_m2": 0.5,
-        "mms_kg": 0.049,
-        "le_h": 0.0013,
-        "qms": 5.4,
-        "qes": 0.36,
-        "qts": 0.34,
-        "xmax_m": 0.005,
-        "nominal_impedance_ohm": 8.0,
-        "power_w": 300.0,
-        "peak_power_w": 600.0,
-        "sensitivity_db_1w1m": 98.0
+        "fs_hz": 31.0,
+        "re_ohm": 3.6,
+        "bl_tm": 30.7,
+        "sd_m2": 0.1255,
+        "mms_kg": 0.036,
+        "le_h": 0.0028,
+        "qms": 11.6,
+        "qes": 0.25,
+        "qts": 0.25,
+        "xmax_m": 0.013,
+        "cms_m_per_n": 8e-05,
+        "rms_kg_per_s": 5.6,
+        "nominal_impedance_ohm": 4.0,
+        "power_w": 1600.0,
+        "peak_power_w": 3200.0,
+        "sensitivity_db_1w1m": 96.0
     },
     "field_provenance": {
         "fs_hz": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -41,7 +43,7 @@
         },
         "re_ohm": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -50,7 +52,7 @@
         },
         "bl_tm": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -59,7 +61,7 @@
         },
         "sd_m2": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -68,7 +70,7 @@
         },
         "mms_kg": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -77,7 +79,7 @@
         },
         "le_h": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -86,7 +88,7 @@
         },
         "qms": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -95,7 +97,7 @@
         },
         "qes": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -104,7 +106,7 @@
         },
         "qts": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -113,16 +115,34 @@
         },
         "xmax_m": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
             "upstream_field": "xmax_mm",
             "upstream_spec_source": "html_div_pairs"
         },
+        "cms_m_per_n": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "cms_mm_per_n",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "rms_kg_per_s": {
+            "source_id": "driver-base",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "rms_ns_per_m",
+            "upstream_spec_source": "html_div_pairs"
+        },
         "nominal_impedance_ohm": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -131,7 +151,7 @@
         },
         "power_w": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -140,7 +160,7 @@
         },
         "peak_power_w": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -149,7 +169,7 @@
         },
         "sensitivity_db_1w1m": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -158,7 +178,7 @@
         },
         "usable_f_low_hz": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -167,7 +187,7 @@
         },
         "usable_f_high_hz": {
             "source_id": "driver-base",
-            "url": "https://www.rcf.it/en/products/product-detail/mb12n251",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
             "retrieved_on": "2026-10-18",
             "method": "page",
             "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
@@ -176,13 +196,14 @@
         }
     },
     "nominal_diameter": "18in",
-    "usable_f_low_hz": 45.0,
-    "usable_f_high_hz": 3000.0,
-    "parameter_source": "https://www.rcf.it/en/products/product-detail/mb12n251",
+    "usable_f_low_hz": 30.0,
+    "usable_f_high_hz": 1200.0,
+    "parameter_source": "https://www.beyma.com/en/products/c/low-mid-frequency/118QLEX16FE4/altavoz-18qlex1600fe-4-oh/",
     "provenance": {
         "notes": [
-            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'rcf__mb12n251__8ohm'."
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'beyma__18qlex1600fe__4ohm'."
         ]
     },
-    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category",
+    "incomplete_reason": "inconsistent Thiele/Small values: Fs 31 Hz but Mms and Cms give 93.8 Hz; Qes 0.25 but Fs, Mms, Re and Bl give 0.0268; page Vas 177 L but Sd, Fs and Mms give 1.63e+03 L"
 }
