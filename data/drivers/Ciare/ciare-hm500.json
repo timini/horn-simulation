@@ -1,0 +1,160 @@
+{
+    "driver_id": "ciare-hm500",
+    "record_schema_version": 2,
+    "manufacturer": "Ciare",
+    "model_name": "HM500",
+    "identity": {
+        "manufacturer": "Ciare",
+        "model": "HM500",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 550.0,
+        "re_ohm": 6.5,
+        "bl_tm": 7.5,
+        "sd_m2": 0.0026,
+        "mms_kg": 0.002,
+        "le_h": 0.0002,
+        "qms": 3.8,
+        "qes": 0.8,
+        "qts": 0.66,
+        "xmax_m": 0.001,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 100.0,
+        "peak_power_w": 200.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "fs_hz",
+            "upstream_spec_source": "inline_js"
+        },
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "inline_js"
+        },
+        "bl_tm": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "bl_tm",
+            "upstream_spec_source": "inline_js"
+        },
+        "sd_m2": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sd_cm2",
+            "upstream_spec_source": "inline_js"
+        },
+        "mms_kg": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "mms_g",
+            "upstream_spec_source": "inline_js"
+        },
+        "le_h": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "le_mh",
+            "upstream_spec_source": "inline_js"
+        },
+        "qms": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qms",
+            "upstream_spec_source": "inline_js"
+        },
+        "qes": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qes",
+            "upstream_spec_source": "inline_js"
+        },
+        "qts": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qts",
+            "upstream_spec_source": "inline_js"
+        },
+        "xmax_m": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "xmax_mm",
+            "upstream_spec_source": "inline_js"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "inline_js"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "inline_js"
+        },
+        "peak_power_w": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_program_watts",
+            "upstream_spec_source": "inline_js"
+        }
+    },
+    "nominal_diameter": "2in",
+    "parameter_source": "https://ciare.com/en/products/lf-driver/2/8/HM500",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'ciare__hm500__8ohm'.",
+            "Derived or inferred driver-base values not imported: sensitivity_db_1w_1m.",
+            "driver-base warn_flags: fs_hz_high_for_lf_woofer:550.0."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+}

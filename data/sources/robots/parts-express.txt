@@ -1,0 +1,26 @@
+Sitemap: https://www.parts-express.com/sitemap_index.xml
+Sitemap: https://www.parts-express.com/sitemap_pages.xml
+Sitemap: https://www.parts-express.com/sitemap_docs.xml
+User-agent: Googlebot
+Allow: /
+User-agent: Googlebot-Image
+Allow: /
+User-Agent: bingbot
+Allow: /
+User-agent: Yandex
+Disallow: /
+User-agent: Yandexbot
+Disallow: /
+User-agent: Baiduspider
+Disallow: /
+User-agent: Baiduspider-image
+Disallow: /
+User-agent: CCBot
+Disallow: /
+User-agent: *
+Disallow: /datafeeds/*
+Disallow: /requestcustomquote/*
+Disallow: *?base_price=
+Disallow: /reviewrating/
+
+

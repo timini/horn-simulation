@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from horn_core.parameters import DriverParameters
+from horn_drivers.records import SUPPORTED_RECORD_SCHEMA_VERSIONS, parameter_source
 
 
 # Relative mismatch between a supplied Qts and the Qts implied by supplied
@@ -73,10 +74,19 @@ def _driver_from_dict(d: dict) -> DriverParameters:
     Handles both v1 (flat) and v2 (nested ``parameters``) formats, and
     converts common datasheet units on the fly: mH, cm^2, mm, g, litres.
     A record that gives Vas instead of Mms gets Mms from Vas, Sd and Fs.
+
+    Record schema versions 1 and 2 (``record_schema_version``) are read. A
+    version 2 record may omit ``manufacturer``/``model_name`` in favour of
+    its ``identity`` block, and gives provenance per field instead of one
+    ``parameter_source``.
     """
     # v2 format nests T-S params under "parameters"
     params = d.get("parameters", d)
     driver_id = d.get("driver_id", "unknown")
+    version = d.get("record_schema_version", 1)
+    if version not in SUPPORTED_RECORD_SCHEMA_VERSIONS:
+        raise ValueError(f"{driver_id}: record_schema_version {version!r} is not supported")
+    identity = d.get("identity") if isinstance(d.get("identity"), dict) else {}
 
     # Unit conversions — source may use convenience units
     # Only missing values fall back to aliases. Explicit zero limits must
@@ -118,7 +128,16 @@ def _driver_from_dict(d: dict) -> DriverParameters:
         # Cms = Vas / (rho c^2 Sd^2); Mms = 1 / ((2 pi fs)^2 Cms)
         cms = vas_m3 / (RHO_AIR * C_AIR ** 2 * sd_m2 ** 2)
         mms_kg = 1.0 / ((2.0 * math.pi * fs_hz) ** 2 * cms)
+    # Nominal (AES/RMS) power and peak (program) power are separate ratings;
+    # a record with only a peak rating has no nominal power.
     power_w = _first(params, "power_w", "power_aes_w", "power_aes_watts")
+    peak_power_w = _first(params, "peak_power_w", "program_power_w")
+    usable_f_low_hz = _first(d, "usable_f_low_hz")
+    if usable_f_low_hz is None:
+        usable_f_low_hz = params.get("usable_f_low_hz")
+    usable_f_high_hz = _first(d, "usable_f_high_hz")
+    if usable_f_high_hz is None:
+        usable_f_high_hz = params.get("usable_f_high_hz")
 
     for name, value in (("sd_m2", sd_m2), ("mms_kg", mms_kg), ("le_h", le_h),
                         ("xmax_m", xmax_m), ("exit_area_m2", exit_area_m2),
@@ -139,8 +158,8 @@ def _driver_from_dict(d: dict) -> DriverParameters:
 
     driver = DriverParameters(
         driver_id=driver_id,
-        manufacturer=d.get("manufacturer", ""),
-        model_name=d.get("model_name", ""),
+        manufacturer=d.get("manufacturer") or identity.get("manufacturer") or "",
+        model_name=d.get("model_name") or identity.get("model") or "",
         fs_hz=fs_hz,
         re_ohm=re_ohm,
         bl_tm=params.get("bl_tm", 0.0),
@@ -154,12 +173,13 @@ def _driver_from_dict(d: dict) -> DriverParameters:
         driver_type=d.get("driver_type"),
         nominal_diameter=d.get("nominal_diameter"),
         xmax_m=xmax_m,
-        nominal_impedance_ohm=params.get("nominal_impedance_ohm"),
+        nominal_impedance_ohm=params.get("nominal_impedance_ohm") or (identity.get("variant") or {}).get("impedance_ohm"),
         power_w=power_w,
-        peak_power_w=params.get("peak_power_w"),
-        usable_f_low_hz=d.get("usable_f_low_hz"),
-        usable_f_high_hz=d.get("usable_f_high_hz"),
-        parameter_source=d.get("parameter_source"),
+        peak_power_w=peak_power_w,
+        sensitivity_db_1w1m=params.get("sensitivity_db_1w1m"),
+        usable_f_low_hz=usable_f_low_hz,
+        usable_f_high_hz=usable_f_high_hz,
+        parameter_source=parameter_source(d),
         interface_model=d.get("interface_model"),
         mmd_kg=params.get("mmd_kg"),
         rear_load_mass_kg=params.get("rear_load_mass_kg"),

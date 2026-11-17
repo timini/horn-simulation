@@ -1,33 +1,134 @@
 {
     "driver_id": "18sound-15nlw9500",
+    "record_schema_version": 2,
     "manufacturer": "18Sound",
     "model_name": "15NLW9500",
+    "identity": {
+        "manufacturer": "18Sound",
+        "model": "15NLW9500",
+        "variant": {
+            "impedance_ohm": 4.0,
+            "coil": null
+        },
+        "aliases": []
+    },
     "driver_type": "cone",
     "parameters": {
         "fs_hz": 34.0,
         "re_ohm": 2.7,
-        "bl_tm": 18.2,
-        "sd_m2": 0.085,
-        "mms_kg": 0.17200000000000001,
-        "le_h": 0.00058,
-        "qts": 0.29,
-        "nominal_impedance_ohm": 4.0,
-        "xmax_m": 0.009000000000000001,
+        "qes": 0.3,
         "qms": 7.84,
-        "qes": 0.3
+        "qts": 0.29,
+        "sd_m2": 0.085,
+        "xmax_m": 0.009,
+        "mms_kg": 0.172,
+        "bl_tm": 18.2,
+        "le_h": 0.00058,
+        "nominal_impedance_ohm": 4.0,
+        "power_w": 1000.0,
+        "peak_power_w": 1400.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page",
+            "note": "manufacturer Mms; the previous value may have been Mmd"
+        },
+        "bl_tm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_low_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "eighteensound",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
     },
     "nominal_diameter": "15in",
-    "parameter_source": "https://loudspeakerdatabase.com/18Sound/15NLW9500",
-    "record_schema_version": 1,
+    "usable_f_low_hz": 42.0,
+    "usable_f_high_hz": 2000.0,
+    "parameter_source": "https://www.eighteensound.it/en/products/lf-driver/15-0/4/15nlw9500%20-%204%20Ohm",
     "provenance": {
-        "retrieved_on": "2026-02-26",
-        "retrieved_on_basis": "Date of commit 3f212b1, which wrote this record. The scrape date itself was not recorded.",
-        "source_kind": "third_party_aggregator",
-        "capture_method": "Legacy scrape of loudspeakerdatabase.com (before scraper schema 3). parameter_source was reconstructed from the manufacturer slug and model name.",
-        "known_limitations": [
-            "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
-            "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
-            "Band, power handling, Rms and sensitivity were not captured."
+        "notes": [
+            "Sensitivity 96 dB: the drive note names 8 ohm for a 4 ohm model, so the 1 W figure is unknown; not stored.",
+            "Replaces the loudspeakerdatabase record retrieved 2026-02-26. Previous values that differ by more than 5 % (10 % for Le and Xmax) are kept under field_provenance conflicts."
         ]
     }
 }

@@ -1,0 +1,179 @@
+{
+    "driver_id": "18sound-18nlw4500-8ohm",
+    "record_schema_version": 2,
+    "manufacturer": "18Sound",
+    "model_name": "18NLW4500",
+    "identity": {
+        "manufacturer": "18Sound",
+        "model": "18NLW4500",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 35.0,
+        "re_ohm": 5.0,
+        "bl_tm": 30.3,
+        "sd_m2": 0.1225,
+        "mms_kg": 0.286,
+        "le_h": 0.002,
+        "qms": 9.7,
+        "qes": 0.34,
+        "qts": 0.33,
+        "xmax_m": 0.0153,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 1800.0,
+        "sensitivity_db_1w1m": 97.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "fs_hz",
+            "upstream_spec_source": "html_prose"
+        },
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "html_prose"
+        },
+        "bl_tm": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "bl_tm",
+            "upstream_spec_source": "html_prose"
+        },
+        "sd_m2": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sd_cm2",
+            "upstream_spec_source": "html_prose"
+        },
+        "mms_kg": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "mms_g",
+            "upstream_spec_source": "html_prose"
+        },
+        "le_h": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "le_mh",
+            "upstream_spec_source": "html_prose"
+        },
+        "qms": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qms",
+            "upstream_spec_source": "html_prose"
+        },
+        "qes": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qes",
+            "upstream_spec_source": "html_prose"
+        },
+        "qts": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qts",
+            "upstream_spec_source": "html_prose"
+        },
+        "xmax_m": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "xmax_mm",
+            "upstream_spec_source": "html_prose"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "html_prose"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "html_prose"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sensitivity_db_1w_1m",
+            "upstream_spec_source": "html_prose"
+        },
+        "usable_f_low_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_low_hz",
+            "upstream_spec_source": "html_prose"
+        },
+        "usable_f_high_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_high_hz",
+            "upstream_spec_source": "html_prose"
+        }
+    },
+    "nominal_diameter": "18in",
+    "usable_f_low_hz": 30.0,
+    "usable_f_high_hz": 1000.0,
+    "parameter_source": "https://www.eighteensound.it/en/products/lf-driver/18-0/8/18nlw4500",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'eighteensound__18nlw4500__8ohm'.",
+            "Derived or inferred driver-base values not imported: power_program_watts."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+}

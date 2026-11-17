@@ -186,7 +186,15 @@ def main():
         data['total_scored']+=audit['fem_evaluations']*len(drivers)
         data['total_candidates']+=audit['fem_evaluations']
     from horn_analysis.search import annotate_comparable_candidates
-    data['results'] = annotate_comparable_candidates(sorted(data['results'], key=lambda row: row['composite_score'], reverse=True)[:a.top_n])
+    feasible = sorted(data['results'], key=lambda row: row['composite_score'], reverse=True)
+    data['results'] = annotate_comparable_candidates(feasible[:a.top_n])
+    # Price is display and filter only; the cheapest feasible design competes
+    # with the one found before refinement (rows beyond top_n were dropped then).
+    pricing = json.loads(Path(a.prescreen_json).read_text()).get('pricing')
+    if pricing:
+        from horn_analysis.pricing import annotate_ranking
+        previous = (data.get('pricing') or {}).get('cheapest_feasible')
+        data['pricing'] = annotate_ranking(feasible, data['results'], pricing, previous=previous)
     (out/'search_audit.json').write_text(json.dumps(data['refinement'],indent=2))
     (out/'ranked_results.json').write_text(json.dumps(data,indent=2))
 

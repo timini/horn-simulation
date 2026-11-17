@@ -1,0 +1,51 @@
+User-agent: *
+Disallow: /advertising/
+Disallow: /info.php
+Disallow: /request_a_quote/
+Disallow: /tech_spec/
+Disallow: /where_to_buy/
+Disallow: /info.php
+Disallow: /highlights/2021/2FE24/
+
+
+#ENGLISH VERSION
+Disallow: /en/test.php
+Disallow: /en/breadcrumb.php
+Disallow: /en/contact_us/send_message.php
+Disallow: /en/privacy_statement/privacy_content.php
+Disallow: /en/products/compare_products/script/
+Disallow: /en/request_a_quote/send_request.php
+Disallow: /en/where_to_buy/become_a_distributor/send_request.php
+Disallow: /en/customer_registration/
+
+#CHINESE VERSION
+Disallow: /cn/breadcrumb.php
+Disallow: /cn/contact_us/send_message.php
+Disallow: /cn/privacy_statement/privacy_content.php
+Disallow: /cn/products/compare_products/script/
+Disallow: /cn/request_a_quote/send_request.php
+
+#RUSSIAN VERSION
+Disallow: /ru/breadcrumb.php
+Disallow: /ru/contact_us/send_message.php
+Disallow: /ru/privacy_statement/privacy_content.php
+Disallow: /ru/products/compare_products/script/
+Disallow: /ru/request_a_quote/send_request.php
+
+#SPANISH VERSION
+Disallow: /es/breadcrumb.php
+Disallow: /es/contact_us/send_message.php
+Disallow: /es/privacy_statement/privacy_content.php
+Disallow: /es/products/compare_products/script/
+Disallow: /es/request_a_quote/send_request.php
+
+#ITALIAN VERSION
+Disallow: /it/test.php
+Disallow: /it/breadcrumb.php
+Disallow: /it/contact_us/send_message.php
+Disallow: /it/privacy_statement/privacy_content.php
+Disallow: /it/products/compare_products/script/
+Disallow: /it/request_a_quote/send_request.php
+Disallow: /it/where_to_buy/become_a_distributor/send_request.php
+
+Sitemap: http://www.faitalpro.com/faitalpro-sitemap.xml

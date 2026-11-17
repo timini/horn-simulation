@@ -1,0 +1,150 @@
+{
+    "driver_id": "beyma-6mcf200nd",
+    "record_schema_version": 2,
+    "manufacturer": "Beyma",
+    "model_name": "6MCF200Nd",
+    "identity": {
+        "manufacturer": "Beyma",
+        "model": "6MCF200Nd",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": [
+            "106MCF20ND8"
+        ]
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 406.0,
+        "re_ohm": 6.2,
+        "qes": 0.77,
+        "qms": 10.3,
+        "qts": 0.72,
+        "sd_m2": 0.014,
+        "xmax_m": 0.0025,
+        "mms_kg": 0.015,
+        "bl_tm": 18.1,
+        "le_h": 0.0001,
+        "cms_m_per_n": 1e-05,
+        "rms_kg_per_s": 3.9,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 200.0,
+        "peak_power_w": 400.0,
+        "sensitivity_db_1w1m": 97.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "bl_tm": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "cms_m_per_n": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "rms_kg_per_s": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_low_hz": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "6.5in",
+    "usable_f_low_hz": 400.0,
+    "usable_f_high_hz": 12000.0,
+    "parameter_source": "https://www.beyma.com/en/products/c/low-mid-frequency/106MCF20ND8/altavoz-6mcf200nd-8-oh/"
+}

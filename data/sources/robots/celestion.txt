@@ -1,0 +1,21 @@
+User-agent: meta-externalagent
+Allow: /                    # Allow everything
+Disallow: /wp-admin/         # Disallow a specific directory
+
+User-agent: *
+Disallow: /wp-content/uploads/wc-logs/
+Disallow: /wp-content/uploads/woocommerce_transient_files/
+Disallow: /wp-content/uploads/woocommerce_uploads/
+Disallow: /*?add-to-cart=
+Disallow: /*?*add-to-cart=
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
+Crawl-delay: 10
+# START YOAST BLOCK
+# ---------------------------
+User-agent: *
+Disallow:
+
+Sitemap: https://celestion.com/sitemap_index.xml
+# ---------------------------
+# END YOAST BLOCK

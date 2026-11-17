@@ -228,6 +228,29 @@ def prescreen_drivers(
     )
 
 
+def apply_price_filter(drivers, prices_dir, region, max_price=None, as_of=None):
+    """(drivers kept, pricing dict) for a price region and optional maximum price.
+
+    Without *max_price* every driver is kept and only the offers are
+    attached. With it, a driver needs a current offer at or below the limit;
+    drivers without one are dropped, since their price is unknown.
+    """
+    import datetime as dt
+    from horn_drivers.prices import price_snapshot
+    day = dt.date.fromisoformat(as_of) if as_of else None
+    pricing = price_snapshot(prices_dir, [d.driver_id for d in drivers], region, as_of=day, max_price=max_price)
+    pricing["excluded_unpriced"] = pricing["excluded_over_max_price"] = 0
+    if max_price is not None:
+        over = set(pricing["over_max_price"])
+        kept = [d for d in drivers if d.driver_id in pricing["offers"] and d.driver_id not in over]
+        pricing["excluded_unpriced"] = len(pricing["unpriced"])
+        pricing["excluded_over_max_price"] = len(over)
+        print(f"Price filter: {len(kept)} of {len(drivers)} drivers have a current {region} offer "
+              f"at or below {max_price:g} {pricing['currency']}")
+        drivers = kept
+    return drivers, pricing
+
+
 def main():
     """CLI for driver pre-screening."""
     parser = argparse.ArgumentParser(
@@ -248,8 +271,19 @@ def main():
     parser.add_argument("--throat-fractions", type=str, default=None,
                         help="Comma-separated throat radius fractions of a_max (default '0.3,0.65,1.0'). "
                              "Use smaller values for phase-plug-tiny throats, e.g. '0.1,0.25,0.5,0.75,1.0'.")
+    parser.add_argument("--prices-dir", type=str, default=None, help="Price snapshot folder (data/prices).")
+    parser.add_argument("--price-region", type=str, default=None,
+                        help="Attach the cheapest current offer in this region (e.g. UK) to each driver.")
+    parser.add_argument("--max-price", type=float, default=None,
+                        help="Keep only drivers with a current offer at or below this price, in the region's currency.")
+    parser.add_argument("--price-as-of", type=str, default=None,
+                        help="Date (YYYY-MM-DD) for the 30-day staleness check; default today.")
     parser.add_argument("--output", type=str, default="prescreen_result.json", help="Output JSON file.")
     args = parser.parse_args()
+    if args.max_price is not None and not args.price_region:
+        parser.error("--max-price needs --price-region")
+    if args.price_region and not args.prices_dir:
+        parser.error("--price-region needs --prices-dir")
 
     from horn_drivers.loader import load_drivers
 
@@ -272,10 +306,22 @@ def main():
         throat_fractions=throat_fractions,
     )
 
+    pricing = None
+    if args.price_region:
+        drivers, pricing = apply_price_filter(drivers, args.prices_dir, args.price_region, args.max_price,
+                                              args.price_as_of)
     result = prescreen_drivers(drivers, config)
+    extra = {}
+    if pricing is not None:
+        kept = {d.driver_id for d in result.drivers}
+        pricing["offers"] = {k: v for k, v in pricing["offers"].items() if k in kept}
+        pricing["snapshot_dates"] = sorted({v["retrieved_on"] for v in pricing["offers"].values()})
+        pricing["sources"] = sorted({v["source_id"] for v in pricing["offers"].values()})
+        pricing["unpriced"] = sorted(kept - set(pricing["offers"]))
+        extra["pricing"] = pricing
 
     output = json.dumps({**result.to_dict(), "ka_max": config.ka_max, "ka_soft": config.ka_soft,
-                         "ka_reference": "target_f_high"}, indent=2)
+                         "ka_reference": "target_f_high", **extra}, indent=2)
     Path(args.output).write_text(output)
     print(f"Pre-screening complete: {result.count} drivers passed")
     print(f"Representative throat radius: {result.throat_radius_m:.4f} m")

@@ -1,33 +1,156 @@
 {
     "driver_id": "beyma-10mcb700",
+    "record_schema_version": 2,
     "manufacturer": "Beyma",
     "model_name": "10MCB700",
+    "identity": {
+        "manufacturer": "Beyma",
+        "model": "10MCB700",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": [
+            "110MCB708"
+        ]
+    },
     "driver_type": "cone",
     "parameters": {
         "fs_hz": 75.0,
         "re_ohm": 5.3,
-        "bl_tm": 20.1,
-        "sd_m2": 0.03500000000000001,
-        "mms_kg": 0.055,
-        "le_h": 0.0009000000000000001,
-        "qts": 0.327,
-        "nominal_impedance_ohm": 8.0,
-        "xmax_m": 0.007,
+        "qes": 0.35,
         "qms": 4.9,
-        "qes": 0.35
+        "qts": 0.33,
+        "sd_m2": 0.035,
+        "xmax_m": 0.007,
+        "mms_kg": 0.055,
+        "bl_tm": 20.1,
+        "le_h": 0.0009,
+        "cms_m_per_n": 7.6e-05,
+        "rms_kg_per_s": 5.5,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 700.0,
+        "peak_power_w": 1400.0,
+        "sensitivity_db_1w1m": 96.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page",
+            "note": "manufacturer Mms; the previous value may have been Mmd"
+        },
+        "bl_tm": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "cms_m_per_n": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "rms_kg_per_s": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_low_hz": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
     },
     "nominal_diameter": "10in",
-    "parameter_source": "https://loudspeakerdatabase.com/Beyma/10MCB700",
-    "record_schema_version": 1,
+    "usable_f_low_hz": 80.0,
+    "usable_f_high_hz": 4000.0,
+    "parameter_source": "https://www.beyma.com/en/products/c/low-mid-frequency/110MCB708/altavoz-10mcb700-8-oh/",
     "provenance": {
-        "retrieved_on": "2026-02-26",
-        "retrieved_on_basis": "Date of commit 3f212b1, which wrote this record. The scrape date itself was not recorded.",
-        "source_kind": "third_party_aggregator",
-        "capture_method": "Legacy scrape of loudspeakerdatabase.com (before scraper schema 3). parameter_source was reconstructed from the manufacturer slug and model name.",
-        "known_limitations": [
-            "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
-            "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
-            "Band, power handling, Rms and sensitivity were not captured."
+        "notes": [
+            "Replaces the loudspeakerdatabase record retrieved 2026-02-26. Previous values that differ by more than 5 % (10 % for Le and Xmax) are kept under field_provenance conflicts."
         ]
     }
 }

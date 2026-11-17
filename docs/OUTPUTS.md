@@ -52,7 +52,7 @@ Everything is under `outputs/auto/`.
 
 | File | Contents |
 | --- | --- |
-| `prescreen_result.json` | Drivers that passed the screen, the throat radii sampled and their flags (for example `throat_above_first_asymmetric_mode`, `diaphragm_smaller_than_throat`). |
+| `prescreen_result.json` | Drivers that passed the screen, the throat radii sampled and their flags (for example `throat_above_first_asymmetric_mode`, `diaphragm_smaller_than_throat`). With `price_region`, `pricing` holds the offer used for each screened driver, the drivers without one, and how many `max_price` removed. |
 | `design.json` | Derived search ranges for throat, mouth and length, where each bound came from (`bound_sources`: user, heuristic, driver prescreen or size cap), the solver sweep (`sim_freq_range`) and any size compromise in octaves. |
 | `candidates.csv` | The full geometry grid: `candidate_id`, `profile`, `throat_radius`, `mouth_radius`, `length`. |
 | `lem_results.json`, `lem_filtered_candidates.csv` | Webster screen of every grid geometry with every driver, the shortlist policy and the geometries sent to FEM. |
@@ -74,6 +74,8 @@ Everything is under `outputs/auto/`.
 
 When nothing can be ranked (no driver passes the screen, the size limits leave no geometry, or no geometry is inside the radiation model's domain), the run still completes and writes `ranked_results.json` with `status: no_feasible_design`, a `reason`, and a report that says why.
 
+With `price_region`, `ranked_results.json` also has a top-level `pricing` block: region, currency, ranking date, snapshot dates, sources, ECB rate date when a price was converted, the `max_price` counts and `cheapest_feasible` (the cheapest model-feasible design over every feasible row, not only the top `top_n`). `auto_summary.txt` and the HTML report print the same, and give each ranked design's price with its source and date. The summary and the HTML driver table also show each driver's nominal and peak power and datasheet sensitivity at 1 W, 1 m.
+
 ### Ranking rows
 
 Each row in `ranked_results.json`, `refinement/ranked_results.json` and `auto_ranking.json` is one driver on one horn. The main fields:
@@ -94,6 +96,7 @@ Each row in `ranked_results.json`, `refinement/ranked_results.json` and `auto_ra
 | `front_chamber_estimated`, `estimated_chamber_reasons`, `without_front_chamber` | Front chamber policy; see [DRIVERS](DRIVERS.md#front-and-rear-chambers). |
 | `max_displacement_peak_m`, `max_input_power_w` | Peak excursion and input power over the band at the drive voltage. |
 | `test_power_*` | With `test_power_w`: the test voltage, excursion and Xmax margin at that power over the band and the whole sweep, and the largest in-band input power with its margin to the driver rating. |
+| `price`, `cheapest_feasible` | With `price_region`: the driver's cheapest current offer in that region (`price` and `currency` in the region's currency, `listed_price` and `listed_currency` as the shop shows it, `fx_rate`, `vat_included`, `in_stock`, `source_id`, `url`, `sku`, `retrieved_on`), or `null` when there is none; `cheapest_feasible` marks the cheapest model-feasible design. Not part of the score. |
 | `radiation_model`, `output_metric`, `loss_model`, `element_degree` | Model used. `output_metric` is `modal_baffled_on_axis` or `uniform_baffled_piston_on_axis`. |
 | `kpi` | Older peak-lobe metrics, as in single-mode `kpis.json`. |
 | `validation_status` | Always `experimental_prediction`. |

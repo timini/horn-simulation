@@ -1,0 +1,26 @@
+{
+    "driver_id": "celestion-h1-7050-no-bell",
+    "record_schema_version": 2,
+    "manufacturer": "Celestion",
+    "model_name": "H1-7050 'No Bell'",
+    "identity": {
+        "manufacturer": "Celestion",
+        "model": "H1-7050 'No Bell'",
+        "variant": {
+            "impedance_ohm": null,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "compression",
+    "parameters": {},
+    "field_provenance": {},
+    "parameter_source": null,
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'hf_compression', canonical_id 'celestion__h1_7050_no_bell__h1_7050_nobell'."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'hf_compression', from the manufacturer's product category",
+    "incomplete_reason": "missing Thiele/Small fields: fs_hz, re_ohm, bl_tm, sd_m2, mms_kg, le_h"
+}

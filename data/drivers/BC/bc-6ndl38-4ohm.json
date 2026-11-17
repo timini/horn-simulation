@@ -1,0 +1,134 @@
+{
+    "driver_id": "bc-6ndl38-4ohm",
+    "record_schema_version": 2,
+    "manufacturer": "BC",
+    "model_name": "6NDL38",
+    "identity": {
+        "manufacturer": "BC",
+        "model": "6NDL38",
+        "variant": {
+            "impedance_ohm": 4.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 69.0,
+        "re_ohm": 3.1,
+        "qes": 0.4,
+        "qms": 10.05,
+        "qts": 0.39,
+        "sd_m2": 0.0132,
+        "xmax_m": 0.006,
+        "mms_kg": 0.018,
+        "bl_tm": 7.8,
+        "le_h": 0.0004,
+        "nominal_impedance_ohm": 4.0,
+        "power_w": 150.0,
+        "peak_power_w": 300.0,
+        "sensitivity_db_1w1m": 91.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "bl_tm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "derived"
+        },
+        "usable_f_low_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "bc",
+            "url": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "6.5in",
+    "usable_f_low_hz": 70.0,
+    "usable_f_high_hz": 5000.0,
+    "parameter_source": "https://www.bcspeakers.com/en/products/lf-driver/6.5/4/6NDL38"
+}

@@ -1,0 +1,159 @@
+{
+    "driver_id": "sb-acoustics-mw16p-4",
+    "record_schema_version": 2,
+    "manufacturer": "SB Acoustics",
+    "model_name": "MW16P-4",
+    "identity": {
+        "manufacturer": "SB Acoustics",
+        "model": "MW16P-4",
+        "variant": {
+            "impedance_ohm": 4.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 28.0,
+        "re_ohm": 3.4,
+        "bl_tm": 5.2,
+        "sd_m2": 0.0119,
+        "mms_kg": 0.0128,
+        "le_h": 0.00015,
+        "qms": 5.0,
+        "qes": 0.28,
+        "qts": 0.27,
+        "cms_m_per_n": 0.0025,
+        "rms_kg_per_s": 0.45,
+        "nominal_impedance_ohm": 4.0,
+        "power_w": 60.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "fs_hz",
+            "upstream_spec_source": "html_prose"
+        },
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "html_prose"
+        },
+        "bl_tm": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "bl_tm",
+            "upstream_spec_source": "html_prose"
+        },
+        "sd_m2": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sd_cm2",
+            "upstream_spec_source": "html_prose"
+        },
+        "mms_kg": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "mms_g",
+            "upstream_spec_source": "html_prose"
+        },
+        "le_h": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "le_mh",
+            "upstream_spec_source": "html_prose"
+        },
+        "qms": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qms",
+            "upstream_spec_source": "html_prose"
+        },
+        "qes": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qes",
+            "upstream_spec_source": "html_prose"
+        },
+        "qts": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qts",
+            "upstream_spec_source": "html_prose"
+        },
+        "cms_m_per_n": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "cms_mm_per_n",
+            "upstream_spec_source": "html_prose"
+        },
+        "rms_kg_per_s": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "rms_ns_per_m",
+            "upstream_spec_source": "html_prose"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "html_prose"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "html_prose"
+        }
+    },
+    "nominal_diameter": "5in",
+    "parameter_source": "https://sbacoustics.com/product/6%C2%BDin-satori-mw16p-4/",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'sbacoustics__mw16p_4__4ohm'.",
+            "Derived or inferred driver-base values not imported: power_program_watts, sensitivity_db_1w_1m, xmax_mm."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+}

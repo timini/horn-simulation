@@ -1,0 +1,148 @@
+{
+    "driver_id": "celestion-tsq1535",
+    "record_schema_version": 2,
+    "manufacturer": "Celestion",
+    "model_name": "TSQ1535",
+    "identity": {
+        "manufacturer": "Celestion",
+        "model": "TSQ1535",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 50.0,
+        "re_ohm": 5.2,
+        "qes": 0.432,
+        "qms": 4.921,
+        "qts": 0.397,
+        "sd_m2": 0.08553,
+        "xmax_m": 0.008,
+        "mms_kg": 0.1119,
+        "bl_tm": 20.65,
+        "le_h": 0.000884,
+        "cms_m_per_n": 9.1e-05,
+        "rms_kg_per_s": 7.148,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 900.0,
+        "peak_power_w": 1800.0,
+        "sensitivity_db_1w1m": 98.2
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "bl_tm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "cms_m_per_n": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "rms_kg_per_s": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_low_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1535/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "15in",
+    "usable_f_low_hz": 45.0,
+    "usable_f_high_hz": 3000.0,
+    "parameter_source": "https://celestion.com/product/tsq1535/"
+}

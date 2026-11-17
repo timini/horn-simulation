@@ -1,0 +1,90 @@
+# Bax Music: We Support Your Stage
+# You can get paid snooping around in our code:
+# https://werkenbijbax-shop.nl/
+
+User-Agent: *
+Allow: /
+
+# Webshop
+Disallow: /.well-known/*  # SSGTM
+Disallow: /*?device_view= # desk/mob switcher
+Disallow: /*?tt= # Malformed Tradetracker redirect URL's
+Disallow: /*keyword=*
+Disallow: /administrator/ # Admin URL's
+Disallow: /api/ # API URL's
+Disallow: /artikel/ # Product Shortcut URL's
+Disallow: /bax-music-club.html # Bax Music Club
+Disallow: /bekijk-winkelwagen-inhoud.html # Shopping cart
+Disallow: /bstock-drawer/
+Disallow: /cache/ # Legacy
+Disallow: /cart-drawer/
+Disallow: /checkout/ # Cart and Checkout
+Disallow: /cdn-cgi/ # Endpoint Cloudflare
+Disallow: /compare/ # Product-compare pages
+Disallow: /components/ # Legacy
+Disallow: /customer-service/ # PDP - Report product-error
+Disallow: /dev/ # Legacy
+Disallow: /editor/ # Legacy
+Disallow: /fsi/ # 360 photo-viewer
+Disallow: /ga-naar-checkout.html # Check-out
+Disallow: /help/ # Legacy
+Disallow: /index.php # Non-clean URL's
+Disallow: /index2.php # Non-clean URL's
+Disallow: /index3.php # Non-clean URL's
+Disallow: /installation/ # Legacy
+Disallow: /language/ # Legacy
+Disallow: /mambots/ # Legacy
+Disallow: /modules/ # Legacy
+Disallow: /mybax/ # Mybax environment
+Disallow: /rental-form/ # Rental forms
+Disallow: /product_instock.php # Legacy
+Disallow: /product_stock.php # Legacy
+Disallow: /product-reservation* # PDP - Store reservation links
+Disallow: /producten.html? # Search pages
+Disallow: /complete-assortment/keyword # Search pages
+Disallow: /productreviews/ # PDP - Show more reviews links
+Disallow: /recommend-product-to-friend/ # PDP - Tell-a-friend links
+Disallow: /search? # Search pages
+Disallow: /sku/ # Product Shortcut URL's
+Disallow: /to/ # Typeform URL's
+Disallow: /tradetracker/ # Tradetracker redirect URL's
+Disallow: /verlanglijsten.html # Wishlist pages
+Disallow: /voeg-product-toe-aan-winkelwagen/ # Add-to-cart
+Disallow: /wishlist-drawer/
+Disallow: /wishlist-popup/
+Disallow: /xml/ # Legacy
+Disallow: /notify-product-in-stock/ # PDP - Back in stock notification email
+Allow: /components/com_virtuemart/shop_image/ # Legacy
+Allow: /index.php?option=com_joomap&view=google # Legacy
+Allow: /mybax/reset/password-forgotten # Password-rest page
+
+# Webshop - PAR legacy
+Disallow: /askAQuestionAboutProduct # PDP - Ask a question
+Disallow: /checkout/ # Shopping cart
+Disallow: /customer/ # Account page
+Disallow: /login # Login page
+Disallow: /product/popup/addToCart # Add-to-cart
+Disallow: /product/popup/popupQuickview # PDP - Accessoires Quick-view modal
+Disallow: /produit/ # Alt. Product Shortcut URL's FR
+Disallow: /reportError # PDP - Report product-error
+Disallow: /review/form # PDP - Write a review form
+Disallow: /shareProduct # PDP - Tell-a-friend links
+Disallow: /signUpForInStockEmail # PDP - Back in stock notification email
+Disallow: /products/search # Search pages
+
+# Blog
+Disallow: /blog/*/feed/
+Disallow: /blog/comment-subscriptions/
+Disallow: /blog/wp-admin/
+
+# Sitemaps
+Sitemap: https://sitemap.bax-shop.co.uk/en_gb/sitemap.xml
+Sitemap: https://www.bax-shop.co.uk/blog/sitemap_index.xml
+
+# Specific bots
+User-agent: Genieo
+Disallow: /
+User-agent: JobdiggerSpider
+Disallow: /
+User-Agent: Baiduspider
+Disallow: /

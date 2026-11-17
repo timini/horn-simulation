@@ -1,0 +1,170 @@
+{
+    "driver_id": "dayton-ce38mb-32",
+    "record_schema_version": 2,
+    "manufacturer": "Dayton",
+    "model_name": "CE38MB-32",
+    "identity": {
+        "manufacturer": "Dayton",
+        "model": "CE38MB-32",
+        "variant": {
+            "impedance_ohm": 32.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 137.9,
+        "re_ohm": 31.98,
+        "bl_tm": 1.23,
+        "sd_m2": 0.000491,
+        "mms_kg": 6e-05,
+        "le_h": 0.00131,
+        "qms": 0.66,
+        "qes": 1.15,
+        "qts": 0.42,
+        "xmax_m": 0.0001,
+        "cms_m_per_n": 0.0213,
+        "nominal_impedance_ohm": 32.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "fs_hz",
+            "upstream_spec_source": "html_table"
+        },
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "html_table"
+        },
+        "bl_tm": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "bl_tm",
+            "upstream_spec_source": "html_table"
+        },
+        "sd_m2": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sd_cm2",
+            "upstream_spec_source": "html_table"
+        },
+        "mms_kg": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "mms_g",
+            "upstream_spec_source": "html_table"
+        },
+        "le_h": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "le_mh",
+            "upstream_spec_source": "html_table"
+        },
+        "qms": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qms",
+            "upstream_spec_source": "html_table"
+        },
+        "qes": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qes",
+            "upstream_spec_source": "html_table"
+        },
+        "qts": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qts",
+            "upstream_spec_source": "html_table"
+        },
+        "xmax_m": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "xmax_mm",
+            "upstream_spec_source": "html_table"
+        },
+        "cms_m_per_n": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "cms_mm_per_n",
+            "upstream_spec_source": "html_table"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "html_table"
+        },
+        "usable_f_low_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_low_hz",
+            "upstream_spec_source": "html_table"
+        },
+        "usable_f_high_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+            "retrieved_on": "2026-08-22",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_high_hz",
+            "upstream_spec_source": "html_table"
+        }
+    },
+    "nominal_diameter": "2in",
+    "usable_f_low_hz": 137.0,
+    "usable_f_high_hz": 20000.0,
+    "parameter_source": "https://www.daytonaudio.com/product/1186/ce38mb-32-1-1-2-mini-speaker-driver-black-32-ohm",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'fullrange', canonical_id 'dayton__ce38mb_32__32ohm'.",
+            "Derived or inferred driver-base values not imported: sensitivity_db_1w_1m.",
+            "driver-base warn_flags: range_reject:depth_mm=5.6, range_reject:net_weight_kg=0.013607759999999998, range_reject:power_aes_watts=0.25, impedance_unusual:32.0."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'fullrange', from the manufacturer's product category"
+}

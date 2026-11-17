@@ -18,6 +18,7 @@ This page lists every `just` command, the launcher options and every pipeline pa
 | `just test-local` | Run the package tests that need no Docker (horn-drivers, horn-core, horn-analysis, horn-geometry and the gmsh-only solver meshing tests) from `.venv`. |
 | `just test-nextflow [args]` | Run the nf-test workflow tests through `scripts/nf_test.sh`. |
 | `just validate-drivers` | Check `data/drivers` and `data/drivers-curated` with `horn-validate-drivers`. CI requires zero errors. |
+| `just driver-coverage` | Regenerate `docs/DRIVER_COVERAGE.md` (records per maker and source, field coverage, prices per region and retailer, conflicts, sources not in use) from the files in `data/`. No network. |
 | `just validate-cross-software` | Run the openwind, bempp-cl and Hornresp comparisons. Slow; see [CROSS_SOFTWARE_VALIDATION](CROSS_SOFTWARE_VALIDATION.md). |
 | `just validate-cross-software-fem <runs>` | Compare two archived FEM runs with openwind. |
 | `just clean` | Remove the Docker images and the Nextflow files in the repository root. Run folders under `results/` are not touched. |
@@ -141,6 +142,9 @@ Every parameter is set with `--name value`. The defaults below are the values in
 | `throat_fractions` | unset | Comma list of throat radii as fractions of the largest allowed throat, for example `0.1,0.3,0.65,1.0`. Unset uses `0.3,0.65,1.0` plus driver-matched radii. |
 | `min_diameter` | unset | Keep only drivers with nominal diameter at least this, inches. |
 | `max_diameter` | unset | Keep only drivers with nominal diameter at most this, inches. |
+| `price_region` | unset | Show the cheapest current offer for each driver in this region: `UK`, `EU`, `US`, `CA`, `AU`, `CH`, `JP`, `NO`, `SE`, `DK` or `PL`. Prices appear in the ranking, summary and report with their source and snapshot date, plus the cheapest feasible design. Price is never part of the score. See [DRIVERS](DRIVERS.md#prices). |
+| `max_price` | unset | Needs `price_region`. Keep only drivers with a current offer at or below this price, in the region's currency (GBP for UK). Drivers without a current offer are dropped too. |
+| `prices_dir` | `data/prices` | Price snapshot folder. Read only when `price_region` is set. |
 | `lem_top_n` | `10` | Number of screened geometries sent to FEM. |
 | `refinement_budget` | `6` | Extra FEM evaluations for refinement after the shortlist. `0` turns refinement off. |
 | `top_n` | `10` | Number of ranked results kept. The report details the top five. |
@@ -224,5 +228,6 @@ Each takes `--help`.
 | `scripts/image_source.py` | Hash the sources of a Docker image. Used by `just build` and the launcher. |
 | `scripts/nf_test.sh` | Download nf-test 0.9.5 to `.tools/`, check its sha256 and run it. `NF_TEST` overrides the binary. |
 | `scripts/validate_drivers.py`, `scripts/scrape_drivers.py` | Thin wrappers around `horn-validate-drivers` and `horn-scrape-drivers`. |
+| `scripts/driver_coverage.py` | Writes `docs/DRIVER_COVERAGE.md` from the driver and price files (`just driver-coverage`). |
 
 The validation scripts are listed in [VALIDATION](VALIDATION.md).

@@ -1,0 +1,147 @@
+{
+    "driver_id": "celestion-truvox-1525-8ohm",
+    "record_schema_version": 2,
+    "manufacturer": "Celestion",
+    "model_name": "Truvox 1525",
+    "identity": {
+        "manufacturer": "Celestion",
+        "model": "Truvox 1525",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 49.0,
+        "re_ohm": 6.58,
+        "qes": 0.803,
+        "qms": 12.918,
+        "qts": 0.756,
+        "sd_m2": 0.08553,
+        "xmax_m": 0.00475,
+        "bl_tm": 14.273,
+        "le_h": 0.000703,
+        "cms_m_per_n": 0.000131,
+        "rms_kg_per_s": 1.924,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 400.0,
+        "peak_power_w": 800.0,
+        "sensitivity_db_1w1m": 96.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "bl_tm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "cms_m_per_n": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "rms_kg_per_s": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_low_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/truvox-1525/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "15in",
+    "usable_f_low_hz": 40.0,
+    "usable_f_high_hz": 4000.0,
+    "parameter_source": "https://celestion.com/product/truvox-1525/",
+    "provenance": {
+        "notes": [
+            "mms_kg shown as 80.772 without a unit; not stored."
+        ]
+    },
+    "incomplete_reason": "missing mms_kg on the manufacturer page"
+}

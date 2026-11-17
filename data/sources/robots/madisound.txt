@@ -1,0 +1,13 @@
+User-agent: *
+
+Disallow: /*sort_by*
+Disallow: /*items_on_page*
+Disallow: /*price_range*
+Disallow: /*filters[*
+Disallow: /*after_login_product_url*
+Disallow: /*wl_action*
+Disallow: /*oa=OrderStartCheckout*
+Disallow: /*oa=OrderStart*
+
+Sitemap: https://www.madisoundspeakerstore.com/sitemap.xml
+# LLMs: https://www.madisoundspeakerstore.com/llms.txt

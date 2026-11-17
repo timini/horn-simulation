@@ -1,0 +1,170 @@
+{
+    "driver_id": "monacor-sp-15a",
+    "record_schema_version": 2,
+    "manufacturer": "Monacor",
+    "model_name": "SP-15A",
+    "identity": {
+        "manufacturer": "Monacor",
+        "model": "SP-15A",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 36.0,
+        "re_ohm": 6.5,
+        "bl_tm": 19.9,
+        "sd_m2": 0.0881,
+        "mms_kg": 0.087,
+        "le_h": 0.0009,
+        "qms": 7.45,
+        "qes": 0.33,
+        "qts": 0.31,
+        "xmax_m": 0.005,
+        "cms_m_per_n": 0.00022,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 400.0,
+        "sensitivity_db_1w1m": 100.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "fs_hz",
+            "upstream_spec_source": "html_table"
+        },
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "html_table"
+        },
+        "bl_tm": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "bl_tm",
+            "upstream_spec_source": "html_table"
+        },
+        "sd_m2": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sd_cm2",
+            "upstream_spec_source": "html_table"
+        },
+        "mms_kg": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "mms_g",
+            "upstream_spec_source": "html_table"
+        },
+        "le_h": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "le_mh",
+            "upstream_spec_source": "html_table"
+        },
+        "qms": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qms",
+            "upstream_spec_source": "html_table"
+        },
+        "qes": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qes",
+            "upstream_spec_source": "html_table"
+        },
+        "qts": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qts",
+            "upstream_spec_source": "html_table"
+        },
+        "xmax_m": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "xmax_mm",
+            "upstream_spec_source": "html_table"
+        },
+        "cms_m_per_n": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "cms_mm_per_n",
+            "upstream_spec_source": "html_table"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "html_table"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "html_table"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "driver-base",
+            "url": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sensitivity_db_1w_1m",
+            "upstream_spec_source": "html_table"
+        }
+    },
+    "nominal_diameter": "15in",
+    "parameter_source": "https://www.monacor.com/products/components/speaker-technology/pa-bass-speakers-/sp-15a-402pa/",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'monacor__sp_15a__8ohm'.",
+            "Derived or inferred driver-base values not imported: power_program_watts.",
+            "driver-base warn_flags: range_reject:freq_low_hz=3.0."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+}

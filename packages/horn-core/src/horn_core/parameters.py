@@ -66,8 +66,9 @@ class DriverParameters:
     nominal_diameter: Optional[str] = None  # e.g. "18in", "15in", "1in"
     xmax_m: Optional[float] = None
     nominal_impedance_ohm: Optional[float] = None
-    power_w: Optional[float] = None           # RMS / AES / continuous power (W)
-    peak_power_w: Optional[float] = None      # Peak / program power (W)
+    power_w: Optional[float] = None           # Nominal (AES / RMS / continuous) power (W)
+    peak_power_w: Optional[float] = None      # Peak / program power (W); never used as power_w
+    sensitivity_db_1w1m: Optional[float] = None  # Datasheet sensitivity, dB SPL at 1 W, 1 m
     usable_f_low_hz: Optional[float] = None
     usable_f_high_hz: Optional[float] = None
     parameter_source: Optional[str] = None
@@ -106,6 +107,9 @@ class DriverParameters:
             if value is not None and (not np.isfinite(value) or value < 0 or (name in positive and value == 0)):
                 requirement = "positive" if name in positive else "nonnegative"
                 raise ValueError(f"{self.driver_id}: {name} must be finite and {requirement}")
+        if self.sensitivity_db_1w1m is not None and not (
+                np.isfinite(self.sensitivity_db_1w1m) and 40.0 <= self.sensitivity_db_1w1m <= 140.0):
+            raise ValueError(f"{self.driver_id}: sensitivity_db_1w1m must be a finite dB SPL between 40 and 140")
         if self.front_chamber_area_m2 is not None and not self.front_chamber_volume_m3:
             raise ValueError(f"{self.driver_id}: front_chamber_area_m2 needs a positive front_chamber_volume_m3")
         if self.usable_f_low_hz is not None and self.usable_f_high_hz is not None and self.usable_f_low_hz >= self.usable_f_high_hz:

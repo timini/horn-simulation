@@ -161,8 +161,17 @@ def request(
     patience_s: float = 0.0,
     timeout: float = 30.0,
     max_backoff: float = 300.0,
+    return_response: bool = False,
+    max_bytes: Optional[int] = None,
 ):
     """GET *url* politely, returning a 200 response or None.
+
+    With *return_response*, a final non-200 response (a permanent status, or
+    any status once *max_attempts* is used up) is returned instead of None,
+    so the caller can see the status; network failures still give None.
+    With *max_bytes*, the body is streamed and the response rejected as a
+    failure once it grows past that size (one broken origin served a 388 MB
+    page for a single driver URL).
 
     Paces every request with a jittered delay, honours Retry-After on
     throttling responses, and backs off exponentially on transient failures.
@@ -185,14 +194,25 @@ def request(
 
         status = None
         try:
-            resp = session.get(url, timeout=timeout)
+            if max_bytes is None:
+                resp = session.get(url, timeout=timeout)
+            else:
+                resp = session.get(url, timeout=timeout, stream=True)
+                _read_limited(resp, max_bytes)
             status = resp.status_code
             if status == 200:
                 _fix_encoding(resp)
                 return resp
             reason = f"HTTP {status}"
+        except ResponseTooLarge:
+            raise
         except Exception as exc:  # network-level failure
             reason = f"{type(exc).__name__}: {exc}"
+
+        if return_response and status is not None and (
+                status in (400, 401, 403, 404, 410) or attempt >= max_attempts):
+            print(f"    {reason} for {url}")
+            return resp
 
         # Permanent: do not retry.
         if status in (400, 401, 403, 404, 410):
@@ -228,6 +248,23 @@ def request(
         if waiting_out_origin and time.monotonic() >= deadline:
             raise OriginUnavailable(f"Origin outage patience exhausted for {url}; stopping the scrape")
         backoff = min(backoff * 2, max_backoff)
+
+
+class ResponseTooLarge(IOError):
+    """A response body exceeded the caller's size limit."""
+
+
+def _read_limited(resp, max_bytes: int) -> None:
+    """Read a streamed body into ``resp`` (as ``resp.content``), up to *max_bytes*."""
+    chunks, size = [], 0
+    for chunk in resp.iter_content(chunk_size=65536):
+        size += len(chunk)
+        if size > max_bytes:
+            resp.close()
+            raise ResponseTooLarge(f"body larger than {max_bytes} bytes")
+        chunks.append(chunk)
+    resp._content = b"".join(chunks)
+    resp._content_consumed = True
 
 
 class ScrapeError(RuntimeError):
@@ -734,11 +771,24 @@ def _save_state(state_path: Optional[Path], state: dict) -> None:
         _atomic_json(state_path, state)
 
 
-def _save_driver(db_dir: Path, driver: dict) -> None:
+def _save_driver(db_dir: Path, driver: dict) -> bool:
+    """Write a scraped record, unless the file already holds manufacturer data.
+
+    A version 2 record whose values come from a manufacturer adapter wins over
+    the aggregator (source plan conflict rule), so the scraper leaves it alone.
+    Returns False when the write was skipped.
+    """
     manufacturer, driver_id = driver["manufacturer"], driver["driver_id"]
     _validate_component(manufacturer)
     _validate_component(driver_id)
+    existing = _existing_driver(db_dir, manufacturer, driver_id)
+    sources = {entry.get("source_id") for entry in (existing.get("field_provenance") or {}).values()
+               if isinstance(entry, dict)}
+    if existing.get("record_schema_version") == 2 and sources - {"loudspeakerdatabase"}:
+        print(f"  keeping {manufacturer}/{driver_id}: it holds manufacturer data ({', '.join(sorted(sources))})")
+        return False
     _atomic_json(db_dir/manufacturer/f"{driver_id}.json", driver)
+    return True
 
 
 def scrape_all(

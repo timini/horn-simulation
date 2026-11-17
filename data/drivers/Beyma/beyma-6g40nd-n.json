@@ -1,0 +1,148 @@
+{
+    "driver_id": "beyma-6g40nd-n",
+    "record_schema_version": 2,
+    "manufacturer": "Beyma",
+    "model_name": "6G40Nd/N",
+    "identity": {
+        "manufacturer": "Beyma",
+        "model": "6G40Nd/N",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": [
+            "106G4NDN8"
+        ]
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 100.0,
+        "re_ohm": 6.0,
+        "qes": 0.45,
+        "qms": 2.33,
+        "qts": 0.38,
+        "sd_m2": 0.014,
+        "xmax_m": 0.003,
+        "mms_kg": 0.013,
+        "bl_tm": 10.6,
+        "le_h": 0.0002,
+        "rms_kg_per_s": 3.6,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 170.0,
+        "peak_power_w": 340.0,
+        "sensitivity_db_1w1m": 94.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "bl_tm": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "rms_kg_per_s": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_low_hz": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "beyma",
+            "url": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "6.5in",
+    "usable_f_low_hz": 90.0,
+    "usable_f_high_hz": 8000.0,
+    "parameter_source": "https://www.beyma.com/en/products/c/low-mid-frequency/106G4NDN8/altavoz-6g40nd-n-8-oh/",
+    "provenance": {
+        "notes": [
+            "page Cms 0.000136 m/N gives Fs 119.7 Hz against the stated 100 Hz; differs by more than 10 %, so not stored."
+        ]
+    }
+}

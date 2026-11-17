@@ -1,0 +1,132 @@
+{
+    "driver_id": "celestion-tsq1545",
+    "record_schema_version": 2,
+    "manufacturer": "Celestion",
+    "model_name": "TSQ1545",
+    "identity": {
+        "manufacturer": "Celestion",
+        "model": "TSQ1545",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 39.0,
+        "re_ohm": 5.05,
+        "qes": 0.372,
+        "qms": 5.612,
+        "qts": 0.349,
+        "sd_m2": 0.08553,
+        "xmax_m": 0.016,
+        "mms_kg": 0.1878,
+        "bl_tm": 25.0,
+        "le_h": 0.00183,
+        "rms_kg_per_s": 8.19,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 1800.0,
+        "peak_power_w": 3600.0,
+        "sensitivity_db_1w1m": 96.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "bl_tm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "rms_kg_per_s": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/tsq1545-2/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
+    },
+    "nominal_diameter": "15in",
+    "parameter_source": "https://celestion.com/product/tsq1545-2/",
+    "provenance": {
+        "notes": [
+            "page Cms 0.00088 m/N gives Fs 12.4 Hz against the stated 39 Hz; differs by more than 10 %, so not stored."
+        ]
+    }
+}

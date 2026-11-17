@@ -4,9 +4,9 @@ Drivers are JSON files, one per driver, under version control. Choose a database
 
 | Folder | Contents |
 | --- | --- |
-| `data/drivers` | 1,454 drivers (1,342 labelled cone, 112 of unknown type) scraped from loudspeakerdatabase.com across nine manufacturers (18Sound, B&C, Beyma, Celestion, Ciare, Dayton, Eminence, LaVoce, SICA). The default. |
+| `data/drivers` | 2,122 drivers. 1,205 are version 1 records scraped from loudspeakerdatabase.com (408 of them also carry power, sensitivity or band from driver-base). 917 are version 2 records: 403 read from the B&C, 18 Sound, Celestion and Beyma product pages and 514 imported from the open driver-base dataset (CC BY 4.0). Counts per maker, source and field are in [DRIVER_COVERAGE.md](DRIVER_COVERAGE.md). The default. |
 | `data/drivers-curated` | Seven hand-checked records from manufacturer pages and datasheets: three cone drivers (18Sound 6NMB420, Celestion AF3010 and TF0512HE) and four Peerless compression drivers. See [its README](../data/drivers-curated/README.md). |
-| `data/drivers-incomplete` | Not loadable. Compression drivers whose public data lack a full Thiele-Small set, and scraped records removed from `data/drivers` with the reason. See [its README](../data/drivers-incomplete/README.md). |
+| `data/drivers-incomplete` | Not loadable. Compression drivers whose public data lack a full Thiele-Small set, records whose values contradict each other or duplicate another maker's page, manufacturer records without a full set (one folder per manufacturer, each file with `incomplete_reason`), and scraped records removed from `data/drivers` with the reason. Manufacturer conflict lists are under `conflicts/`. See [its README](../data/drivers-incomplete/README.md). |
 
 None of these records is a physically qualified driver. Every one lacks a verified throat interface and a separate diaphragm mass and rear load, so rankings label them `insufficient_evidence`.
 
@@ -33,9 +33,133 @@ None of these records is a physically qualified driver. Every one lacks a verifi
 }
 ```
 
-Parameters are SI. The loader also accepts these unit-suffixed keys and converts them: `sd_cm2`, `vas_l`, `mms_g`, `le_mh`, `xmax_mm`, `exit_area_cm2`, `exit_diameter_mm`, `front_chamber_volume_cm3`, `front_chamber_area_cm2`, `rear_chamber_volume_cm3` and `power_aes_watts`. A value orders of magnitude off is rejected with a hint about the unit. Missing Mms is not replaced with the dry Mmd, and program power is never used as continuous power.
+Parameters are SI. `power_w` is the nominal (AES, RMS or continuous) rating and `peak_power_w` the peak or program rating; the loader never uses one for the other. `sensitivity_db_1w1m` is the datasheet sensitivity in dB SPL at 1 W and 1 m; it is shown in the report but not used in the score. The validator warns when a cone driver's stated sensitivity is more than 4 dB from the Thiele-Small reference efficiency (sheets mix the 1 W and 2.83 V conventions). The usable band may sit at the top level or inside `parameters`.
+
+The loader also accepts these unit-suffixed keys and converts them: `sd_cm2`, `vas_l`, `mms_g`, `le_mh`, `xmax_mm`, `exit_area_cm2`, `exit_diameter_mm`, `front_chamber_volume_cm3`, `front_chamber_area_cm2`, `rear_chamber_volume_cm3` and `power_aes_watts`. A value orders of magnitude off is rejected with a hint about the unit. Missing Mms is not replaced with the dry Mmd, and program power is never used as continuous power.
 
 `driver_type` is `cone`, `compression` or `unknown`. A compression driver's throat is its exit (`exit_diameter_mm` or `exit_area_cm2`).
+
+### Record schema version 2
+
+New records from the source adapters use `"record_schema_version": 2`. The loader reads versions 1 and 2. Version 2 keeps every version 1 field and adds:
+
+```json
+{
+  "identity": {"manufacturer": "BC", "model": "8NDL51",
+               "variant": {"impedance_ohm": 8.0, "coil": null}, "aliases": ["8NDL51-8"]},
+  "field_provenance": {
+    "fs_hz": {"source_id": "bc", "url": "https://www.bcspeakers.com/...", "retrieved_on": "2026-11-17", "method": "page"}
+  }
+}
+```
+
+- `identity.manufacturer` must be a canonical name from `horn_drivers.identity.MANUFACTURERS`, which matches the folder names (`BC` for B&C, `18Sound` for Eighteen Sound). Aliases there cover retailer spellings. `aliases` holds retailer SKUs and model spellings for matching.
+- `field_provenance` gives the source of each stored field. `method` is `page`, `pdf`, `derived` or `manual`. Every stored Fs, Re, Bl, Sd, Mms and Le needs an entry (an error otherwise); other fields without one get a warning. An entry may list `conflicts`, the values that lost to a better source.
+- `horn_drivers.records.make_record` builds a version 2 record and checks its structure.
+
+## Sources and polite fetching
+
+`data/sources.json` lists every site the project may fetch from: id, kind (`manufacturer`, `aggregator`, `retailer`, `reference`), base URL, robots.txt snapshot date, terms URL, approval status, minimum delay and cache window. Only `approved` sources run. `horn-sources robots` refreshes the robots.txt copies in `data/sources/robots/`.
+
+All fetching goes through `horn_drivers.fetch.PoliteFetcher`:
+
+- robots.txt is read for each host and disallowed paths are refused. A URL must pass both Python's `urllib.robotparser` and an RFC 9309 matcher that understands `*` and `$` (robotparser ignores wildcard rules such as `Disallow: *?filter=`);
+- one request at a time per host, at least the source delay (5 s for retailers, 10 s where robots.txt sets Crawl-delay 10, 30 s for loudspeakerdatabase.com) plus jitter;
+- every kept response is cached under `results/cache/<source>/` and not refetched inside the cache window (7 days for prices, 90 for Thiele-Small data);
+- two consecutive 429 or 403 responses stop the source for the run;
+- the User-Agent names the project and its public repository.
+
+It does not work around bot protection. A site that blocks polite access is marked `blocked` in the registry. Adapters store facts only (numbers, units, URL, date, SKU), never descriptions or images.
+
+```sh
+.venv/bin/horn-sources list
+.venv/bin/horn-sources fx                       # ECB rates into data/prices/fx/
+.venv/bin/horn-sources run thomann-uk --limit 20
+```
+
+Adapters live in `horn_drivers/sources/`, one module per source, and register with `@register_adapter`. A `DriverSource` writes version 2 records to `data/drivers` (or `data/drivers-incomplete` with the reason); a `PriceSource` writes exact matches to `data/prices` and everything else (fuzzy or unmatched) only to a review CSV under `results/price-review/`.
+
+### Manufacturer adapters
+
+`bc`, `eighteensound`, `celestion` and `beyma` read current LF cone drivers from 5 to 15 inch on the manufacturer product pages: the Thiele-Small set, nominal power (`power_w`, AES or nominal rating) and program power (`peak_power_w`, the continuous program rating) kept apart, sensitivity, the stated frequency range as the usable band, and impedance. Every value has a `field_provenance` entry pointing at the page it came from.
+
+Sensitivity is stored for 1 W at 1 m. B&C and 18 Sound state a drive voltage (2.83 V for 8 ohm, 4 V for 16 ohm); the 1 W figure is derived from it (method `derived`). When the note names a different impedance from the model, the value is not stored and the record says why.
+
+Run an adapter into a staging folder, then merge:
+
+```sh
+.venv/bin/horn-sources run bc --db results/staging/drivers --incomplete data/drivers-incomplete
+.venv/bin/horn-sources merge --staged results/staging/drivers --only BC
+```
+
+The merge joins each staged record to the existing one for the same maker, model and impedance. The manufacturer value wins. An old value that differs by more than 5 % (10 % for Le and Xmax) is kept under `field_provenance.<field>.conflicts` and listed in `data/drivers-incomplete/conflicts/<makers>-<date>.csv`; the validator prints each stored conflict as a warning. A field the manufacturer page lacks keeps its old value and source. The old `driver_id` is kept. A new model gets the plain id (`bc-8ndl51`) when it has one impedance variant, and an impedance suffix (`bc-8ndl51-16ohm`) otherwise.
+
+## Open datasets: driver-base
+
+[driver-base](https://github.com/JonathanDCohen/driver-base) compiles Thiele-Small, power, sensitivity and band values from manufacturer product pages and publishes them as one JSON file under CC BY 4.0. It is the only open driver dataset found with a licence that allows reuse (searched 2026-11-17). Attribution: Data from driver-base (https://github.com/JonathanDCohen/driver-base), licensed under CC BY 4.0. Changes made here: units converted to SI, values driver-base derived or inferred left out, records matched to this database.
+
+```sh
+.venv/bin/horn-sources run driver-base
+```
+
+The adapter (`horn_drivers/sources/driver_base.py`) reads the file pinned to one commit. Each field's provenance names the manufacturer page driver-base read, the date it read it, and the dataset URL (`via`). Each record is checked for internal consistency: Fs against Mms and Cms (10 %), Qes against Fs, Mms, Re and Bl (20 %), and the page's Vas against Sd, Fs and Mms (a factor of 1.5). A Cms that fails while Qes passes is dropped; any other failure sends the record to `data/drivers-incomplete` with the reason. driver-base's `warn_flags` are copied into the record notes, and a power rating it flags as not AES is marked in that field's provenance (`power_standard`). Records are matched to existing ones by manufacturer, model and impedance, or by names that differ only by an impedance or coil code ("HSB322" and "HSB322-22") with Fs, Re, Bl, Sd and Mms within 1 %. Names that differ by any other suffix ("EVO", "WP") with the same values are neither filled nor imported; they are listed in `data/sources/driver-base/prefix_review.csv` for a manual decision. A matched record is never overwritten: disagreements beyond 5 % (10 % for Le and Xmax) go to `data/sources/driver-base/conflicts.csv`. A matched scraped record that lacks power, sensitivity or band gets them added, with their own field provenance, only when Fs, Re, Bl and Sd agree. Dome tweeters, passive radiators, makers not on the canonical list (Jensen, HOQS) and model names that driver-base gives to more than one product are skipped. The last run's counts are in `data/sources/driver-base/summary.json`.
+
+## Prices
+
+### Retailer adapters
+
+| Source | Region, currency | How it reads prices |
+| --- | --- | --- |
+| `thomann-uk`, `thomann-de` | UK GBP, EU EUR, VAT included | Brand-and-size loudspeaker category pages from the sitemap; each holds a JSON block per product. A product page is fetched only when the category entry has no impedance and the model is in the database. The German site is used for EUR because the English pages on thomann.de sit under the disallowed `/intl/`. The title of a category entry is built from the maker and model fields of the same JSON block, so the "title names maker and model" check cannot catch a soft 404 there; product pages are checked against their own title and reject "Unknown Item" pages. |
+| `lautsprechershop` | EU EUR, VAT included | Maker category pages from the English sitemap; one block per product with its order number and gross price. |
+| `bax-shop-uk` | UK GBP, VAT included | Loudspeaker product pages from the pro audio sitemap. |
+| `solen` | CA CAD, tax excluded | The shop's listing endpoint, which answers JSON when asked (`Accept: application/json`). Pair prices go to review. |
+| `madisound` | US USD, tax excluded | Product pages from the sitemap (JSON-LD offer). Stocks almost none of the pilot makers. |
+| `dayton-msrp` | US USD | MSRP on Dayton Audio's own product pages (pro audio category); a list price, not a shop offer, stored with `price_kind` `list`. It shares a host with the `dayton` manufacturer adapter: run the two one after the other, since pacing is per run, not per host across sources. |
+
+Not scraped: Parts Express (pages need JavaScript; ask for a feed), the Eminence store (its `/agents.md` asks automated clients to sign requests with Shopify Web Bot Auth, which this project does not do), Loudspeakerfreaks (robots.txt disallows everything), Simply Speakers (robots.txt answers 403).
+
+Matching (`DriverIndex.match`): an offer is `exact` when the canonical manufacturer, the normalised model and the impedance agree with a database record and the listing's own title or product block names both maker and model. Impedance comes from the model name ("12NW76 8 Ohms"), a labelled spec line ("Impedance: 8 Ohm", never Re) or the product name. When the listing's model is not in the database, a database model named in the title is used, unless a revision suffix follows it ("Beta-12A-2") or a short token that may be a model suffix ("Legend BP 1525 A", where `A` could name another product); such listings go to review. Repair kits, diaphragms and other parts never match, and neither do B-Stock, used, demo or refurbished items (title, model or URL). Solen's price is its current selling price, which can be a time-limited special. A different impedance variant from the one in the database is not matched.
+
+`horn-sources coverage --manufacturers 18Sound,BC,Celestion,Beyma,Eminence --driver-type cone` counts drivers with at least one exact price, per region, source and maker.
+
+### Snapshots
+
+Prices are kept out of the driver records, in `data/prices/<source>/<YYYY-MM-DD>.jsonl`, one offer per line: `driver_id`, `source_id`, `url`, `sku`, `price`, `currency`, `vat_included`, `region`, `in_stock`, `retrieved_on`, `match_confidence`, `price_kind` (`offer` for a shop price, `list` for a maker's list price; a line without it is an `offer`). The price is stored as listed, shipping excluded.
+
+With `--price_region`, a run takes for each driver the latest offer per source in that region, ignores offers older than 30 days and matches that are only `fuzzy`, converts other currencies with the stored ECB rate file (`data/prices/fx/`, newest on or before the run date) and keeps the cheapest, preferring shop offers over list prices and offers in stock. `--max_price` then drops drivers above the limit or without a current offer. Price is shown, never scored. `horn-validate-drivers --db data/drivers --prices data/prices` checks the snapshot files and warns about offers older than 30 days, unknown drivers and fuzzy matches.
+
+## Refresh data and prices
+
+Every step goes through `PoliteFetcher` (see [Sources and polite fetching](#sources-and-polite-fetching)). A rerun inside a source's cache window (90 days for Thiele-Small data, 7 days for prices) reads `results/cache/<source>/` and makes no requests, so rerunning a step to fix a parser is free. Run one source at a time and keep the log:
+
+```sh
+mkdir -p results/logs
+# 1. robots.txt copies and ECB rates
+.venv/bin/horn-sources robots
+.venv/bin/horn-sources fx
+# 2. manufacturer pages, staged, then merged (manufacturer values win)
+for s in bc eighteensound celestion beyma; do
+  .venv/bin/horn-sources run "$s" --db results/staging/drivers --incomplete data/drivers-incomplete \
+    > "results/logs/$s.log" 2>&1
+done
+.venv/bin/horn-sources merge --staged results/staging/drivers
+# 3. driver-base, after the manufacturer merge so it matches against those records
+.venv/bin/horn-sources run driver-base > results/logs/driver-base.log 2>&1
+# 4. retailer prices; dayton-msrp shares a host with dayton, so never run them at the same time
+for s in thomann-uk thomann-de lautsprechershop bax-shop-uk solen madisound dayton-msrp; do
+  .venv/bin/horn-sources run "$s" > "results/logs/$s.log" 2>&1
+done
+# 5. checks and the coverage page
+.venv/bin/horn-validate-drivers --db data/drivers --prices data/prices
+just driver-coverage
+```
+
+A full price refresh takes a few hours because of the per-request delay (5 s plus jitter); run it in the background and wait for it, do not shorten the delay. A price run writes one snapshot file per source per day; older files stay as history. Look at the review CSVs in `results/price-review/` before adding a `manual` match by hand.
+
+When a source answers 429 or 403 twice in a row the run stops that source and says so. Do not retry it the same day and do not work around it (no other User-Agent, proxy, browser cookies or headless browser). Set the source's `approval_status` to `blocked` in `data/sources.json` with a dated `status_note`; the coverage page lists it. loudspeakerdatabase.com is approved but has not been scraped again: retry `horn-scrape-drivers` only once its health check (`origin_is_healthy`) passes, at the 30 s delay.
+
+After a refresh, commit the data folders, `data/prices`, `data/sources.json`, `data/sources/` and `docs/DRIVER_COVERAGE.md` together, with the counts from the logs in the commit message.
 
 ## Add a driver from a datasheet
 

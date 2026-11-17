@@ -1,33 +1,154 @@
 {
     "driver_id": "celestion-ftr15-3070e",
+    "record_schema_version": 2,
     "manufacturer": "Celestion",
     "model_name": "FTR15-3070E",
+    "identity": {
+        "manufacturer": "Celestion",
+        "model": "FTR15-3070E",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
     "driver_type": "cone",
     "parameters": {
         "fs_hz": 45.9,
         "re_ohm": 5.52,
-        "bl_tm": 17.87,
-        "sd_m2": 0.08553,
-        "mms_kg": 0.0855,
-        "le_h": 0.00121,
+        "qes": 0.426,
+        "qms": 3.409,
         "qts": 0.379,
-        "nominal_impedance_ohm": 8.0,
+        "sd_m2": 0.08553,
         "xmax_m": 0.00775,
-        "qms": 3.41,
-        "qes": 0.43
+        "mms_kg": 0.08553,
+        "bl_tm": 17.87,
+        "le_h": 0.00121,
+        "cms_m_per_n": 0.00014,
+        "rms_kg_per_s": 7.23,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 400.0,
+        "peak_power_w": 800.0,
+        "sensitivity_db_1w1m": 97.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "re_ohm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qes": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qms": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "qts": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sd_m2": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "xmax_m": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "mms_kg": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page",
+            "note": "manufacturer Mms; the previous value may have been Mmd"
+        },
+        "bl_tm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "le_h": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "cms_m_per_n": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "rms_kg_per_s": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "power_w": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "peak_power_w": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_low_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        },
+        "usable_f_high_hz": {
+            "source_id": "celestion",
+            "url": "https://celestion.com/product/ftr15-3070e/",
+            "retrieved_on": "2026-11-17",
+            "method": "page"
+        }
     },
     "nominal_diameter": "15in",
-    "parameter_source": "https://loudspeakerdatabase.com/Celestion/FTR15-3070E",
-    "record_schema_version": 1,
+    "usable_f_low_hz": 40.0,
+    "usable_f_high_hz": 4000.0,
+    "parameter_source": "https://celestion.com/product/ftr15-3070e/",
     "provenance": {
-        "retrieved_on": "2026-02-26",
-        "retrieved_on_basis": "Date of commit 3f212b1, which wrote this record. The scrape date itself was not recorded.",
-        "source_kind": "third_party_aggregator",
-        "capture_method": "Legacy scrape of loudspeakerdatabase.com (before scraper schema 3). parameter_source was reconstructed from the manufacturer slug and model name.",
-        "known_limitations": [
-            "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
-            "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
-            "Band, power handling, Rms and sensitivity were not captured."
+        "notes": [
+            "Replaces the loudspeakerdatabase record retrieved 2026-02-26. Previous values that differ by more than 5 % (10 % for Le and Xmax) are kept under field_provenance conflicts."
         ]
     }
 }
