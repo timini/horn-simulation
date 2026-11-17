@@ -10,6 +10,7 @@ from horn_analysis.flat_band import flat_band_fields, format_flat_bands, widest_
 from horn_analysis.scoring import TargetSpec
 
 ROOT = Path(__file__).resolve().parents[3]
+RECORDED = ROOT / "examples/6nmb420-320-5000/response.csv"
 F = np.geomspace(100., 10000., 401)
 
 
@@ -74,9 +75,10 @@ def test_rejects_unordered_input():
         widest_flat_band(F, np.zeros(len(F)), 0.)
 
 
+@pytest.mark.skipif(not RECORDED.exists(), reason="examples/ is not in the package test image")
 def test_recorded_fem_response_contains_the_target_band():
     """examples/6nmb420-320-5000 has 4.42 dB peak to peak over 320-5000 Hz."""
-    data = pd.read_csv(ROOT / "examples/6nmb420-320-5000/response.csv")
+    data = pd.read_csv(RECORDED)
     f, levels = data.frequency_hz.to_numpy(), data.spl_db_2p83vrms_1m.to_numpy()
     fields = flat_band_fields(f, levels)
     assert fields["flat_band_3db_low_hz"] <= 320. and fields["flat_band_3db_high_hz"] >= 5000.
