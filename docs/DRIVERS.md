@@ -79,6 +79,21 @@ It does not work around bot protection. A site that blocks polite access is mark
 
 Adapters live in `horn_drivers/sources/`, one module per source, and register with `@register_adapter`. A `DriverSource` writes version 2 records to `data/drivers` (or `data/drivers-incomplete` with the reason); a `PriceSource` writes offers to `data/prices` and anything short of an exact match to a review CSV under `results/price-review/`.
 
+### Manufacturer adapters
+
+`bc`, `eighteensound`, `celestion` and `beyma` read current LF cone drivers from 5 to 15 inch on the manufacturer product pages: the Thiele-Small set, nominal power (`power_w`, AES or nominal rating) and program power (`peak_power_w`, the continuous program rating) kept apart, sensitivity, the stated frequency range as the usable band, and impedance. Every value has a `field_provenance` entry pointing at the page it came from.
+
+Sensitivity is stored for 1 W at 1 m. B&C and 18 Sound state a drive voltage (2.83 V for 8 ohm, 4 V for 16 ohm); the 1 W figure is derived from it (method `derived`). When the note names a different impedance from the model, the value is not stored and the record says why.
+
+Run an adapter into a staging folder, then merge:
+
+```sh
+.venv/bin/horn-sources run bc --db results/staging/drivers --incomplete data/drivers-incomplete
+.venv/bin/horn-sources merge --staged results/staging/drivers --only BC
+```
+
+The merge joins each staged record to the existing one for the same maker, model and impedance. The manufacturer value wins. An old value that differs by more than 5 % (10 % for Le and Xmax) is kept under `field_provenance.<field>.conflicts` and listed in `data/drivers-incomplete/conflicts/<makers>-<date>.csv`; the validator prints each stored conflict as a warning. A field the manufacturer page lacks keeps its old value and source. The old `driver_id` is kept. A new model gets the plain id (`bc-8ndl51`) when it has one impedance variant, and an impedance suffix (`bc-8ndl51-16ohm`) otherwise.
+
 ## Prices
 
 Prices are kept out of the driver records, in `data/prices/<source>/<YYYY-MM-DD>.jsonl`, one offer per line: `driver_id`, `source_id`, `url`, `sku`, `price`, `currency`, `vat_included`, `region`, `in_stock`, `retrieved_on`, `match_confidence`. The price is stored as listed, shipping excluded.

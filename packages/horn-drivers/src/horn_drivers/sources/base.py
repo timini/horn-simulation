@@ -147,7 +147,12 @@ class DriverSource(SourceAdapter):
         from horn_drivers.loader import _driver_from_dict
         summary = RunSummary(self.source_id)
         for ref, page in self._pages(limit, summary):
-            result = self.parse_driver(page, ref)
+            try:
+                result = self.parse_driver(page, ref)
+            except (KeyError, ValueError, TypeError, AttributeError) as error:
+                # A page the parser does not understand is skipped with the reason, not fatal.
+                summary.skipped.append((ref.url, f"parse error: {type(error).__name__}: {error}"))
+                continue
             if result.record is None:
                 summary.skipped.append((ref.url, result.reason or "no record"))
                 continue
