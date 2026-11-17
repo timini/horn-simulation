@@ -1,4 +1,4 @@
-# Status and roadmap
+# Status
 
 Updated 2026-11-17. This page replaces the earlier implementation status (7 September 2026) and single-horn roadmap (9 September 2026), which are kept in [history](history/).
 
@@ -73,7 +73,6 @@ Until step 4 passes, results stay labelled experimental. Adding more profiles, a
 Other known gaps:
 
 - Driver and price coverage, and the sources that are blocked, are in [DRIVER_COVERAGE](DRIVER_COVERAGE.md).
-- The new CI jobs (`launcher_end_to_end`, `check_lockfile`) have not yet run on GitHub.
 - The 3D FEM with `flanged_piston` differs from the 1D codes by up to about 1.5 dB between mouth ka 0.5 and 1.5, which is not explained ([CROSS_SOFTWARE_VALIDATION](CROSS_SOFTWARE_VALIDATION.md)).
 - The archived examples were made before the front chamber estimate; under the current coupling their ranking and ripple differ. See [WORKED_EXAMPLE](WORKED_EXAMPLE.md) and [examples](../examples/README.md).
 

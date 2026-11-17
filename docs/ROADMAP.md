@@ -23,7 +23,7 @@ Earlier work, up to September 2026, is summarised in [history](history/README.md
 - The 3D finite element solver agrees with an independent FEM and motor model on shared meshes, and gives correct cavity modes. See [INDEPENDENT_SOLVER_VALIDATION](INDEPENDENT_SOLVER_VALIDATION.md).
 - The `modal_baffled` mouth model matches an independent mode-matching code in an infinite baffle. See [MODAL_APERTURE](MODAL_APERTURE.md).
 - The one-dimensional Webster screen (`horn_core.webster`) agrees with openwind on 35 of 35 cases across all seven profiles. See [CROSS_SOFTWARE_VALIDATION](CROSS_SOFTWARE_VALIDATION.md).
-- The screen keeps the best FEM designs on a fixed test grid, for four bands and both radiation models.
+- The screen keeps the best FEM designs on a fixed test grid, for four bands and both radiation models. See [VALIDATION, search and workflow](VALIDATION.md#search-and-workflow).
 - Refinement and the two worked candidates are converged in mesh, loft and frequency grid. See [CANDIDATE_RESOLUTION](CANDIDATE_RESOLUTION.md).
 - bempp-cl confirms throat impedance of a complete horn at 5 of 5 frequencies.
 - One measured horn (Post and Hixson exponential horn) matches in input impedance from ka 1 to 5. See [POST_HIXSON_VALIDATION](POST_HIXSON_VALIDATION.md).
@@ -32,7 +32,7 @@ Earlier work, up to September 2026, is summarised in [history](history/README.md
 
 - Directivity. bempp-cl in a finite baffle disagrees with the infinite-baffle model, mostly because of baffle diffraction.
 - Absolute level for a real driver on a real horn, and the order drivers are ranked in. No complete assembly has been measured.
-- The Hajicek and Neely conical horn standard fails its frozen gates, and the 3D FEM differs from the 1D codes by up to about 1.5 dB between mouth ka 0.5 and 1.5 for reasons not yet explained. Both are kept as failures.
+- The Hajicek and Neely conical horn standard fails its frozen gates, and the 3D FEM with the `flanged_piston` mouth load differs from the 1D codes by up to about 1.5 dB between mouth ka 0.5 and 1.5 for reasons not yet explained. Both are kept as failures.
 
 [VALIDATION](VALIDATION.md) has every record.
 
@@ -66,11 +66,11 @@ In this order. Each item says when it is done.
 
 ### 1. Finer mesh in the upper bands automatically
 
-Today the user has to pass a smaller `--mesh_size` when band joins fail. In a local run of the 500 to 4000 Hz PA midrange brief at the default mesh, every candidate was rejected at the join near 3830 Hz. One candidate, `auto_tra_0150`, also showed a false spike of 123.75 dB at the join. (This run folder is not committed.)
+Today the user has to pass a smaller `--mesh_size` when band joins fail. Three of the five example briefs on the site needed this to get any design; at the default mesh every candidate was rejected at a band join (see the crashes section of the [examples page](https://timini.github.io/horn-simulation/examples.html)).
 
 The plan: when a candidate fails a join, re-mesh the two bands on each side of the join with a finer element size and solve those bands again, up to a fixed number of tries. Record the mesh used per band in the candidate's provenance.
 
-Done when the five example briefs complete at default settings with no `--mesh_size`, the join check is unchanged, and a test covers the retry.
+Done when the three example briefs that needed a finer mesh complete at default settings with no `--mesh_size`, the join check is unchanged, and a test covers the retry. (The low-mid brief failed on a Java memory limit, not the mesh. That is a separate fix: the launcher should set enough Nextflow memory by default.)
 
 ### 2. Widest-band objective
 
@@ -80,7 +80,7 @@ Done when the objective runs end to end in auto mode, the screen, FEM ranking an
 
 ### 3. Maximum SPL metric
 
-Report the highest level each design reaches before the driver hits Xmax or its rated power, inside the flat band. Excursion and power are already computed per row, so this is a new output, not new physics. It needs rated power, which 63 % of records have; sensitivity and power together are present for 39 %.
+Report the highest level each design reaches before the driver hits Xmax or its rated power, inside the flat band. Excursion and power are already computed per row from the Thiele-Small data, so this is a new output, not new physics, and datasheet sensitivity is not needed. The Xmax limit is available for 93 % of records and the power limit for 63 %; without rated power the figure is an upper bound.
 
 Done when ranked rows carry `max_spl_db` and which limit set it, rows without the data say so, and the report shows it.
 
@@ -89,7 +89,7 @@ Done when ranked rows carry `max_spl_db` and which limit set it, rows without th
 The US has 12 priced drivers, all Dayton list prices.
 
 - Parts Express pages need JavaScript. A product feed from the retailer is needed. Open.
-- loudspeakerdatabase.com currently returns the same page for every URL, so its health check fails and no driver pages are fetched. The owner has been emailed. Open.
+- loudspeakerdatabase.com fails its health check: on 2026-11-17 the home page response passed the 5 MB cap, the same failure as an earlier 388 MB repeated-page response. No driver pages are fetched. See [DRIVER_COVERAGE](DRIVER_COVERAGE.md). Open.
 - OpenISD data carries no licence. Ask its author before using it. Open.
 
 Done when the US has prices for at least the drivers that the examples use, each new source has a recorded robots and terms check in `data/sources.json`, and [DRIVER_COVERAGE](DRIVER_COVERAGE.md) is regenerated.
@@ -104,7 +104,7 @@ Done when the estimate is compared with measured or drawn chamber volumes for a 
 
 ### Goal
 
-For every driver in the database, find the horns that give the best trade-offs, and publish them as a page you can search. You state what you need, for example "500 to 4000 Hz within +-2 dB, 110 dB, mouth under 300 mm, cheapest". The page returns the cheapest driver and horn pairs that meet it, or the closest misses and which limit each one fails.
+For every driver in the database, find the horn that gives the widest flat range at each tolerance and size class, and the horns that give the best trade-offs. Publish both as a page you can search. You can pick a driver you already own and see its best horns. Or you state what you need, for example "500 to 4000 Hz within +-2 dB, 110 dB, mouth under 300 mm, cheapest". The page returns the cheapest driver and horn pairs that meet it, or the closest misses and which limit each one fails.
 
 Nothing like this exists publicly. Today a builder picks a driver by instinct and then iterates in Hornresp or ATH.
 
@@ -143,18 +143,18 @@ The reference SPL for distortion and excursion is open; 105 dB at 1 m is the wor
 
 ### Many metrics and ties (decided)
 
-With nine metrics almost every design is on the front. Two rules keep the result useful.
+With about a dozen objectives (three bandwidths, and mouth and length counted separately) almost every design is on the front. Two rules keep the result useful.
 
-1. Epsilon dominance. Design A beats design B only if A is at least as good as B on every chosen metric, within a tie margin, and better by more than the margin on at least one. The margins are 1 dB for SPL and sensitivity, 0.1 octave for bandwidth, 0.5 percentage points for distortion, and 5 % for price.
+1. Epsilon dominance. Design A beats design B only if A is at least as good as B on every chosen metric, within a tie margin, and better by more than the margin on at least one. The margins are 1 dB for SPL and sensitivity, 0.1 octave for bandwidth, 0.5 percentage points for distortion, and 5 % for price. This relation is not transitive (A can beat B and B beat C while A does not beat C), so the result is defined directly: the rows that no other row passing the limits beats. It does not depend on the order rows are checked in.
 2. Requirements first. The user sets hard limits (band, tolerance, SPL at a distortion limit, size). Front members that meet every limit are listed, cheapest first. If none meets them, the closest misses are listed with the limit each one fails and by how much.
 
 ### Choose your own metrics (decided)
 
 The page lets you pick any subset of metrics and set each one to optimise, ignore, or hard limit. It then shows the front for just that subset, worked out in the browser. No server is needed.
 
-This works because a design on the front for a subset of metrics is either on the front for all metrics, or exactly tied on that subset with a design that is. So the build stores the all-metrics front with exact ties kept, and the page filters it. Two consequences:
+For this to work, the build must not drop any design the page could show. Plain Pareto dominance at build time is not enough: a design that is beaten on all metrics, but only by less than the margins on the chosen subset, is a tie the page should show, and the build would have dropped it. So the build uses a weaker drop rule. It drops a design only if another design beats it by more than the page's margin on every metric. Such a design is beaten on any subset too, and so is never shown. Every design the page could show as a tie is kept. The cost is more stored rows. Two consequences:
 
-- The stored front uses exact dominance, not epsilon dominance. Epsilon margins are applied only in the browser, so no design the browser might need is dropped at build time.
+- The page's margins can be raised but not lowered below the build margins, or designs the page needs would be missing.
 - Hard limits on stored metrics are safe, because a design that dominates another also meets any limit the other meets. Filters on things that are not metrics (maker, profile, nominal size) are not safe in that sense: a design hidden only because another maker's driver beat it would stay hidden. Open: either add those as group keys and keep a front per group, or show a note when such a filter is used.
 
 ### Method
@@ -162,9 +162,9 @@ This works because a design on the front for a subset of metrics is either on th
 1. Horn library. About 50,000 horn shapes per run: the seven profiles crossed with throat, mouth and length grids for each size class, from `horn_core.geometry_designer` and `horn_core.profiles`. Each shape is solved once with the transfer matrix model (`horn_core.webster.compute_horn_transfer_tmm`). The horn alone does not depend on the driver. Measured at about 7 ms per shape for 200 frequencies, so about 6 minutes on one core.
 2. Driver pairing. Each driver's electro-mechanical model, with front and rear chamber, is coupled to every compatible horn using the same code as auto mode (`horn_core.driver_interface.driver_operating_point` through `horn_analysis.evaluation.evaluate_response`). Compatible means the diaphragm fits the mouth and the compression ratio is within the auto-mode limit, so most pairs are never computed.
 3. All tolerances at once. `horn_analysis.flat_band.flat_band_fields` reads +-1, +-2 and +-3 dB from the same response.
-4. Keep the front per driver. For each driver and size class, keep only the horns on that driver's own front. A design on the global front is always on its driver's front, so this loses nothing and keeps memory small.
+4. Keep the front per driver. For each driver and size class, keep only the horns that survive the build drop rule against that driver's other horns. A design kept on the global front is always kept on its driver's front, so this loses nothing and keeps memory small. Also record each driver's winner: the horn with the widest flat band at each tolerance and size class.
 5. Refine. A short local search around each front member, reusing the coordinate search in `horn_analysis.refine` with the Webster model instead of FEM.
-6. Confirm with FEM. The solver runs on front horns, about 40 s per horn locally. The 1D model is about 1 dB off near the mouth, so +-1 dB rows are published only after FEM. Every row carries its check level.
+6. Confirm with FEM. The solver runs on the per-driver winners and the top rows of each site file, not the whole front, at about 40 s per horn locally. FEM is needed once per unique horn shape, not per driver and horn pair, because driver coupling is post-processing on the stored horn result. The 1D model is not accurate enough to trust small ripple: the `flanged_piston` FEM differs from it by up to about 1.5 dB in throat impedance between mouth ka 0.5 and 1.5, the Webster prescreen differs from a BEM by up to 2.7 dB on the worked horn ([CROSS_SOFTWARE_VALIDATION](CROSS_SOFTWARE_VALIDATION.md)), and 1D models overstate the high end of the band ([SEARCH_AND_SCORING](SEARCH_AND_SCORING.md)). So +-1 dB rows are published only after FEM, and analytic +-2 and +-3 dB rows are marked as uncertain too. Every row carries its check level.
 
 Compute estimates (open until the pilot measures them):
 
@@ -173,7 +173,7 @@ Compute estimates (open until the pilot measures them):
 | Horn library | about 6 minutes on one core |
 | Driver pairing, coupling only | the agreed design said well under an hour; it was estimated with fewer drivers and needs re-measuring at 2,122 |
 | Flat band search | about 1.5 ms per row today, which is too slow for tens of millions of pairs; needs a vectorised version over many responses, or a cheap pre-check (for example peak-to-peak over the target window) before the full search |
-| FEM confirmation | a few hours for the top 100 drivers; 1 to 2 days for all front horns |
+| FEM confirmation | a few hours for the winners of the top 100 drivers; 1 to 2 days for the winners of all drivers. The whole front is not FEM confirmed |
 
 ### Data files (decided, format details open)
 
@@ -183,12 +183,13 @@ One file per size class, versioned, under `data/designs/`:
 data/designs/
   v1/
     manifest.json             code version, inputs hash, build date, row counts
-    horns-medium.jsonl.gz     horn library: one row per horn shape
+    horns-medium.npz          horn library: throat impedance and transfer data per shape
     designs-medium.jsonl.gz   one row per driver x horn on the per-driver front
     front-medium-UK.json.gz   site file: global front for one region
+    winners-medium.json.gz    site file: each driver's widest-band horn per tolerance
 ```
 
-Plain gzipped JSON lines need no new dependency. Parquet or Arrow would be smaller and faster to load; adding `pyarrow` is open.
+The horn library holds about 50,000 shapes times 200 complex frequencies, which would be hundreds of MB as JSON text, so it is a numpy `.npz` file; numpy is already a dependency. Designs and site files are plain gzipped JSON, which needs no new dependency. Parquet or Arrow would be smaller and faster to load; adding `pyarrow` is open.
 
 Columns in `designs-<class>.jsonl.gz`:
 
@@ -215,25 +216,27 @@ Columns in `designs-<class>.jsonl.gz`:
 
 Price is not stored in this file. It is joined at build time of the site file (next section).
 
-The site file holds only the global front for one region, with the columns the page needs, in a columnar layout (one array per column) to make it small. Each row there adds `price`, `currency`, `price_source`, `price_date` and `buy_url`. The target is tens of thousands of rows and a few MB per file after compression.
+The site file holds only the global front for one region, with the columns the page needs, in a columnar layout (one array per column) to make it small. Each row there adds `price`, `currency`, `price_source`, `price_date` and `buy_url`. The target is tens of thousands of rows and a few MB per file after compression. The real row count is open until the pilot: with about 2,122 drivers, many horns each, a dozen objectives and ties kept, the front may be much larger. If it is, the fallbacks are, in order: coarser build margins, a cap on rows per driver, or fewer bandwidth tolerances on the site file.
+
+The winners file is small and fixed in size: about 2,122 drivers times three tolerances times three size classes, under 20,000 rows. It serves the pick-a-driver lookup, which the global front cannot, because filtering the global front by driver or maker is not safe (see above).
 
 ### How it is built (decided)
 
-A new script, `scripts/build_design_db.py`, with a `just design-db` recipe. A Nextflow mode is not needed for the 1D stages, which run in minutes on one machine. FEM confirmation reuses the existing single-mode Nextflow solve, one task per front horn, so it can run in parallel and resume.
+A new script, `scripts/build_design_db.py`, with a `just design-db` recipe. A Nextflow mode is not needed for the 1D stages, which run in minutes on one machine. FEM confirmation reuses the existing single-mode Nextflow solve, one task per horn to confirm, so it can run in parallel and resume.
 
 Stages:
 
 1. Read drivers through the same loader and validator as auto mode. Drivers that fail validation are skipped and counted.
 2. Build or reuse the horn library (cached by its inputs hash).
 3. Pair, compute metrics, keep each driver's front, write `designs-<class>.jsonl.gz`.
-4. Join prices and write the site files.
-5. Optionally queue FEM for front horns and merge the results back as `check_level` fem.
+4. Join prices and write the site files and the winners file.
+5. Optionally queue FEM for the winners and top rows and merge the results back as `check_level` fem.
 
 The manifest records the code version, the inputs hash and the counts at each stage, so one command reproduces the table.
 
 ### Prices refresh without new acoustics (decided)
 
-Acoustic rows do not change when prices do. Stage 4 alone joins the newest offers by `driver_id`, using `horn_drivers.prices.price_snapshot` with the same rules as auto mode: exact or manual matches only, list prices only when no shop offer exists, offers older than 30 days dropped. It then recomputes the front for each region, which takes seconds. Every price on the page shows its source and date. Drivers with no price in a region stay on the page with price shown as unknown and are treated as worst on price.
+Acoustic rows do not change when prices do. Stage 4 alone joins the newest offers by `driver_id`, using `horn_drivers.prices.price_snapshot` with the same rules as auto mode: exact or manual matches only, list prices only when no shop offer exists, offers older than 30 days dropped. It then recomputes the front for each region, which takes seconds. Every price on the page shows its source and date. Drivers with no price in a region are treated as worst on price, with price shown as unknown. They stay on the page only where no priced design is equal or better on every other metric. They are always in the winners file.
 
 ### Web page (decided, details open)
 
@@ -242,16 +245,16 @@ A static page on the existing GitHub Pages site, `site/designs.html`. No server,
 Front recompute in the browser:
 
 - Apply hard limits first, which usually removes most rows.
-- Sort the rest by the first optimised metric, then run a block nested loop: compare each row only with the current front, and drop it if a front member beats it by more than the margins. Cost is rows times front size times metrics. For 30,000 rows and a front of a few thousand this is around 100 million comparisons in the worst case, which is under a second in a Web Worker on a laptop. The pilot measures it on a phone.
+- Check every remaining row against every other remaining row, and keep the rows that nothing beats. Because epsilon dominance is not transitive, a row cannot be dropped early just because a row that was later removed beat it; a full pairwise check avoids that. Cost is rows squared times metrics. With 5,000 rows left after the limits and 8 metrics that is about 2e8 comparisons, estimated at around a second in a Web Worker on a laptop. The worst case, no limits on 30,000 rows, is about 7e9 comparisons and too slow, so the page shows the estimated cost before running and asks for a tighter limit above a set size. The pilot measures it on a phone.
 - Rows within the margins of each other are ties. Ties are all kept and shown together, sorted by price.
 
 The whole query (size class, region, metrics, their modes and limits) is stored in the URL, so a query can be shared or bookmarked.
 
-Accessibility and phones: the results list is a real table that works with a keyboard and a screen reader, and it is the main view. The parallel coordinates plot is an extra; every filter it offers is also a form field. On a phone the plot sits below the list and scrolls sideways inside its own box; the page itself does not.
+Accessibility and phones: the results list is a real table that works with a keyboard and a screen reader, and it is the main view. The agreed design had the parallel coordinates plot as the browsing view; it was moved to second place for accessibility. The plot is an extra; every filter it offers is also a form field. On a phone the plot sits below the list and scrolls sideways inside its own box; the page itself does not.
 
 ### Page flow
 
-1. Pick a size class and a price region.
+1. Pick a size class and a price region. Or search for a driver by maker and model to see its winners file rows: the widest flat band horn at each tolerance and size class, with check level.
 2. For each metric choose optimise, ignore, or hard limit with a value. Defaults: bandwidth at +-2 dB optimise, price optimise, everything else ignore.
 3. The results list shows front members that meet the limits, cheapest first. If none do, it shows the closest misses with the failing limit and the shortfall.
 4. The parallel coordinates plot shows the same rows, one axis per chosen metric. Dragging a range on an axis filters the list.
@@ -332,7 +335,9 @@ Acceptance for the feature as a whole: one command rebuilds the table and record
 
 - Reference SPL for distortion and excursion.
 - Parquet or Arrow instead of gzipped JSON.
-- Non-metric filters (maker, profile, nominal size): front per group, or a warning.
+- Non-metric filters (maker, profile, nominal size) on the front: front per group, or a warning. Single drivers are served by the winners file.
+- Row count and file size of the site files, and which fallback to use if they are too big.
+- Browser recompute time on a phone.
 - STEP on demand or pre-built.
 - Flat band search speed at full scale.
 - Driver pairing time at 2,122 drivers.
