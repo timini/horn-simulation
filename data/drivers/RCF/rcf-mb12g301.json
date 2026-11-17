@@ -1,0 +1,189 @@
+{
+    "driver_id": "rcf-mb12g301",
+    "record_schema_version": 2,
+    "manufacturer": "RCF",
+    "model_name": "MB12G301",
+    "identity": {
+        "manufacturer": "RCF",
+        "model": "MB12G301",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "cone",
+    "parameters": {
+        "fs_hz": 53.0,
+        "re_ohm": 5.4,
+        "bl_tm": 17.0,
+        "sd_m2": 0.05,
+        "mms_kg": 0.048,
+        "le_h": 0.0007,
+        "qms": 4.7,
+        "qes": 0.28,
+        "qts": 0.27,
+        "xmax_m": 0.006,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 400.0,
+        "peak_power_w": 800.0,
+        "sensitivity_db_1w1m": 98.0
+    },
+    "field_provenance": {
+        "fs_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "fs_hz",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "bl_tm": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "bl_tm",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "sd_m2": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sd_cm2",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "mms_kg": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "mms_g",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "le_h": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "le_mh",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "qms": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qms",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "qes": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qes",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "qts": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "qts",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "xmax_m": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "xmax_mm",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "peak_power_w": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_program_watts",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "sensitivity_db_1w1m": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "sensitivity_db_1w_1m",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "usable_f_low_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_low_hz",
+            "upstream_spec_source": "html_div_pairs"
+        },
+        "usable_f_high_hz": {
+            "source_id": "driver-base",
+            "url": "https://www.rcf.it/en/products/product-detail/mb12g301",
+            "retrieved_on": "2026-10-18",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "freq_high_hz",
+            "upstream_spec_source": "html_div_pairs"
+        }
+    },
+    "nominal_diameter": "12in",
+    "usable_f_low_hz": 50.0,
+    "usable_f_high_hz": 3000.0,
+    "parameter_source": "https://www.rcf.it/en/products/product-detail/mb12g301",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'lf_woofer', canonical_id 'rcf__mb12g301__8ohm'.",
+            "driver-base warn_flags: xmech_xmax_ratio_high:38.0/6.0."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'lf_woofer', from the manufacturer's product category"
+}

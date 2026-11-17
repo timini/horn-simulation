@@ -1,0 +1,70 @@
+{
+    "driver_id": "ciare-nda1",
+    "record_schema_version": 2,
+    "manufacturer": "Ciare",
+    "model_name": "NDA1",
+    "identity": {
+        "manufacturer": "Ciare",
+        "model": "NDA1",
+        "variant": {
+            "impedance_ohm": 8.0,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "compression",
+    "parameters": {
+        "re_ohm": 5.4,
+        "nominal_impedance_ohm": 8.0,
+        "power_w": 50.0,
+        "peak_power_w": 100.0
+    },
+    "field_provenance": {
+        "re_ohm": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/hf-driver/1/8/NDA1",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "re_ohm",
+            "upstream_spec_source": "inline_js"
+        },
+        "nominal_impedance_ohm": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/hf-driver/1/8/NDA1",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "impedance_nominal_ohm",
+            "upstream_spec_source": "inline_js"
+        },
+        "power_w": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/hf-driver/1/8/NDA1",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_aes_watts",
+            "upstream_spec_source": "inline_js"
+        },
+        "peak_power_w": {
+            "source_id": "driver-base",
+            "url": "https://ciare.com/en/products/hf-driver/1/8/NDA1",
+            "retrieved_on": "2026-11-05",
+            "method": "page",
+            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+            "upstream_field": "power_program_watts",
+            "upstream_spec_source": "inline_js"
+        }
+    },
+    "parameter_source": "https://ciare.com/en/products/hf-driver/1/8/NDA1",
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'hf_compression', canonical_id 'ciare__nda1__8ohm'.",
+            "Derived or inferred driver-base values not imported: sensitivity_db_1w_1m.",
+            "driver-base warn_flags: range_reject:freq_low_hz=1700000.0, range_reject:freq_high_hz=20000000.0."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'hf_compression', from the manufacturer's product category",
+    "incomplete_reason": "missing Thiele/Small fields: fs_hz, bl_tm, sd_m2, mms_kg, le_h"
+}

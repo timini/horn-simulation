@@ -4,9 +4,9 @@ Drivers are JSON files, one per driver, under version control. Choose a database
 
 | Folder | Contents |
 | --- | --- |
-| `data/drivers` | 1,454 drivers (1,342 labelled cone, 112 of unknown type) scraped from loudspeakerdatabase.com across nine manufacturers (18Sound, B&C, Beyma, Celestion, Ciare, Dayton, Eminence, LaVoce, SICA). The default. |
+| `data/drivers` | 2,117 drivers. 1,454 were scraped from loudspeakerdatabase.com (version 1 records; 649 of them now also carry power, sensitivity or band from driver-base). 663 are version 2 records imported from the open driver-base dataset (CC BY 4.0), across 12 manufacturers. The default. |
 | `data/drivers-curated` | Seven hand-checked records from manufacturer pages and datasheets: three cone drivers (18Sound 6NMB420, Celestion AF3010 and TF0512HE) and four Peerless compression drivers. See [its README](../data/drivers-curated/README.md). |
-| `data/drivers-incomplete` | Not loadable. Compression drivers whose public data lack a full Thiele-Small set, and scraped records removed from `data/drivers` with the reason. See [its README](../data/drivers-incomplete/README.md). |
+| `data/drivers-incomplete` | Not loadable. Compression drivers whose public data lack a full Thiele-Small set (including 388 from driver-base, one folder per manufacturer: 368 compression drivers and 20 records whose values contradict each other), and scraped records removed from `data/drivers` with the reason. See [its README](../data/drivers-incomplete/README.md). |
 
 None of these records is a physically qualified driver. Every one lacks a verified throat interface and a separate diaphragm mass and rear load, so rankings label them `insufficient_evidence`.
 
@@ -93,6 +93,16 @@ Run an adapter into a staging folder, then merge:
 ```
 
 The merge joins each staged record to the existing one for the same maker, model and impedance. The manufacturer value wins. An old value that differs by more than 5 % (10 % for Le and Xmax) is kept under `field_provenance.<field>.conflicts` and listed in `data/drivers-incomplete/conflicts/<makers>-<date>.csv`; the validator prints each stored conflict as a warning. A field the manufacturer page lacks keeps its old value and source. The old `driver_id` is kept. A new model gets the plain id (`bc-8ndl51`) when it has one impedance variant, and an impedance suffix (`bc-8ndl51-16ohm`) otherwise.
+
+## Open datasets: driver-base
+
+[driver-base](https://github.com/JonathanDCohen/driver-base) compiles Thiele-Small, power, sensitivity and band values from manufacturer product pages and publishes them as one JSON file under CC BY 4.0. It is the only open driver dataset found with a licence that allows reuse (searched 2026-11-17). Attribution: Data from driver-base (https://github.com/JonathanDCohen/driver-base), licensed under CC BY 4.0. Changes made here: units converted to SI, values driver-base derived or inferred left out, records matched to this database.
+
+```sh
+.venv/bin/horn-sources run driver-base
+```
+
+The adapter (`horn_drivers/sources/driver_base.py`) reads the file pinned to one commit. Each field's provenance names the manufacturer page driver-base read, the date it read it, and the dataset URL (`via`). Each record is checked for internal consistency: Fs against Mms and Cms (10 %), Qes against Fs, Mms, Re and Bl (20 %), and the page's Vas against Sd, Fs and Mms (a factor of 1.5). A Cms that fails while Qes passes is dropped; any other failure sends the record to `data/drivers-incomplete` with the reason. driver-base's `warn_flags` are copied into the record notes, and a power rating it flags as not AES is marked in that field's provenance (`power_standard`). Records are matched to existing ones by manufacturer, model and impedance, or by names that differ only by an impedance or coil code ("HSB322" and "HSB322-22") with Fs, Re, Bl, Sd and Mms within 1 %. Names that differ by any other suffix ("EVO", "WP") with the same values are neither filled nor imported; they are listed in `data/sources/driver-base/prefix_review.csv` for a manual decision. A matched record is never overwritten: disagreements beyond 5 % (10 % for Le and Xmax) go to `data/sources/driver-base/conflicts.csv`. A matched scraped record that lacks power, sensitivity or band gets them added, with their own field provenance, only when Fs, Re, Bl and Sd agree. Dome tweeters, passive radiators, makers not on the canonical list (Jensen, HOQS) and model names that driver-base gives to more than one product are skipped. The last run's counts are in `data/sources/driver-base/summary.json`.
 
 ## Prices
 

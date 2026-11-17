@@ -1,0 +1,26 @@
+{
+ "dataset": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
+ "license": "CC BY 4.0",
+ "attribution": "Data from driver-base (https://github.com/JonathanDCohen/driver-base), licensed under CC BY 4.0. Changed: units converted to SI, derived values dropped, records matched to this database.",
+ "source_id": "driver-base",
+ "pages": 2432,
+ "written": 515,
+ "incomplete": 385,
+ "skipped": 707,
+ "parse_errors": 0,
+ "review": 0,
+ "blocked_reason": null,
+ "matched_existing": 825,
+ "filled_existing": 408,
+ "conflicting_fields": 34,
+ "ambiguous_in_dataset": 145,
+ "prefix_matches_for_review": 7,
+ "skipped_by_reason": {
+  "skipped kind": 218,
+  "missing Thiele/Small fields": 211,
+  "ambiguous": 145,
+  "manufacturer 'Jensen' is not on the canonical list": 120,
+  "prefix match for review": 7,
+  "manufacturer 'HOQS' is not on the canonical list": 6
+ }
+}

@@ -1,0 +1,27 @@
+{
+    "driver_id": "eminence-md-2001-16-dia",
+    "record_schema_version": 2,
+    "manufacturer": "Eminence",
+    "model_name": "MD 2001 16 Dia",
+    "identity": {
+        "manufacturer": "Eminence",
+        "model": "MD 2001 16 Dia",
+        "variant": {
+            "impedance_ohm": null,
+            "coil": null
+        },
+        "aliases": []
+    },
+    "driver_type": "compression",
+    "parameters": {},
+    "field_provenance": {},
+    "parameter_source": null,
+    "provenance": {
+        "notes": [
+            "Imported from driver-base commit f0fc602b2fb4 (CC BY 4.0); driver-base kind 'hf_compression', canonical_id 'eminence__md_2001_16_dia__16ohm'.",
+            "Derived or inferred driver-base values not imported: impedance_nominal_ohm."
+        ]
+    },
+    "type_source": "driver-base driver_kind 'hf_compression', from the manufacturer's product category",
+    "incomplete_reason": "missing Thiele/Small fields: fs_hz, re_ohm, bl_tm, sd_m2, mms_kg, le_h"
+}
