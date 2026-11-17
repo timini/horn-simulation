@@ -86,3 +86,71 @@ def test_comparison_gate_is_invariant_to_nonuniform_resampling():
     assert a == b
     assert not b["level_gate_passed"]
     assert b["median_absolute_error_db"] == 10.
+
+
+def _thl_bytes(tmp_path, n=8, df=10.):
+    from scipy.io import savemat
+    z = np.arange(n) + 1j*(np.arange(n) - 3.)
+    path = tmp_path/'fixture.mat'
+    savemat(path, {'df': df, 'rate': 2*n*df, 'zl1': z, 'zl2': 2*z, 'z0': np.full(n, 106.)}, format='4')
+    return path.read_bytes(), z
+
+
+def test_thl_import_verifies_every_file_and_keeps_both_channels(tmp_path):
+    from horn_analysis.reference_data import import_thl_record
+    raw, z = _thl_bytes(tmp_path)
+    script = b'disp("never executed")'
+    record = {'id': 'thl', 'files': [
+        {'name': 'A.THL', 'role': 'measurement', 'configuration': 'capped', 'sha256': hashlib.sha256(raw).hexdigest()},
+        {'name': 'run.m', 'role': 'analysis_source_text', 'sha256': hashlib.sha256(script).hexdigest()}]}
+    out = tmp_path/'out'
+    result = import_thl_record({'A.THL': raw, 'run.m': script}, record, out)
+    assert [c['channel'] for c in result['curves']] == ['zl1', 'zl2']
+    first = pd.read_csv(out/result['curves'][0]['csv'])
+    # DC bin is dropped; every other value is preserved in cgs units.
+    np.testing.assert_allclose(first.frequency, np.arange(1, 8)*10.)
+    np.testing.assert_allclose(first.z_imag_cgs_acoustic_ohm, z.imag[1:])
+    assert result['curves'][0]['author_z0_cgs'] == 106.
+    assert not result['physical_validation_passed']
+    with pytest.raises(ValueError, match='checksum'):
+        import_thl_record({'A.THL': raw, 'run.m': script + b' '}, record, out)
+    with pytest.raises(ValueError, match='File set'):
+        import_thl_record({'A.THL': raw}, record, out)
+
+
+def test_thl_grid_must_match_sample_rate(tmp_path):
+    from scipy.io import savemat
+    from horn_analysis.reference_data import read_thl
+    path = tmp_path/'bad.mat'
+    savemat(path, {'df': 10., 'rate': 44100., 'zl1': np.ones(8)+0j, 'zl2': np.ones(8)+0j}, format='4')
+    with pytest.raises(ValueError, match='grid'):
+        read_thl(path.read_bytes())
+
+
+def test_thl_record_main_imports_from_cache_then_reuses_source(tmp_path, monkeypatch):
+    import json
+    import sys
+    from horn_analysis import reference_data
+    raw, _ = _thl_bytes(tmp_path)
+    cache = tmp_path/'cache'; cache.mkdir()
+    (cache/'A.THL').write_bytes(raw)
+    record = {'id': 'thl', 'format': 'zenodo_files_thl', 'download_base_url': 'https://invalid.example/files',
+              'files': [{'name': 'A.THL', 'role': 'measurement', 'sha256': hashlib.sha256(raw).hexdigest()}]}
+    catalog = tmp_path/'catalog.json'
+    catalog.write_text(json.dumps({'references': [record]}))
+    out = tmp_path/'out'
+
+    def no_network(url):
+        raise AssertionError(f'unexpected download {url}')
+    monkeypatch.setattr(reference_data, '_fetch', no_network)
+    monkeypatch.setattr(sys, 'argv', ['x', '--catalog', str(catalog), '--output-dir', str(out), '--cache-dir', str(cache)])
+    reference_data.main()
+    inventory = json.loads((out/'inventory.json').read_text())
+    # Two channels of one file are two unique curves.
+    assert inventory['unique_curves'] == 2
+    assert (out/'thl'/'source'/'A.THL').read_bytes() == raw
+    first = (out/'thl'/'manifest.json').read_text()
+    # A second import without a cache reuses the verified source copy.
+    monkeypatch.setattr(sys, 'argv', ['x', '--catalog', str(catalog), '--output-dir', str(out)])
+    reference_data.main()
+    assert (out/'thl'/'manifest.json').read_text() == first

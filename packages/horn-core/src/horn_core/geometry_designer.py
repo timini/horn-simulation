@@ -9,8 +9,9 @@ Key formulas:
     (mouth circumference = wavelength at f_low)
   - Length range: quarter-wave to half-wave at f_low
     L_min = c0 / (4*f_low), L_max = c0 / (2*f_low)
-  - Simulation freq range: extend +/-0.5 octave beyond target band
-    to capture rolloff for accurate f3 detection
+  - Simulation freq range: one octave below and half an octave above the
+    target band, so the f3 points that the extension score uses are found
+    (see derive_simulation_freq_range)
 """
 
 import json
@@ -22,11 +23,15 @@ from typing import List, Optional
 import numpy as np
 
 from horn_core.candidates import CandidateGeometry, write_candidates_csv
+from horn_core.profiles import profile_geometry_error
 
 # Speed of sound in air at ~20C
 C0 = 343.0
 
-DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"]
+DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "cd"]
+
+# With only a maximum size given, search down to this fraction of it.
+SIZE_CAP_SEARCH_FRACTION = 0.4
 
 
 @dataclass
@@ -42,6 +47,57 @@ class DerivedGeometry:
     candidate_count: int
     status: str = "candidates_generated"
     reason: Optional[str] = None
+    bound_sources: Optional[dict] = None
+    size_compromise: Optional[dict] = None
+
+
+def _search_range(heuristic, fixed, lower, upper):
+    """Searched (lo, hi) and the source of each side for one dimension.
+
+    A user minimum or maximum replaces that side of the heuristic range. With
+    only a maximum given, the search runs from 0.4 x max (or the heuristic
+    minimum, if smaller) up to the maximum, so a cap below the heuristic
+    range still returns designs.
+    """
+    if fixed is not None:
+        return (fixed, fixed), {"low": "user_fixed", "high": "user_fixed"}
+    lo, hi = heuristic
+    sources = {"low": "heuristic", "high": "heuristic"}
+    if lower is not None:
+        lo, sources["low"] = lower, "user"
+    if upper is not None:
+        hi, sources["high"] = upper, "user"
+        if lower is None:
+            lo = min(heuristic[0], SIZE_CAP_SEARCH_FRACTION * upper)
+            sources["low"] = "size_cap_fraction" if lo < heuristic[0] else "heuristic"
+    return (lo, hi), sources
+
+
+def size_compromise(target_f_low, mouth_range, length_range):
+    """Low-frequency cost of size caps below the heuristic mouth or length range.
+
+    Uses the same rules that set the heuristic ranges: a mouth circumference
+    of one wavelength (ka = 1) and a quarter-wave length. Each capped
+    dimension gives the lowest frequency it supports; the larger of those is
+    the expected low-frequency limit and the shortfall is in octaves above
+    the requested f_low. This is a sizing rule, not a prediction; the
+    ranked f3_low values are the predictions. None when no cap binds.
+    """
+    ideal_mouth = derive_mouth_radius(target_f_low)
+    quarter_wave = C0 / (4 * target_f_low)
+    limits = {}
+    if mouth_range[1] < ideal_mouth * (1 - 1e-9):
+        limits["mouth_radius"] = {"max_m": mouth_range[1], "ka1_mouth_radius_m": ideal_mouth,
+                                  "supported_f_low_hz": C0 / (2 * math.pi * mouth_range[1])}
+    if length_range[1] < quarter_wave * (1 - 1e-9):
+        limits["length"] = {"max_m": length_range[1], "quarter_wave_length_m": quarter_wave,
+                            "supported_f_low_hz": C0 / (4 * length_range[1])}
+    if not limits:
+        return None
+    f_supported = max(v["supported_f_low_hz"] for v in limits.values())
+    return {"limits": limits, "expected_f_low_hz": f_supported, "target_f_low_hz": target_f_low,
+            "shortfall_octaves": math.log2(f_supported / target_f_low),
+            "basis": "ka = 1 mouth and quarter-wave length sizing rules; see ranked f3_low for predictions"}
 
 
 def derive_mouth_radius(f_low: float) -> float:
@@ -76,17 +132,43 @@ def derive_length_range(f_low: float) -> tuple:
     return (wavelength / 4, wavelength / 2)
 
 
+# Sweep margins beyond the target band, in octaves. The extension score term
+# clip(0.5 + E/2, 0, 1) saturates at E = 1 octave, so the low side is swept a
+# full octave: an f3 below f_low/2 already earns the whole term on its own and
+# reporting it as a bound costs nothing. Half an octave was not enough: in the
+# wave-2 runs nearly every feasible row had f3_low at the sweep minimum. The
+# low side is cheap because the mesh is sized for the top frequency and the
+# point count is fixed by num_intervals. The high side stays at half an
+# octave because raising the top frequency refines the mesh.
+SIM_LOW_MARGIN_OCTAVES = 1.0
+SIM_HIGH_MARGIN_OCTAVES = 0.5
+
+
 def derive_simulation_freq_range(
     f_low: float, f_high: float
 ) -> tuple:
-    """Extend target band by +/-0.5 octave for rolloff capture.
+    """Solver sweep for a target band: SIM_LOW_MARGIN_OCTAVES below f_low
+    and SIM_HIGH_MARGIN_OCTAVES above f_high.
 
-    This ensures the f3 points (where SPL drops 3dB) can be
-    accurately detected even if they fall outside the target band.
+    f3 points beyond these limits are reported as sweep bounds
+    (f3_low_is_bound, f3_high_is_bound) and the extension as a lower bound.
     """
-    sim_min = f_low / (2 ** 0.5)  # -0.5 octave
-    sim_max = f_high * (2 ** 0.5)  # +0.5 octave
+    sim_min = f_low / 2 ** SIM_LOW_MARGIN_OCTAVES
+    sim_max = f_high * 2 ** SIM_HIGH_MARGIN_OCTAVES
     return (sim_min, sim_max)
+
+
+def _empty_grid_reason(candidates, mouth_radii, lengths, profile_skipped) -> Optional[str]:
+    """Why an auto grid produced no candidates, or None if it produced some."""
+    if candidates:
+        return None
+    if not mouth_radii or not lengths:
+        return "size_constraints_exclude_search_range"
+    if profile_skipped:
+        # Some mouth/length points were larger than the throat but every one
+        # was impossible for its profile (a tractrix below its natural length).
+        return "profile_geometry_infeasible"
+    return "no_mouth_larger_than_throat"
 
 
 def generate_auto_candidates(
@@ -144,35 +226,25 @@ def generate_auto_candidates(
         if value is not None and (not np.isfinite(value) or value <= 0 or (lower is not None and value < lower) or (upper is not None and value > upper)):
             raise ValueError(f"Fixed {name} conflicts with valid dimensions or requested bounds")
 
-    # Mouth radius: fixed or derived
+    # Mouth radius and length: fixed, or a heuristic range with user limits.
+    mouth_range, mouth_sources = _search_range(derive_mouth_radius_range(target_f_low), mouth_radius,
+                                               min_mouth_radius, max_mouth_radius)
+    length_range, length_sources = _search_range(derive_length_range(target_f_low), length, min_length, max_length)
     if mouth_radius is not None:
-        mouth_range = (mouth_radius, mouth_radius)
         mouth_radii = [mouth_radius]
     else:
-        lo, hi = derive_mouth_radius_range(target_f_low)
-        if min_mouth_radius is not None:
-            lo = min_mouth_radius
-        if max_mouth_radius is not None:
-            hi = max_mouth_radius
-        mouth_range = (lo, hi)
+        lo, hi = mouth_range
         mouth_radii = np.linspace(lo, hi, num_mouth_radii).tolist() if lo <= hi else []
-
-    # Length: fixed or derived
     if length is not None:
-        length_range = (length, length)
         lengths = [length]
     else:
-        lo, hi = derive_length_range(target_f_low)
-        if min_length is not None:
-            lo = min_length
-        if max_length is not None:
-            hi = max_length
-        length_range = (lo, hi)
+        lo, hi = length_range
         lengths = np.linspace(lo, hi, num_lengths).tolist() if lo <= hi else []
 
     sim_range = derive_simulation_freq_range(target_f_low, target_f_high)
 
     candidates = []
+    profile_skipped = False
     idx = 0
     for profile in profiles:
         for r_throat in throat_radii:
@@ -180,6 +252,9 @@ def generate_auto_candidates(
                 for horn_length in lengths:
                     if r_mouth <= r_throat:
                         continue
+                    if profile_geometry_error(profile, r_throat, r_mouth, horn_length):
+                        profile_skipped = True
+                        continue  # e.g. a tractrix shorter than its natural length
                     candidate_id = f"auto_{profile[:3]}_{idx:04d}"
                     candidates.append(
                         CandidateGeometry(
@@ -202,8 +277,9 @@ def generate_auto_candidates(
         sim_freq_range=sim_range,
         candidate_count=len(candidates),
         status="candidates_generated" if candidates else "no_feasible_design",
-        reason=(None if candidates else "size_constraints_exclude_search_range"
-                if not mouth_radii or not lengths else "no_mouth_larger_than_throat"),
+        reason=_empty_grid_reason(candidates, mouth_radii, lengths, profile_skipped),
+        bound_sources={"mouth_radius": mouth_sources, "length": length_sources},
+        size_compromise=size_compromise(target_f_low, mouth_range, length_range) if candidates else None,
     )
 
     return candidates, derived
@@ -263,6 +339,8 @@ def generate_fullauto_candidates(
                 for horn_length in lengths:
                     if r_mouth <= r_throat:
                         continue
+                    if profile_geometry_error(profile, r_throat, r_mouth, horn_length):
+                        continue  # e.g. a tractrix shorter than its natural length
                     candidate_id = f"fa_{profile[:3]}_{idx:04d}"
                     candidates.append(
                         CandidateGeometry(
@@ -323,7 +401,7 @@ def main():
     )
     parser.add_argument(
         "--max-length", type=float, default=None,
-        help="Cap (or extend) the upper bound of the derived length range (m).",
+        help="Maximum length (m). Without --min-length the search runs from 0.4x this value up to it.",
     )
     parser.add_argument(
         "--min-length", type=float, default=None,
@@ -331,7 +409,7 @@ def main():
     )
     parser.add_argument(
         "--max-mouth-radius", type=float, default=None,
-        help="Cap (or extend) upper bound of derived mouth radius range (m).",
+        help="Maximum mouth radius (m). Without --min-mouth-radius the search runs from 0.4x this value up to it.",
     )
     parser.add_argument(
         "--min-mouth-radius", type=float, default=None,
@@ -347,10 +425,23 @@ def main():
         help="Output design summary JSON.",
     )
     parser.add_argument("--throat-radius", type=float, default=None, help="Fix throat radius")
+    parser.add_argument("--profiles", type=str, default=None,
+                        help="Comma list of profiles to search (default: all seven).")
     args = parser.parse_args()
+    profiles = None
+    if args.profiles:
+        profiles = [name.strip() for name in args.profiles.split(",") if name.strip()]
+        unknown = sorted(set(profiles) - set(DEFAULT_PROFILES))
+        if not profiles or unknown:
+            parser.error(f"Unknown profiles {unknown}; choose from {DEFAULT_PROFILES}")
 
     prescreen = json.loads(Path(args.prescreen_json).read_text())
     throat_radii = prescreen.get("throat_radii_m") or [prescreen["throat_radius_m"]]
+    # The prescreen ka cap limits default throat sampling. A throat the user
+    # fixes keeps the wider absolute cap of ka = 2 pi at the target f_high.
+    ka_max = prescreen.get("ka_max", 2 * math.pi)
+    if args.throat_radius is not None:
+        ka_max = max(ka_max, 2 * math.pi)
 
     candidates, derived = generate_auto_candidates(
         target_f_low=args.target_f_low,
@@ -364,7 +455,8 @@ def main():
         min_length=args.min_length,
         max_mouth_radius=args.max_mouth_radius,
         min_mouth_radius=args.min_mouth_radius,
-        ka_max=prescreen.get("ka_max", 2 * math.pi),
+        profiles=profiles,
+        ka_max=ka_max,
     )
 
     write_candidates_csv(candidates, args.output)
@@ -381,6 +473,11 @@ def main():
         "candidate_count": derived.candidate_count,
         "status": derived.status,
         "reason": derived.reason,
+        "bound_sources": {**(derived.bound_sources or {}),
+                          "throat_radius": ({"low": "user_fixed", "high": "user_fixed"} if args.throat_radius is not None
+                                            else {"low": "driver_prescreen", "high": "driver_prescreen"})},
+        "throat_ka_max": ka_max,
+        "size_compromise": derived.size_compromise,
     }
     Path(args.design_json).write_text(json.dumps(design, indent=2))
     print(f"Design summary -> {args.design_json}")
@@ -399,6 +496,11 @@ def main():
         f"  Simulation freq range: {derived.sim_freq_range[0]:.1f} - "
         f"{derived.sim_freq_range[1]:.1f} Hz"
     )
+    if derived.size_compromise:
+        c = derived.size_compromise
+        print(f"  Size caps are below the sizing rules for {args.target_f_low:g} Hz: horn loading is expected "
+              f"to weaken below about {c['expected_f_low_hz']:.0f} Hz ({c['shortfall_octaves']:.2f} octaves; "
+              "rule of thumb, see ranked f3_low for predictions)")
 
 
 if __name__ == "__main__":

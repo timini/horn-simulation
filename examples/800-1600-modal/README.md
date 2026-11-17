@@ -1,4 +1,4 @@
-# 800–1600 Hz: generate an experimental horn candidate
+# 800 to 1600 Hz: generate an experimental horn candidate
 
 Open [report.html](report.html) locally in a browser to inspect the predicted response, shortlisted designs, assumptions and evidence gaps. The report is self-contained; Docker is only required to generate a fresh design.
 
@@ -14,7 +14,7 @@ Open [report.html](report.html) locally in a browser to inspect the predicted re
 | Radiation setting | Nonuniform axisymmetric mouth in an infinite baffle (`modal_baffled`) |
 | Physical evidence status | Insufficient evidence; experimental prediction |
 
-The selected candidate is near-tied with other designs. Its throat dimensions describe an ideal acoustic connection. The real cone driver's chamber/adapter, rear load and moving-mass decomposition have not been qualified.
+The selected candidate is near-tied with other designs. Its throat dimensions describe an ideal acoustic connection. The real cone driver's chamber/adapter, rear load and moving-mass decomposition have not been qualified. This run used the ideal area transformer. The current coupling adds an estimated front chamber for cone drivers (139 cm3 here, the air in the open cone behind a flat adapter plate, lumped corner near 1.3 kHz); with it the same FEM response gives about 6.4 dB ripple. That is over the 6 dB limit only because of the estimate, so the design is kept, scored on the response with the chamber and marked `front_chamber_estimated: true` with the evidence gap `front_chamber_volume_estimated` (the reason is listed under `estimated_chamber_reasons`). A phase plug or cone filler would reduce that volume; give the real adapter volume as `front_chamber_volume_cm3` (cubic centimetres) to re-rank.
 
 ## Inspect the design
 
@@ -26,7 +26,7 @@ The selected candidate is near-tied with other designs. Its throat dimensions de
 - [original-run-manifest.json](original-run-manifest.json): original source, input, container and completion identities.
 - [example-manifest.json](example-manifest.json): maps these conveniently named files to their original archive members and hashes.
 
-The files are copied unchanged from the [completed example archive](../../data/validation/worked_example_modal_800_1600.tar.gz), executed at source `77d915b`. This folder contains selected outputs, while the archive preserves the complete output collection. The original run manifest describes that original collection and its paths.
+The files are copied unchanged from the [completed example archive](../../data/validation/worked_example_modal_800_1600.tar.gz), executed at source `77d915b`, except `horn.step`. The archived STEP held metre values under a millimetre unit declaration, so it opened 1000 times too small in CAD. `horn.step` is the same geometry re-exported with true units; `example-manifest.json` records both hashes and the command. This folder contains selected outputs, while the archive preserves the complete output collection. The original run manifest describes that original collection and its paths.
 
 ## Generate a fresh design
 
@@ -43,4 +43,4 @@ just latest-run
 
 The last command prints the new run directory. Open `outputs/auto/report/auto_report.html` inside it. Change `target_f_low` and `target_f_high` for a different band; optional `--max_mouth_radius` and `--max_length` limits are in metres. The search can return no feasible design or insufficient evidence. New requests do not inherit qualification from this example.
 
-The sample uses a small search budget: three screened geometries and two refinement proposals. It demonstrates a repeatable workflow, not a global optimum. The [candidate mesh/loft/frequency study](../../docs/MODAL_CANDIDATE_RESOLUTION.md) and [four-band search comparison](../../docs/MODAL_SEARCH_VALIDATION.md) document its numerical evidence. [Issue #81](https://github.com/timini/horn-simulation/issues/81) tracks the remaining complete-assembly evidence.
+The sample uses a small search budget: three screened geometries and two refinement proposals. It demonstrates a repeatable workflow, not a global optimum. The [candidate mesh/loft/frequency study](../../docs/MODAL_CANDIDATE_RESOLUTION.md) and [four-band search comparison](../../docs/history/MODAL_SEARCH_VALIDATION.md) document its numerical evidence. [Issue #81](https://github.com/timini/horn-simulation/issues/81) tracks the remaining complete-assembly evidence.

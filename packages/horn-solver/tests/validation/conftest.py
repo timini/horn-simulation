@@ -152,6 +152,8 @@ def _generate_cylinder_step(output_file: Path, radius: float, length: float) -> 
 
     # Fallback: use gmsh.model.occ.addCylinder directly
     gmsh.initialize()
+    from horn_core.cad_units import set_step_units
+    set_step_units(gmsh)  # write true-size STEP (metre model)
     try:
         gmsh.model.add("cylinder")
         gmsh.option.setNumber("General.Terminal", 1)

@@ -1,0 +1,11 @@
+# Separate environment for the cross-software checks. Never a dependency of
+# the project packages: openwind is GPL-3, bempp-cl is MIT.
+openwind==0.12.4
+bempp-cl==0.4.2
+numba==0.68.1
+llvmlite==0.50.0
+numpy==2.5.5
+scipy==1.18.1
+matplotlib==3.11.2
+gmsh==4.15.2
+meshio==5.3.5

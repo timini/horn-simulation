@@ -1,0 +1,35 @@
+ID=0.00
+Comment=horn-simulation cross-software check: example_800_1600 (hyperbolic)
+
+|RADIATION, SOURCE AND MOUTH PARAMETER VALUES:
+
+Ang=2.0 x Pi
+Eg=2.83
+Rg=0.00
+Cir=0.00
+
+|HORN PARAMETER VALUES:
+
+S1=33.18
+S2=247.22
+Hyp=11.79
+F12=771.72
+T=0.00
+
+|TRADITIONAL DRIVER PARAMETER VALUES:
+
+Sd=130.00
+Bl=9.00
+Cms=2.46E-04
+Rms=2.18
+Mmd=8.50
+Le=0.10
+Re=5.30
+Nd=1
+
+|CHAMBER PARAMETER VALUES:
+
+Vrc=0.00
+Lrc=0.00
+Vtc=0.00
+Atc=33.18

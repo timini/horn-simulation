@@ -13,11 +13,13 @@ from typing import List, Optional
 
 import numpy as np
 
+from horn_core.profiles import profile_geometry_error
+
 
 # Standard 1" compression driver throat radii
 DEFAULT_THROAT_RADII = [0.0125, 0.0175, 0.025]  # metres
 
-DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"]
+DEFAULT_PROFILES = ["conical", "exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "cd"]
 
 
 @dataclass
@@ -77,6 +79,8 @@ def generate_candidates(
         # Skip invalid geometries: mouth must be larger than throat
         if r_mouth <= r_throat:
             continue
+        if profile_geometry_error(profile, r_throat, r_mouth, horn_length):
+            continue  # e.g. a tractrix shorter than its natural length
 
         candidate_id = f"{profile[:3]}_{idx:04d}"
         candidates.append(CandidateGeometry(

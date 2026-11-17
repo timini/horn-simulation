@@ -5,12 +5,14 @@ local_packages := "horn-core horn-geometry horn-analysis"
 default:
     @just --list
 
-# Build all Docker images
-build:
+# Build all Docker images, labelled with the hash of their sources: just build [tag]
+build tag="latest":
     #!/usr/bin/env bash
     set -euo pipefail
     for pkg in {{docker_packages}}; do
-        docker build -t "$pkg:latest" --target production -f "./packages/$pkg/Dockerfile" .
+        docker build -t "$pkg:{{tag}}" --target production \
+            --label "horn.source_sha256=$(python3 scripts/image_source.py "$pkg")" \
+            -f "./packages/$pkg/Dockerfile" .
     done
 
 # Run all package tests in Docker (build then test)
@@ -30,7 +32,7 @@ test-package pkg:
     docker build -t "{{pkg}}:test" --target test -f "./packages/{{pkg}}/Dockerfile" .
     docker run --rm "{{pkg}}:test" pytest "/app/packages/{{pkg}}/tests" -v
 
-# Run tests locally (no Docker — works for horn-core, horn-geometry, horn-analysis)
+# Run the tests that need no Docker (horn-drivers, horn-core, horn-analysis, horn-geometry, solver meshing)
 test-local:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -42,24 +44,31 @@ test-local:
     .venv/bin/python -m pytest packages/horn-analysis/tests/ -v
     echo "Running horn-geometry tests..."
     .venv/bin/python -m pytest packages/horn-geometry/tests/ -v
+    echo "Running horn-solver meshing tests (gmsh only, no dolfinx)..."
+    .venv/bin/python -m pytest packages/horn-solver/tests/test_meshing.py -v
 
-# Run the Nextflow pipeline (single mode, default params)
+# Validate the shipped driver databases (CI requires zero errors)
+validate-drivers:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    .venv/bin/horn-validate-drivers --db data/drivers | tail -3
+    .venv/bin/horn-validate-drivers --db data/drivers-curated | tail -3
+
+# Run the pipeline through the launcher in single mode: just run --throat_radius 0.025 --mouth_radius 0.1 --length 0.2
 run *ARGS:
     python3 scripts/run_pipeline.py {{ARGS}}
 
-# Run auto mode (unified optimizer): just run-auto --target_f_low 250 --target_f_high 6500
-# Fixed geometry: --mouth_radius 0.15 --length 0.3 (only varies profile)
-# Free geometry: omit mouth_radius/length to derive from frequency band
+# Run auto mode (band search and driver ranking): just run-auto --target_f_low 800 --target_f_high 1600
 run-auto *ARGS:
     python3 scripts/run_pipeline.py --mode auto {{ARGS}}
 
-# Alias for auto mode with all geometry derived (backward compat)
+# Same as run-auto; kept for older commands
 run-fullauto *ARGS:
     python3 scripts/run_pipeline.py --mode auto {{ARGS}}
 
 # Run Nextflow tests
-test-nextflow:
-    nf-test test tests/
+test-nextflow *ARGS:
+    scripts/nf_test.sh test tests/ {{ARGS}}
 
 # Clean up Docker images and Nextflow files
 clean:
@@ -79,3 +88,20 @@ latest-run *args:
 # Read-only inventory of completed, failed, running and historical folders.
 runs *args:
     python3 scripts/runs.py list {{args}}
+
+# Cross-software checks (openwind, bempp-cl, Hornresp sheets); see docs/CROSS_SOFTWARE_VALIDATION.md
+validate-cross-software:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ ! -x .venv-cross-software/bin/python ]; then
+        uv venv .venv-cross-software --python 3.12
+        VIRTUAL_ENV=.venv-cross-software uv pip install -r validation/cross_software/requirements.txt
+    fi
+    export PYTHONPATH=packages/horn-core/src NUMBA_NUM_THREADS="${NUMBA_NUM_THREADS:-4}"
+    .venv-cross-software/bin/python -W ignore validation/cross_software/openwind_compare.py
+    .venv-cross-software/bin/python -W ignore validation/cross_software/bempp_compare.py
+    .venv/bin/python validation/hornresp/hornresp_records.py
+
+# Compare archived horn-solver FEM runs with openwind: just validate-cross-software-fem results/<conical-run> results/<exponential-run>
+validate-cross-software-fem *RUNS:
+    PYTHONPATH=packages/horn-core/src .venv-cross-software/bin/python -W ignore validation/cross_software/fem_compare.py {{RUNS}}

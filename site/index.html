@@ -52,6 +52,11 @@
     border-left: 3px solid var(--accent); background: var(--card);
     padding: 10px 14px; margin: 18px 0; color: var(--muted); font-size: 0.95rem;
   }
+  .panel {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    padding: 4px 16px 6px; margin: 18px 0;
+  }
+  .panel h3 { margin-top: 14px; }
   figure { margin: 18px 0 24px; }
   figure img {
     display: block; width: 100%; height: auto; border-radius: 6px;
@@ -68,12 +73,14 @@
   .table-wrap { overflow-x: auto; margin: 12px 0 20px; }
   table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
   th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td.wrap { white-space: normal; min-width: 220px; }
   th { color: var(--muted); font-weight: 600; }
   pre {
     background: var(--code-bg); padding: 12px 14px; border-radius: 6px;
     overflow-x: auto; font-size: 0.85rem; line-height: 1.5;
   }
-  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+  pre code { overflow-wrap: normal; }
   ol, ul { padding-left: 22px; }
   li { margin-bottom: 4px; }
   footer { margin-top: 56px; color: var(--muted); font-size: 0.9rem; }
@@ -84,108 +91,212 @@
 
 <header>
   <h1>Horn Simulation</h1>
-  <p class="lede">An open-source pipeline for designing horn-loaded loudspeakers. You give it a frequency band. It generates horn shapes, solves them with finite element acoustics, couples them to real drivers and ranks the results.</p>
+  <p class="lede">An open-source pipeline for designing horn-loaded loudspeakers. You give it a frequency band and a driver database. It generates horn shapes, solves them with finite element acoustics, couples each one to the drivers and ranks the pairs.</p>
   <div class="links">
     <a class="primary" href="https://github.com/timini/horn-simulation">Source on GitHub</a>
-    <a href="https://timini.github.io/devblog/horn-simulation/">Read the devblog post</a>
+    <a href="https://github.com/timini/horn-simulation/blob/main/docs/index.md">Documentation</a>
+    <a href="https://timini.github.io/devblog/horn-simulation/">Devblog post</a>
   </div>
 </header>
 
-<h2>What it does</h2>
-<p>The pipeline takes a target band, for example 800 to 1600 Hz. It builds candidate horns from seven profile families: conical, exponential, hyperbolic, tractrix, oblate spheroid, Le Cléac'h and constant directivity.</p>
-<p>A fast analytical screen (lumped-element and Webster models) cuts the candidates down. The shortlist is meshed with gmsh and solved with a FEniCSx Helmholtz solver. Each horn is then coupled to drivers from a database using their Thiele-Small parameters.</p>
-<p>Every driver and horn pair is scored on bandwidth coverage, ripple and output. A short refinement step tries nearby dimensions. The result is a self-contained HTML report, a STEP file of the winning horn's air volume and the response data.</p>
-<p>Nextflow runs the steps in Docker containers and solves frequency bands in parallel.</p>
+<div class="note">These are experimental predictions. The horn model has passed several comparisons with independent solvers and one with published measurements of a horn's input impedance. No complete horn and driver assembly has been compared with measurement, so predicted levels and the driver ranking are not validated. STEP files describe the air inside the horn, not a part you can print.</div>
 
-<div class="note">These are experimental predictions. The horn-loading model has passed one comparison against published measurements (below). The driver-to-horn interface and complete assemblies have not been physically validated. STEP files describe the air inside the horn, not a part you can print.</div>
+<h2>What it does</h2>
+<p>You give a target band, for example 800 to 1600 Hz. The pipeline screens the drivers in a database, picks throat sizes that suit them, and builds a grid of horns from seven profiles:</p>
+<ul>
+  <li><code>conical</code>, <code>exponential</code> and <code>tractrix</code>;</li>
+  <li><code>hyperbolic</code>: a Salmon hypex with T = 0 (catenoidal);</li>
+  <li><code>os</code>: oblate spheroidal;</li>
+  <li><code>scaled_tractrix</code>: a tractrix contour scaled to the length (once misnamed Le Cleac'h; it is not one);</li>
+  <li><code>cd</code>: an exponential throat joined smoothly to a tangent cone.</li>
+</ul>
+<p>A one-dimensional Webster model scores every horn against every driver in milliseconds. A short list goes to the 3D solver: gmsh meshes, a FEniCSx Helmholtz solve, and a mouth that radiates into an infinite baffle. Each solved horn is coupled to each driver through its Thiele-Small parameters and its front chamber. A short refinement step then tries nearby dimensions of the best design.</p>
+<p>Pairs that break a hard limit (ripple, excursion, power, size, the driver's usable band, a minimum level) are rejected, and the report says by how much. The rest are ranked by a weighted sum of four terms: sensitivity, in-band ripple, bandwidth extension past the band edges, and horn size. The weights are fixed exchange rates. With the defaults, 1 dB less ripple is worth 2 dB of sensitivity, one more octave of extension is worth 6 dB, and size does not count unless you give it a weight. Scores within 0.02 are marked as near ties.</p>
+<p>Nextflow runs each step in a Docker container and solves frequency bands in parallel. Each run gets its own folder with a manifest of the source, inputs and container images.</p>
+
+<h3>The front chamber</h3>
+<p>Between a cone driver and a small throat there is a volume of air: the open cone closed by the adapter plate. It acts as a low-pass filter. When a driver record gives no volume, the pipeline estimates it (139 cm<sup>3</sup> for the 18Sound 6NMB420) and marks the result <code>front_chamber_estimated</code>. The real adapter will differ, so give the measured volume as <code>front_chamber_volume_cm3</code> when you have it.</p>
+<p>This changes answers. Earlier versions treated the throat as an ideal area transformer and chose a hyperbolic horn with a 65 mm throat for 800 to 1600 Hz, at about 1.5 dB ripple. With the estimated chamber, that same horn gives about 6.4 dB ripple and fails the 6 dB limit. The current search picks a larger throat instead.</p>
 
 <h2>Example 1: 800 to 1600 Hz, automatic search</h2>
-<p>A small auto-mode run over a curated driver set. The analytical screen evaluated 189 horn candidates and scored 567 driver and horn pairs. Three went to FEM, plus two refinement trials. The winner is an 18Sound 6NMB420 cone driver on a short hyperbolic horn.</p>
+<p>A short auto-mode run over the seven curated drivers. Five passed the driver screen. The Webster screen scored 230 geometries and 1,150 driver and horn pairs; three went to FEM (one <code>cd</code>, one exponential, one scaled tractrix), plus two refinement trials. The winner is an 18Sound 6NMB420 cone driver on a <code>cd</code> horn.</p>
 
 <div class="stats">
-  <div class="stat"><b>Hyperbolic</b><span>Selected profile</span></div>
-  <div class="stat"><b>65.0 mm</b><span>Throat diameter</span></div>
+  <div class="stat"><b>cd</b><span>Selected profile</span></div>
+  <div class="stat"><b>72.1 mm</b><span>Throat diameter</span></div>
   <div class="stat"><b>177.4 mm</b><span>Mouth diameter</span></div>
-  <div class="stat"><b>117.9 mm</b><span>Acoustic length</span></div>
-  <div class="stat"><b>1.5 dB</b><span>In-band ripple</span></div>
-  <div class="stat"><b>104.9 dB</b><span>Mean SPL, 2.83 V, 1 m</span></div>
+  <div class="stat"><b>117.9 mm</b><span>Length</span></div>
+  <div class="stat"><b>2.08 dB</b><span>Ripple, 800 to 1600 Hz</span></div>
+  <div class="stat"><b>104.13 dB</b><span>Mean level, 2.83 V, 1 m</span></div>
 </div>
 
-<figure>
-  <img src="img/modal-geometry.png" alt="3D view and wall profile of the winning hyperbolic horn" loading="lazy" width="1400" height="625">
-  <figcaption>Winning horn geometry. Labels in the plot title are radii in mm.</figcaption>
-</figure>
+<p>The level includes the estimated front chamber. Without it the same horn gives 3.23 dB ripple and 102.33 dB. Both Peerless compression drivers were rejected: the band is outside their rated usable band, and one also exceeds Xmax at 2.83 V by 0.06 mm.</p>
 
 <figure>
-  <img src="img/modal-coupled-spl.png" alt="Predicted on-axis SPL of the top five driver and horn candidates" loading="lazy" width="1400" height="693">
-  <figcaption>Predicted on-axis output of the top five candidates at 2.83 V RMS and 1 m. The shaded area is the target band.</figcaption>
+  <img src="img/800-1600-comparison.png" alt="Predicted on-axis level, ripple and score of the top five driver and horn pairs" loading="lazy" width="1785" height="1486">
+  <figcaption>The top five pairs at 2.83 V RMS and 1 m on axis. The shaded area is the target band.</figcaption>
 </figure>
 
 <h3>Ranking</h3>
-<p>All five finalists use the same driver. The top two are a near tie.</p>
+<p>All five finalists use the 6NMB420. The first three are within 0.02 and are near ties.</p>
 <div class="table-wrap">
 <table>
-  <thead><tr><th>#</th><th>Profile</th><th>Throat R (mm)</th><th>Mouth R (mm)</th><th>Length (mm)</th><th>Score</th><th>Ripple (dB)</th><th>Mean (dB)</th></tr></thead>
+  <thead><tr><th>#</th><th>Horn</th><th>Profile</th><th>Throat R (mm)</th><th>Mouth R (mm)</th><th>Length (mm)</th><th>Score</th><th>Ripple (dB)</th><th>Mean (dB)</th></tr></thead>
   <tbody>
-    <tr><td>1</td><td>Hyperbolic</td><td>32.5</td><td>88.7</td><td>117.9</td><td>0.875</td><td>1.5</td><td>104.9</td></tr>
-    <tr><td>2</td><td>Hyperbolic</td><td>32.5</td><td>88.7</td><td>107.2</td><td>0.872</td><td>1.5</td><td>104.7</td></tr>
-    <tr><td>3</td><td>Hyperbolic</td><td>32.5</td><td>79.8</td><td>107.2</td><td>0.843</td><td>2.2</td><td>104.5</td></tr>
-    <tr><td>4</td><td>Exponential</td><td>32.5</td><td>88.7</td><td>107.2</td><td>0.839</td><td>2.2</td><td>103.4</td></tr>
-    <tr><td>5</td><td>Le Cléac'h</td><td>32.5</td><td>88.7</td><td>107.2</td><td>0.816</td><td>2.8</td><td>103.7</td></tr>
+    <tr><td>1</td><td>refine_cd_0001</td><td>cd</td><td>36.06</td><td>88.71</td><td>117.91</td><td>0.791</td><td>2.1</td><td>104.1</td></tr>
+    <tr><td>2</td><td>auto_cd_0221</td><td>cd</td><td>36.06</td><td>88.71</td><td>107.19</td><td>0.785</td><td>2.4</td><td>104.1</td></tr>
+    <tr><td>3</td><td>auto_exp_0057</td><td>exponential</td><td>36.06</td><td>88.71</td><td>107.19</td><td>0.772</td><td>2.7</td><td>104.2</td></tr>
+    <tr><td>4</td><td>refine_cd_0000</td><td>cd</td><td>36.06</td><td>79.84</td><td>107.19</td><td>0.758</td><td>3.4</td><td>103.6</td></tr>
+    <tr><td>5</td><td>auto_sca_0189</td><td>scaled_tractrix</td><td>36.06</td><td>88.71</td><td>160.78</td><td>0.752</td><td>3.7</td><td>103.6</td></tr>
   </tbody>
 </table>
 </div>
 
+<p>Refinement used its whole budget and stopped with the mouth on the upper edge of its search range, so a larger budget may find a different design. This run does not show a global optimum.</p>
+
+<p><a href="reports/800-1600.html">Open the full generated report</a> (3.4 MB, self-contained) or read the <a href="https://github.com/timini/horn-simulation/blob/main/docs/WORKED_EXAMPLE.md">worked example</a>, which walks through the same run. Run <code>20261117T005341Z-14e497b7</code>, source revision <code>51427ee</code>.</p>
+
+<div class="panel">
+<h3>The same band with a 100 mm length cap</h3>
+<p>Adding <code>--max_length 0.1</code> moves the length search to 40 to 100 mm. That is below the quarter-wave sizing rule for 800 Hz, and the report says so: by that rule horn loading weakens below about 858 Hz. It also says the model does not show that shortfall for the winner, whose lower f3 is 649 Hz.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>#</th><th>Horn</th><th>Length (mm)</th><th>Score</th><th>Ripple (dB)</th><th>Mean (dB)</th><th>Lower f3 (Hz)</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>refine_conical_0001</td><td>63.0</td><td>0.789</td><td>1.40</td><td>103.74</td><td>649</td></tr>
+    <tr><td>2</td><td>auto_con_0025</td><td>70.0</td><td>0.789</td><td>1.66</td><td>103.84</td><td>621</td></tr>
+    <tr><td>3</td><td>auto_cd_0214</td><td>100.0</td><td>0.781</td><td>2.47</td><td>104.15</td><td>532</td></tr>
+  </tbody>
+</table>
+</div>
+<p>All three use the 6NMB420 with the same 72.1 mm throat and 177.4 mm mouth, and are near ties. A conical horn 63 mm long scores about the same as the 118 mm <code>cd</code> horn above: 0.4 dB less level and flatter in band, with less extension below it. Run <code>20261117T083036Z-36f3461c</code>; <a href="reports/800-1600-max-length-100mm.html">open its report</a>.</p>
 <figure>
-  <img src="img/modal-throat-impedance.png" alt="Throat impedance magnitude and phase by horn profile" loading="lazy" width="1400" height="693">
-  <figcaption>Throat acoustic impedance magnitude and phase for each profile, from the FEM solve.</figcaption>
+  <img src="img/800-1600-max-length-comparison.png" alt="Predicted on-axis level of the top five pairs with a 100 mm length cap" loading="lazy" width="1785" height="1486">
+  <figcaption>Top five pairs with the 100 mm cap, 2.83 V RMS, 1 m on axis.</figcaption>
 </figure>
-
-<p><a href="reports/800-1600-modal.html">Open the full generated report</a> (2.7 MB, self-contained) or <a href="https://github.com/timini/horn-simulation/tree/main/examples/800-1600-modal">browse the example files</a>.</p>
-
-<h2>Example 2: 6NMB420, 320 to 5000 Hz, 300 mm length limit</h2>
-<p>A wider band with a hard length limit. The selected design is an oblate spheroid (OS) horn for the 8 ohm 18Sound 6NMB420. A broad 700-geometry search found nothing within the ripple limit. A focused 175-geometry search with a narrower throat did. In total, 15 geometries received full FEM sweeps.</p>
-
-<div class="stats">
-  <div class="stat"><b>OS</b><span>Selected profile</span></div>
-  <div class="stat"><b>76 mm</b><span>Throat diameter</span></div>
-  <div class="stat"><b>244.8 mm</b><span>Mouth diameter</span></div>
-  <div class="stat"><b>300 mm</b><span>Acoustic length</span></div>
-  <div class="stat"><b>4.42 dB</b><span>Variation, 320 to 5000 Hz</span></div>
-  <div class="stat"><b>105.5 dB</b><span>Mean SPL, 2.83 V, 1 m</span></div>
 </div>
 
+<div class="panel">
+<h3>An impossible request: at least 140 dB</h3>
+<p>The same band with <code>--min_output_db 140</code> at 2.83 V and a smaller budget (two FEM horns, one refinement trial, 41 frequencies). No pair can do this, so the report ranks nothing. Refinement starts from the least infeasible design instead of the best feasible one. The rejection table says what failed and by how much:</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Reason</th><th>Pairs</th><th>Closest miss</th><th>Largest excess</th></tr></thead>
+  <tbody>
+    <tr><td>Level below the minimum</td><td>15</td><td>39.69 dB</td><td>46.92 dB</td></tr>
+    <tr><td>Ripple above 6 dB</td><td>7</td><td>0.14 dB</td><td>8.58 dB</td></tr>
+    <tr><td>Sd / throat area above 10</td><td>6</td><td>5.50</td><td>15.66</td></tr>
+    <tr><td>Outside the driver's usable band</td><td>6</td><td></td><td></td></tr>
+    <tr><td>Excursion above Xmax</td><td>3</td><td>0.05 mm</td><td>0.05 mm</td></tr>
+    <tr><td>Diaphragm larger than the mouth</td><td>3</td><td></td><td></td></tr>
+  </tbody>
+</table>
+</div>
+<p>The best pair was still about 40 dB short. A pair can fail several limits, so the counts add to more than 15. Run <code>20261117T044425Z-a28f31bf</code>; <a href="reports/800-1600-min-140db.html">open its report</a>.</p>
+</div>
+
+<h2>Example 2: 6NMB420, 320 to 5000 Hz, 300 mm length limit</h2>
+<p>A wide band with a hard length limit, for one driver, the 8 ohm 18Sound 6NMB420, with a fixed 76 mm throat. This example shows the pipeline reporting that a request does not work with the driver as modelled.</p>
+<p>The search scored 160 geometries with the Webster screen, sent an exponential and a tractrix horn to FEM and ran six refinement trials. Every design is over the 6 dB ripple limit once the estimated front chamber is included. They are kept and ranked only because the failure comes from the estimate, and each is flagged <code>response_limited_by_estimated_front_chamber</code>.</p>
+
+<div class="stats">
+  <div class="stat"><b>Exponential</b><span>Best ranked profile</span></div>
+  <div class="stat"><b>76 mm</b><span>Throat diameter</span></div>
+  <div class="stat"><b>261.0 mm</b><span>Mouth diameter</span></div>
+  <div class="stat"><b>300 mm</b><span>Length, at the cap</span></div>
+  <div class="stat"><b>13.1 dB</b><span>Ripple, 320 to 5000 Hz</span></div>
+  <div class="stat"><b>104.1 dB</b><span>Mean level, 2.83 V, 1 m</span></div>
+</div>
+
+<p>With the estimated 139 cm<sup>3</sup> chamber the response falls 3 dB below the band mean at 3.16 kHz, well short of 5 kHz. Without a chamber the same horn gives 4.9 dB ripple and 105.4 dB, inside the limit. So the answer depends on the real adapter: a phase plug or cone filler that removes most of that air volume could make this band workable. Measure it and give it as <code>front_chamber_volume_cm3</code> before trusting either result. Refinement ended at the length cap.</p>
+<p>"Best ranked" does not mean flattest here. Above 12 dB ripple the ripple term scores zero, so these designs are ordered by level and extension; the flattest refinement trial gives 12.4 dB.</p>
+
 <figure>
-  <img src="img/6nmb420-overview.png" alt="Horn profile, predicted response, electrical impedance and cone excursion for the 6NMB420 design" loading="lazy" width="1400" height="933">
-  <figcaption>Horn profile, predicted response, electrical impedance and cone excursion. The response shows two mesh sizes; the largest in-band difference between them is 0.244 dB. No EQ is applied.</figcaption>
+  <img src="img/6nmb420-comparison.png" alt="Predicted on-axis level of the top five 6NMB420 horns from 200 Hz to 7 kHz" loading="lazy" width="1785" height="1486">
+  <figcaption>Top five horns with the estimated front chamber, 2.83 V RMS, 1 m on axis. Run <code>20261117T083223Z-24deb54e</code>, source revision <code>c962ded</code>; the pipeline code is the same as at <code>51427ee</code>.</figcaption>
 </figure>
 
-<p><a href="reports/6nmb420-320-5000.html">Open the generated report</a> or <a href="https://github.com/timini/horn-simulation/tree/main/examples/6nmb420-320-5000">browse the example files</a>, including the STEP file and response data.</p>
+<p><a href="reports/6nmb420-320-5000-current.html">Open the report for this run</a>.</p>
 
-<h2>Checked against measurement</h2>
-<p>The FEM horn model was compared with John Post's published 1994 measurements of an exponential horn's input impedance. The comparison limits were fixed before the solver ran. Nothing was fitted or shifted.</p>
-<p>Over 1 &le; ka &le; 5 (about 201 to 1,007 Hz), the finest mesh is within 0.497 dB in magnitude and 1.873 degrees in phase of the measured curve. Both mesh refinement checks also passed.</p>
+<h3>The archived result for the same request</h3>
+<p>An earlier, larger search for this request was made before the front chamber model existed. It chose an oblate spheroid horn: 76 mm throat, 244.8 mm mouth, 300 mm long, 4.42 dB variation and 105.5 dB with an ideal throat. Re-ranking its saved FEM response with the estimated chamber gives about 13 dB, the same picture as the run above. It is kept unchanged as a record, with its STEP file, numerical checks and manifests.</p>
+
+<figure>
+  <img src="img/6nmb420-overview.png" alt="Horn profile, predicted response, electrical impedance and cone excursion for the archived 6NMB420 design" loading="lazy" width="1400" height="933">
+  <figcaption>Archived design: horn profile, response without a front chamber at two mesh sizes (largest in-band difference 0.244 dB), electrical impedance and cone excursion. No EQ.</figcaption>
+</figure>
+
+<p><a href="reports/6nmb420-320-5000.html">Open the archived report</a> or <a href="https://github.com/timini/horn-simulation/tree/main/examples/6nmb420-320-5000">browse the example files</a>.</p>
+
+<h2>What a run gives you</h2>
+<p>An auto run writes a self-contained HTML report and the files behind it. <a href="https://github.com/timini/horn-simulation/blob/main/docs/OUTPUTS.md">OUTPUTS</a> lists every file and column.</p>
+
+<figure>
+  <img src="img/800-1600-electrical.png" alt="Electrical impedance, cone excursion against Xmax and group delay for the top pairs" loading="lazy" width="1100" height="1210">
+  <figcaption>Electrical impedance, peak cone excursion against Xmax, and group delay for the top pairs of Example 1, at 2.83 V RMS.</figcaption>
+</figure>
+
+<figure>
+  <img src="img/800-1600-beamwidth.png" alt="Predicted beamwidth against frequency for the Example 1 horns" loading="lazy" width="1635" height="735">
+  <figcaption>Predicted beamwidth from the far-field directivity, relative to the axis, in an infinite baffle. Directivity is not validated: a finite-baffle BEM check is dominated by baffle diffraction.</figcaption>
+</figure>
+
+<ul>
+  <li><b>Rejection margins.</b> <code>auto_rejections.json</code> counts each reason a pair failed and gives the closest miss and the largest excess, in the reason's unit.</li>
+  <li><b>Builder profiles.</b> <code>profile_NN_&lt;horn&gt;.csv</code> gives the wall radius <code>r_mm</code> against axial position <code>z_mm</code> from the throat, for each top horn.</li>
+  <li><b>Coupled response.</b> <code>coupled_NN_&lt;driver&gt;_&lt;horn&gt;.csv</code>: level, electrical impedance, excursion, input and acoustic power, and group delay per frequency.</li>
+  <li><b>Geometry.</b> A STEP file of the air passage at true size in millimetres. No walls, mounting or adapter.</li>
+  <li><b>Directivity.</b> <code>directivity_&lt;horn&gt;.csv</code>, 0 to 90 degrees.</li>
+  <li><b>Provenance.</b> <code>ranked_results.json</code> with the scoring formula, weights and the origin of every search bound; <code>search_audit.json</code> with every refinement step; <code>manifest.json</code> with source and input hashes.</li>
+</ul>
+
+<h2>Validation</h2>
+<p>Each check has a frozen record and a script. Failures are kept and listed; no tolerance has been loosened to get a pass. The full index with records and scripts is <a href="https://github.com/timini/horn-simulation/blob/main/docs/VALIDATION.md">VALIDATION</a>.</p>
+
+<h3>Measured horn input impedance</h3>
+<p>The FEM model was compared with John Post's 1994 measurements of an exponential horn's input impedance. The limits were fixed before the solver ran. Nothing was fitted or shifted. Over 1 &le; ka &le; 5 (about 201 to 1,007 Hz) the finest mesh is within 0.497 dB in magnitude and 1.873 degrees in phase. Both mesh refinement checks passed.</p>
 
 <figure>
   <img src="img/post-comparison.png" alt="Measured and computed normalised resistance and reactance of the Post exponential horn" loading="lazy" width="1400" height="1089">
   <figcaption>Measured (black) and computed throat resistance and reactance at three mesh sizes. <a href="https://github.com/timini/horn-simulation/blob/main/docs/POST_HIXSON_VALIDATION.md">Full write-up</a>.</figcaption>
 </figure>
 
+<h3>Other software and other measurements</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Comparison</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td class="wrap">Interior FEM and motor model against Boundary Lab (Julia), shared meshes</td><td class="wrap">Pass, relative difference below 9e-13</td></tr>
+    <tr><td class="wrap"><code>modal_baffled</code> mouth against the MMM mode-matching toolbox, one horn, 800 to 1600 Hz</td><td class="wrap">Pass: 0.017 dB impedance, 0.013 dB pressure</td></tr>
+    <tr><td class="wrap"><code>flanged_piston</code> mouth against the same reference</td><td class="wrap">Fail on throat impedance (1.05 dB, 5.7 degrees); on-axis pressure within 0.40 dB</td></tr>
+    <tr><td class="wrap">Webster screen against openwind, same physics, 7 profiles, 5 cases</td><td class="wrap">Pass, 35 of 35</td></tr>
+    <tr><td class="wrap">3D FEM against openwind and the Webster model, conical and exponential</td><td class="wrap">Fail at the frozen low-ka limit (0.60 and 0.40 dB median); a difference of up to about 1.5 dB between ka 0.5 and 1.5 is not explained</td></tr>
+    <tr><td class="wrap">bempp-cl horn in a finite baffle against <code>modal_baffled</code> FEM</td><td class="wrap">Throat impedance passes 5 of 5; directivity and on-axis level fail, dominated by baffle diffraction</td></tr>
+    <tr><td class="wrap">Hajicek and Neely conical horn reflectance standard, unfitted</td><td class="wrap">Fail on the frozen gates</td></tr>
+    <tr><td class="wrap">Measured pipe impedances with wall losses</td><td class="wrap">Partial, 237 of 299 curves</td></tr>
+    <tr><td class="wrap">Webster screen keeps the best FEM designs, fixed grid, four bands</td><td class="wrap">Pass, zero score regret</td></tr>
+    <tr><td class="wrap">Hornresp</td><td class="wrap">Not run (Windows only); input sheets are in the repository</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Details: <a href="https://github.com/timini/horn-simulation/blob/main/docs/CROSS_SOFTWARE_VALIDATION.md">cross-software comparisons</a>, <a href="https://github.com/timini/horn-simulation/blob/main/docs/EXTERIOR_RADIATION_VALIDATION.md">radiation</a>, <a href="https://github.com/timini/horn-simulation/blob/main/docs/STATUS.md">current status and open work</a>.</p>
+
 <h2>Run it yourself</h2>
-<p>You need Docker, <a href="https://github.com/casey/just">just</a>, <a href="https://www.nextflow.io/">Nextflow</a> and Java 17 to 22.</p>
+<p>You need Docker, <a href="https://github.com/casey/just">just</a>, <a href="https://www.nextflow.io/">Nextflow</a> 24.10 and Java 17 to 22. The <a href="https://github.com/timini/horn-simulation/blob/main/README.md#quick-start">quick start</a> has the details.</p>
 <pre><code>git clone https://github.com/timini/horn-simulation.git
 cd horn-simulation
 just build
 
-# Give it only a band; it derives the geometry
-just run-fullauto --target_f_low 500 --target_f_high 4000
+# Give it a band and a driver database; it derives the geometry
+just run-auto --target_f_low 800 --target_f_high 1600 \
+  --drivers_db data/drivers-curated
 
 # Find the run and open outputs/auto/report/auto_report.html inside it
 just latest-run</code></pre>
-<p>Use <code>just run-auto</code> to fix the dimensions you already know, such as a maximum length or mouth size. Use <code>just run</code> to simulate a single horn, either with explicit dimensions or your own STEP file. Each run gets its own directory with a manifest of the source, inputs and container hashes.</p>
+<p>Add limits such as <code>--max_length 0.1</code>, <code>--max_mouth_radius</code> or <code>--min_output_db</code> to constrain the search. Use <code>just run</code> to simulate one horn, from dimensions or your own STEP file. <a href="https://github.com/timini/horn-simulation/blob/main/docs/USAGE.md">USAGE</a> lists every command and parameter.</p>
 
 <footer>
-  <p><a href="https://github.com/timini/horn-simulation">github.com/timini/horn-simulation</a> &middot; <a href="https://timini.github.io/devblog/horn-simulation/">devblog post</a> &middot; Figures and numbers are taken from the example outputs in the repository.</p>
+  <p><a href="https://github.com/timini/horn-simulation">github.com/timini/horn-simulation</a> &middot; <a href="https://timini.github.io/devblog/horn-simulation/">devblog post</a> &middot; Figures and numbers are taken from pipeline runs named on this page.</p>
 </footer>
 
 </main>

@@ -1,8 +1,8 @@
 # Duct losses and finite-flange validation
 
-Latest expanded run: [8 September reference validation report](REFERENCE_VALIDATION_REPORT.md).
+Latest expanded run: [8 September reference validation report](history/REFERENCE_VALIDATION_REPORT.md).
 
-The earlier lossless brass-pipe diagnostic failed: first impedance peaks were 25–32 dB too high. It is preserved in `data/validation/pipe_diagnostic_baseline.json`. The implementation now includes a published thin-boundary-layer wall condition in the production three-dimensional FEM solver, matched complex propagation in TMM, and finite-flange pipe radiation. No measured curve was fitted.
+The earlier lossless brass-pipe diagnostic failed: first impedance peaks were 25 to 32 dB too high. It is preserved in `data/validation/pipe_diagnostic_baseline.json`. The implementation now includes a published thin-boundary-layer wall condition in the production three-dimensional FEM solver, matched complex propagation in TMM, and finite-flange pipe radiation. No measured curve was fitted.
 
 ## Model and supported domain
 
@@ -16,7 +16,7 @@ Finite-flange radiation uses [Silva et al.](https://arxiv.org/abs/0811.3625) and
 
 Source: [Ernoult et al., Zenodo v2, record 20024938](https://zenodo.org/records/20024938), CC BY 4.0. The archived download is pinned by SHA-256 in `data/validation/references.json`. The importer retains source filenames, units, experimental operators and repeated measurements. The 299 measurement files are **not 299 different assemblies**.
 
-All eight dense predictions were written and hashed before the comparison script opened measurement values. Brass open cylinders were development cases; the other 263 curves were held out. Models use the source's dry-air 25°C constants and nominal dimensions. No level shift, frequency shift, damping fit or threshold adjustment was applied. Per-curve magnitude gates are median absolute error ≤2 dB and 95th percentile ≤4 dB over 110–3900 Hz. Complex-error statistics are recorded separately; a magnitude pass does not establish a phase pass.
+All eight dense predictions were written and hashed before the comparison script opened measurement values. Brass open cylinders were development cases; the other 263 curves were held out. Models use the source's dry-air 25°C constants and nominal dimensions. No level shift, frequency shift, damping fit or threshold adjustment was applied. Per-curve magnitude gates are median absolute error ≤2 dB and 95th percentile ≤4 dB over 110 to 3900 Hz. Complex-error statistics are recorded separately; a magnitude pass does not establish a phase pass.
 
 | Case | Curves | Magnitude passes | Median of per-curve 95th-percentile errors |
 | --- | ---: | ---: | ---: |
@@ -47,4 +47,4 @@ python3 scripts/validate_duct_physics.py \
 
 The production reference test is `packages/horn-solver/tests/validation/test_wall_losses.py`; CI requires it without skips. The full solver suite passed 48 cases with one unrelated optional straight-tube regime skipped; the required release lane permits no skips.
 
-This evidence tests duct input impedance. It does **not** validate a commercial driver's chamber/phase plug, absolute listening-distance SPL, off-axis response, or recommendation ordering between physical horn assemblies. Those gates remain open in issue 81. The legacy FEM–BEM coupling is disabled at both public entry points because its whole-boundary trace did not implement a mouth-only exterior problem; standalone BEM operator tests are retained.
+This evidence tests duct input impedance. It does **not** validate a commercial driver's chamber/phase plug, absolute listening-distance SPL, off-axis response, or recommendation ordering between physical horn assemblies. Those gates remain open in issue 81. The legacy FEM-BEM coupling is disabled at both public entry points because its whole-boundary trace did not implement a mouth-only exterior problem; standalone BEM operator tests are retained.

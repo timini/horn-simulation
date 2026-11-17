@@ -159,6 +159,117 @@
       "reuse": "Retain source attribution; inspect source-specific reuse conditions before redistribution."
     },
     {
+      "id": "hajicek-neely-horn-reflectance",
+      "source_url": "https://zenodo.org/records/19710026",
+      "doi": "10.5281/zenodo.19710026",
+      "download_base_url": "https://zenodo.org/api/records/19710026/files",
+      "format": "zenodo_files_thl",
+      "reference_kind": "measured_input_impedance_with_geometry",
+      "description": "Horn Reflectance Standard: 3D-printed conical horn (7 mm throat tube, 120 mm cone to 28.57 mm, 10 mm mouth cylinder, optional cap) with probe-measured load impedance, STL/OpenSCAD geometry and the authors' MATLAB comparison scripts.",
+      "author": "Stephen T. Neely (Zenodo record); data of Hajicek, Harris, N\u00f8rgaard, Siegel and Neely",
+      "paper": "https://doi.org/10.1121/10.0043956",
+      "published": "2026-04-23",
+      "reuse": "CC BY 4.0, verified in Zenodo record metadata. Whole record is about 6.5 MB; fetched by catalog, not vendored, to match the other references.",
+      "files": [
+        {
+          "name": "22E27P01.THL",
+          "role": "measurement",
+          "configuration": "conical_2022_open_mouth_inferred",
+          "purpose": "Measured load impedance, two probe channels, 44.1 kHz grid.",
+          "sha256": "6463698259ebff18d14437b5db802450c491a8683435f26983b09e78a1ff12be"
+        },
+        {
+          "name": "22E27P02.THL",
+          "role": "measurement",
+          "configuration": "conical_2022_capped_inferred",
+          "purpose": "Measured load impedance, two probe channels, 44.1 kHz grid.",
+          "sha256": "8ea8139e6c0c5ec5bd69b8a81bd5d7d5fe6c58de96f54caa93e0231c07d34ca3"
+        },
+        {
+          "name": "13H26P26.THL",
+          "role": "measurement",
+          "configuration": "older_horn_geometry_unspecified",
+          "purpose": "Earlier 1 cm throat horn; geometry only partly given in hrnrfl1.m. Not compared.",
+          "sha256": "be522625aaac451d14644f6ca9a96cead9647c441ce54f4a5225c2ab79adfebd"
+        },
+        {
+          "name": "HornKren220531.mat",
+          "role": "processed_measurement",
+          "purpose": "Second laboratory's processed reflectance and impedance (SI units). Catalogued, not imported.",
+          "sha256": "c4f4ce92a9aee0a7b5fede544c169c109ed6f55a7a5a56d259f727313482e940"
+        },
+        {
+          "name": "spec.txt",
+          "role": "geometry",
+          "purpose": "Horn design dimensions (OpenSCAD include).",
+          "sha256": "bf053116a9c9d29a0c68e9d9ae63d631fa6d7eab1d3eddb8eb605072c11bce8f"
+        },
+        {
+          "name": "fun_con.txt",
+          "role": "geometry",
+          "purpose": "Conical radius function (OpenSCAD include).",
+          "sha256": "7aae07535413facf7cb3137586a0fbf5b5cc070f542e8fb3c055652a695db21d"
+        },
+        {
+          "name": "hrn_con.stl",
+          "role": "geometry",
+          "purpose": "Printed horn body; inner profile checked against spec.txt.",
+          "sha256": "367d3e9b84b4daf4e4f416c2ff53bed5824a0e2599a5166c490fe3e600d64345"
+        },
+        {
+          "name": "cap_con.stl",
+          "role": "geometry",
+          "purpose": "Printed mouth cap; inner face at z = 130 mm.",
+          "sha256": "0a4d9e5c875bf1101ad7ac5aff66bb3f57a2780300e93069c639bd009d332abb"
+        },
+        {
+          "name": "std_hrn_rfl.m",
+          "role": "analysis_source_text",
+          "purpose": "Authors' comparison for the 22E27 files: temperature, cap distance, window. Read as text, never executed.",
+          "sha256": "c6262ca21bc766a7d2700c6cb626670814f7e91ff6e98e4eae4474f094786789"
+        },
+        {
+          "name": "hrnrfl1.m",
+          "role": "analysis_source_text",
+          "purpose": "Authors' comparison for 13H26P26. Read as text, never executed.",
+          "sha256": "42abb6408840edaa007fd6c35a50546b20114e54a0263e40867bab6e90dc2728"
+        },
+        {
+          "name": "Readme.rtf",
+          "role": "documentation",
+          "purpose": "Identifies the paper and MATLAB version.",
+          "sha256": "f1a08c769ba6981784d9dd1d1bc73f585e2bc5b7ced2bc8802179d47bd5dda1d"
+        }
+      ],
+      "conditions": {
+        "impedance_units": "cgs acoustic ohm (dyn*s/cm^5); 1 cgs acoustic ohm = 1e5 Pa*s/m^3",
+        "phase_convention": "exp(+i*omega*t), as in the authors' s = 2*i*pi*f models",
+        "temperature_c": 25,
+        "temperature_source": "std_hrn_rfl.m, T = 25 (waveguide temperature)",
+        "throat_tube_radius_m": 0.0035,
+        "throat_tube_length_m": 0.025,
+        "cone_length_m": 0.12,
+        "cone_mouth_radius_m": 0.0142866,
+        "mouth_cylinder_length_m": 0.01,
+        "cap_inner_face_from_flare_start_m": 0.13,
+        "author_corrected_cap_distance_m": 0.135,
+        "wall_thickness_m": 0.002,
+        "probe_plane": "Inside the throat tube; insertion depth not stated. The authors estimate 1.61 cm (P01) and 1.32 cm (P02) from flare start by time of flight (fig1.png, fig2.png).",
+        "termination": "Not stated per file. Inferred from the data: 22E27P02 shows a positive cap reflection and compliant low-frequency reactance (capped); 22E27P01 shows a negative mouth reflection and inertive reactance (open).",
+        "valid_band_hz": [
+          100,
+          8000
+        ],
+        "dc_bin": "Not a measurement; omitted on import."
+      },
+      "limitations": [
+        "Measured with an ear-canal probe calibrated by a Thevenin-source method; low-frequency and above 10 kHz values carry the largest calibration error.",
+        "Probe insertion depth and per-file termination are not documented in the record.",
+        "13H26P26.THL is a different horn (1 cm throat) without full geometry.",
+        "Downloaded MATLAB scripts are inspected as text only."
+      ]
+    },
+    {
       "id": "kolbrek-exp-mid",
       "source_url": "https://kolbrek.hornspeakersystems.info/index.php/horns/exponential-midrange-1",
       "description": "Author-built 200Hz rectangular exponential horn with Altec288B, outdoor response and impedance. Needs matched geometry/interface and graph digitization.",

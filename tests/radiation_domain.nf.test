@@ -23,6 +23,7 @@ nextflow_pipeline {
                 refinement_budget = 2
                 num_bands = 2
                 num_intervals = 6
+                min_points_per_octave = 0
                 mesh_size = 0.01
                 outdir = "${outputDir}"
             }
@@ -94,6 +95,7 @@ nextflow_pipeline {
                 refinement_budget = 0
                 num_bands = 2
                 num_intervals = 6
+                min_points_per_octave = 0
                 mesh_size = 0.01
                 outdir = "${outputDir}"
             }
@@ -104,6 +106,18 @@ nextflow_pipeline {
             assert lem.filtered_candidate_ids.size() == 1
             assert lem.rankings.any { it.simulation_eligible == false }
             assert new File("${outputDir}/auto/report/auto_report.html").exists()
+        }
+    }
+    test("The removed BEM model is not accepted") {
+        when {
+            params {
+                radiation_model = "bem"
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.failed
+            assert workflow.stdout.toString().contains("Unknown radiation model")
         }
     }
 }

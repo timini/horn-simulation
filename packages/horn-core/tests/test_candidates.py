@@ -47,7 +47,7 @@ class TestGenerateCandidates:
             max_length=0.5, max_mouth_radius=0.2,
         )
         profiles = {c.profile for c in candidates}
-        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"}
+        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "cd"}
 
     def test_custom_profiles(self):
         candidates = generate_candidates(

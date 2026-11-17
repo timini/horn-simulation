@@ -1,0 +1,5856 @@
+{
+ "tool": "openwind",
+ "tool_version": "0.12.4",
+ "tool_license": "GPL-3.0",
+ "comparison": "plane-wave input impedance Z/Zc at the throat, 1D vs 1D",
+ "frequencies_hz": {
+  "min": 50.0,
+  "max": 5000.0,
+  "step": 2.0
+ },
+ "air_from_openwind_at_c": 20.0,
+ "air": {
+  "c": 343.987773071615,
+  "rho": 1.1992901480965732,
+  "gamma": 1.40108293863536,
+  "viscosity": 1.8206e-05,
+  "conductivity": 0.025562,
+  "heat_capacity": 1012.2530673829931
+ },
+ "tolerances": {
+  "same_physics": {
+   "db_median": 0.1,
+   "db_p95": 0.5,
+   "db_max": 2.0,
+   "phase_median_deg": 1.0,
+   "phase_p95_deg": 5.0,
+   "phase_max_deg": 20.0,
+   "peak_freq_rel": 0.005
+  },
+  "radiation_model": {
+   "db_median": 0.25,
+   "db_p95": 1.0,
+   "db_max": 2.0,
+   "phase_median_deg": 2.0,
+   "phase_p95_deg": 8.0,
+   "phase_max_deg": 20.0,
+   "peak_freq_rel": 0.01,
+   "ka_max": 3.0
+  }
+ },
+ "results": [
+  {
+   "profile": "conical",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "openwind_bore": "exact segment",
+   "cases": {
+    "matched_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "plane_wave",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "total_transmission",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.21,
+     "tmm_200": {
+      "db_median": 0.0004464304517327025,
+      "db_p95": 0.0015576771256254245,
+      "db_max": 0.0019586905613689564,
+      "phase_median_deg": 0.03126571036753899,
+      "phase_p95_deg": 0.0648968756739436,
+      "phase_max_deg": 0.07388824054458726,
+      "peak_count_reference": 2,
+      "peak_count_ours": 2,
+      "peak_freq_rel_max": 1.4878538254849475e-05,
+      "peaks": [
+       {
+        "reference_hz": 1091.583334810715,
+        "ours_hz": 1091.5713650375328,
+        "rel_error": -1.0965514771575505e-05
+       },
+       {
+        "reference_hz": 1633.6240915545134,
+        "ours_hz": 1633.5997856159731,
+        "rel_error": -1.4878538254849475e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 4.457832465584624e-06,
+      "db_p95": 1.559439306894122e-05,
+      "db_max": 1.966418148817451e-05,
+      "phase_median_deg": 0.00031253070747023755,
+      "phase_p95_deg": 0.0006483056630385258,
+      "phase_max_deg": 0.0007376133905322705,
+      "peak_count_reference": 2,
+      "peak_count_ours": 2,
+      "peak_freq_rel_max": 1.487469784595416e-07,
+      "peaks": [
+       {
+        "reference_hz": 1091.583334810715,
+        "ours_hz": 1091.5832151348734,
+        "rel_error": -1.0963509415330314e-07
+       },
+       {
+        "reference_hz": 1633.6240915545134,
+        "ours_hz": 1633.6238485578658,
+        "rel_error": -1.487469784595416e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "openwind_fem_vs_openwind_tmm": {
+      "db_median": 1.5107154091023826e-11,
+      "db_p95": 6.309379642147443e-08,
+      "db_max": 2.5229370883953003e-07,
+      "phase_median_deg": 8.219789485591247e-11,
+      "phase_p95_deg": 3.4274349554379413e-07,
+      "phase_max_deg": 6.769360098329256e-07,
+      "peak_count_reference": 2,
+      "peak_count_ours": 2,
+      "peak_freq_rel_max": 2.509980412595844e-13,
+      "peaks": [
+       {
+        "reference_hz": 1091.583334810715,
+        "ours_hz": 1091.583334810441,
+        "rel_error": -2.509980412595844e-13
+       },
+       {
+        "reference_hz": 1633.6240915545134,
+        "ours_hz": 1633.6240915542755,
+        "rel_error": -1.4558604133176396e-13
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "closed_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "closed",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "closed",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.29,
+     "tmm_200": {
+      "db_median": 0.003696307072257717,
+      "db_p95": 0.05445527679353814,
+      "db_max": 0.42905517440208907,
+      "phase_median_deg": 0.0008173573599477933,
+      "phase_p95_deg": 0.051938623714628304,
+      "phase_max_deg": 5.249889086357196,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 5.216279213483831e-05,
+      "peaks": [
+       {
+        "reference_hz": 700.619129389341,
+        "ours_hz": 700.5988945643453,
+        "rel_error": -2.8881348148893947e-05
+       },
+       {
+        "reference_hz": 1239.537550114228,
+        "ours_hz": 1239.499494489696,
+        "rel_error": -3.07014696961201e-05
+       },
+       {
+        "reference_hz": 1789.694278745948,
+        "ours_hz": 1789.649654503735,
+        "rel_error": -2.493400283100013e-05
+       },
+       {
+        "reference_hz": 2347.95699612297,
+        "ours_hz": 2347.91630692909,
+        "rel_error": -1.732961632060792e-05
+       },
+       {
+        "reference_hz": 2911.3256989562783,
+        "ours_hz": 2911.173836079007,
+        "rel_error": -5.216279213483831e-05
+       },
+       {
+        "reference_hz": 3477.501898099933,
+        "ours_hz": 3477.363829225053,
+        "rel_error": -3.9703464994636074e-05
+       },
+       {
+        "reference_hz": 4045.4721615276626,
+        "ours_hz": 4045.3033168599986,
+        "rel_error": -4.173670239772503e-05
+       },
+       {
+        "reference_hz": 4614.37487734235,
+        "ours_hz": 4614.246130962397,
+        "rel_error": -2.790115310867545e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 3.699999088763732e-05,
+      "db_p95": 0.0005440569076030691,
+      "db_max": 0.00427931780366626,
+      "phase_median_deg": 8.16183563292747e-06,
+      "phase_p95_deg": 0.0005162819430493681,
+      "phase_max_deg": 0.05106751961041518,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 4.7102782572692394e-07,
+      "peaks": [
+       {
+        "reference_hz": 700.619129389341,
+        "ours_hz": 700.6189233653121,
+        "rel_error": -2.940599539123709e-07
+       },
+       {
+        "reference_hz": 1239.537550114228,
+        "ours_hz": 1239.5371835866426,
+        "rel_error": -2.956970406605294e-07
+       },
+       {
+        "reference_hz": 1789.694278745948,
+        "ours_hz": 1789.6938528671344,
+        "rel_error": -2.379617673185533e-07
+       },
+       {
+        "reference_hz": 2347.95699612297,
+        "ours_hz": 2347.9565947166225,
+        "rel_error": -1.7095983790462667e-07
+       },
+       {
+        "reference_hz": 2911.3256989562783,
+        "ours_hz": 2911.3243276408643,
+        "rel_error": -4.7102782572692394e-07
+       },
+       {
+        "reference_hz": 3477.501898099933,
+        "ours_hz": 3477.5006486434095,
+        "rel_error": -3.592971506910896e-07
+       },
+       {
+        "reference_hz": 4045.4721615276626,
+        "ours_hz": 4045.4706539547024,
+        "rel_error": -3.7265686180536067e-07
+       },
+       {
+        "reference_hz": 4614.37487734235,
+        "ours_hz": 4614.37347933672,
+        "rel_error": -3.029675020494059e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.26,
+     "tmm_200": {
+      "db_median": 0.00047366839579203305,
+      "db_p95": 0.001616139224939292,
+      "db_max": 0.002004250274042935,
+      "phase_median_deg": 0.03011771783937011,
+      "phase_p95_deg": 0.06473549010013266,
+      "phase_max_deg": 0.07448794533821772,
+      "peak_count_reference": 3,
+      "peak_count_ours": 3,
+      "peak_freq_rel_max": 4.970402657467972e-06,
+      "peaks": [
+       {
+        "reference_hz": 338.43464455159625,
+        "ours_hz": 338.43348750409166,
+        "rel_error": -3.41882110244493e-06
+       },
+       {
+        "reference_hz": 753.9979165251789,
+        "ours_hz": 753.9960002394072,
+        "rel_error": -2.541500088661359e-06
+       },
+       {
+        "reference_hz": 1880.1068748592688,
+        "ours_hz": 1880.0975299710617,
+        "rel_error": -4.970402657467972e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 4.727164580167769e-06,
+      "db_p95": 1.6175879938881142e-05,
+      "db_max": 2.010977524891291e-05,
+      "phase_median_deg": 0.0003010634525798678,
+      "phase_p95_deg": 0.0006466808211046941,
+      "phase_max_deg": 0.0007435207524740185,
+      "peak_count_reference": 3,
+      "peak_count_ours": 3,
+      "peak_freq_rel_max": 4.9608549721876335e-08,
+      "peaks": [
+       {
+        "reference_hz": 338.43464455159625,
+        "ours_hz": 338.4346329819557,
+        "rel_error": -3.4185745268612346e-08
+       },
+       {
+        "reference_hz": 753.9979165251789,
+        "ours_hz": 753.9978973746729,
+        "rel_error": -2.539861922391722e-08
+       },
+       {
+        "reference_hz": 1880.1068748592688,
+        "ours_hz": 1880.1067815898934,
+        "rel_error": -4.9608549721876335e-08
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.34,
+     "tmm_200": {
+      "db_median": 0.00047055628003495265,
+      "db_p95": 0.0015886767813350167,
+      "db_max": 0.001966386258935856,
+      "phase_median_deg": 0.03023621913508147,
+      "phase_p95_deg": 0.0646463904361996,
+      "phase_max_deg": 0.07434123027122698,
+      "peak_count_reference": 3,
+      "peak_count_ours": 3,
+      "peak_freq_rel_max": 5.1032943852863354e-06,
+      "peaks": [
+       {
+        "reference_hz": 338.17160486979185,
+        "ours_hz": 338.1704391975238,
+        "rel_error": -3.4469844636388647e-06
+       },
+       {
+        "reference_hz": 753.4977500732301,
+        "ours_hz": 753.4957835814592,
+        "rel_error": -2.6098177077254223e-06
+       },
+       {
+        "reference_hz": 1879.3860184132095,
+        "ours_hz": 1879.376427353094,
+        "rel_error": -5.1032943852863354e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 4.709254297526343e-06,
+      "db_p95": 1.5897994225710868e-05,
+      "db_max": 1.9732192285520206e-05,
+      "phase_median_deg": 0.0003022472956686461,
+      "phase_p95_deg": 0.0006457982173284442,
+      "phase_max_deg": 0.0007420712678147316,
+      "peak_count_reference": 3,
+      "peak_count_ours": 3,
+      "peak_freq_rel_max": 5.0937359237394304e-08,
+      "peaks": [
+       {
+        "reference_hz": 338.17160486979185,
+        "ours_hz": 338.1715932138754,
+        "rel_error": -3.446746059938288e-08
+       },
+       {
+        "reference_hz": 753.4977500732301,
+        "ours_hz": 753.497730420732,
+        "rel_error": -2.6081694557917934e-08
+       },
+       {
+        "reference_hz": 1879.3860184132095,
+        "ours_hz": 1879.3859226822487,
+        "rel_error": -5.0937359237394304e-08
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_thin_layer": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "boundary_layer"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "wl",
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.27,
+     "tmm_200": {
+      "db_median": 0.018628629869376155,
+      "db_p95": 0.03530434759112325,
+      "db_max": 0.058257027432181765,
+      "phase_median_deg": 0.11530857871294656,
+      "phase_p95_deg": 0.15821541463130892,
+      "phase_max_deg": 0.38716588232084503,
+      "peak_count_reference": 3,
+      "peak_count_ours": 3,
+      "peak_freq_rel_max": 0.0007663574349415335,
+      "peaks": [
+       {
+        "reference_hz": 337.91146299797225,
+        "ours_hz": 338.1704239599927,
+        "rel_error": 0.0007663574349415335
+       },
+       {
+        "reference_hz": 753.1754460543395,
+        "ours_hz": 753.4957653847522,
+        "rel_error": 0.00042529178571965053
+       },
+       {
+        "reference_hz": 1879.0390505653388,
+        "ours_hz": 1879.3764440239154,
+        "rel_error": 0.00017955638467176123
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.017765024620379287,
+      "db_p95": 0.03530129831667572,
+      "db_max": 0.058753865865881556,
+      "phase_median_deg": 0.07877251106978747,
+      "phase_p95_deg": 0.15031626748520172,
+      "phase_max_deg": 0.38718706055272073,
+      "peak_count_reference": 3,
+      "peak_count_ours": 3,
+      "peak_freq_rel_max": 0.0007697726725298637,
+      "peaks": [
+       {
+        "reference_hz": 337.91146299797225,
+        "ours_hz": 338.1715780079227,
+        "rel_error": 0.0007697726725298637
+       },
+       {
+        "reference_hz": 753.1754460543395,
+        "ours_hz": 753.4977122734631,
+        "rel_error": 0.0004278766930225948
+       },
+       {
+        "reference_hz": 1879.0390505653388,
+        "ours_hz": 1879.3859394031033,
+        "rel_error": 0.00018460970125134686
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "flanged_fit_bessel": {
+     "tolerance_class": "radiation_model",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "flanged_non_causal",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.29,
+     "tmm_200": {
+      "db_median": 0.25614697369774825,
+      "db_p95": 0.6517239551536097,
+      "db_max": 0.7409458266203552,
+      "phase_median_deg": 1.6684678108973017,
+      "phase_p95_deg": 3.8608907508446637,
+      "phase_max_deg": 3.94870561100587,
+      "peak_count_reference": 2,
+      "peak_count_ours": 2,
+      "peak_freq_rel_max": 0.028835918227355897,
+      "peaks": [
+       {
+        "reference_hz": 345.31151119234914,
+        "ours_hz": 338.1704391975238,
+        "rel_error": -0.02068008671407287
+       },
+       {
+        "reference_hz": 775.8686690781647,
+        "ours_hz": 753.4957835814592,
+        "rel_error": -0.028835918227355897
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": false,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": false,
+       "peak_count": true
+      },
+      "pass": false
+     },
+     "tmm_2000": {
+      "db_median": 0.25606310939688504,
+      "db_p95": 0.6518311335510732,
+      "db_max": 0.7406355299763863,
+      "phase_median_deg": 1.6708526294502042,
+      "phase_p95_deg": 3.863387520299902,
+      "phase_max_deg": 3.9585630535428207,
+      "peak_count_reference": 2,
+      "peak_count_ours": 2,
+      "peak_freq_rel_max": 0.02883340898919447,
+      "peaks": [
+       {
+        "reference_hz": 345.31151119234914,
+        "ours_hz": 338.1715932138754,
+        "rel_error": -0.02067674475669769
+       },
+       {
+        "reference_hz": 775.8686690781647,
+        "ours_hz": 753.497730420732,
+        "rel_error": -0.02883340898919447
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": false,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": false,
+       "peak_count": true
+      },
+      "pass": false
+     },
+     "full_band_report_only": {
+      "db_median": 0.3270139998575042,
+      "db_p95": 0.7939633002531128,
+      "db_max": 1.0811561712355626,
+      "phase_median_deg": 2.237875309563589,
+      "phase_p95_deg": 5.1794055953651394,
+      "phase_max_deg": 7.124400231287832,
+      "peak_count_reference": 2,
+      "peak_count_ours": 3,
+      "peak_freq_rel_max": 0.02883340898919447,
+      "peaks": [
+       {
+        "reference_hz": 345.31151119234914,
+        "ours_hz": 338.1715932138754,
+        "rel_error": -0.02067674475669769
+       },
+       {
+        "reference_hz": 775.8686690781647,
+        "ours_hz": 753.497730420732,
+        "rel_error": -0.02883340898919447
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ]
+     }
+    }
+   }
+  },
+  {
+   "profile": "exponential",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "openwind_bore": "exact segment",
+   "cases": {
+    "matched_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "plane_wave",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "total_transmission",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.25,
+     "tmm_200": {
+      "db_median": 0.0009314418543864949,
+      "db_p95": 0.002880258380995599,
+      "db_max": 0.0033866988679119667,
+      "phase_median_deg": 0.0082952827611784,
+      "phase_p95_deg": 0.03801270929740523,
+      "phase_max_deg": 0.04582950828270072,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 2.0954166311690574e-05,
+      "peaks": [
+       {
+        "reference_hz": 559.664059882798,
+        "ours_hz": 559.6529259602064,
+        "rel_error": -1.9893938863890932e-05
+       },
+       {
+        "reference_hz": 1057.15269923829,
+        "ours_hz": 1057.1305474848134,
+        "rel_error": -2.0954166311690574e-05
+       },
+       {
+        "reference_hz": 1609.1057339833524,
+        "ours_hz": 1609.073248357044,
+        "rel_error": -2.018862130834174e-05
+       },
+       {
+        "reference_hz": 2173.033143985987,
+        "ours_hz": 2172.9905097340456,
+        "rel_error": -1.9619697039275003e-05
+       },
+       {
+        "reference_hz": 2741.1360904598764,
+        "ours_hz": 2741.083347003522,
+        "rel_error": -1.9241458509916857e-05
+       },
+       {
+        "reference_hz": 3311.1470216837088,
+        "ours_hz": 3311.084176685411,
+        "rel_error": -1.897982719772103e-05
+       },
+       {
+        "reference_hz": 3882.183271297856,
+        "ours_hz": 3882.1103484136966,
+        "rel_error": -1.8783988045797075e-05
+       },
+       {
+        "reference_hz": 4453.832421000612,
+        "ours_hz": 4453.749370439464,
+        "rel_error": -1.8646988323317507e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 9.30242120303427e-06,
+      "db_p95": 2.87193544765063e-05,
+      "db_max": 3.382758043276942e-05,
+      "phase_median_deg": 8.294580801998392e-05,
+      "phase_p95_deg": 0.0003792899249852771,
+      "phase_max_deg": 0.0004573805206762953,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 2.0952986334694348e-07,
+      "peaks": [
+       {
+        "reference_hz": 559.664059882798,
+        "ours_hz": 559.663948538562,
+        "rel_error": -1.9894834072076324e-07
+       },
+       {
+        "reference_hz": 1057.15269923829,
+        "ours_hz": 1057.1524777332295,
+        "rel_error": -2.0952986334694348e-07
+       },
+       {
+        "reference_hz": 1609.1057339833524,
+        "ours_hz": 1609.1054091968394,
+        "rel_error": -2.0184286592258998e-07
+       },
+       {
+        "reference_hz": 2173.033143985987,
+        "ours_hz": 2173.0327177988565,
+        "rel_error": -1.9612546251063958e-07
+       },
+       {
+        "reference_hz": 2741.1360904598764,
+        "ours_hz": 2741.1355634221422,
+        "rel_error": -1.9226981688626898e-07
+       },
+       {
+        "reference_hz": 3311.1470216837088,
+        "ours_hz": 3311.1463939516366,
+        "rel_error": -1.8958145563408012e-07
+       },
+       {
+        "reference_hz": 3882.183271297856,
+        "ours_hz": 3882.1825431673246,
+        "rel_error": -1.8755697005686115e-07
+       },
+       {
+        "reference_hz": 4453.832421000612,
+        "ours_hz": 4453.831591393629,
+        "rel_error": -1.862681179520983e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "openwind_fem_vs_openwind_tmm": {
+      "db_median": 7.855958175504497e-06,
+      "db_p95": 1.4147751329884933e-05,
+      "db_max": 1.4435105633019079e-05,
+      "phase_median_deg": 2.9721551312662364e-05,
+      "phase_p95_deg": 4.717689682399476e-05,
+      "phase_max_deg": 4.775115081245897e-05,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 2.3180665442195295e-07,
+      "peaks": [
+       {
+        "reference_hz": 559.664059882798,
+        "ours_hz": 559.6641363462667,
+        "rel_error": 1.3662386800534112e-07
+       },
+       {
+        "reference_hz": 1057.15269923829,
+        "ours_hz": 1057.1529180151279,
+        "rel_error": 2.0694913602634783e-07
+       },
+       {
+        "reference_hz": 1609.1057339833524,
+        "ours_hz": 1609.1060920512912,
+        "rel_error": 2.2252604738329223e-07
+       },
+       {
+        "reference_hz": 2173.033143985987,
+        "ours_hz": 2173.0336386055515,
+        "rel_error": 2.2761712856291693e-07
+       },
+       {
+        "reference_hz": 2741.1360904598764,
+        "ours_hz": 2741.136720430163,
+        "rel_error": 2.298208720835245e-07
+       },
+       {
+        "reference_hz": 3311.1470216837088,
+        "ours_hz": 3311.1477864648828,
+        "rel_error": 2.3097167506487997e-07
+       },
+       {
+        "reference_hz": 3882.183271297856,
+        "ours_hz": 3882.1841701748954,
+        "rel_error": 2.315390532456668e-07
+       },
+       {
+        "reference_hz": 4453.832421000612,
+        "ours_hz": 4453.833453428605,
+        "rel_error": 2.3180665442195295e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "closed_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "closed",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "closed",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.38,
+     "tmm_200": {
+      "db_median": 0.0014328511073311368,
+      "db_p95": 0.019210910495765007,
+      "db_max": 0.13077387994568837,
+      "phase_median_deg": 0.00035799564792684375,
+      "phase_p95_deg": 0.021239603054656896,
+      "phase_max_deg": 1.7244873468879833,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 2.552457484438909e-05,
+      "peaks": [
+       {
+        "reference_hz": 659.4038054530805,
+        "ours_hz": 659.390323708896,
+        "rel_error": -2.044535392891225e-05
+       },
+       {
+        "reference_hz": 1191.476289295336,
+        "ours_hz": 1191.4565591948738,
+        "rel_error": -1.6559373140341866e-05
+       },
+       {
+        "reference_hz": 1749.6473045121813,
+        "ours_hz": 1749.6266222681493,
+        "rel_error": -1.1820807530021444e-05
+       },
+       {
+        "reference_hz": 2314.9753487357107,
+        "ours_hz": 2314.916259974159,
+        "rel_error": -2.552457484438909e-05
+       },
+       {
+        "reference_hz": 2883.6620215460334,
+        "ours_hz": 2883.6285929942746,
+        "rel_error": -1.1592395887249796e-05
+       },
+       {
+        "reference_hz": 3453.7157849899286,
+        "ours_hz": 3453.6778013398102,
+        "rel_error": -1.099790847973896e-05
+       },
+       {
+        "reference_hz": 4024.4532009320724,
+        "ours_hz": 4024.4023061459347,
+        "rel_error": -1.264638538369521e-05
+       },
+       {
+        "reference_hz": 4596.071114133164,
+        "ours_hz": 4596.0260569763095,
+        "rel_error": -9.8034072440484e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 1.4364928550518874e-05,
+      "db_p95": 0.00019227172258341903,
+      "db_max": 0.0013091251217837003,
+      "phase_median_deg": 3.5757961519640788e-06,
+      "phase_p95_deg": 0.00021133252831018868,
+      "phase_max_deg": 0.01725798112667872,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 2.636394312553974e-07,
+      "peaks": [
+       {
+        "reference_hz": 659.4038054530805,
+        "ours_hz": 659.4036721978939,
+        "rel_error": -2.020843457304056e-07
+       },
+       {
+        "reference_hz": 1191.476289295336,
+        "ours_hz": 1191.476095297998,
+        "rel_error": -1.6282098086572927e-07
+       },
+       {
+        "reference_hz": 1749.6473045121813,
+        "ours_hz": 1749.6471012570162,
+        "rel_error": -1.1616922144067389e-07
+       },
+       {
+        "reference_hz": 2314.9753487357107,
+        "ours_hz": 2314.9747384169264,
+        "rel_error": -2.636394312553974e-07
+       },
+       {
+        "reference_hz": 2883.6620215460334,
+        "ours_hz": 2883.6616942845985,
+        "rel_error": -1.1348813850553174e-07
+       },
+       {
+        "reference_hz": 3453.7157849899286,
+        "ours_hz": 3453.715412698776,
+        "rel_error": -1.0779438019608873e-07
+       },
+       {
+        "reference_hz": 4024.4532009320724,
+        "ours_hz": 4024.45267823319,
+        "rel_error": -1.2988072075402017e-07
+       },
+       {
+        "reference_hz": 4596.071114133164,
+        "ours_hz": 4596.070660691253,
+        "rel_error": -9.865859340380855e-08
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.31,
+     "tmm_200": {
+      "db_median": 0.0009377354264780167,
+      "db_p95": 0.0028572818926249593,
+      "db_max": 0.003421900848074495,
+      "phase_median_deg": 0.007304595391663244,
+      "phase_p95_deg": 0.037695469100709804,
+      "phase_max_deg": 0.046176298892269256,
+      "peak_count_reference": 5,
+      "peak_count_ours": 5,
+      "peak_freq_rel_max": 5.158423683603067e-05,
+      "peaks": [
+       {
+        "reference_hz": 423.4101482499123,
+        "ours_hz": 423.4025608550933,
+        "rel_error": -1.7919728306808033e-05
+       },
+       {
+        "reference_hz": 692.024123019852,
+        "ours_hz": 692.0344876590312,
+        "rel_error": 1.4977280176283745e-05
+       },
+       {
+        "reference_hz": 1103.1750137731551,
+        "ours_hz": 1103.1721477722162,
+        "rel_error": -2.597956718638338e-06
+       },
+       {
+        "reference_hz": 1527.3798378476295,
+        "ours_hz": 1527.3010491243353,
+        "rel_error": -5.158423683603067e-05
+       },
+       {
+        "reference_hz": 2228.289935796012,
+        "ours_hz": 2228.340485305168,
+        "rel_error": 2.268533746172533e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 9.387161690350284e-06,
+      "db_p95": 2.8544574416201978e-05,
+      "db_max": 3.4062684341108995e-05,
+      "phase_median_deg": 7.304261316818689e-05,
+      "phase_p95_deg": 0.00037625822758836436,
+      "phase_max_deg": 0.00046084354130166056,
+      "peak_count_reference": 5,
+      "peak_count_ours": 5,
+      "peak_freq_rel_max": 5.156353844297617e-07,
+      "peaks": [
+       {
+        "reference_hz": 423.4101482499123,
+        "ours_hz": 423.41007237386805,
+        "rel_error": -1.792022335252064e-07
+       },
+       {
+        "reference_hz": 692.024123019852,
+        "ours_hz": 692.0242266695013,
+        "rel_error": 1.49777508986262e-07
+       },
+       {
+        "reference_hz": 1103.1750137731551,
+        "ours_hz": 1103.174985068541,
+        "rel_error": -2.6020000240647123e-08
+       },
+       {
+        "reference_hz": 1527.3798378476295,
+        "ours_hz": 1527.3790502765396,
+        "rel_error": -5.156353844297617e-07
+       },
+       {
+        "reference_hz": 2228.289935796012,
+        "ours_hz": 2228.2904400108214,
+        "rel_error": 2.2627881652776453e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.4,
+     "tmm_200": {
+      "db_median": 0.0009224198282628802,
+      "db_p95": 0.002801501789809471,
+      "db_max": 0.0033742259966395355,
+      "phase_median_deg": 0.007389950308280533,
+      "phase_p95_deg": 0.037369956177322805,
+      "phase_max_deg": 0.045655783618335576,
+      "peak_count_reference": 5,
+      "peak_count_ours": 5,
+      "peak_freq_rel_max": 5.105709471138502e-05,
+      "peaks": [
+       {
+        "reference_hz": 422.85598724008133,
+        "ours_hz": 422.8484897487767,
+        "rel_error": -1.7730602216600333e-05
+       },
+       {
+        "reference_hz": 691.5073019265764,
+        "ours_hz": 691.5176044585927,
+        "rel_error": 1.4898659764887915e-05
+       },
+       {
+        "reference_hz": 1102.3444535588587,
+        "ours_hz": 1102.341694545941,
+        "rel_error": -2.502859164249788e-06
+       },
+       {
+        "reference_hz": 1526.4015405710254,
+        "ours_hz": 1526.3236069430009,
+        "rel_error": -5.105709471138502e-05
+       },
+       {
+        "reference_hz": 2227.160766041956,
+        "ours_hz": 2227.211869255062,
+        "rel_error": 2.294545319107596e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 9.200411552310247e-06,
+      "db_p95": 2.7981793101300693e-05,
+      "db_max": 3.3588203943704316e-05,
+      "phase_median_deg": 7.385226095327132e-05,
+      "phase_p95_deg": 0.0003729257565100639,
+      "phase_max_deg": 0.0004556557015207672,
+      "peak_count_reference": 5,
+      "peak_count_ours": 5,
+      "peak_freq_rel_max": 5.103746633356021e-07,
+      "peaks": [
+       {
+        "reference_hz": 422.85598724008133,
+        "ours_hz": 422.85591226241746,
+        "rel_error": -1.7731252751247778e-07
+       },
+       {
+        "reference_hz": 691.5073019265764,
+        "ours_hz": 691.5074049555108,
+        "rel_error": 1.489918242617946e-07
+       },
+       {
+        "reference_hz": 1102.3444535588587,
+        "ours_hz": 1102.344425923791,
+        "rel_error": -2.506935794171462e-08
+       },
+       {
+        "reference_hz": 1526.4015405710254,
+        "ours_hz": 1526.400761534353,
+        "rel_error": -5.103746633356021e-07
+       },
+       {
+        "reference_hz": 2227.160766041956,
+        "ours_hz": 2227.161275790453,
+        "rel_error": 2.2887817756653052e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_thin_layer": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "boundary_layer"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "wl",
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.28,
+     "tmm_200": {
+      "db_median": 0.017494105564556446,
+      "db_p95": 0.039721298257868465,
+      "db_max": 0.07044667999350354,
+      "phase_median_deg": 0.11095043805819269,
+      "phase_p95_deg": 0.18209296645126047,
+      "phase_max_deg": 0.46712866952656174,
+      "peak_count_reference": 5,
+      "peak_count_ours": 5,
+      "peak_freq_rel_max": 0.0007155710329393631,
+      "peaks": [
+       {
+        "reference_hz": 422.5459671315885,
+        "ours_hz": 422.8483287857532,
+        "rel_error": 0.0007155710329393631
+       },
+       {
+        "reference_hz": 691.2047273213999,
+        "ours_hz": 691.5176184791918,
+        "rel_error": 0.0004526750836969031
+       },
+       {
+        "reference_hz": 1102.3796954281859,
+        "ours_hz": 1102.3416841004657,
+        "rel_error": -3.4481157334249853e-05
+       },
+       {
+        "reference_hz": 1526.7323355198635,
+        "ours_hz": 1526.3236068409992,
+        "rel_error": -0.00026771469324062024
+       },
+       {
+        "reference_hz": 2227.223286363168,
+        "ours_hz": 2227.211879741244,
+        "rel_error": -5.121454141470791e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.0162262736825786,
+      "db_p95": 0.039381022141337464,
+      "db_max": 0.07055386523329388,
+      "phase_median_deg": 0.0927094182149364,
+      "phase_p95_deg": 0.18041142290867013,
+      "phase_max_deg": 0.46713384742116953,
+      "peak_count_reference": 5,
+      "peak_count_ours": 5,
+      "peak_freq_rel_max": 0.000733137247948603,
+      "peaks": [
+       {
+        "reference_hz": 422.5459671315885,
+        "ours_hz": 422.85575131906313,
+        "rel_error": 0.000733137247948603
+       },
+       {
+        "reference_hz": 691.2047273213999,
+        "ours_hz": 691.5074189965702,
+        "rel_error": 0.00043791898869574895
+       },
+       {
+        "reference_hz": 1102.3796954281859,
+        "ours_hz": 1102.3444154453584,
+        "rel_error": -3.2003476636722155e-05
+       },
+       {
+        "reference_hz": 1526.7323355198635,
+        "ours_hz": 1526.40076141584,
+        "rel_error": -0.00021717893589422085
+       },
+       {
+        "reference_hz": 2227.223286363168,
+        "ours_hz": 2227.161286221731,
+        "rel_error": -2.7837416129939742e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "flanged_fit_bessel": {
+     "tolerance_class": "radiation_model",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "flanged_non_causal",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 0.36,
+     "tmm_200": {
+      "db_median": 0.29475647519581355,
+      "db_p95": 0.7595742975621749,
+      "db_max": 0.771884656309497,
+      "phase_median_deg": 2.0674996728720934,
+      "phase_p95_deg": 5.148274959853042,
+      "phase_max_deg": 5.314447423871268,
+      "peak_count_reference": 2,
+      "peak_count_ours": 2,
+      "peak_freq_rel_max": 0.032315331870879156,
+      "peaks": [
+       {
+        "reference_hz": 433.50886101810704,
+        "ours_hz": 422.8484897487767,
+        "rel_error": -0.02459089589148006
+       },
+       {
+        "reference_hz": 714.6104792540968,
+        "ours_hz": 691.5176044585927,
+        "rel_error": -0.032315331870879156
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": false,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": false,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": false,
+       "peak_count": true
+      },
+      "pass": false
+     },
+     "tmm_2000": {
+      "db_median": 0.29434145360709363,
+      "db_p95": 0.7600802827367256,
+      "db_max": 0.7721428370090109,
+      "phase_median_deg": 2.073478678820096,
+      "phase_p95_deg": 5.150581484995479,
+      "phase_max_deg": 5.311538385999052,
+      "peak_count_reference": 2,
+      "peak_count_ours": 2,
+      "peak_freq_rel_max": 0.03232960468575948,
+      "peaks": [
+       {
+        "reference_hz": 433.50886101810704,
+        "ours_hz": 422.85591226241746,
+        "rel_error": -0.024573773949327925
+       },
+       {
+        "reference_hz": 714.6104792540968,
+        "ours_hz": 691.5074049555108,
+        "rel_error": -0.03232960468575948
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": false,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": false,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": false,
+       "peak_count": true
+      },
+      "pass": false
+     },
+     "full_band_report_only": {
+      "db_median": 0.35510402937754376,
+      "db_p95": 0.8336216925150404,
+      "db_max": 1.189389463149604,
+      "phase_median_deg": 2.348473973192429,
+      "phase_p95_deg": 5.480384443601478,
+      "phase_max_deg": 7.6011430549488,
+      "peak_count_reference": 9,
+      "peak_count_ours": 5,
+      "peak_freq_rel_max": 0.49934913107061896,
+      "peaks": [
+       {
+        "reference_hz": 433.50886101810704,
+        "ours_hz": 422.85591226241746,
+        "rel_error": -0.024573773949327925
+       },
+       {
+        "reference_hz": 714.6104792540968,
+        "ours_hz": 691.5074049555108,
+        "rel_error": -0.03232960468575948
+       },
+       {
+        "reference_hz": 1111.1143949899076,
+        "ours_hz": 1102.344425923791,
+        "rel_error": -0.007892948831966336
+       },
+       {
+        "reference_hz": 1594.6527314942641,
+        "ours_hz": 1526.400761534353,
+        "rel_error": -0.04280052240336729
+       },
+       {
+        "reference_hz": 2153.9594709170397,
+        "ours_hz": 2227.161275790453,
+        "rel_error": 0.03398476427332596
+       },
+       {
+        "reference_hz": 2728.1719402269096,
+        "ours_hz": 2227.161275790453,
+        "rel_error": -0.18364336098068143
+       },
+       {
+        "reference_hz": 3302.211580002567,
+        "ours_hz": 2227.161275790453,
+        "rel_error": -0.3255546406300466
+       },
+       {
+        "reference_hz": 3875.549501733413,
+        "ours_hz": 2227.161275790453,
+        "rel_error": -0.42533019516475973
+       },
+       {
+        "reference_hz": 4448.531729412825,
+        "ours_hz": 2227.161275790453,
+        "rel_error": -0.49934913107061896
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ]
+     }
+    }
+   }
+  },
+  {
+   "profile": "hyperbolic",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "openwind_bore": "801 points, conical pieces",
+   "cases": {
+    "matched_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "plane_wave",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "total_transmission",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 93.18,
+     "tmm_200": {
+      "db_median": 0.001431772027676049,
+      "db_p95": 0.003961260616611219,
+      "db_max": 0.0045867397774718936,
+      "phase_median_deg": 0.009465408725263044,
+      "phase_p95_deg": 0.026644456795159352,
+      "phase_max_deg": 0.031673449042220594,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 2.1041360208584122e-05,
+      "peaks": [
+       {
+        "reference_hz": 556.3886599632261,
+        "ours_hz": 556.3781773947019,
+        "rel_error": -1.8840370551308403e-05
+       },
+       {
+        "reference_hz": 1054.0959858123545,
+        "ours_hz": 1054.0738061990226,
+        "rel_error": -2.1041360208584122e-05
+       },
+       {
+        "reference_hz": 1608.973795161327,
+        "ours_hz": 1608.940623876047,
+        "rel_error": -2.0616423573605407e-05
+       },
+       {
+        "reference_hz": 2173.7764599374145,
+        "ours_hz": 2173.7320074062172,
+        "rel_error": -2.0449449157515353e-05
+       },
+       {
+        "reference_hz": 2742.145952211661,
+        "ours_hz": 2742.0901614378595,
+        "rel_error": -2.0345661672975734e-05
+       },
+       {
+        "reference_hz": 3312.219803877581,
+        "ours_hz": 3312.1526071364456,
+        "rel_error": -2.028752471581436e-05
+       },
+       {
+        "reference_hz": 3883.2437118179337,
+        "ours_hz": 3883.165023246443,
+        "rel_error": -2.0263619110777915e-05
+       },
+       {
+        "reference_hz": 4454.852419083651,
+        "ours_hz": 4454.762313101146,
+        "rel_error": -2.022647980853762e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 1.9732113461270368e-05,
+      "db_p95": 5.284086175755815e-05,
+      "db_max": 6.357746994055535e-05,
+      "phase_median_deg": 0.00013736473231699012,
+      "phase_p95_deg": 0.0002931290731849967,
+      "phase_max_deg": 0.0003425041727753756,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 5.230219451284752e-07,
+      "peaks": [
+       {
+        "reference_hz": 556.3886599632261,
+        "ours_hz": 556.3884898477829,
+        "rel_error": -3.0574929981941e-07
+       },
+       {
+        "reference_hz": 1054.0959858123545,
+        "ours_hz": 1054.0954750382712,
+        "rel_error": -4.845612640312236e-07
+       },
+       {
+        "reference_hz": 1608.973795161327,
+        "ours_hz": 1608.9729760501077,
+        "rel_error": -5.090892230232786e-07
+       },
+       {
+        "reference_hz": 2173.7764599374145,
+        "ours_hz": 2173.7753357681663,
+        "rel_error": -5.171503459223325e-07
+       },
+       {
+        "reference_hz": 2742.145952211661,
+        "ours_hz": 2742.1445258591707,
+        "rel_error": -5.201592166338611e-07
+       },
+       {
+        "reference_hz": 3312.219803877581,
+        "ours_hz": 3312.2180758369436,
+        "rel_error": -5.217167759502144e-07
+       },
+       {
+        "reference_hz": 3883.2437118179337,
+        "ours_hz": 3883.2416813470886,
+        "rel_error": -5.228800960592134e-07
+       },
+       {
+        "reference_hz": 4454.852419083651,
+        "ours_hz": 4454.850089098073,
+        "rel_error": -5.230219451284752e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "openwind_fem_vs_openwind_tmm": {
+      "db_median": 3.838023316882167e-13,
+      "db_p95": 3.294624789478993e-12,
+      "db_max": 7.136023252491393e-12,
+      "phase_median_deg": 3.0136197829551326e-12,
+      "phase_p95_deg": 1.3698641305538617e-11,
+      "phase_max_deg": 7.712771784192161e-11,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 6.551437002686763e-13,
+      "peaks": [
+       {
+        "reference_hz": 556.3886599632261,
+        "ours_hz": 556.3886599633014,
+        "rel_error": 1.3526639197981511e-13
+       },
+       {
+        "reference_hz": 1054.0959858123545,
+        "ours_hz": 1054.0959858124265,
+        "rel_error": 6.837845517451338e-14
+       },
+       {
+        "reference_hz": 1608.973795161327,
+        "ours_hz": 1608.9737951614998,
+        "rel_error": 1.0740012911119527e-13
+       },
+       {
+        "reference_hz": 2173.7764599374145,
+        "ours_hz": 2173.776459937547,
+        "rel_error": 6.08763051522653e-14
+       },
+       {
+        "reference_hz": 2742.145952211661,
+        "ours_hz": 2742.1459522123187,
+        "rel_error": 2.397992961867957e-13
+       },
+       {
+        "reference_hz": 3312.219803877581,
+        "ours_hz": 3312.2198038770052,
+        "rel_error": -1.738139919181347e-13
+       },
+       {
+        "reference_hz": 3883.2437118179337,
+        "ours_hz": 3883.2437118171724,
+        "rel_error": -1.960338113900053e-13
+       },
+       {
+        "reference_hz": 4454.852419083651,
+        "ours_hz": 4454.852419080732,
+        "rel_error": -6.551437002686763e-13
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "closed_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "closed",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "closed",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 102.31,
+     "tmm_200": {
+      "db_median": 0.0020683107241235453,
+      "db_p95": 0.014935984285764037,
+      "db_max": 0.04350809919757391,
+      "phase_median_deg": 0.00021217774250189588,
+      "phase_p95_deg": 0.025245039135183577,
+      "phase_max_deg": 0.5353852054348177,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 9.936663459407836e-06,
+      "peaks": [
+       {
+        "reference_hz": 620.0270952444088,
+        "ours_hz": 620.0245934467989,
+        "rel_error": -4.034981098473268e-06
+       },
+       {
+        "reference_hz": 1164.7380177201408,
+        "ours_hz": 1164.7264441104403,
+        "rel_error": -9.936663459407836e-06
+       },
+       {
+        "reference_hz": 1730.857527072944,
+        "ours_hz": 1730.841087430269,
+        "rel_error": -9.497975666949642e-06
+       },
+       {
+        "reference_hz": 2300.6321428742604,
+        "ours_hz": 2300.6169667856057,
+        "rel_error": -6.596486405574637e-06
+       },
+       {
+        "reference_hz": 2871.9717911434022,
+        "ours_hz": 2871.9606537963346,
+        "rel_error": -3.877944449884045e-06
+       },
+       {
+        "reference_hz": 3443.879706772229,
+        "ours_hz": 3443.8656379659537,
+        "rel_error": -4.085161931621749e-06
+       },
+       {
+        "reference_hz": 4016.074469497435,
+        "ours_hz": 4016.0579664541515,
+        "rel_error": -4.109247328189395e-06
+       },
+       {
+        "reference_hz": 4588.504192454769,
+        "ours_hz": 4588.480181542022,
+        "rel_error": -5.232840973691966e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 2.4193548105101945e-05,
+      "db_p95": 0.00015448123239908006,
+      "db_max": 0.00044910886014825827,
+      "phase_median_deg": 2.347584348965526e-06,
+      "phase_p95_deg": 0.00025602166575610155,
+      "phase_max_deg": 0.005393406064697597,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 1.0142529993076612e-07,
+      "peaks": [
+       {
+        "reference_hz": 620.0270952444088,
+        "ours_hz": 620.0270698010635,
+        "rel_error": -4.103586035013904e-08
+       },
+       {
+        "reference_hz": 1164.7380177201408,
+        "ours_hz": 1164.737899586238,
+        "rel_error": -1.0142529993076612e-07
+       },
+       {
+        "reference_hz": 1730.857527072944,
+        "ours_hz": 1730.8573591648692,
+        "rel_error": -9.700860543034938e-08
+       },
+       {
+        "reference_hz": 2300.6321428742604,
+        "ours_hz": 2300.6319882185476,
+        "rel_error": -6.722313832558789e-08
+       },
+       {
+        "reference_hz": 2871.9717911434022,
+        "ours_hz": 2871.971678756881,
+        "rel_error": -3.913218147533278e-08
+       },
+       {
+        "reference_hz": 3443.879706772229,
+        "ours_hz": 3443.8795651881287,
+        "rel_error": -4.111180188480373e-08
+       },
+       {
+        "reference_hz": 4016.074469497435,
+        "ours_hz": 4016.0743029440823,
+        "rel_error": -4.1471679377640987e-08
+       },
+       {
+        "reference_hz": 4588.504192454769,
+        "ours_hz": 4588.503948516922,
+        "rel_error": -5.316282530391988e-08
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 100.17,
+     "tmm_200": {
+      "db_median": 0.001326455252955223,
+      "db_p95": 0.003942484718859269,
+      "db_max": 0.004697056672246436,
+      "phase_median_deg": 0.008829329238217023,
+      "phase_p95_deg": 0.02626698982216875,
+      "phase_max_deg": 0.03191075722495053,
+      "peak_count_reference": 7,
+      "peak_count_ours": 7,
+      "peak_freq_rel_max": 8.042718274139523e-05,
+      "peaks": [
+       {
+        "reference_hz": 491.9383384636908,
+        "ours_hz": 491.92132662070514,
+        "rel_error": -3.458125064775484e-05
+       },
+       {
+        "reference_hz": 1087.1769889590316,
+        "ours_hz": 1087.167806086181,
+        "rel_error": -8.446529814347759e-06
+       },
+       {
+        "reference_hz": 1556.7583523917012,
+        "ours_hz": 1556.6792292418734,
+        "rel_error": -5.082558234314608e-05
+       },
+       {
+        "reference_hz": 2210.7389495933717,
+        "ours_hz": 2210.754750878402,
+        "rel_error": 7.147512840943676e-06
+       },
+       {
+        "reference_hz": 2700.9968468822663,
+        "ours_hz": 2700.8175635226285,
+        "rel_error": -6.637673784948627e-05
+       },
+       {
+        "reference_hz": 3346.8152572549134,
+        "ours_hz": 3346.8878770743695,
+        "rel_error": 2.1698185849578523e-05
+       },
+       {
+        "reference_hz": 3847.950767705268,
+        "ours_hz": 3847.641287865694,
+        "rel_error": -8.042718274139523e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 1.8912167241690123e-05,
+      "db_p95": 5.174436998126119e-05,
+      "db_max": 6.273267575815944e-05,
+      "phase_median_deg": 0.00012694353056604153,
+      "phase_p95_deg": 0.00028357433130953285,
+      "phase_max_deg": 0.0003397315548095771,
+      "peak_count_reference": 7,
+      "peak_count_ours": 7,
+      "peak_freq_rel_max": 1.3130705937356976e-06,
+      "peaks": [
+       {
+        "reference_hz": 491.9383384636908,
+        "ours_hz": 491.9382294827523,
+        "rel_error": -2.215337369686262e-07
+       },
+       {
+        "reference_hz": 1087.1769889590316,
+        "ours_hz": 1087.1765717049632,
+        "rel_error": -3.8379589771458074e-07
+       },
+       {
+        "reference_hz": 1556.7583523917012,
+        "ours_hz": 1556.756972699413,
+        "rel_error": -8.862597629173365e-07
+       },
+       {
+        "reference_hz": 2210.7389495933717,
+        "ours_hz": 2210.7382475800737,
+        "rel_error": -3.17546899024483e-07
+       },
+       {
+        "reference_hz": 2700.9968468822663,
+        "ours_hz": 2700.9937968264026,
+        "rel_error": -1.1292334040361941e-06
+       },
+       {
+        "reference_hz": 3346.8152572549134,
+        "ours_hz": 3346.8144929658506,
+        "rel_error": -2.28363086703216e-07
+       },
+       {
+        "reference_hz": 3847.950767705268,
+        "ours_hz": 3847.9457150742687,
+        "rel_error": -1.3130705937356976e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 112.52,
+     "tmm_200": {
+      "db_median": 0.0013000269248764295,
+      "db_p95": 0.0038437121282768223,
+      "db_max": 0.00461886699292991,
+      "phase_median_deg": 0.008653501746325318,
+      "phase_p95_deg": 0.02560811633285828,
+      "phase_max_deg": 0.031015831755908232,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 6.655427589057556e-05,
+      "peaks": [
+       {
+        "reference_hz": 490.71811091138903,
+        "ours_hz": 490.70141637060397,
+        "rel_error": -3.402063305562856e-05
+       },
+       {
+        "reference_hz": 1086.1049418577873,
+        "ours_hz": 1086.0958165303919,
+        "rel_error": -8.401883688869306e-06
+       },
+       {
+        "reference_hz": 1555.3759256488281,
+        "ours_hz": 1555.2964655762655,
+        "rel_error": -5.108737460331333e-05
+       },
+       {
+        "reference_hz": 2209.2030273199694,
+        "ours_hz": 2209.219213712125,
+        "rel_error": 7.326801545893104e-06
+       },
+       {
+        "reference_hz": 2699.149530932555,
+        "ours_hz": 2698.9698909900035,
+        "rel_error": -6.655427589057556e-05
+       },
+       {
+        "reference_hz": 3344.881801900177,
+        "ours_hz": 3344.9557148815834,
+        "rel_error": 2.2097337300372334e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 1.8463754125463027e-05,
+      "db_p95": 5.074472976497584e-05,
+      "db_max": 6.135430543358041e-05,
+      "phase_median_deg": 0.00012464901028348623,
+      "phase_p95_deg": 0.0002762728957976429,
+      "phase_max_deg": 0.00033029864277683455,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 1.1356962577623185e-06,
+      "peaks": [
+       {
+        "reference_hz": 490.71811091138903,
+        "ours_hz": 490.7180050681538,
+        "rel_error": -2.156905011106292e-07
+       },
+       {
+        "reference_hz": 1086.1049418577873,
+        "ours_hz": 1086.1045243909887,
+        "rel_error": -3.843705911757581e-07
+       },
+       {
+        "reference_hz": 1555.3759256488281,
+        "ours_hz": 1555.3745384662925,
+        "rel_error": -8.918631905855387e-07
+       },
+       {
+        "reference_hz": 2209.2030273199694,
+        "ours_hz": 2209.2023294807864,
+        "rel_error": -3.158782485567798e-07
+       },
+       {
+        "reference_hz": 2699.149530932555,
+        "ours_hz": 2699.1464655185337,
+        "rel_error": -1.1356962577623185e-06
+       },
+       {
+        "reference_hz": 3344.881801900177,
+        "ours_hz": 3344.8810443662087,
+        "rel_error": -2.2647555671350021e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_thin_layer": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "boundary_layer"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "wl",
+      "method": "FEM"
+     },
+     "openwind_seconds": 85.5,
+     "tmm_200": {
+      "db_median": 0.01723847258285791,
+      "db_p95": 0.046607307860277274,
+      "db_max": 0.08329668247867643,
+      "phase_median_deg": 0.11192820817725319,
+      "phase_p95_deg": 0.24654541389739612,
+      "phase_max_deg": 0.5531712841595418,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 0.0005209290247900537,
+      "peaks": [
+       {
+        "reference_hz": 490.44540641233885,
+        "ours_hz": 490.700893659614,
+        "rel_error": 0.0005209290247900537
+       },
+       {
+        "reference_hz": 1086.1459416294233,
+        "ours_hz": 1086.0957904015636,
+        "rel_error": -4.617356281281909e-05
+       },
+       {
+        "reference_hz": 1555.6683616453424,
+        "ours_hz": 1555.2964302338412,
+        "rel_error": -0.00023908142678164763
+       },
+       {
+        "reference_hz": 2209.2949084789893,
+        "ours_hz": 2209.219208491615,
+        "rel_error": -3.4264319844189886e-05
+       },
+       {
+        "reference_hz": 2699.565768539526,
+        "ours_hz": 2698.9698792016043,
+        "rel_error": -0.00022073525485691002
+       },
+       {
+        "reference_hz": 3345.017963100429,
+        "ours_hz": 3344.9557152413436,
+        "rel_error": -1.8609125503066016e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.015405735418783147,
+      "db_p95": 0.04698324867064761,
+      "db_max": 0.08329188721643094,
+      "phase_median_deg": 0.09924786898141777,
+      "phase_p95_deg": 0.2475765201779601,
+      "phase_max_deg": 0.5531712342744999,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 0.0005547528522412606,
+      "peaks": [
+       {
+        "reference_hz": 490.44540641233885,
+        "ours_hz": 490.7174824004147,
+        "rel_error": 0.0005547528522412606
+       },
+       {
+        "reference_hz": 1086.1459416294233,
+        "ours_hz": 1086.1044982675687,
+        "rel_error": -3.8156347380368725e-05
+       },
+       {
+        "reference_hz": 1555.6683616453424,
+        "ours_hz": 1555.3745031490091,
+        "rel_error": -0.00018889533500733837
+       },
+       {
+        "reference_hz": 2209.2949084789893,
+        "ours_hz": 2209.202324267249,
+        "rel_error": -4.19066786353568e-05
+       },
+       {
+        "reference_hz": 2699.565768539526,
+        "ours_hz": 2699.146453622883,
+        "rel_error": -0.00015532680163946684
+       },
+       {
+        "reference_hz": 3345.017963100429,
+        "ours_hz": 3344.8810447172254,
+        "rel_error": -4.093203226823876e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "flanged_fit_bessel": {
+     "tolerance_class": "radiation_model",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "flanged_non_causal",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 94.0,
+     "tmm_200": {
+      "db_median": 0.2579978959187215,
+      "db_p95": 0.8476256616298887,
+      "db_max": 0.8840344503182755,
+      "phase_median_deg": 1.9707935345208876,
+      "phase_p95_deg": 5.528683703750968,
+      "phase_max_deg": 6.324798326074043,
+      "peak_count_reference": 1,
+      "peak_count_ours": 1,
+      "peak_freq_rel_max": 0.009921875622756067,
+      "peaks": [
+       {
+        "reference_hz": 495.6188853069081,
+        "ours_hz": 490.70141637060397,
+        "rel_error": -0.009921875622756067
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": false,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": false
+     },
+     "tmm_2000": {
+      "db_median": 0.25793167574305254,
+      "db_p95": 0.8481194335493639,
+      "db_max": 0.8846365955511779,
+      "phase_median_deg": 1.9761356278923923,
+      "phase_p95_deg": 5.532445457289955,
+      "phase_max_deg": 6.32613908309437,
+      "peak_count_reference": 1,
+      "peak_count_ours": 1,
+      "peak_freq_rel_max": 0.009888404949943532,
+      "peaks": [
+       {
+        "reference_hz": 495.6188853069081,
+        "ours_hz": 490.7180050681538,
+        "rel_error": -0.009888404949943532
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": false,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": false
+     },
+     "full_band_report_only": {
+      "db_median": 0.3531035850278587,
+      "db_p95": 0.8609410752345236,
+      "db_max": 1.202612922173144,
+      "phase_median_deg": 2.3493567445193637,
+      "phase_p95_deg": 5.780291710899914,
+      "phase_max_deg": 7.704602469540393,
+      "peak_count_reference": 8,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 0.24834130522075595,
+      "peaks": [
+       {
+        "reference_hz": 495.6188853069081,
+        "ours_hz": 490.7180050681538,
+        "rel_error": -0.009888404949943532
+       },
+       {
+        "reference_hz": 1081.3436548951288,
+        "ours_hz": 1086.1045243909887,
+        "rel_error": 0.004402734943981892
+       },
+       {
+        "reference_hz": 1599.0809833125445,
+        "ours_hz": 1555.3745384662925,
+        "rel_error": -0.02733222726200694
+       },
+       {
+        "reference_hz": 2159.741546101707,
+        "ours_hz": 2209.2023294807864,
+        "rel_error": 0.02290125106328347
+       },
+       {
+        "reference_hz": 2732.042540272335,
+        "ours_hz": 2699.1464655185337,
+        "rel_error": -0.012040835480739667
+       },
+       {
+        "reference_hz": 3304.881104218366,
+        "ours_hz": 3344.8810443662087,
+        "rel_error": 0.012103291733184135
+       },
+       {
+        "reference_hz": 3877.490196571876,
+        "ours_hz": 3344.8810443662087,
+        "rel_error": -0.1373592517852274
+       },
+       {
+        "reference_hz": 4449.99980389846,
+        "ours_hz": 3344.8810443662087,
+        "rel_error": -0.24834130522075595
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ]
+     }
+    }
+   }
+  },
+  {
+   "profile": "tractrix",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.22378131496578088,
+   "openwind_bore": "801 points, conical pieces",
+   "cases": {
+    "matched_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "plane_wave",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "total_transmission",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 94.12,
+     "tmm_200": {
+      "db_median": 0.002835473440091693,
+      "db_p95": 0.009059420949380972,
+      "db_max": 0.010818968623870547,
+      "phase_median_deg": 0.018646398569466406,
+      "phase_p95_deg": 0.062235088463686514,
+      "phase_max_deg": 0.08687613594549551,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 7.273308018918367e-05,
+      "peaks": [
+       {
+        "reference_hz": 696.6923378534409,
+        "ours_hz": 696.6709430798905,
+        "rel_error": -3.070906968242836e-05
+       },
+       {
+        "reference_hz": 1365.3157884882387,
+        "ours_hz": 1365.2543431716554,
+        "rel_error": -4.500447229967735e-05
+       },
+       {
+        "reference_hz": 2102.885248364775,
+        "ours_hz": 2102.7738073603687,
+        "rel_error": -5.299433456636444e-05
+       },
+       {
+        "reference_hz": 2857.138991936914,
+        "ours_hz": 2856.968184615273,
+        "rel_error": -5.9782643449612654e-05
+       },
+       {
+        "reference_hz": 3617.5292104897553,
+        "ours_hz": 3617.289267608317,
+        "rel_error": -6.632783523697534e-05
+       },
+       {
+        "reference_hz": 4380.813840893397,
+        "ours_hz": 4380.495210809014,
+        "rel_error": -7.273308018918367e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 5.5302165507351815e-05,
+      "db_p95": 0.00017904886731813757,
+      "db_max": 0.00022293245361596907,
+      "phase_median_deg": 0.00034885572496570457,
+      "phase_p95_deg": 0.0011343943326136386,
+      "phase_max_deg": 0.0014778337029570717,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 1.4784214529413355e-06,
+      "peaks": [
+       {
+        "reference_hz": 696.6923378534409,
+        "ours_hz": 696.6920835344639,
+        "rel_error": -3.6503771203086853e-07
+       },
+       {
+        "reference_hz": 1365.3157884882387,
+        "ours_hz": 1365.314615614935,
+        "rel_error": -8.590491031597695e-07
+       },
+       {
+        "reference_hz": 2102.885248364775,
+        "ours_hz": 2102.883003837723,
+        "rel_error": -1.0673559357156826e-06
+       },
+       {
+        "reference_hz": 2857.138991936914,
+        "ours_hz": 2857.1355116784734,
+        "rel_error": -1.2180921020383816e-06
+       },
+       {
+        "reference_hz": 3617.5292104897553,
+        "ours_hz": 3617.5243166300393,
+        "rel_error": -1.3528182998102342e-06
+       },
+       {
+        "reference_hz": 4380.813840893397,
+        "ours_hz": 4380.807364204234,
+        "rel_error": -1.4784214529413355e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "openwind_fem_vs_openwind_tmm": {
+      "db_median": 9.445587534889447e-13,
+      "db_p95": 2.011828177096911e-12,
+      "db_max": 4.345259564288025e-12,
+      "phase_median_deg": 6.217241049961377e-12,
+      "phase_p95_deg": 1.4529095529666873e-11,
+      "phase_max_deg": 2.9498028268190974e-11,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 1.1655834397925577e-13,
+      "peaks": [
+       {
+        "reference_hz": 696.6923378534409,
+        "ours_hz": 696.6923378535054,
+        "rel_error": 9.252353368312263e-14
+       },
+       {
+        "reference_hz": 1365.3157884882387,
+        "ours_hz": 1365.3157884882253,
+        "rel_error": -9.825600029136596e-15
+       },
+       {
+        "reference_hz": 2102.885248364775,
+        "ours_hz": 2102.88524836453,
+        "rel_error": -1.1655834397925577e-13
+       },
+       {
+        "reference_hz": 2857.138991936914,
+        "ours_hz": 2857.1389919368075,
+        "rel_error": -3.7243858421915434e-14
+       },
+       {
+        "reference_hz": 3617.5292104897553,
+        "ours_hz": 3617.529210489884,
+        "rel_error": 3.5574971980239054e-14
+       },
+       {
+        "reference_hz": 4380.813840893397,
+        "ours_hz": 4380.813840893481,
+        "rel_error": 1.909999274154172e-14
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "closed_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "closed",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "closed",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 139.6,
+     "tmm_200": {
+      "db_median": 0.005159690846787952,
+      "db_p95": 0.042991234116326764,
+      "db_max": 0.23796441978143007,
+      "phase_median_deg": 0.0003430314116090928,
+      "phase_p95_deg": 0.047625857586547714,
+      "phase_max_deg": 2.9307018823530484,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 2.0226652507689993e-05,
+      "peaks": [
+       {
+        "reference_hz": 842.835071902166,
+        "ours_hz": 842.8521196342866,
+        "rel_error": 2.0226652507689993e-05
+       },
+       {
+        "reference_hz": 1569.8096928442078,
+        "ours_hz": 1569.822426841267,
+        "rel_error": 8.11180942335374e-06
+       },
+       {
+        "reference_hz": 2323.8646112536417,
+        "ours_hz": 2323.884222224912,
+        "rel_error": 8.438947421967316e-06
+       },
+       {
+        "reference_hz": 3085.354627838672,
+        "ours_hz": 3085.400610437448,
+        "rel_error": 1.4903505211699853e-05
+       },
+       {
+        "reference_hz": 3849.7214619928304,
+        "ours_hz": 3849.7610985457814,
+        "rel_error": 1.0295953445526902e-05
+       },
+       {
+        "reference_hz": 4615.574557184026,
+        "ours_hz": 4615.628833877055,
+        "rel_error": 1.17594662064252e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.00014041115498315392,
+      "db_p95": 0.0011862321605893857,
+      "db_max": 0.005247749492306782,
+      "phase_median_deg": 9.355250899757514e-06,
+      "phase_p95_deg": 0.0012794682192659923,
+      "phase_max_deg": 0.06497507918172772,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 1.050044505361622e-06,
+      "peaks": [
+       {
+        "reference_hz": 842.835071902166,
+        "ours_hz": 842.8359569165021,
+        "rel_error": 1.050044505361622e-06
+       },
+       {
+        "reference_hz": 1569.8096928442078,
+        "ours_hz": 1569.810194176331,
+        "rel_error": 3.193585346090162e-07
+       },
+       {
+        "reference_hz": 2323.8646112536417,
+        "ours_hz": 2323.865331838328,
+        "rel_error": 3.1008032176909653e-07
+       },
+       {
+        "reference_hz": 3085.354627838672,
+        "ours_hz": 3085.356293540822,
+        "rel_error": 5.398738074123953e-07
+       },
+       {
+        "reference_hz": 3849.7214619928304,
+        "ours_hz": 3849.722850967063,
+        "rel_error": 3.607986308571141e-07
+       },
+       {
+        "reference_hz": 4615.574557184026,
+        "ours_hz": 4615.576438722363,
+        "rel_error": 4.076498631121321e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 127.35,
+     "tmm_200": {
+      "db_median": 0.0029271269150913447,
+      "db_p95": 0.009058456709429792,
+      "db_max": 0.010850254095624177,
+      "phase_median_deg": 0.018899276138047316,
+      "phase_p95_deg": 0.06270368672398834,
+      "phase_max_deg": 0.08836521287219928,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 0.00010862939610845827,
+      "peaks": [
+       {
+        "reference_hz": 618.7539270456933,
+        "ours_hz": 618.7004841456733,
+        "rel_error": -8.637181548928141e-05
+       },
+       {
+        "reference_hz": 1348.517915368115,
+        "ours_hz": 1348.4564416078185,
+        "rel_error": -4.558616507487276e-05
+       },
+       {
+        "reference_hz": 2104.324978889761,
+        "ours_hz": 2104.1698633095684,
+        "rel_error": -7.371274957466554e-05
+       },
+       {
+        "reference_hz": 2817.2225976330765,
+        "ours_hz": 2816.938093002738,
+        "rel_error": -0.00010098762894267496
+       },
+       {
+        "reference_hz": 3606.9411778911453,
+        "ours_hz": 3606.6685495093766,
+        "rel_error": -7.558437144465742e-05
+       },
+       {
+        "reference_hz": 4374.21083189552,
+        "ours_hz": 4373.7356640144,
+        "rel_error": -0.00010862939610845827
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 5.694258180719473e-05,
+      "db_p95": 0.00018018686125309563,
+      "db_max": 0.000223105155058239,
+      "phase_median_deg": 0.0003461714407593554,
+      "phase_p95_deg": 0.0011355860989161685,
+      "phase_max_deg": 0.001498663044243093,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 2.256168336348385e-06,
+      "peaks": [
+       {
+        "reference_hz": 618.7539270456933,
+        "ours_hz": 618.7532164040939,
+        "rel_error": -1.1485043865803532e-06
+       },
+       {
+        "reference_hz": 1348.517915368115,
+        "ours_hz": 1348.5167465489048,
+        "rel_error": -8.667435536146383e-07
+       },
+       {
+        "reference_hz": 2104.324978889761,
+        "ours_hz": 2104.3215768345995,
+        "rel_error": -1.616696658413321e-06
+       },
+       {
+        "reference_hz": 2817.2225976330765,
+        "ours_hz": 2817.216918841995,
+        "rel_error": -2.0157409948489365e-06
+       },
+       {
+        "reference_hz": 3606.9411778911453,
+        "ours_hz": 3606.9356212303023,
+        "rel_error": -1.5405465653480492e-06
+       },
+       {
+        "reference_hz": 4374.21083189552,
+        "ours_hz": 4374.200962939544,
+        "rel_error": -2.256168336348385e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 134.55,
+     "tmm_200": {
+      "db_median": 0.0028930027050742906,
+      "db_p95": 0.008890817063890931,
+      "db_max": 0.010646447358262706,
+      "phase_median_deg": 0.01867411256972077,
+      "phase_p95_deg": 0.062152226959355135,
+      "phase_max_deg": 0.08719882639807627,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 0.00010898839169367063,
+      "peaks": [
+       {
+        "reference_hz": 617.3141836930117,
+        "ours_hz": 617.2607347570953,
+        "rel_error": -8.658303555684277e-05
+       },
+       {
+        "reference_hz": 1347.3204340370132,
+        "ours_hz": 1347.2593488896555,
+        "rel_error": -4.5338247542726685e-05
+       },
+       {
+        "reference_hz": 2102.560469750079,
+        "ours_hz": 2102.4046426046148,
+        "rel_error": -7.411303870023536e-05
+       },
+       {
+        "reference_hz": 2815.3884933181953,
+        "ours_hz": 2815.105015292036,
+        "rel_error": -0.00010068877770579653
+       },
+       {
+        "reference_hz": 3605.023446241487,
+        "ours_hz": 3604.751475980057,
+        "rel_error": -7.544202291208175e-05
+       },
+       {
+        "reference_hz": 4371.790280225996,
+        "ours_hz": 4371.313805834532,
+        "rel_error": -0.00010898839169367063
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 5.651535419055564e-05,
+      "db_p95": 0.000177133463137454,
+      "db_max": 0.00021937156004485606,
+      "phase_median_deg": 0.00034333268396980745,
+      "phase_p95_deg": 0.0011163482221806399,
+      "phase_max_deg": 0.0014790279404757723,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 2.2638271074350937e-06,
+      "peaks": [
+       {
+        "reference_hz": 617.3141836930117,
+        "ours_hz": 617.3134776633771,
+        "rel_error": -1.1437119919180716e-06
+       },
+       {
+        "reference_hz": 1347.3204340370132,
+        "ours_hz": 1347.3192711691813,
+        "rel_error": -8.630967084972579e-07
+       },
+       {
+        "reference_hz": 2102.560469750079,
+        "ours_hz": 2102.5570497483486,
+        "rel_error": -1.6265889992337383e-06
+       },
+       {
+        "reference_hz": 2815.3884933181953,
+        "ours_hz": 2815.3828389650903,
+        "rel_error": -2.008374019578693e-06
+       },
+       {
+        "reference_hz": 3605.023446241487,
+        "ours_hz": 3605.0179072873816,
+        "rel_error": -1.5364543914629368e-06
+       },
+       {
+        "reference_hz": 4371.790280225996,
+        "ours_hz": 4371.780383248652,
+        "rel_error": -2.2638271074350937e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_thin_layer": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "boundary_layer"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "wl",
+      "method": "FEM"
+     },
+     "openwind_seconds": 146.08,
+     "tmm_200": {
+      "db_median": 0.020615113902517794,
+      "db_p95": 0.0409083250578275,
+      "db_max": 0.07159745791865799,
+      "phase_median_deg": 0.10967461675356198,
+      "phase_p95_deg": 0.18318633104597126,
+      "phase_max_deg": 0.4738843229365173,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 0.0002041309505142023,
+      "peaks": [
+       {
+        "reference_hz": 617.3048051629012,
+        "ours_hz": 617.2604146628859,
+        "rel_error": -7.19101805850946e-05
+       },
+       {
+        "reference_hz": 1347.370364971867,
+        "ours_hz": 1347.2592676469667,
+        "rel_error": -8.245492686242665e-05
+       },
+       {
+        "reference_hz": 2102.8338667356725,
+        "ours_hz": 2102.4046132596823,
+        "rel_error": -0.0002041309505142023
+       },
+       {
+        "reference_hz": 2815.6244865224644,
+        "ours_hz": 2815.104985752499,
+        "rel_error": -0.0001845064114380498
+       },
+       {
+        "reference_hz": 3605.181114444309,
+        "ours_hz": 3604.7514594032837,
+        "rel_error": -0.00011917710300433109
+       },
+       {
+        "reference_hz": 4372.078291525822,
+        "ours_hz": 4371.313794334736,
+        "rel_error": -0.00017485898927486302
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.016504209912346218,
+      "db_p95": 0.04119936535789945,
+      "db_max": 0.07166291508907073,
+      "phase_median_deg": 0.09198631826206073,
+      "phase_p95_deg": 0.18103057740957212,
+      "phase_max_deg": 0.4738888953774168,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 0.00013165397651633003,
+      "peaks": [
+       {
+        "reference_hz": 617.3048051629012,
+        "ours_hz": 617.3131576828632,
+        "rel_error": 1.3530625214947388e-05
+       },
+       {
+        "reference_hz": 1347.370364971867,
+        "ours_hz": 1347.3191898503414,
+        "rel_error": -3.798148070940479e-05
+       },
+       {
+        "reference_hz": 2102.8338667356725,
+        "ours_hz": 2102.5570202951635,
+        "rel_error": -0.00013165397651633003
+       },
+       {
+        "reference_hz": 2815.6244865224644,
+        "ours_hz": 2815.382809343176,
+        "rel_error": -8.583430796437958e-05
+       },
+       {
+        "reference_hz": 3605.181114444309,
+        "ours_hz": 3605.0178906246306,
+        "rel_error": -4.5274790502068054e-05
+       },
+       {
+        "reference_hz": 4372.078291525822,
+        "ours_hz": 4371.780371641123,
+        "rel_error": -6.814147982599903e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "flanged_fit_bessel": {
+     "tolerance_class": "radiation_model",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "flanged_non_causal",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 266.72,
+     "tmm_200": {
+      "db_median": 0.14645020758061847,
+      "db_p95": 0.7769930563308183,
+      "db_max": 0.8253616893786138,
+      "phase_median_deg": 1.355234695070765,
+      "phase_p95_deg": 5.184761192390061,
+      "phase_max_deg": 5.590175737716373,
+      "peak_count_reference": 1,
+      "peak_count_ours": 1,
+      "peak_freq_rel_max": 0.0017034835824313466,
+      "peaks": [
+       {
+        "reference_hz": 618.3140225432849,
+        "ours_hz": 617.2607347570953,
+        "rel_error": -0.0017034835824313466
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.1451410392668407,
+      "db_p95": 0.7781593507182623,
+      "db_max": 0.8262610170584572,
+      "phase_median_deg": 1.3592971534914258,
+      "phase_p95_deg": 5.186578017779304,
+      "phase_max_deg": 5.594427651035328,
+      "peak_count_reference": 1,
+      "peak_count_ours": 1,
+      "peak_freq_rel_max": 0.0016181824177176314,
+      "peaks": [
+       {
+        "reference_hz": 618.3140225432849,
+        "ours_hz": 617.3134776633771,
+        "rel_error": -0.0016181824177176314
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "full_band_report_only": {
+      "db_median": 0.3440361498930029,
+      "db_p95": 0.8533637751627773,
+      "db_max": 1.0472696739368816,
+      "phase_median_deg": 2.2282889164232498,
+      "phase_p95_deg": 5.300921559438699,
+      "phase_max_deg": 7.051984810430827,
+      "peak_count_reference": 6,
+      "peak_count_ours": 6,
+      "peak_freq_rel_max": 0.012270317874327495,
+      "peaks": [
+       {
+        "reference_hz": 618.3140225432849,
+        "ours_hz": 617.3134776633771,
+        "rel_error": -0.0016181824177176314
+       },
+       {
+        "reference_hz": 1350.796305760921,
+        "ours_hz": 1347.3192711691813,
+        "rel_error": -0.0025740628523418323
+       },
+       {
+        "reference_hz": 2090.59539650273,
+        "ours_hz": 2102.5570497483486,
+        "rel_error": 0.005721649088880894
+       },
+       {
+        "reference_hz": 2850.3576331797212,
+        "ours_hz": 2815.3828389650903,
+        "rel_error": -0.012270317874327495
+       },
+       {
+        "reference_hz": 3613.029618513837,
+        "ours_hz": 3605.0179072873816,
+        "rel_error": -0.0022174496398816358
+       },
+       {
+        "reference_hz": 4377.220024452204,
+        "ours_hz": 4371.780383248652,
+        "rel_error": -0.001242715964279836
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ]
+     }
+    }
+   }
+  },
+  {
+   "profile": "os",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "openwind_bore": "801 points, conical pieces",
+   "cases": {
+    "matched_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "plane_wave",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "total_transmission",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 181.25,
+     "tmm_200": {
+      "db_median": 0.0005705289284254629,
+      "db_p95": 0.0019927690542785774,
+      "db_max": 0.002361501194783934,
+      "phase_median_deg": 0.004591572775334356,
+      "phase_p95_deg": 0.010568315898429149,
+      "phase_max_deg": 0.012599693727401818,
+      "peak_count_reference": 3,
+      "peak_count_ours": 3,
+      "peak_freq_rel_max": 2.773107977274152e-05,
+      "peaks": [
+       {
+        "reference_hz": 1088.73262714281,
+        "ours_hz": 1088.7035888829255,
+        "rel_error": -2.6671617218643226e-05
+       },
+       {
+        "reference_hz": 1607.9404367382679,
+        "ours_hz": 1607.8958468137469,
+        "rel_error": -2.773107977274152e-05
+       },
+       {
+        "reference_hz": 2166.7406190464835,
+        "ours_hz": 2166.682832717482,
+        "rel_error": -2.6669703098474158e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 7.561873800110317e-05,
+      "db_p95": 9.546329263653973e-05,
+      "db_max": 9.626024478477111e-05,
+      "phase_median_deg": 0.00010327984265447849,
+      "phase_p95_deg": 0.0003057535383561498,
+      "phase_max_deg": 0.00035296814476364405,
+      "peak_count_reference": 3,
+      "peak_count_ours": 3,
+      "peak_freq_rel_max": 5.241342954070623e-07,
+      "peaks": [
+       {
+        "reference_hz": 1088.73262714281,
+        "ours_hz": 1088.7331977849185,
+        "rel_error": 5.241342954070623e-07
+       },
+       {
+        "reference_hz": 1607.9404367382679,
+        "ours_hz": 1607.940598784769,
+        "rel_error": 1.0077892031517666e-07
+       },
+       {
+        "reference_hz": 2166.7406190464835,
+        "ours_hz": 2166.7403037260256,
+        "rel_error": -1.4552755193020358e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "openwind_fem_vs_openwind_tmm": {
+      "db_median": 3.3751461329364393e-13,
+      "db_p95": 1.418525703300001e-12,
+      "db_max": 2.6403286034233014e-12,
+      "phase_median_deg": 3.4746629550396073e-12,
+      "phase_p95_deg": 9.984900233260369e-12,
+      "phase_max_deg": 1.9150089874278457e-11,
+      "peak_count_reference": 3,
+      "peak_count_ours": 3,
+      "peak_freq_rel_max": 1.938058670704666e-13,
+      "peaks": [
+       {
+        "reference_hz": 1088.73262714281,
+        "ours_hz": 1088.732627143021,
+        "rel_error": 1.938058670704666e-13
+       },
+       {
+        "reference_hz": 1607.9404367382679,
+        "ours_hz": 1607.940436738378,
+        "rel_error": 6.844088027151064e-14
+       },
+       {
+        "reference_hz": 2166.7406190464835,
+        "ours_hz": 2166.740619046315,
+        "rel_error": -7.786408105143793e-14
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "closed_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "closed",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "closed",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 141.97,
+     "tmm_200": {
+      "db_median": 0.004482912249453472,
+      "db_p95": 0.034279866645572525,
+      "db_max": 0.12306740379061362,
+      "phase_median_deg": 0.0003272384780733616,
+      "phase_p95_deg": 0.03948039222003423,
+      "phase_max_deg": 1.561276744490308,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 1.9585352927850586e-05,
+      "peaks": [
+       {
+        "reference_hz": 728.2553533299513,
+        "ours_hz": 728.2458645400455,
+        "rel_error": -1.302948184636566e-05
+       },
+       {
+        "reference_hz": 1226.0938422710647,
+        "ours_hz": 1226.0814028926789,
+        "rel_error": -1.0145535322782152e-05
+       },
+       {
+        "reference_hz": 1759.5369875075899,
+        "ours_hz": 1759.5083305487476,
+        "rel_error": -1.6286647592922195e-05
+       },
+       {
+        "reference_hz": 2316.3071756828435,
+        "ours_hz": 2316.283614371452,
+        "rel_error": -1.0171928679734943e-05
+       },
+       {
+        "reference_hz": 2882.4152708514957,
+        "ours_hz": 2882.3832603777046,
+        "rel_error": -1.1105434430238912e-05
+       },
+       {
+        "reference_hz": 3452.0382162562473,
+        "ours_hz": 3452.012136465461,
+        "rel_error": -7.5548963112527836e-06
+       },
+       {
+        "reference_hz": 4022.971123217297,
+        "ours_hz": 4022.8923319080304,
+        "rel_error": -1.9585352927850586e-05
+       },
+       {
+        "reference_hz": 4594.496123382065,
+        "ours_hz": 4594.444132763855,
+        "rel_error": -1.1315847660697489e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 7.877076014306036e-05,
+      "db_p95": 0.00036692950931162466,
+      "db_max": 0.0023794647761384326,
+      "phase_median_deg": 4.443593351148388e-06,
+      "phase_p95_deg": 0.00041157632782589754,
+      "phase_max_deg": 0.032498022635490065,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 3.8124232861407323e-07,
+      "peaks": [
+       {
+        "reference_hz": 728.2553533299513,
+        "ours_hz": 728.255630971718,
+        "rel_error": 3.8124232861407323e-07
+       },
+       {
+        "reference_hz": 1226.0938422710647,
+        "ours_hz": 1226.09416264563,
+        "rel_error": 2.612969368390758e-07
+       },
+       {
+        "reference_hz": 1759.5369875075899,
+        "ours_hz": 1759.5373665151901,
+        "rel_error": 2.1540189433337446e-07
+       },
+       {
+        "reference_hz": 2316.3071756828435,
+        "ours_hz": 2316.307245503728,
+        "rel_error": 3.014318884464785e-08
+       },
+       {
+        "reference_hz": 2882.4152708514957,
+        "ours_hz": 2882.4151678149624,
+        "rel_error": -3.5746595706826895e-08
+       },
+       {
+        "reference_hz": 3452.0382162562473,
+        "ours_hz": 3452.038056016792,
+        "rel_error": -4.641879533640513e-08
+       },
+       {
+        "reference_hz": 4022.971123217297,
+        "ours_hz": 4022.9705003398763,
+        "rel_error": -1.5483019933770976e-07
+       },
+       {
+        "reference_hz": 4594.496123382065,
+        "ours_hz": 4594.495676528387,
+        "rel_error": -9.725847320648571e-08
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 145.83,
+     "tmm_200": {
+      "db_median": 0.000529646622970957,
+      "db_p95": 0.001991000366218151,
+      "db_max": 0.0025220916876114072,
+      "phase_median_deg": 0.004581676528130277,
+      "phase_p95_deg": 0.01033949607908554,
+      "phase_max_deg": 0.01282330165181545,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 9.869711289782736e-06,
+      "peaks": [
+       {
+        "reference_hz": 370.16048111881634,
+        "ours_hz": 370.1575299005176,
+        "rel_error": -7.972807604456128e-06
+       },
+       {
+        "reference_hz": 776.4941590608323,
+        "ours_hz": 776.4864952876642,
+        "rel_error": -9.869711289782736e-06
+       },
+       {
+        "reference_hz": 1155.0056511714897,
+        "ours_hz": 1155.0013996735695,
+        "rel_error": -3.6809325702521168e-06
+       },
+       {
+        "reference_hz": 1859.889800326701,
+        "ours_hz": 1859.892869789829,
+        "rel_error": 1.6503467718606541e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 7.56121439062815e-05,
+      "db_p95": 9.524684936324894e-05,
+      "db_max": 9.605793253381916e-05,
+      "phase_median_deg": 0.00010763240805720077,
+      "phase_p95_deg": 0.0002929840575703419,
+      "phase_max_deg": 0.0003425758583515665,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 5.35290895471487e-07,
+      "peaks": [
+       {
+        "reference_hz": 370.16048111881634,
+        "ours_hz": 370.1605205616735,
+        "rel_error": 1.065560997347714e-07
+       },
+       {
+        "reference_hz": 776.4941590608323,
+        "ours_hz": 776.4945085291708,
+        "rel_error": 4.500591980623328e-07
+       },
+       {
+        "reference_hz": 1155.0056511714897,
+        "ours_hz": 1155.006269435499,
+        "rel_error": 5.35290895471487e-07
+       },
+       {
+        "reference_hz": 1859.889800326701,
+        "ours_hz": 1859.8901493421881,
+        "rel_error": 1.8765385290919726e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 147.02,
+     "tmm_200": {
+      "db_median": 0.0005263455840742115,
+      "db_p95": 0.00196966291052638,
+      "db_max": 0.002494081895632113,
+      "phase_median_deg": 0.004542859230653318,
+      "phase_p95_deg": 0.010131889638648216,
+      "phase_max_deg": 0.012556032407568102,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 9.975324899461261e-06,
+      "peaks": [
+       {
+        "reference_hz": 369.90160029873385,
+        "ours_hz": 369.89863262524,
+        "rel_error": -8.022872816607115e-06
+       },
+       {
+        "reference_hz": 775.8333136721087,
+        "ours_hz": 775.825574482737,
+        "rel_error": -9.975324899461261e-06
+       },
+       {
+        "reference_hz": 1154.2875518674746,
+        "ours_hz": 1154.2833436358426,
+        "rel_error": -3.645739421848304e-06
+       },
+       {
+        "reference_hz": 1858.9649880395089,
+        "ours_hz": 1858.9678347764168,
+        "rel_error": 1.5313558492260815e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 7.571525035403895e-05,
+      "db_p95": 9.496880943149702e-05,
+      "db_max": 9.567626028039783e-05,
+      "phase_median_deg": 0.00010641384990980933,
+      "phase_p95_deg": 0.00029183138386114295,
+      "phase_max_deg": 0.0003408388337228779,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 5.333029252820685e-07,
+      "peaks": [
+       {
+        "reference_hz": 369.90160029873385,
+        "ours_hz": 369.9016403719494,
+        "rel_error": 1.083347990317906e-07
+       },
+       {
+        "reference_hz": 775.8333136721087,
+        "ours_hz": 775.8336637995086,
+        "rel_error": 4.5129204136183665e-07
+       },
+       {
+        "reference_hz": 1154.2875518674746,
+        "ours_hz": 1154.2881674524026,
+        "rel_error": 5.333029252820685e-07
+       },
+       {
+        "reference_hz": 1858.9649880395089,
+        "ours_hz": 1858.9653341053588,
+        "rel_error": 1.8616049908417774e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_thin_layer": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "boundary_layer"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "wl",
+      "method": "FEM"
+     },
+     "openwind_seconds": 134.82,
+     "tmm_200": {
+      "db_median": 0.016207068918478902,
+      "db_p95": 0.042201216396307244,
+      "db_max": 0.07226874465283431,
+      "phase_median_deg": 0.10108415935833019,
+      "phase_p95_deg": 0.17359643584957396,
+      "phase_max_deg": 0.4781596615331167,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 0.0007582215693557207,
+      "peaks": [
+       {
+        "reference_hz": 369.6184021289751,
+        "ours_hz": 369.8986547739001,
+        "rel_error": 0.0007582215693557207
+       },
+       {
+        "reference_hz": 775.4599318963266,
+        "ours_hz": 775.8254740344839,
+        "rel_error": 0.0004713875251600187
+       },
+       {
+        "reference_hz": 1154.2354291428708,
+        "ours_hz": 1154.2833430902106,
+        "rel_error": 4.151141624146318e-05
+       },
+       {
+        "reference_hz": 1858.5949822078746,
+        "ours_hz": 1858.9678116747282,
+        "rel_error": 0.00020059747842999736
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.016627407862724604,
+      "db_p95": 0.04216989488079213,
+      "db_max": 0.07226396028629517,
+      "phase_median_deg": 0.09772171491925606,
+      "phase_p95_deg": 0.1726191388944217,
+      "phase_max_deg": 0.47815943461057947,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 0.0007663590518402226,
+      "peaks": [
+       {
+        "reference_hz": 369.6184021289751,
+        "ours_hz": 369.90166253717337,
+        "rel_error": 0.0007663590518402226
+       },
+       {
+        "reference_hz": 775.4599318963266,
+        "ours_hz": 775.8335633914415,
+        "rel_error": 0.00048181921430974695
+       },
+       {
+        "reference_hz": 1154.2354291428708,
+        "ours_hz": 1154.2881668970583,
+        "rel_error": 4.5690638890464016e-05
+       },
+       {
+        "reference_hz": 1858.5949822078746,
+        "ours_hz": 1858.9653110131403,
+        "rel_error": 0.0001992520203760306
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "flanged_fit_bessel": {
+     "tolerance_class": "radiation_model",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "flanged_non_causal",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 113.31,
+     "tmm_200": {
+      "db_median": 0.22309952751960208,
+      "db_p95": 0.6555447272048976,
+      "db_max": 0.702949824331891,
+      "phase_median_deg": 1.5704483805903007,
+      "phase_p95_deg": 4.157499433541263,
+      "phase_max_deg": 4.456507016682012,
+      "peak_count_reference": 2,
+      "peak_count_ours": 2,
+      "peak_freq_rel_max": 0.029369186838371277,
+      "peaks": [
+       {
+        "reference_hz": 379.77507025435165,
+        "ours_hz": 369.89863262524,
+        "rel_error": -0.026006018832402493
+       },
+       {
+        "reference_hz": 799.3003765825711,
+        "ours_hz": 775.825574482737,
+        "rel_error": -0.029369186838371277
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": false,
+       "peak_count": true
+      },
+      "pass": false
+     },
+     "tmm_2000": {
+      "db_median": 0.22296794096710681,
+      "db_p95": 0.6559527439123877,
+      "db_max": 0.7027731419848998,
+      "phase_median_deg": 1.5731856040285286,
+      "phase_p95_deg": 4.162867209480146,
+      "phase_max_deg": 4.461783893563842,
+      "peak_count_reference": 2,
+      "peak_count_ours": 2,
+      "peak_freq_rel_max": 0.02935906634173624,
+      "peaks": [
+       {
+        "reference_hz": 379.77507025435165,
+        "ours_hz": 369.9016403719494,
+        "rel_error": -0.0259980990215856
+       },
+       {
+        "reference_hz": 799.3003765825711,
+        "ours_hz": 775.8336637995086,
+        "rel_error": -0.02935906634173624
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": false,
+       "peak_count": true
+      },
+      "pass": false
+     },
+     "full_band_report_only": {
+      "db_median": 0.33737754485996074,
+      "db_p95": 0.8411691681144843,
+      "db_max": 1.2022748810088164,
+      "phase_median_deg": 2.277813123592895,
+      "phase_p95_deg": 5.510785081753487,
+      "phase_max_deg": 7.75464315356641,
+      "peak_count_reference": 3,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 0.05622843256651724,
+      "peaks": [
+       {
+        "reference_hz": 379.77507025435165,
+        "ours_hz": 369.9016403719494,
+        "rel_error": -0.0259980990215856
+       },
+       {
+        "reference_hz": 799.3003765825711,
+        "ours_hz": 775.8336637995086,
+        "rel_error": -0.02935906634173624
+       },
+       {
+        "reference_hz": 1223.0588494961808,
+        "ours_hz": 1154.2881674524026,
+        "rel_error": -0.05622843256651724
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ]
+     }
+    }
+   }
+  },
+  {
+   "profile": "scaled_tractrix",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "openwind_bore": "801 points, conical pieces",
+   "cases": {
+    "matched_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "plane_wave",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "total_transmission",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 141.55,
+     "tmm_200": {
+      "db_median": 0.004316180401882754,
+      "db_p95": 0.014403946773893278,
+      "db_max": 0.017330553929512188,
+      "phase_median_deg": 0.030569234365268292,
+      "phase_p95_deg": 0.10211927710545023,
+      "phase_max_deg": 0.1342511463335963,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 0.00010220002332722626,
+      "peaks": [
+       {
+        "reference_hz": 519.6845815337662,
+        "ours_hz": 519.6667442470673,
+        "rel_error": -3.432329403774104e-05
+       },
+       {
+        "reference_hz": 1018.4451529633701,
+        "ours_hz": 1018.3921017212407,
+        "rel_error": -5.209042624931756e-05
+       },
+       {
+        "reference_hz": 1568.6345097124902,
+        "ours_hz": 1568.537272416284,
+        "rel_error": -6.198849738684711e-05
+       },
+       {
+        "reference_hz": 2131.2704036713994,
+        "ours_hz": 2131.1195174193176,
+        "rel_error": -7.07963906512738e-05
+       },
+       {
+        "reference_hz": 2698.4853975868587,
+        "ours_hz": 2698.2730396407874,
+        "rel_error": -7.869523632078266e-05
+       },
+       {
+        "reference_hz": 3267.860746705496,
+        "ours_hz": 3267.5759901214565,
+        "rel_error": -8.713853071199339e-05
+       },
+       {
+        "reference_hz": 3838.423076262778,
+        "ours_hz": 3838.0591974376825,
+        "rel_error": -9.479904061274321e-05
+       },
+       {
+        "reference_hz": 4409.706566747535,
+        "ours_hz": 4409.2558946335475,
+        "rel_error": -0.00010220002332722626
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.0007140151770350251,
+      "db_p95": 0.0022133088097566465,
+      "db_max": 0.0025877981215665894,
+      "phase_median_deg": 0.004874813436393638,
+      "phase_p95_deg": 0.014859623944416948,
+      "phase_max_deg": 0.017613208222022843,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 1.8943440233104096e-05,
+      "peaks": [
+       {
+        "reference_hz": 519.6845815337662,
+        "ours_hz": 519.6822484888078,
+        "rel_error": -4.48934804166273e-06
+       },
+       {
+        "reference_hz": 1018.4451529633701,
+        "ours_hz": 1018.436963927223,
+        "rel_error": -8.0407237672635e-06
+       },
+       {
+        "reference_hz": 1568.6345097124902,
+        "ours_hz": 1568.6184457320248,
+        "rel_error": -1.0240741463910019e-05
+       },
+       {
+        "reference_hz": 2131.2704036713994,
+        "ours_hz": 2131.2445553778757,
+        "rel_error": -1.2128115456018803e-05
+       },
+       {
+        "reference_hz": 2698.4853975868587,
+        "ours_hz": 2698.447500250897,
+        "rel_error": -1.4043928492434453e-05
+       },
+       {
+        "reference_hz": 3267.860746705496,
+        "ours_hz": 3267.8093130926036,
+        "rel_error": -1.5739230303509658e-05
+       },
+       {
+        "reference_hz": 3838.423076262778,
+        "ours_hz": 3838.3561995227847,
+        "rel_error": -1.7422972576154256e-05
+       },
+       {
+        "reference_hz": 4409.706566747535,
+        "ours_hz": 4409.623031734743,
+        "rel_error": -1.8943440233104096e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "openwind_fem_vs_openwind_tmm": {
+      "db_median": 4.165894655510101e-13,
+      "db_p95": 2.890089417260441e-12,
+      "db_max": 5.438806911358837e-12,
+      "phase_median_deg": 2.9962461703193425e-12,
+      "phase_p95_deg": 1.4140856076840037e-11,
+      "phase_max_deg": 5.547693512698015e-11,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 1.8991132269367836e-13,
+      "peaks": [
+       {
+        "reference_hz": 519.6845815337662,
+        "ours_hz": 519.6845815338265,
+        "rel_error": 1.1616221257134942e-13
+       },
+       {
+        "reference_hz": 1018.4451529633701,
+        "ours_hz": 1018.4451529633951,
+        "rel_error": 2.4558125909854556e-14
+       },
+       {
+        "reference_hz": 1568.6345097124902,
+        "ours_hz": 1568.634509712369,
+        "rel_error": -7.725838508643752e-14
+       },
+       {
+        "reference_hz": 2131.2704036713994,
+        "ours_hz": 2131.2704036713576,
+        "rel_error": -1.9629961646108006e-14
+       },
+       {
+        "reference_hz": 2698.4853975868587,
+        "ours_hz": 2698.4853975870615,
+        "rel_error": 7.515968723667504e-14
+       },
+       {
+        "reference_hz": 3267.860746705496,
+        "ours_hz": 3267.8607467054376,
+        "rel_error": -1.7812160745267266e-14
+       },
+       {
+        "reference_hz": 3838.423076262778,
+        "ours_hz": 3838.423076263507,
+        "rel_error": 1.8991132269367836e-13
+       },
+       {
+        "reference_hz": 4409.706566747535,
+        "ours_hz": 4409.706566747069,
+        "rel_error": -1.0580540336352596e-13
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "closed_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "closed",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "closed",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 150.66,
+     "tmm_200": {
+      "db_median": 0.009093285456395143,
+      "db_p95": 0.07012247714084592,
+      "db_max": 0.29091518944215145,
+      "phase_median_deg": 0.0008333018555832777,
+      "phase_p95_deg": 0.10352628847045471,
+      "phase_max_deg": 3.605742255854034,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 2.483867466270847e-05,
+      "peaks": [
+       {
+        "reference_hz": 628.4053636214926,
+        "ours_hz": 628.415440045053,
+        "rel_error": 1.6034910176894264e-05
+       },
+       {
+        "reference_hz": 1170.5382950173635,
+        "ours_hz": 1170.5654161319019,
+        "rel_error": 2.3169779796080103e-05
+       },
+       {
+        "reference_hz": 1733.3495085206355,
+        "ours_hz": 1733.3916120495587,
+        "rel_error": 2.4290270782820455e-05
+       },
+       {
+        "reference_hz": 2301.278552555498,
+        "ours_hz": 2301.3357132647734,
+        "rel_error": 2.483867466270847e-05
+       },
+       {
+        "reference_hz": 2871.4597283436265,
+        "ours_hz": 2871.5146492546646,
+        "rel_error": 1.9126477901131194e-05
+       },
+       {
+        "reference_hz": 3442.4566967377523,
+        "ours_hz": 3442.519468026476,
+        "rel_error": 1.8234445413070863e-05
+       },
+       {
+        "reference_hz": 4014.3373303478847,
+        "ours_hz": 4014.4019593144567,
+        "rel_error": 1.60995355530683e-05
+       },
+       {
+        "reference_hz": 4586.571212733166,
+        "ours_hz": 4586.664063675911,
+        "rel_error": 2.024408614590913e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.002296354553743901,
+      "db_p95": 0.01742287313683598,
+      "db_max": 0.05429664105420351,
+      "phase_median_deg": 0.00020169028529746057,
+      "phase_p95_deg": 0.025390013776198893,
+      "phase_max_deg": 0.6793739004409329,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 8.545595345311199e-06,
+      "peaks": [
+       {
+        "reference_hz": 628.4053636214926,
+        "ours_hz": 628.409075476019,
+        "rel_error": 5.906783648368605e-06
+       },
+       {
+        "reference_hz": 1170.5382950173635,
+        "ours_hz": 1170.5473526608369,
+        "rel_error": 7.738015502742e-06
+       },
+       {
+        "reference_hz": 1733.3495085206355,
+        "ours_hz": 1733.3640138592223,
+        "rel_error": 8.368386476866235e-06
+       },
+       {
+        "reference_hz": 2301.278552555498,
+        "ours_hz": 2301.298218350785,
+        "rel_error": 8.545595345311199e-06
+       },
+       {
+        "reference_hz": 2871.4597283436265,
+        "ours_hz": 2871.4783871592904,
+        "rel_error": 6.498024499432895e-06
+       },
+       {
+        "reference_hz": 3442.4566967377523,
+        "ours_hz": 3442.4769079386792,
+        "rel_error": 5.871156185088528e-06
+       },
+       {
+        "reference_hz": 4014.3373303478847,
+        "ours_hz": 4014.3579200684985,
+        "rel_error": 5.1290459469150556e-06
+       },
+       {
+        "reference_hz": 4586.571212733166,
+        "ours_hz": 4586.6000698743555,
+        "rel_error": 6.291658812399769e-06
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 140.24,
+     "tmm_200": {
+      "db_median": 0.004464740480192271,
+      "db_p95": 0.014456368382758544,
+      "db_max": 0.017517730875745464,
+      "phase_median_deg": 0.03071863308145972,
+      "phase_p95_deg": 0.1022056765656445,
+      "phase_max_deg": 0.13562686481802158,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 0.00016417347909423687,
+      "peaks": [
+       {
+        "reference_hz": 440.5711443568637,
+        "ours_hz": 440.55804710332814,
+        "rel_error": -2.9727896852414083e-05
+       },
+       {
+        "reference_hz": 1034.8647726951672,
+        "ours_hz": 1034.8154481014305,
+        "rel_error": -4.7662839665678166e-05
+       },
+       {
+        "reference_hz": 1528.7227294441316,
+        "ours_hz": 1528.585045612299,
+        "rel_error": -9.006462007843005e-05
+       },
+       {
+        "reference_hz": 2133.142349350155,
+        "ours_hz": 2132.919810435681,
+        "rel_error": -0.0001043244556754339
+       },
+       {
+        "reference_hz": 2669.2597356691153,
+        "ours_hz": 2668.939415033785,
+        "rel_error": -0.0001200035466950246
+       },
+       {
+        "reference_hz": 3264.0195600659677,
+        "ours_hz": 3263.5635058492467,
+        "rel_error": -0.00013972165556255702
+       },
+       {
+        "reference_hz": 3814.243460320704,
+        "ours_hz": 3813.6905425019495,
+        "rel_error": -0.00014496133361867393
+       },
+       {
+        "reference_hz": 4403.806612385866,
+        "ours_hz": 4403.083624133053,
+        "rel_error": -0.00016417347909423687
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.000717992825341365,
+      "db_p95": 0.002216408150876171,
+      "db_max": 0.0025888296964123687,
+      "phase_median_deg": 0.00493604273883597,
+      "phase_p95_deg": 0.014934067357725017,
+      "phase_max_deg": 0.01774265268452831,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 3.092468862763335e-05,
+      "peaks": [
+       {
+        "reference_hz": 440.5711443568637,
+        "ours_hz": 440.56985213297236,
+        "rel_error": -2.9330651993906897e-06
+       },
+       {
+        "reference_hz": 1034.8647726951672,
+        "ours_hz": 1034.8558873993895,
+        "rel_error": -8.585948630278263e-06
+       },
+       {
+        "reference_hz": 1528.7227294441316,
+        "ours_hz": 1528.7002015348255,
+        "rel_error": -1.4736425953616216e-05
+       },
+       {
+        "reference_hz": 2133.142349350155,
+        "ours_hz": 2133.100265141107,
+        "rel_error": -1.9728739182008322e-05
+       },
+       {
+        "reference_hz": 2669.2597356691153,
+        "ours_hz": 2669.2047868638006,
+        "rel_error": -2.058578435830093e-05
+       },
+       {
+        "reference_hz": 3264.0195600659677,
+        "ours_hz": 3263.9331371959443,
+        "rel_error": -2.647743631219273e-05
+       },
+       {
+        "reference_hz": 3814.243460320704,
+        "ours_hz": 3814.1474878193408,
+        "rel_error": -2.516160868112283e-05
+       },
+       {
+        "reference_hz": 4403.806612385866,
+        "ours_hz": 4403.670426037602,
+        "rel_error": -3.092468862763335e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 136.79,
+     "tmm_200": {
+      "db_median": 0.00437332178141216,
+      "db_p95": 0.014118886974382168,
+      "db_max": 0.01719740359397847,
+      "phase_median_deg": 0.0301916836655991,
+      "phase_p95_deg": 0.1002794145589089,
+      "phase_max_deg": 0.1327794030571997,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 0.00016504270717629613,
+      "peaks": [
+       {
+        "reference_hz": 439.8003587519452,
+        "ours_hz": 439.78737794404776,
+        "rel_error": -2.9515228078258023e-05
+       },
+       {
+        "reference_hz": 1033.7751586695706,
+        "ours_hz": 1033.7263174895309,
+        "rel_error": -4.724545722553549e-05
+       },
+       {
+        "reference_hz": 1527.462376127247,
+        "ours_hz": 1527.3250835235215,
+        "rel_error": -8.988280554151606e-05
+       },
+       {
+        "reference_hz": 2131.4486651546904,
+        "ours_hz": 2131.225578270083,
+        "rel_error": -0.00010466444172656852
+       },
+       {
+        "reference_hz": 2667.602306746163,
+        "ours_hz": 2667.2831954665103,
+        "rel_error": -0.0001196247577255352
+       },
+       {
+        "reference_hz": 3261.9470154028463,
+        "ours_hz": 3261.489040149191,
+        "rel_error": -0.00014039935397252006
+       },
+       {
+        "reference_hz": 3812.255816309292,
+        "ours_hz": 3811.704750143907,
+        "rel_error": -0.00014455120326073315
+       },
+       {
+        "reference_hz": 4401.440283166796,
+        "ours_hz": 4400.713857546987,
+        "rel_error": -0.00016504270717629613
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.0007080284975782687,
+      "db_p95": 0.0021676045419396616,
+      "db_max": 0.0025253914739049622,
+      "phase_median_deg": 0.004833734527074956,
+      "phase_p95_deg": 0.014583306935034497,
+      "phase_max_deg": 0.01730414109628031,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 3.1035992478224486e-05,
+      "peaks": [
+       {
+        "reference_hz": 439.8003587519452,
+        "ours_hz": 439.79908101997165,
+        "rel_error": -2.9052545050195012e-06
+       },
+       {
+        "reference_hz": 1033.7751586695706,
+        "ours_hz": 1033.76635012776,
+        "rel_error": -8.520752057856584e-06
+       },
+       {
+        "reference_hz": 1527.462376127247,
+        "ours_hz": 1527.4399104795746,
+        "rel_error": -1.4707823919888433e-05
+       },
+       {
+        "reference_hz": 2131.4486651546904,
+        "ours_hz": 2131.4063366695077,
+        "rel_error": -1.9859021647892836e-05
+       },
+       {
+        "reference_hz": 2667.602306746163,
+        "ours_hz": 2667.54757040209,
+        "rel_error": -2.051892965243869e-05
+       },
+       {
+        "reference_hz": 3261.9470154028463,
+        "ours_hz": 3261.8602445181987,
+        "rel_error": -2.660094852488977e-05
+       },
+       {
+        "reference_hz": 3812.255816309292,
+        "ours_hz": 3812.1601297902344,
+        "rel_error": -2.509971095026651e-05
+       },
+       {
+        "reference_hz": 4401.440283166796,
+        "ours_hz": 4401.303680099274,
+        "rel_error": -3.1035992478224486e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_thin_layer": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "boundary_layer"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "wl",
+      "method": "FEM"
+     },
+     "openwind_seconds": 114.83,
+     "tmm_200": {
+      "db_median": 0.02138714789623483,
+      "db_p95": 0.03860177921100628,
+      "db_max": 0.0816463940956502,
+      "phase_median_deg": 0.12130128990064853,
+      "phase_p95_deg": 0.21724675770997176,
+      "phase_max_deg": 0.4794183136748035,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 0.0007088356407624764,
+      "peaks": [
+       {
+        "reference_hz": 439.4755719471164,
+        "ours_hz": 439.787087895757,
+        "rel_error": 0.0007088356407624764
+       },
+       {
+        "reference_hz": 1033.927778239944,
+        "ours_hz": 1033.726283641999,
+        "rel_error": -0.00019488266219903078
+       },
+       {
+        "reference_hz": 1527.5884106420842,
+        "ours_hz": 1527.3250380878862,
+        "rel_error": -0.00017241067840209883
+       },
+       {
+        "reference_hz": 2131.722864509587,
+        "ours_hz": 2131.225563953782,
+        "rel_error": -0.0002332857446361102
+       },
+       {
+        "reference_hz": 2667.7821315408446,
+        "ours_hz": 2667.283176984873,
+        "rel_error": -0.00018702972408145591
+       },
+       {
+        "reference_hz": 3262.23630482348,
+        "ours_hz": 3261.4890309914585,
+        "rel_error": -0.00022906796510011084
+       },
+       {
+        "reference_hz": 3812.4584281554035,
+        "ours_hz": 3811.7047396443254,
+        "rel_error": -0.00019769094543090223
+       },
+       {
+        "reference_hz": 4401.72974689797,
+        "ours_hz": 4400.713851171239,
+        "rel_error": -0.00023079466145015145
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.017306014534739365,
+      "db_p95": 0.03854619747773373,
+      "db_max": 0.0820053621450318,
+      "phase_median_deg": 0.09972826206169004,
+      "phase_p95_deg": 0.21819518049221875,
+      "phase_max_deg": 0.4794227898518982,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 0.000735465210398783,
+      "peaks": [
+       {
+        "reference_hz": 439.4755719471164,
+        "ours_hz": 439.7987909411036,
+        "rel_error": 0.000735465210398783
+       },
+       {
+        "reference_hz": 1033.927778239944,
+        "ours_hz": 1033.7663161784228,
+        "rel_error": -0.00015616377170566315
+       },
+       {
+        "reference_hz": 1527.5884106420842,
+        "ours_hz": 1527.4398649687676,
+        "rel_error": -9.724194834277261e-05
+       },
+       {
+        "reference_hz": 2131.722864509587,
+        "ours_hz": 2131.4063222396417,
+        "rel_error": -0.0001484912861870308
+       },
+       {
+        "reference_hz": 2667.7821315408446,
+        "ours_hz": 2667.5475518228104,
+        "rel_error": -8.79306129465287e-05
+       },
+       {
+        "reference_hz": 3262.23630482348,
+        "ours_hz": 3261.8602352540715,
+        "rel_error": -0.00011527968371039791
+       },
+       {
+        "reference_hz": 3812.4584281554035,
+        "ours_hz": 3812.1601191845452,
+        "rel_error": -7.824582916240416e-05
+       },
+       {
+        "reference_hz": 4401.72974689797,
+        "ours_hz": 4401.3036736412905,
+        "rel_error": -9.67967778983508e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "flanged_fit_bessel": {
+     "tolerance_class": "radiation_model",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "flanged_non_causal",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 185.98,
+     "tmm_200": {
+      "db_median": 0.2861450774021064,
+      "db_p95": 0.852523823676878,
+      "db_max": 0.9579084695155751,
+      "phase_median_deg": 2.107176946547517,
+      "phase_p95_deg": 5.679159627243497,
+      "phase_max_deg": 6.413571911198625,
+      "peak_count_reference": 2,
+      "peak_count_ours": 1,
+      "peak_freq_rel_max": 0.56092236366084,
+      "peaks": [
+       {
+        "reference_hz": 446.8148463613854,
+        "ours_hz": 439.78737794404776,
+        "rel_error": -0.01572792057955428
+       },
+       {
+        "reference_hz": 1001.6164376095428,
+        "ours_hz": 439.78737794404776,
+        "rel_error": -0.56092236366084
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": false,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": false,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": false,
+       "peak_count": false
+      },
+      "pass": false
+     },
+     "tmm_2000": {
+      "db_median": 0.2858013375230046,
+      "db_p95": 0.8519228796225857,
+      "db_max": 0.9570165698367139,
+      "phase_median_deg": 2.0984719277867465,
+      "phase_p95_deg": 5.675665116078054,
+      "phase_max_deg": 6.413469083752617,
+      "peak_count_reference": 2,
+      "peak_count_ours": 1,
+      "peak_freq_rel_max": 0.5609106794716788,
+      "peaks": [
+       {
+        "reference_hz": 446.8148463613854,
+        "ours_hz": 439.79908101997165,
+        "rel_error": -0.015701728352462467
+       },
+       {
+        "reference_hz": 1001.6164376095428,
+        "ours_hz": 439.79908101997165,
+        "rel_error": -0.5609106794716788
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": false,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": false,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": false,
+       "peak_count": false
+      },
+      "pass": false
+     },
+     "full_band_report_only": {
+      "db_median": 0.35123526876675987,
+      "db_p95": 0.8559384052635967,
+      "db_max": 1.1702254669385677,
+      "phase_median_deg": 2.3644128960666437,
+      "phase_p95_deg": 5.762682802766847,
+      "phase_max_deg": 7.234837354389921,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 0.03209802805847133,
+      "peaks": [
+       {
+        "reference_hz": 446.8148463613854,
+        "ours_hz": 439.79908101997165,
+        "rel_error": -0.015701728352462467
+       },
+       {
+        "reference_hz": 1001.6164376095428,
+        "ours_hz": 1033.76635012776,
+        "rel_error": 0.03209802805847133
+       },
+       {
+        "reference_hz": 1552.4330995356827,
+        "ours_hz": 1527.4399104795746,
+        "rel_error": -0.016099366255192146
+       },
+       {
+        "reference_hz": 2119.7303660752455,
+        "ours_hz": 2131.4063366695077,
+        "rel_error": 0.005508233868386157
+       },
+       {
+        "reference_hz": 2691.331426417637,
+        "ours_hz": 2667.54757040209,
+        "rel_error": -0.00883720814987287
+       },
+       {
+        "reference_hz": 3262.8719649294762,
+        "ours_hz": 3261.8602445181987,
+        "rel_error": -0.0003100705213541631
+       },
+       {
+        "reference_hz": 3834.476970068281,
+        "ours_hz": 3812.1601297902344,
+        "rel_error": -0.005820048067115966
+       },
+       {
+        "reference_hz": 4406.274660918808,
+        "ours_hz": 4401.303680099274,
+        "rel_error": -0.0011281595456642153
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ]
+     }
+    }
+   }
+  },
+  {
+   "profile": "cd",
+   "throat_radius_m": 0.025,
+   "mouth_radius_m": 0.15,
+   "length_m": 0.3,
+   "openwind_bore": "801 points, conical pieces",
+   "cases": {
+    "matched_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "plane_wave",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "total_transmission",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 147.65,
+     "tmm_200": {
+      "db_median": 0.00046869480457855327,
+      "db_p95": 0.0014783321489270705,
+      "db_max": 0.0017054123323841062,
+      "phase_median_deg": 0.01562298111200228,
+      "phase_p95_deg": 0.03917545071950902,
+      "phase_max_deg": 0.044401405732990076,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 2.4563250445649894e-05,
+      "peaks": [
+       {
+        "reference_hz": 1076.3424143299114,
+        "ours_hz": 1076.315975861623,
+        "rel_error": -2.4563250445649894e-05
+       },
+       {
+        "reference_hz": 1604.911477784421,
+        "ours_hz": 1604.8756721920279,
+        "rel_error": -2.2310010794269228e-05
+       },
+       {
+        "reference_hz": 2184.9361498935673,
+        "ours_hz": 2184.899393363782,
+        "rel_error": -1.6822702021278846e-05
+       },
+       {
+        "reference_hz": 2749.441539703112,
+        "ours_hz": 2749.3889165333817,
+        "rel_error": -1.9139584883146094e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 1.5193091621942751e-05,
+      "db_p95": 3.686383034302371e-05,
+      "db_max": 4.5418103201268296e-05,
+      "phase_median_deg": 0.00015149926845379395,
+      "phase_p95_deg": 0.000365253237007001,
+      "phase_max_deg": 0.00047847392946283085,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 4.934513763073909e-07,
+      "peaks": [
+       {
+        "reference_hz": 1076.3424143299114,
+        "ours_hz": 1076.3423263640584,
+        "rel_error": -8.172664372924583e-08
+       },
+       {
+        "reference_hz": 1604.911477784421,
+        "ours_hz": 1604.9106858386435,
+        "rel_error": -4.934513763073909e-07
+       },
+       {
+        "reference_hz": 2184.9361498935673,
+        "ours_hz": 2184.93620819603,
+        "rel_error": 2.6683828976555717e-08
+       },
+       {
+        "reference_hz": 2749.441539703112,
+        "ours_hz": 2749.4414484614026,
+        "rel_error": -3.318554264640456e-08
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "openwind_fem_vs_openwind_tmm": {
+      "db_median": 3.375146132936505e-13,
+      "db_p95": 1.4341960246314947e-12,
+      "db_max": 3.54583209451716e-12,
+      "phase_median_deg": 3.4751852277811104e-12,
+      "phase_p95_deg": 1.0687044757649517e-11,
+      "phase_max_deg": 2.0719895196245774e-11,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 4.837840638308452e-13,
+      "peaks": [
+       {
+        "reference_hz": 1076.3424143299114,
+        "ours_hz": 1076.34241432991,
+        "rel_error": -1.2674795998898881e-15
+       },
+       {
+        "reference_hz": 1604.911477784421,
+        "ours_hz": 1604.9114777837442,
+        "rel_error": -4.217624717401547e-13
+       },
+       {
+        "reference_hz": 2184.9361498935673,
+        "ours_hz": 2184.9361498929593,
+        "rel_error": -2.782677233679434e-13
+       },
+       {
+        "reference_hz": 2749.441539703112,
+        "ours_hz": 2749.441539704442,
+        "rel_error": 4.837840638308452e-13
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "closed_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "closed",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "closed",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 91.2,
+     "tmm_200": {
+      "db_median": 0.0024871681185679563,
+      "db_p95": 0.03103034404781897,
+      "db_max": 0.2511261616968654,
+      "phase_median_deg": 0.000294113962157817,
+      "phase_p95_deg": 0.022906420057991022,
+      "phase_max_deg": 3.330315451821114,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 3.627865398343303e-05,
+      "peaks": [
+       {
+        "reference_hz": 719.6291988381004,
+        "ours_hz": 719.6152597232873,
+        "rel_error": -1.9369857192531505e-05
+       },
+       {
+        "reference_hz": 1221.735676513167,
+        "ours_hz": 1221.714650328289,
+        "rel_error": -1.7210093215818575e-05
+       },
+       {
+        "reference_hz": 1766.033360066458,
+        "ours_hz": 1766.0139647619944,
+        "rel_error": -1.0982411149291497e-05
+       },
+       {
+        "reference_hz": 2331.2735923641194,
+        "ours_hz": 2331.1890168961213,
+        "rel_error": -3.627865398343303e-05
+       },
+       {
+        "reference_hz": 2895.9237613833016,
+        "ours_hz": 2895.8839063907158,
+        "rel_error": -1.3762445378310038e-05
+       },
+       {
+        "reference_hz": 3462.689348068065,
+        "ours_hz": 3462.593354407559,
+        "rel_error": -2.7722284864924577e-05
+       },
+       {
+        "reference_hz": 4033.6033668943055,
+        "ours_hz": 4033.518428031658,
+        "rel_error": -2.1057812313584977e-05
+       },
+       {
+        "reference_hz": 4604.056591417388,
+        "ours_hz": 4603.987713915423,
+        "rel_error": -1.4960177095298376e-05
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 3.399884656414419e-05,
+      "db_p95": 0.00031475694835773226,
+      "db_max": 0.0024287020027239743,
+      "phase_median_deg": 4.239207500254241e-06,
+      "phase_p95_deg": 0.0003087429168424846,
+      "phase_max_deg": 0.029332207323905662,
+      "peak_count_reference": 8,
+      "peak_count_ours": 8,
+      "peak_freq_rel_max": 3.4715306584012866e-07,
+      "peaks": [
+       {
+        "reference_hz": 719.6291988381004,
+        "ours_hz": 719.6292712395199,
+        "rel_error": 1.0060934107815195e-07
+       },
+       {
+        "reference_hz": 1221.735676513167,
+        "ours_hz": 1221.7354944231295,
+        "rel_error": -1.490420890296758e-07
+       },
+       {
+        "reference_hz": 1766.033360066458,
+        "ours_hz": 1766.0331208886205,
+        "rel_error": -1.3543223076362525e-07
+       },
+       {
+        "reference_hz": 2331.2735923641194,
+        "ours_hz": 2331.2730444265317,
+        "rel_error": -2.3503787351277708e-07
+       },
+       {
+        "reference_hz": 2895.9237613833016,
+        "ours_hz": 2895.9234004189857,
+        "rel_error": -1.2464565561882193e-07
+       },
+       {
+        "reference_hz": 3462.689348068065,
+        "ours_hz": 3462.688145984842,
+        "rel_error": -3.4715306584012866e-07
+       },
+       {
+        "reference_hz": 4033.6033668943055,
+        "ours_hz": 4033.6026453275385,
+        "rel_error": -1.7888887462064632e-07
+       },
+       {
+        "reference_hz": 4604.056591417388,
+        "ours_hz": 4604.055980184348,
+        "rel_error": -1.3275967120982285e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_lossless": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "lossless"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": false,
+      "method": "FEM"
+     },
+     "openwind_seconds": 84.0,
+     "tmm_200": {
+      "db_median": 0.0004807372578733132,
+      "db_p95": 0.0014697768254342768,
+      "db_max": 0.0019022801891256352,
+      "phase_median_deg": 0.015617449445480934,
+      "phase_p95_deg": 0.038789255446134985,
+      "phase_max_deg": 0.04475416932504966,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 8.748306547503146e-06,
+      "peaks": [
+       {
+        "reference_hz": 358.95942768635524,
+        "ours_hz": 358.95720989995914,
+        "rel_error": -6.178376231532617e-06
+       },
+       {
+        "reference_hz": 769.8913022255966,
+        "ours_hz": 769.8845669804765,
+        "rel_error": -8.748306547503146e-06
+       },
+       {
+        "reference_hz": 1148.469240805476,
+        "ours_hz": 1148.4686417031817,
+        "rel_error": -5.216528862585244e-07
+       },
+       {
+        "reference_hz": 1867.041447657793,
+        "ours_hz": 1867.042498895459,
+        "rel_error": 5.630499886610942e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 1.4866538489029888e-05,
+      "db_p95": 3.73467993692616e-05,
+      "db_max": 4.536163564290441e-05,
+      "phase_median_deg": 0.00015317248504659697,
+      "phase_p95_deg": 0.00037206470548242434,
+      "phase_max_deg": 0.0004780055849258348,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 2.2305617911555864e-07,
+      "peaks": [
+       {
+        "reference_hz": 358.95942768635524,
+        "ours_hz": 358.95944214819104,
+        "rel_error": 4.028821835596092e-08
+       },
+       {
+        "reference_hz": 769.8913022255966,
+        "ours_hz": 769.8914739546088,
+        "rel_error": 2.2305617911555864e-07
+       },
+       {
+        "reference_hz": 1148.469240805476,
+        "ours_hz": 1148.4692734420573,
+        "rel_error": 2.8417462348457616e-08
+       },
+       {
+        "reference_hz": 1867.041447657793,
+        "ours_hz": 1867.041341016984,
+        "rel_error": -5.711753702202035e-08
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_bessel": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 101.63,
+     "tmm_200": {
+      "db_median": 0.00047535443906586644,
+      "db_p95": 0.001443031355573442,
+      "db_max": 0.0018808612334972716,
+      "phase_median_deg": 0.01570554500559876,
+      "phase_p95_deg": 0.03865677322327471,
+      "phase_max_deg": 0.04453696353481451,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 8.834048001374123e-06,
+      "peaks": [
+       {
+        "reference_hz": 358.69726920004115,
+        "ours_hz": 358.6950402468391,
+        "rel_error": -6.2140233379378234e-06
+       },
+       {
+        "reference_hz": 769.2581929398947,
+        "ours_hz": 769.2513972760928,
+        "rel_error": -8.834048001374123e-06
+       },
+       {
+        "reference_hz": 1147.8015211664483,
+        "ours_hz": 1147.800965183399,
+        "rel_error": -4.843895386093907e-07
+       },
+       {
+        "reference_hz": 1866.246753951432,
+        "ours_hz": 1866.2475590712713,
+        "rel_error": 4.3141124695196915e-07
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 1.4810612667705515e-05,
+      "db_p95": 3.7043952035584e-05,
+      "db_max": 4.484524043376174e-05,
+      "phase_median_deg": 0.00015398359167104582,
+      "phase_p95_deg": 0.00037033978662953497,
+      "phase_max_deg": 0.00047599633774906744,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 2.2234478166828244e-07,
+      "peaks": [
+       {
+        "reference_hz": 358.69726920004115,
+        "ours_hz": 358.69728373850836,
+        "rel_error": 4.0531301631473624e-08
+       },
+       {
+        "reference_hz": 769.2581929398947,
+        "ours_hz": 769.2583639804396,
+        "rel_error": 2.2234478166828244e-07
+       },
+       {
+        "reference_hz": 1147.8015211664483,
+        "ours_hz": 1147.801552230499,
+        "rel_error": 2.7063956766214826e-08
+       },
+       {
+        "reference_hz": 1866.246753951432,
+        "ours_hz": 1866.2466457048909,
+        "rel_error": -5.800226631435043e-08
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "piston_thin_layer": {
+     "tolerance_class": "same_physics",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "boundary_layer"
+     },
+     "openwind": {
+      "radiation": "piston_data",
+      "losses": "wl",
+      "method": "FEM"
+     },
+     "openwind_seconds": 101.01,
+     "tmm_200": {
+      "db_median": 0.01720895476562853,
+      "db_p95": 0.039706215798578894,
+      "db_max": 0.06593396056134611,
+      "phase_median_deg": 0.1098151080720528,
+      "phase_p95_deg": 0.16475336225786824,
+      "phase_max_deg": 0.4369260769172951,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 0.00076716536139763,
+      "peaks": [
+       {
+        "reference_hz": 358.42007368609165,
+        "ours_hz": 358.6950411514532,
+        "rel_error": 0.00076716536139763
+       },
+       {
+        "reference_hz": 768.9087331790788,
+        "ours_hz": 769.2513108624154,
+        "rel_error": 0.0004455375112208348
+       },
+       {
+        "reference_hz": 1147.7503720274733,
+        "ours_hz": 1147.8009718083624,
+        "rel_error": 4.408605052310453e-05
+       },
+       {
+        "reference_hz": 1865.8842523284745,
+        "ours_hz": 1866.247560581284,
+        "rel_error": 0.0001947110343828107
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     },
+     "tmm_2000": {
+      "db_median": 0.016682804247447676,
+      "db_p95": 0.0395865325035925,
+      "db_max": 0.0661374123729439,
+      "phase_median_deg": 0.08808624949099067,
+      "phase_p95_deg": 0.16343594538734546,
+      "phase_max_deg": 0.4369349842295766,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 0.0007734248165016957,
+      "peaks": [
+       {
+        "reference_hz": 358.42007368609165,
+        "ours_hz": 358.69728466581284,
+        "rel_error": 0.0007734248165016957
+       },
+       {
+        "reference_hz": 768.9087331790788,
+        "ours_hz": 769.258277601302,
+        "rel_error": 0.00045459806494585166
+       },
+       {
+        "reference_hz": 1147.7503720274733,
+        "ours_hz": 1147.801558838616,
+        "rel_error": 4.4597512133539956e-05
+       },
+       {
+        "reference_hz": 1865.8842523284745,
+        "ours_hz": 1866.246647231234,
+        "rel_error": 0.00019422153453902278
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": true,
+       "peak_count": true
+      },
+      "pass": true
+     }
+    },
+    "flanged_fit_bessel": {
+     "tolerance_class": "radiation_model",
+     "ours": {
+      "radiation": "flanged_piston",
+      "loss_model": "kirchhoff"
+     },
+     "openwind": {
+      "radiation": "flanged_non_causal",
+      "losses": "bessel",
+      "method": "FEM"
+     },
+     "openwind_seconds": 110.52,
+     "tmm_200": {
+      "db_median": 0.23977719115409757,
+      "db_p95": 0.6699499366701186,
+      "db_max": 0.715525019288674,
+      "phase_median_deg": 1.6398680964261905,
+      "phase_p95_deg": 4.212342603054229,
+      "phase_max_deg": 4.514296936509396,
+      "peak_count_reference": 2,
+      "peak_count_ours": 2,
+      "peak_freq_rel_max": 0.02831591756651361,
+      "peaks": [
+       {
+        "reference_hz": 367.5736085170139,
+        "ours_hz": 358.6950402468391,
+        "rel_error": -0.02415453140391565
+       },
+       {
+        "reference_hz": 791.6682090228122,
+        "ours_hz": 769.2513972760928,
+        "rel_error": -0.02831591756651361
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": false,
+       "peak_count": true
+      },
+      "pass": false
+     },
+     "tmm_2000": {
+      "db_median": 0.23995237832710906,
+      "db_p95": 0.6699732753124272,
+      "db_max": 0.7154834148247412,
+      "phase_median_deg": 1.6462408406519031,
+      "phase_p95_deg": 4.218555665584716,
+      "phase_max_deg": 4.521934325071937,
+      "peak_count_reference": 2,
+      "peak_count_ours": 2,
+      "peak_freq_rel_max": 0.028307117536062174,
+      "peaks": [
+       {
+        "reference_hz": 367.5736085170139,
+        "ours_hz": 358.69728373850836,
+        "rel_error": -0.02414842788718515
+       },
+       {
+        "reference_hz": 791.6682090228122,
+        "ours_hz": 769.2583639804396,
+        "rel_error": -0.028307117536062174
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       1094.0
+      ],
+      "checks": {
+       "db_median": true,
+       "db_p95": true,
+       "db_max": true,
+       "phase_median_deg": true,
+       "phase_p95_deg": true,
+       "phase_max_deg": true,
+       "peak_freq_rel": false,
+       "peak_count": true
+      },
+      "pass": false
+     },
+     "full_band_report_only": {
+      "db_median": 0.33837793284911943,
+      "db_p95": 0.8296196562814084,
+      "db_max": 1.1727982552954526,
+      "phase_median_deg": 2.288828227622173,
+      "phase_p95_deg": 5.430831289249763,
+      "phase_max_deg": 7.6021947621404,
+      "peak_count_reference": 4,
+      "peak_count_ours": 4,
+      "peak_freq_rel_max": 0.315360724378193,
+      "peaks": [
+       {
+        "reference_hz": 367.5736085170139,
+        "ours_hz": 358.69728373850836,
+        "rel_error": -0.02414842788718515
+       },
+       {
+        "reference_hz": 791.6682090228122,
+        "ours_hz": 769.2583639804396,
+        "rel_error": -0.028307117536062174
+       },
+       {
+        "reference_hz": 1216.0607095309128,
+        "ours_hz": 1147.801552230499,
+        "rel_error": -0.0561313730189871
+       },
+       {
+        "reference_hz": 2725.8831214582565,
+        "ours_hz": 1866.2466457048909,
+        "rel_error": -0.315360724378193
+       }
+      ],
+      "f_range_hz": [
+       50.0,
+       5000.0
+      ]
+     }
+    }
+   }
+  }
+ ],
+ "all_pass_production_tmm": false,
+ "all_pass_fine_tmm": false
+}

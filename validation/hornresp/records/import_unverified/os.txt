@@ -1,0 +1,28 @@
+ID=0.00
+Comment=horn-simulation cross-software check: os (os)
+
+|RADIATION, SOURCE AND MOUTH PARAMETER VALUES:
+
+Ang=2.0 x Pi
+Eg=2.83
+Rg=0.00
+Cir=0.00
+
+|HORN PARAMETER VALUES:
+
+S1=19.63
+S2=20.40
+Exp=1.00
+F12=104.44
+S2=20.40
+S3=22.69
+Exp=1.00
+F23=291.35
+S3=22.69
+S4=95.99
+Exp=8.00
+F34=493.56
+S4=95.99
+S5=706.86
+Con=20.00
+F45=0.00

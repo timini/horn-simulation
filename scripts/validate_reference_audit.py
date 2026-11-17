@@ -157,6 +157,8 @@ def run_fem(out, case, h, count):
     step = out/f"{case}.step"
     if not step.exists():
         gmsh.initialize()
+        from horn_core.cad_units import set_step_units
+        set_step_units(gmsh)  # write true-size STEP (metre model)
         try:
             gmsh.model.add(case)
             if throat == mouth:
@@ -202,7 +204,7 @@ def main():
     parser.add_argument("--archive", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--workers", type=int, default=1,
-                        help="Independent solver processes (1–5); no shared meshes or state")
+                        help="Independent solver processes (1 to 5); no shared meshes or state")
     args = parser.parse_args()
     out, root = args.output_dir, args.reference_dir
     if out.exists():

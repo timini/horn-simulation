@@ -5,6 +5,7 @@ import re
 import numpy as np
 import pandas as pd
 from horn_core.acoustics import validate_band, validate_response, inlet_area_from_frame
+from horn_core.frequency_grid import DEFAULT_MIN_POINTS_PER_OCTAVE, band_edges, points_per_band as grid_points_per_band
 
 
 def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output):
@@ -19,6 +20,7 @@ def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output
         indexed[int(match[1])] = path
     if set(indexed) != set(range(num_bands)):
         raise ValueError(f"Incomplete simulation: expected bands 0..{num_bands-1}, got {sorted(indexed)}")
+    edges = band_edges(min_freq, max_freq, num_bands)
     frames = []
     for index, path in sorted(indexed.items()):
         df = pd.read_csv(path)
@@ -26,8 +28,7 @@ def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output
             if col not in df:
                 raise ValueError(f"Missing solver column {col}: {path}")
         validate_response(df.frequency, *[df[c] for c in df.select_dtypes(include="number")])
-        width = (max_freq - min_freq) / num_bands
-        expected = np.geomspace(min_freq+index*width, min_freq+(index+1)*width, points_per_band)
+        expected = np.geomspace(edges[index], edges[index+1], points_per_band)
         if len(df) != len(expected) or not np.allclose(df.frequency, expected, rtol=1e-9, atol=1e-8):
             raise ValueError(f"Incomplete or incorrect frequency grid in band {index}")
         if "schema_version" not in df or not (df.schema_version == 2).all():
@@ -83,17 +84,46 @@ def merge_bands(paths, *, num_bands, min_freq, max_freq, points_per_band, output
     return joined
 
 
+def merge_rejections(paths, *, candidate_id, output):
+    """Combine per-band solver rejections into one record for the candidate.
+
+    One rejected band means the candidate has no complete response, so the
+    whole candidate is rejected; the reasons and band details are kept.
+    """
+    import json
+    records = [json.loads(Path(path).read_text()) for path in paths]
+    if not records or any(r.get("status") != "rejected" or not r.get("rejection_reasons") for r in records):
+        raise ValueError("Rejection files must each name at least one reason")
+    reasons = sorted({reason for r in records for reason in r["rejection_reasons"]})
+    record = {"candidate_id": candidate_id, "status": "rejected", "rejection_reasons": reasons,
+              "rejection_detail": "; ".join(r.get("rejection_detail", "") for r in records),
+              "bands": records}
+    Path(output).write_text(json.dumps(record, indent=2))
+    return record
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--files", nargs="+", required=True)
-    p.add_argument("--num-bands", type=int, required=True)
-    p.add_argument("--min-freq", type=float, required=True)
-    p.add_argument("--max-freq", type=float, required=True)
-    p.add_argument("--points-per-band", type=int, required=True)
+    p.add_argument("--files", nargs="+")
+    p.add_argument("--rejections", nargs="+", help="Per-band solver rejection JSON files")
+    p.add_argument("--candidate-id", help="Candidate label for --rejections")
+    p.add_argument("--num-bands", type=int)
+    p.add_argument("--min-freq", type=float)
+    p.add_argument("--max-freq", type=float)
+    p.add_argument("--num-intervals", type=int)
+    p.add_argument("--min-points-per-octave", type=float, default=DEFAULT_MIN_POINTS_PER_OCTAVE)
     p.add_argument("--output", required=True)
     a = p.parse_args()
+    if a.rejections:
+        if not a.candidate_id:
+            p.error("--rejections needs --candidate-id")
+        merge_rejections(a.rejections, candidate_id=a.candidate_id, output=a.output)
+        return
+    if not a.files or None in (a.num_bands, a.min_freq, a.max_freq, a.num_intervals):
+        p.error("--files needs --num-bands, --min-freq, --max-freq and --num-intervals")
+    points = grid_points_per_band(a.min_freq, a.max_freq, a.num_bands, a.num_intervals, a.min_points_per_octave)
     merge_bands(a.files, num_bands=a.num_bands, min_freq=a.min_freq, max_freq=a.max_freq,
-                points_per_band=a.points_per_band, output=a.output)
+                points_per_band=points, output=a.output)
 
 
 if __name__ == "__main__":

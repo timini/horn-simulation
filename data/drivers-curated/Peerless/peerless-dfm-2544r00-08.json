@@ -1,0 +1,63 @@
+{
+  "driver_id": "peerless-dfm-2544r00-08",
+  "manufacturer": "Peerless",
+  "model_name": "DFM-2544R00-08",
+  "driver_type": "compression",
+  "parameters": {
+    "fs_hz": 784.22,
+    "re_ohm": 6.09,
+    "bl_tm": 2.06,
+    "sd_m2": 0.00162,
+    "mms_kg": 0.0003,
+    "le_h": 4e-05,
+    "qms": 2.02,
+    "qes": 2.03,
+    "qts": 1.01,
+    "cms_m_per_n": 0.0001436,
+    "xmax_m": 0.0003,
+    "nominal_impedance_ohm": 8.0,
+    "power_w": 60.0,
+    "sensitivity_db_1w1m": 104.5,
+    "exit_area_m2": 0.000506707479097
+  },
+  "type_source": "datasheet: https://www.parts-express.com/pedocs/specs/264-1466--peerless-dfm-2544r00-08-compression-dfm-driver-specifications.pdf",
+  "usable_f_low_hz": 1500.0,
+  "usable_f_high_hz": 15000.0,
+  "parameter_source": "https://www.parts-express.com/pedocs/specs/264-1466--peerless-dfm-2544r00-08-compression-dfm-driver-specifications.pdf",
+  "interface_model": null,
+  "record_schema_version": 1,
+  "provenance": {
+    "retrieved_on": "2026-11-15",
+    "source_kind": "distributor_copy_of_manufacturer_datasheet",
+    "capture_method": "Entered with horn-add-driver from the datasheet values given on the command line.",
+    "supplied_fields": [
+      "bl_tm",
+      "cms_m_per_n",
+      "exit_diameter_mm",
+      "fs_hz",
+      "le_h",
+      "mms_kg",
+      "nominal_impedance_ohm",
+      "power_w",
+      "qes",
+      "qms",
+      "qts",
+      "re_ohm",
+      "sd_m2",
+      "sensitivity_db_1w1m",
+      "usable_f_high_hz",
+      "usable_f_low_hz",
+      "xmax_m"
+    ],
+    "derived_fields": [
+      "exit_area_m2"
+    ],
+    "exit_diameter_mm": 25.4,
+    "band_definition": "Test spectrum bandwidth of the rated noise power, as printed on the sheet. The sheet gives no separate frequency range; this is not a validated horn-loaded band.",
+    "notes": [
+      "Sheet is the Tymphany Driver Specification Sheet, watermarked PRELIMINARY.",
+      "Exit diameter is the nominal 1 inch exit from the product description; exit_area_m2 is pi*(25.4 mm/2)^2.",
+      "1.75 inch titanium diaphragm, 44.4 mm voice coil. Sheet last update 2017-04-25."
+    ]
+  }
+}

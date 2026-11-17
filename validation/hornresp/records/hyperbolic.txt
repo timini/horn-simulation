@@ -1,0 +1,19 @@
+Hornresp input sheet: hyperbolic  (hyperbolic)
+Geometry: throat radius 25.000 mm, mouth radius 150.000 mm, length 300.000 mm
+Geometry match: exact: Hornresp Hyp with T = 0 is S = S1 cosh^2(x / x0), F12 = c / (2 pi x0)
+
+Radiation and source
+  Ang = 2.0 x Pi   (half space: horn mouth in an infinite baffle)
+  Eg  = 2.83 V     Rg = 0
+  Cir = 0
+  Air (Tools > Options): c = 344 m/s, rho = 1.205 kg/m3
+
+Horn
+  S1 = 19.63 cm2
+  L12 = 30.00 cm, flare Hyp, F12 = 452.21 Hz, T = 0.00
+  S2 = 706.86 cm2
+
+Driver: none needed. Read the throat acoustic impedance (Ra, Xa, normalised to rho c / S1).
+
+Export: Tools > Export (chart data, text) over the default 10 Hz to 20 kHz range,
+then run validation/hornresp/compare_hornresp.py with the exported file.

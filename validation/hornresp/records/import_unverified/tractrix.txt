@@ -1,0 +1,16 @@
+ID=0.00
+Comment=horn-simulation cross-software check: tractrix (tractrix)
+
+|RADIATION, SOURCE AND MOUTH PARAMETER VALUES:
+
+Ang=2.0 x Pi
+Eg=2.83
+Rg=0.00
+Cir=0.00
+
+|HORN PARAMETER VALUES:
+
+S1=19.63
+S2=706.86
+Tra=22.38
+F12=365.00

@@ -1,6 +1,5 @@
 from typing import Tuple, Dict, Any, Optional
 from pathlib import Path
-import os
 import pandas as pd
 import numpy as np
 import gmsh
@@ -23,22 +22,16 @@ from petsc4py.PETSc import ScalarType
 from petsc4py import PETSc
 
 from horn_core.acoustics import validate_band, SCHEMA_VERSION
+from horn_core.cad_units import import_step_metres
 
 from horn_solver.radiation import (
     piston_radiation_impedance,
     unflanged_radiation_impedance,
 )
 
-try:
-    from horn_solver.bem_coupling import (
-        BEMPP_AVAILABLE,
-        extract_outlet_trace,
-        build_bem_operators,
-        coupled_solve,
-        compute_far_field,
-    )
-except ImportError:
-    BEMPP_AVAILABLE = False
+from horn_solver.meshing import generate_qualified_mesh
+
+RADIATION_MODELS = ("plane_wave", "flanged_piston", "modal_baffled", "unflanged_piston", "finite_flange", "closed")
 
 
 def bulk_helmholtz_form(pressure, test, wavenumber):
@@ -64,36 +57,46 @@ def _compute_neumann_velocity(
     Returns:
         Complex normal velocity v_n (m/s) at the throat.
     """
-    omega = 2.0 * np.pi * frequency
+    # Same motor and chamber network as the analysis coupling
+    # (horn_core.driver_interface). Normal velocity = U_throat / S_throat.
+    from horn_core.driver_interface import driver_operating_point
+    point = driver_operating_point(driver, np.array([frequency], dtype=float),
+                                   np.array([z_horn_real + 1j * z_horn_imag]), throat_area, v_g)
+    return complex(point["throat_volume_velocity"][0] / throat_area)
 
-    # Electrical impedance
-    z_e = driver.re_ohm + 1j * omega * driver.le_h
+def _mesh_columns(domain) -> Dict[str, Any]:
+    """Mesh actually used, recorded on every response row."""
+    info = getattr(domain, "horn_mesh_info", None)
+    if not info:
+        return {}
+    columns = {
+        "mesh_size_m": info["mesh_size_m"],
+        "mesh_throat_size_m": info["throat_mesh_size_m"],
+        "mesh_nodes": info["mesh_nodes"],
+        "mesh_throat_area_ratio": info["throat_area_ratio"],
+        "mesh_elements_per_wavelength": info["elements_per_wavelength"],
+        "mesh_target_elements_per_wavelength": info["target_elements_per_wavelength"],
+        "mesh_coarsened_for_node_limit": info["mesh_coarsened_for_node_limit"],
+    }
+    return {key: value for key, value in columns.items()
+            if isinstance(value, (bool, np.bool_)) or np.isfinite(value)}
 
-    # Mechanical impedance of the driver suspension
-    rms = driver.rms_kg_per_s if driver.rms_kg_per_s is not None else 0.0
-    z_mech_driver = rms + 1j * omega * driver.coupled_moving_mass_kg + 1.0 / (1j * omega * driver.cms_m_per_n)
 
-    # Horn throat impedance (specific acoustic → mechanical)
-    z_horn = z_horn_real + 1j * z_horn_imag
-    z_mech_load = z_horn * (driver.sd_m2 ** 2) / throat_area
+def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float, geometry_order: int = 1, *,
+                          require_axisymmetric_disk=False, max_freq: Optional[float] = None,
+                          sound_speed: float = DEFAULT_AIR.c, max_nodes: Optional[int] = None) -> Tuple["mesh.Mesh", "mesh.MeshTags"]:
+    """Generate a qualified mesh from a STEP file and tag the boundaries.
 
-    z_mech_total = z_mech_driver + z_mech_load
-    # Solve the motor balance directly, including zero mechanical impedance.
-    velocity = driver.bl_tm * v_g / (z_e * z_mech_total + driver.bl_tm ** 2)
-
-    # Volume velocity at throat = v_diaphragm * Sd, normal velocity = U / S_throat
-    v_n = velocity * driver.sd_m2 / throat_area
-    return v_n
-
-def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float, geometry_order: int = 1, *, require_axisymmetric_disk=False) -> Tuple["mesh.Mesh", "mesh.MeshTags"]:
-    """
-    Generates a mesh from a STEP file and tags the boundaries.
+    With ``max_freq`` the element size follows the degree's wavelength rule
+    (see horn_solver.meshing); without it ``mesh_size`` is used as given.
+    Both apply the throat refinement field, the 1 % throat-area guard and the
+    node limit. Raises a MeshRejection subclass for a per-candidate rejection.
     """
     gmsh.initialize()
     gmsh.option.setNumber("General.Terminal", 1)
     gmsh.model.add("horn")
-    gmsh.model.occ.importShapes(step_file)
-    gmsh.model.occ.synchronize()
+    # Honour the unit declared in the STEP file and work in metres.
+    import_step_metres(gmsh, step_file, horn_length)
 
     # Tag the physical volume for meshing
     volumes = gmsh.model.occ.getEntities(dim=3)
@@ -144,23 +147,21 @@ def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float, 
     gmsh.model.addPhysicalGroup(2, wall_surfaces, WALL_TAG)
     gmsh.model.setPhysicalName(2, WALL_TAG, "walls")
 
-    gmsh.option.setNumber("Mesh.MeshSizeMin", mesh_size)
-    gmsh.option.setNumber("Mesh.MeshSizeMax", mesh_size)
-    gmsh.model.mesh.generate(3)
-    if geometry_order == 2:
-        gmsh.model.mesh.setOrder(2)
-
-    # Check mesh size before converting to dolfinx (avoid OOM)
-    node_tags, _, _ = gmsh.model.mesh.getNodes()
-    n_nodes = len(node_tags)
-    max_nodes = int(os.environ.get("HORN_MAX_MESH_NODES", "100000"))
-    if n_nodes > max_nodes:
+    try:
+        # A fixed size is expressed as an equivalent frequency for the rule.
+        rule_freq = max_freq if max_freq is not None else sound_speed / (10.0 * mesh_size)
+        mesh_info = generate_qualified_mesh(
+            gmsh, inlet_surfaces, cad_areas["inlet"], user_size=mesh_size, c=sound_speed,
+            f_max=rule_freq, degree=geometry_order, max_nodes=max_nodes)
+    except Exception:
         gmsh.finalize()
-        raise RuntimeError(
-            f"Mesh too large: {n_nodes} nodes exceeds limit of {max_nodes}. "
-            f"Skipping this candidate to avoid OOM."
-        )
-    print(f"Mesh nodes: {n_nodes} (limit: {max_nodes})")
+        raise
+    if max_freq is None:
+        mesh_info["elements_per_wavelength"] = mesh_info["target_elements_per_wavelength"] = float("nan")
+    print(f"Mesh: {mesh_info['mesh_nodes']} nodes (limit {mesh_info['max_mesh_nodes']}), "
+          f"size {mesh_info['mesh_size_m']:.4g} m, throat size {mesh_info['throat_mesh_size_m']:.4g} m, "
+          f"{mesh_info['elements_per_wavelength']:.3g} elements per wavelength, "
+          f"throat area ratio {mesh_info['throat_area_ratio']:.5f}")
 
     # Note the change here: we are now capturing all three return values.
     domain, cell_tags, facet_tags = gmshio.model_to_mesh(gmsh.model, MPI.COMM_WORLD, 0, gdim=3)
@@ -168,6 +169,7 @@ def create_mesh_from_step(step_file: str, mesh_size: float, horn_length: float, 
 
     domain.horn_boundary_areas = cad_areas
     domain.horn_axisymmetric_disk = require_axisymmetric_disk
+    domain.horn_mesh_info = mesh_info
     return domain, facet_tags
 
 def run_simulation_from_step(
@@ -188,18 +190,19 @@ def run_simulation_from_step(
     if not fem:
         raise ImportError("FEniCSx (dolfinx) is required for the simulation.")
     if kwargs.get("radiation_model") == "bem":
-        raise NotImplementedError("Legacy FEM-BEM horn coupling is disabled: its whole-boundary trace does not represent a mouth-only exterior problem")
+        raise NotImplementedError("Legacy FEM-BEM horn coupling was removed: its whole-boundary trace does not represent a mouth-only exterior problem")
 
     horn_length = driver_params.get("length", 0.4)
+    max_nodes = kwargs.pop("max_mesh_nodes", None)
 
-    # Frequency-adaptive meshing: element size < λ/6 = c/(6*f_max)
-    adaptive_size = kwargs.get("air", DEFAULT_AIR).c / (6.0 * max_freq_mesh)
-    final_mesh_size = min(mesh_size, adaptive_size)
-    print(f"Mesh size: user={mesh_size}, adaptive={adaptive_size:.4f}, using={final_mesh_size:.4f}")
-
-    domain, facet_tags = create_mesh_from_step(step_file, final_mesh_size, horn_length,
+    # Degree-dependent wavelength rule, throat grading and node limit:
+    # see horn_solver.meshing.
+    domain, facet_tags = create_mesh_from_step(step_file, mesh_size, horn_length,
                                                geometry_order=kwargs.get("element_degree", 1),
-                                               require_axisymmetric_disk=kwargs.get("radiation_model")=="modal_baffled")
+                                               require_axisymmetric_disk=kwargs.get("radiation_model")=="modal_baffled",
+                                               max_freq=max_freq_mesh,
+                                               sound_speed=kwargs.get("air", DEFAULT_AIR).c,
+                                               max_nodes=max_nodes)
     print(f"Successfully loaded mesh: {domain.name} with "
           f"{domain.topology.index_map(domain.topology.dim).size_global} cells.")
 
@@ -220,9 +223,6 @@ def run_simulation(
     throat_area: Optional[float] = None,
     z_horn_initial: Optional[Dict[str, np.ndarray]] = None,
     radiation_model: str = "plane_wave",
-    compute_directivity: bool = False,
-    directivity_file: Optional[str] = None,
-    directivity_angles: Optional[np.ndarray] = None,
     loss_model: str = "lossless",
     flange_width: float = 0.,
     air: AirProperties = DEFAULT_AIR,
@@ -250,14 +250,10 @@ def run_simulation(
         radiation_model: Radiation impedance model at the outlet.
                          ``"plane_wave"`` (default, Z=rho*c),
                          ``"flanged_piston"`` (analytical piston in infinite baffle),
-                         ``"unflanged_piston"`` (Levine-Schwinger approximation),
-                         ``"bem"`` (nonlocal BEM coupling via bempp-cl).
-        compute_directivity: If True, compute far-field directivity at each
-                             frequency (requires ``radiation_model="bem"``).
-        directivity_file: Output CSV path for directivity data. Defaults to
-                          ``directivity.csv`` next to the main output file.
-        directivity_angles: Array of polar angles in degrees for directivity
-                            computation. Defaults to ``np.arange(0, 181, 5)``.
+                         ``"modal_baffled"`` (16 axisymmetric aperture modes in
+                         an infinite baffle), ``"unflanged_piston"``
+                         (Levine-Schwinger approximation), ``"finite_flange"``
+                         or ``"closed"``.
 
     Returns:
         Path to the output CSV file.
@@ -269,47 +265,12 @@ def run_simulation(
             raise ValueError("Experimental modal aperture requires lossless P1 and one MPI rank")
         if not getattr(domain, "horn_axisymmetric_disk", False):
             raise ValueError("Modal aperture requires a verified axisymmetric CAD volume with disk ports")
-    if radiation_model == "bem":
-        raise NotImplementedError("Legacy FEM-BEM horn coupling is disabled: its whole-boundary trace does not represent a mouth-only exterior problem")
     if element_degree not in (1, 2):
         raise ValueError("Supported finite-element degrees are 1 and 2")
     if not np.isfinite(flange_width) or flange_width < 0:
         raise ValueError("Flange width must be finite and nonnegative")
-    if radiation_model == "bem" and (loss_model != "lossless" or air != DEFAULT_AIR):
-        raise ValueError("BEM does not support custom air or wall losses")
     if bc_mode == "neumann" and air != DEFAULT_AIR:
         raise ValueError("Driver Neumann coupling with custom air is not supported")
-    if radiation_model == "bem":
-        if not BEMPP_AVAILABLE:
-            raise ImportError(
-                "bempp-cl is required for BEM radiation coupling. "
-                "Install with: pip install bempp-cl"
-            )
-        if domain.comm.size > 1:
-            raise RuntimeError(
-                "BEM radiation coupling requires a single MPI rank. "
-                "Run with: mpirun -n 1 python ..."
-            )
-
-    if compute_directivity:
-        if radiation_model != "bem":
-            raise ValueError(
-                "Directivity computation requires --radiation-model bem"
-            )
-        if directivity_angles is None:
-            directivity_angles = np.arange(0, 181, 5)
-        if directivity_file is None:
-            directivity_file = str(Path(output_file).with_name("directivity.csv"))
-        # Build unit direction vectors for far-field evaluation
-        # Axisymmetric: directions in the xz-plane, theta from z-axis
-        theta_rad = np.radians(directivity_angles)
-        ff_directions = np.column_stack([
-            np.sin(theta_rad),
-            np.zeros(len(theta_rad)),
-            np.cos(theta_rad),
-        ])
-        directivity_results = []
-
     if bc_mode == "neumann":
         if driver is None or throat_area is None or z_horn_initial is None:
             raise ValueError(
@@ -331,10 +292,8 @@ def run_simulation(
         inlet_velocity_rms = complex(inlet_velocity_rms)
         if not np.isfinite(inlet_velocity_rms) or abs(inlet_velocity_rms) <= 1e-30:
             raise ValueError("Prescribed inlet velocity must be finite and nonzero")
-    if radiation_model not in {"plane_wave", "flanged_piston", "modal_baffled", "unflanged_piston", "finite_flange", "closed", "bem"}:
+    if radiation_model not in RADIATION_MODELS:
         raise ValueError("Unknown radiation model")
-    if radiation_model == "bem" and bc_mode == "neumann":
-        raise ValueError("BEM Neumann coupling has not been validated")
     min_freq, max_freq = freq_range
     validate_band(min_freq, max_freq)
     if num_intervals < 2:
@@ -402,9 +361,9 @@ def run_simulation(
             a += ((1j-1)*dv/2 * ufl.inner(tangent_p, tangent_q)
                   +(1j-1)*(air.gamma-1)*dt*k**2/2 * ufl.inner(p,q))*ds(WALL_TAG)
 
-        # Robin BC at outlet (radiation impedance) — skipped for BEM mode
-        if radiation_model in {"bem", "modal_baffled"}:
-            # BEM provides the nonlocal radiation condition; no local Robin term
+        # Robin BC at outlet (radiation impedance); the modal model couples
+        # its nonlocal aperture impedance in the solve below instead.
+        if radiation_model == "modal_baffled":
             pass
         elif radiation_model == "closed":
             z_specific = None  # rigid termination; exactly zero mouth flow
@@ -462,41 +421,6 @@ def run_simulation(
             relative_residual = modal_health['relative_residual']
             # The direct solve has an explicitly checked residual.
             converged_reason = 4
-        elif radiation_model == "bem":
-            solve_result = coupled_solve(
-                A_fem=a,
-                b_fem=L,
-                V=V,
-                facet_tags=facet_tags,
-                outlet_tag=OUTLET_TAG,
-                k=k,
-                bcs=bcs or None,
-                return_trace_data=compute_directivity,
-            )
-            if compute_directivity:
-                p_h, trace_data = solve_result
-                # Compute far-field directivity at this frequency
-                p_far = compute_far_field(
-                    trace_data["trace_space"],
-                    trace_data["p_trace"],
-                    trace_data["dpdn_trace"],
-                    k,
-                    ff_directions,
-                )
-                # Far-field operators return pattern values with arbitrary
-                # scaling.  Normalise so that the on-axis (theta=0) magnitude
-                # is 0 dB, giving a relative radiation pattern in dB.
-                p_far_abs = np.abs(p_far)
-                p_on_axis = p_far_abs[0] if p_far_abs[0] > 0 else 1e-30
-                spl_far = 20 * np.log10(p_far_abs / p_on_axis + 1e-30)
-                for angle_deg, spl_val in zip(directivity_angles, spl_far):
-                    directivity_results.append({
-                        "frequency": frequency,
-                        "theta_deg": float(angle_deg),
-                        "spl_db": float(spl_val),
-                    })
-            else:
-                p_h = solve_result
         else:
             problem = LinearProblem(
                 a, L, bcs=bcs,
@@ -514,9 +438,6 @@ def run_simulation(
             if not np.isfinite(relative_residual) or relative_residual > 1e-8 or converged_reason <= 0:
                 raise RuntimeError(f"Unreliable solve at {frequency:g} Hz: residual={relative_residual:g}, PETSc reason={converged_reason}")
 
-        # bempp uses exp(-i wt); expose exp(+i wt) consistently downstream.
-        if radiation_model == "bem":
-            p_h.x.array[:] = np.conjugate(p_h.x.array)
         # --- Post-processing ---
         p_outlet_sq = fem.assemble_scalar(
             fem.form(ufl.inner(p_h, p_h) * ds(OUTLET_TAG))
@@ -542,7 +463,7 @@ def run_simulation(
         inlet_area_val = domain.comm.allreduce(inlet_area_val, op=MPI.SUM).real
         if not np.isfinite(inlet_area_val) or inlet_area_val <= 0:
             raise ValueError("Mesh has no valid inlet boundary")
-        if bc_mode == "dirichlet" and radiation_model != "bem":
+        if bc_mode == "dirichlet":
             # Recover integrated Dirichlet flux from the variational reaction.
             # Direct P1 boundary gradients are only first-order and introduce
             # large impedance errors near a throat-velocity minimum.
@@ -581,12 +502,8 @@ def run_simulation(
         print(f"      -> p_rms = {p_rms:.4f}, SPL = {spl:.2f} dB, "
               f"phase = {phase_deg:.1f}, Z = {z_real:.1f} + {z_imag:.1f}j")
         # Local Robin condition gives outward mouth volume velocity exactly
-        # in its own model. For BEM use the normal pressure gradient.
-        if radiation_model == "bem":
-            grad_out = fem.assemble_scalar(fem.form(ufl.dot(ufl.grad(p_h), n) * ds(OUTLET_TAG)))
-            grad_out = domain.comm.allreduce(grad_out, op=MPI.SUM)
-            mouth_u = -grad_out / (1j * omega * air.rho)
-        elif radiation_model == "modal_baffled":
+        # in its own model.
+        if radiation_model == "modal_baffled":
             mouth_u = physical_mouth_area * modal_velocity[0]
         elif radiation_model == "closed":
             mouth_u = 0j
@@ -597,7 +514,7 @@ def run_simulation(
         input_p = 1.0 if bc_mode == "dirichlet" else p_inlet_avg
         input_power = float(np.real(input_p*np.conjugate(input_u)))
         output_power = (modal_health['radiated_power_w'] if radiation_model == "modal_baffled" else
-                        0. if radiation_model in {"closed", "bem"} else
+                        0. if radiation_model == "closed" else
                         float(p_outlet_sq*np.real(1/z_specific)/(air.rho*air.c)))
         viscous_power = thermal_power = 0.
         if loss_model == "boundary_layer":
@@ -641,10 +558,11 @@ def run_simulation(
             "mouth_acoustic_power_w": output_power,
             "viscous_wall_power_w": viscous_power,
             "thermal_wall_power_w": thermal_power,
-            "power_balance_available": radiation_model != "bem",
+            "power_balance_available": True,
             "bc_mode": bc_mode,
             "phasor_convention": "exp(+iwt)_rms",
             "mesh_cells": domain.topology.index_map(domain.topology.dim).size_global,
+            **_mesh_columns(domain),
         })
         if radiation_model == "modal_baffled":
             results[-1]['modal_mode_count'] = len(modal_velocity)
@@ -657,13 +575,6 @@ def run_simulation(
     output_path = Path(output_file)
     results_df = pd.DataFrame(results)
     results_df.to_csv(output_path, index=False)
-
-    # Write directivity results if computed
-    if compute_directivity and directivity_results:
-        dir_df = pd.DataFrame(directivity_results)
-        dir_path = Path(directivity_file)
-        dir_df.to_csv(dir_path, index=False)
-        print(f"Directivity data written to: {dir_path}")
 
     print(f"\nSuccessfully ran simulation and generated results: {output_path}")
 
@@ -680,7 +591,10 @@ def main():
     parser.add_argument("--min-freq", type=float, default=100.0, help="Minimum frequency in Hz.")
     parser.add_argument("--max-freq", type=float, default=1000.0, help="Maximum frequency in Hz.")
     parser.add_argument("--num-intervals", type=int, default=100, help="Number of frequency steps.")
-    parser.add_argument("--mesh-size", type=float, default=0.01, help="Mesh element size.")
+    parser.add_argument("--mesh-size", type=float, default=0.01,
+                        help="Largest element size (m); the finer of this and the degree's wavelength rule is used.")
+    parser.add_argument("--max-mesh-nodes", type=int, default=None,
+                        help="Node limit (default: HORN_MAX_MESH_NODES or 100000).")
     parser.add_argument("--length", type=float, required=True, help="Length of the horn for boundary tagging.")
     parser.add_argument("--bc-mode", type=str, default="dirichlet",
                         choices=["dirichlet", "neumann", "velocity"],
@@ -696,12 +610,11 @@ def main():
     parser.add_argument("--phase-a-csv", type=str, default=None,
                         help="Phase A solver CSV with Z_horn data (required for neumann mode).")
     parser.add_argument("--radiation-model", type=str, default="plane_wave",
-                        choices=["plane_wave", "flanged_piston", "modal_baffled", "unflanged_piston", "finite_flange", "closed", "bem"],
+                        choices=list(RADIATION_MODELS),
                         help="Radiation impedance model at the outlet (default: plane_wave).")
-    parser.add_argument("--compute-directivity", action="store_true",
-                        help="Compute far-field directivity (requires --radiation-model bem).")
-    parser.add_argument("--directivity-file", type=str, default=None,
-                        help="Output CSV path for directivity data.")
+    parser.add_argument("--rejection-file", type=str, default=None,
+                        help="On a per-candidate mesh or CAD rejection, write the reason to this JSON "
+                             "file and exit 0 instead of failing.")
     parser.add_argument("--loss-model", choices=["lossless", "boundary_layer"], default="lossless")
     parser.add_argument("--flange-width", type=float, default=0.)
     parser.add_argument("--minimum-wall-scale", type=float)
@@ -717,10 +630,8 @@ def main():
         "bc_mode": args.bc_mode,
         "inlet_velocity_rms": args.inlet_velocity_rms,
         "radiation_model": args.radiation_model,
-        "compute_directivity": args.compute_directivity,
+        "max_mesh_nodes": args.max_mesh_nodes,
     }
-    if args.directivity_file:
-        extra_kwargs["directivity_file"] = args.directivity_file
 
     if args.bc_mode == "neumann":
         if not all([args.driver_json, args.driver_id, args.throat_area, args.phase_a_csv]):
@@ -739,16 +650,24 @@ def main():
             "z_imag": phase_a_df["z_imag"].values,
         }
 
-    run_simulation_from_step(
-        step_file=args.step_file,
-        freq_range=(args.min_freq, args.max_freq),
-        num_intervals=args.num_intervals,
-        driver_params={"length": args.length},
-        output_file=args.output_file,
-        max_freq_mesh=args.max_freq,
-        mesh_size=args.mesh_size,
-        **extra_kwargs,
-    )
+    try:
+        run_simulation_from_step(
+            step_file=args.step_file,
+            freq_range=(args.min_freq, args.max_freq),
+            num_intervals=args.num_intervals,
+            driver_params={"length": args.length},
+            output_file=args.output_file,
+            max_freq_mesh=args.max_freq,
+            mesh_size=args.mesh_size,
+            **extra_kwargs,
+        )
+    except Exception as error:
+        from horn_solver.meshing import rejection_reason, write_rejection
+        if args.rejection_file is None or rejection_reason(error) is None:
+            raise
+        record = write_rejection(args.rejection_file, error, min_freq_hz=args.min_freq,
+                                 max_freq_hz=args.max_freq)
+        print(f"Candidate rejected ({record['rejection_reasons'][0]}): {error}")
 
 if __name__ == "__main__":
     main()

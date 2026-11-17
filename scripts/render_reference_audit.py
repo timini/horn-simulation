@@ -272,7 +272,7 @@ def main():
             z = interpolate(pd.read_csv(path), frequency, "z_real_normalized", "z_imag_normalized")
             measurements.append(20*np.log10(np.maximum(np.abs(z), 1e-15)))
         low, median, high = np.percentile(measurements, [10, 50, 90], axis=0)
-        ax.fill_between(frequency, low, high, color="#8996a5", alpha=.25, label="Measured 10–90% range")
+        ax.fill_between(frequency, low, high, color="#8996a5", alpha=.25, label="Measured 10 to 90% range")
         ax.semilogx(frequency, median, color="#344457", lw=1.4, label="Measured median")
         z = p.z_real_normalized.to_numpy()+1j*p.z_imag_normalized.to_numpy()
         ax.semilogx(frequency, 20*np.log10(np.abs(z)), color="#007e91", lw=1.2, label="TMM: 20,001 points")
@@ -287,7 +287,7 @@ def main():
     for ax in axes[-1]:
         ax.set_xlabel("Frequency (Hz)")
     axes[0, 0].legend(fontsize=8, loc="lower left")
-    fig.suptitle("Measured pipe impedance versus unfitted predictions\n110–3900 Hz · nominal dimensions · dry-air source constants", fontsize=15)
+    fig.suptitle("Measured pipe impedance versus unfitted predictions\n110 to 3900 Hz · nominal dimensions · dry-air source constants", fontsize=15)
     fig.text(.5, .005, "Measurements: Ernoult et al., Zenodo 20024938 (CC BY 4.0). Ranges describe repeated files, not confidence intervals. Counts are magnitude agreement only.", ha="center", fontsize=8)
     fig.tight_layout(rect=(0, .02, 1, .96))
     fig.savefig(out/"reference-comparison.png", dpi=160)
@@ -315,7 +315,7 @@ def main():
         "p95 phase error (°)": r["tmm_at_reference_frequencies"]["p95_phase_error_deg"],
         "Sampled magnitude match": r["tmm_at_reference_frequencies"]["magnitude_agreement"]}
         for r in audit["independent_simulations"]]
-    searches = [{"Band (Hz)": f"{c['target']['f_low_hz']:g}–{c['target']['f_high_hz']:g}",
+    searches = [{"Band (Hz)": f"{c['target']['f_low_hz']:g} to {c['target']['f_high_hz']:g}",
         "Feasible pairs": c["audit"]["feasible_pair_count"],
         "Top-ten recall": c["audit"]["feasible_top_k_recall"],
         "Winner retained": c["audit"]["winner_retained"], "Score regret": c["audit"]["score_regret"]} for c in search["cases"]]
@@ -327,13 +327,13 @@ def main():
     picture = base64.b64encode((out/"reference-comparison.png").read_bytes()).decode()
     search_heading = "The search passed its benchmark." if search["passed"] else "The search audit failed."
     html = f"""<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Horn reference validation — {report_date}</title><style>
+<title>Horn reference validation, {report_date}</title><style>
 body{{font:16px/1.55 system-ui,sans-serif;color:#213142;background:#f4f6f8;margin:0}}main{{max-width:1200px;margin:auto;padding:36px}}h1{{font-size:36px;line-height:1.15}}h2{{margin-top:36px}}p{{max-width:1000px}}.verdict{{background:#fff2d9;border-left:5px solid #bc7310;padding:18px 22px}}.cards{{display:flex;flex-wrap:wrap;gap:16px;margin:24px 0}}.card{{background:white;padding:20px;flex:1;min-width:170px;border-radius:8px}}.card b{{font-size:30px;display:block}}table{{border-collapse:collapse;width:100%;font-size:13px;background:white;margin:15px 0}}th,td{{text-align:left;padding:9px;border-bottom:1px solid #dce2e7;overflow-wrap:anywhere}}th{{background:#e7eef3}}.scroll{{overflow:auto}}img{{width:100%;height:auto}}summary{{cursor:pointer;font-weight:650;padding:12px 0}}a{{color:#006979}}code{{overflow-wrap:anywhere}}small{{color:#586b7b}}
 </style><main><small>REFERENCE AUDIT · {report_date.upper()}</small><h1>{search_heading}<br>The acoustic model is only partly validated.</h1>
 <div class="verdict">This fresh audit checks every acquired pipe reference and repeats the finite-grid optimiser benchmark. It does <strong>not</strong> certify complete horn-and-driver response, absolute SPL, off-axis behaviour or physical recommendation ordering. Failed comparisons remain failures.</div>
 <div class="cards"><div class="card"><b>{totals['tmm_magnitude_passes']}/299</b>measured curves within dense TMM magnitude limits</div><div class="card"><b>{totals['fem_sampled_magnitude_passes']}/299</b>within production FEM sampled magnitude limits</div><div class="card"><b>{totals['independent_simulation_sampled_magnitude_matches']}/40</b>independent simulations matching at supplied frequencies</div><div class="card"><b>{sum(c['audit']['passed'] for c in search['cases'])}/4</b>optimiser audit bands passed</div></div>
 <h2>What was compared</h2><p><a href="https://zenodo.org/records/20024938">Ernoult and colleagues’ reference archive</a> provides 299 measured and 40 independently simulated impedance curves. Eight measured configurations reduce to five distinct nominal rigid-wall air-domain models; ABS and wood compliance are not modeled. All original curve hashes were checked. The verified import inventory contains {imports['curves']} curves ({imports['unique_curve_files']} unique files) from {imports['archives']} checksum-verified archives. Its {imports['diy_curves']} DIY response/electrical-impedance curves remain unmatched to a fully specified supported assembly.</p>
-<p>Predictions use the source’s dry-air 25°C constants, the published dimensions, side-wall losses and finite-flange or rigid closed terminations. No damping, level, frequency or geometry parameters were fitted. Magnitude limits remain median absolute error ≤2 dB and 95th-percentile error ≤4 dB across 110–3900 Hz. These are project tolerances, not the paper’s statistical uncertainty test. Phase errors are reported separately, without a phase acceptance gate.</p>
+<p>Predictions use the source’s dry-air 25°C constants, the published dimensions, side-wall losses and finite-flange or rigid closed terminations. No damping, level, frequency or geometry parameters were fitted. Magnitude limits remain median absolute error ≤2 dB and 95th-percentile error ≤4 dB across 110 to 3900 Hz. These are project tolerances, not the paper’s statistical uncertainty test. Phase errors are reported separately, without a phase acceptance gate.</p>
 <div class="scroll">{table(cases)}</div><img alt="Eight comparisons showing measured spread, median, dense TMM and production FEM" src="data:image/png;base64,{picture}">
 <h2>Numerical reliability and frequency resolution</h2><p>{totals['healthy_fem_runs']}/15 production FEM runs passed residual, solver convergence, nonnegative dissipation, passive input impedance and energy-balance checks. {totals['mesh_converged_cases']}/5 geometries meet the predeclared mesh-change limits: ≤0.5 dB maximum impedance change and ≤5% scaled complex error at the 95th percentile between 4 mm and 3 mm meshes. The mesh comparison uses 121 common frequencies, so it is not a continuous-band guarantee.</p>{table(convergence)}
 <p>The following test evaluates the same analytical model and measurements on progressively denser grids. Classification changes expose how a frequency grid can affect a pass/fail claim. FEM’s 481-point count is explicitly a sampled result, not equivalent to the dense 20,001-point TMM assessment.</p>{table(sampling)}

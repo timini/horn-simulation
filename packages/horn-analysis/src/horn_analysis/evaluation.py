@@ -9,6 +9,16 @@ from horn_analysis.transfer_function import compute_driver_response, scale_solve
 
 
 def coupled_output(frame, driver, target, legacy_radius=None):
+    """Observer level (dB), inlet area and output metric for a driver on a solved horn."""
+    result = coupled_observer(frame, driver, target, legacy_radius)
+    return result["levels"], result["area"], result["metric"]
+
+
+def coupled_observer(frame, driver, target, legacy_radius=None):
+    """Coupled observer level, complex observer pressure, inlet area and metric.
+
+    pressure is None for legacy frames, which only give mouth-plane levels.
+    """
     from horn_core.duct import DEFAULT_AIR
     for name,value in [("air_c_m_s",DEFAULT_AIR.c),("air_rho_kg_m3",DEFAULT_AIR.rho)]:
         if name in frame and not np.allclose(frame[name],value,rtol=1e-12):
@@ -16,8 +26,10 @@ def coupled_output(frame, driver, target, legacy_radius=None):
     f = validate_response(frame.frequency, frame.spl, frame.z_real, frame.z_imag)
     area = inlet_area_from_frame(frame, legacy_radius)
     p = compute_driver_response(driver, f, frame.z_real.to_numpy(), frame.z_imag.to_numpy(), area, target.voltage_rms)
+    def result(levels, pressure, metric):
+        return {"levels": levels, "pressure": pressure, "area": area, "metric": metric}
     if "schema_version" not in frame:
-        return scale_solver_spl(frame.spl.to_numpy(), p), area, "legacy_mouth_pressure"
+        return result(scale_solver_spl(frame.spl.to_numpy(), p), None, "legacy_mouth_pressure")
     if not (frame.schema_version == 2).all() or not (frame.phasor_convention == "exp(+iwt)_rms").all():
         raise ValueError("Unsupported solver phase convention/schema")
     if not (frame.bc_mode == "dirichlet").all():
@@ -27,20 +39,16 @@ def coupled_output(frame, driver, target, legacy_radius=None):
         raise ValueError("Inconsistent mouth area")
     u = frame.mouth_u_real.to_numpy() + 1j*frame.mouth_u_imag.to_numpy()
     validate_response(f, u)
-    if 'radiation_model' in frame and (frame.radiation_model=='modal_baffled').any():
-        if not (frame.radiation_model=='modal_baffled').all() or 'modal_mode_count' not in frame or not (frame.modal_mode_count==16).all():
-            raise ValueError('Inconsistent modal aperture contract')
+    from horn_analysis.directivity import modal_velocity_matrix
+    velocity = modal_velocity_matrix(frame)
+    if velocity is not None:
         from horn_core.modal_radiation import modal_baffled_on_axis
-        columns=[f'modal_v_{n}_{part}' for n in range(16) for part in ('real','imag')]
-        if any(name not in frame for name in columns):
-            raise ValueError('Missing modal aperture velocity coefficients')
-        velocity=np.column_stack([frame[f'modal_v_{n}_real'].to_numpy()+1j*frame[f'modal_v_{n}_imag'].to_numpy() for n in range(16)])
-        if not np.isfinite(velocity).all() or not np.allclose(u,mouth_area*velocity[:,0],rtol=1e-8,atol=1e-15):
+        if not np.allclose(u,mouth_area*velocity[:,0],rtol=1e-8,atol=1e-15):
             raise ValueError('Inconsistent modal aperture volume velocity')
         observer=modal_baffled_on_axis(f,velocity*p[:,None],np.sqrt(mouth_area[0]/np.pi),target.observation_distance_m)
-        return pressure_level(observer),area,'modal_baffled_on_axis'
+        return result(pressure_level(observer),observer,'modal_baffled_on_axis')
     observer = baffled_piston_on_axis(f, u*p, float(mouth_area[0]), target.observation_distance_m)
-    return pressure_level(observer), area, "uniform_baffled_piston_on_axis"
+    return result(pressure_level(observer), observer, "uniform_baffled_piston_on_axis")
 
 
 def evaluate_response(frequencies, levels, target, driver=None, throat_area=None, length=None, mouth_radius=None, operating_point=None):
@@ -56,14 +64,13 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
     ripple = float(np.ptp(y))
     integrate = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
     average = float(integrate(y, x)/(x[-1]-x[0]))
-    threshold = max(float(y.max()-target.max_ripple_db), target.min_output_db if target.min_output_db is not None else -np.inf)
-    covered = 0.0
-    for x0, x1, y0, y1 in zip(x[:-1], x[1:], y[:-1], y[1:]):
-        if min(y0,y1) >= threshold:
-            covered += x1-x0
-        elif max(y0,y1) > threshold:
-            covered += (x1-x0)*(max(y0,y1)-threshold)/abs(y1-y0)
-    coverage = float(covered/(x[-1]-x[0]))
+    # f3 is referenced to the same target-band mean as the ripple and mean
+    # level columns, and searched over the full sweep so extension counts.
+    log_f = np.log(f)
+    f3_threshold = average - 3.0
+    f3_low, low_bound = _f3_edge(log_f, levels, x[0], x[-1], f3_threshold, -1)
+    f3_high, high_bound = _f3_edge(log_f, levels, x[-1], x[0], f3_threshold, 1)
+    extension = float(np.log2(target.f_low_hz/f3_low) + np.log2(f3_high/target.f_high_hz))
     reasons, missing = [], []
     if ripple > target.max_ripple_db + 1e-9:
         reasons.append("target_band_ripple_exceeded")
@@ -95,6 +102,13 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
             missing.append("moving_mass_and_rear_load_not_separated")
         if driver.xmax_m is None or driver.power_w is None:
             missing.append("maximum_output_limits_unknown")
+        from horn_core.driver_interface import interface_evidence_gaps, interface_summary
+        missing.extend(interface_evidence_gaps(driver, throat_area, target.f_high_hz))
+    if throat_area is not None and throat_area > 0:
+        from horn_analysis.prescreen import THROAT_KA_FIRST_ASYMMETRIC_MODE
+        throat_ka = 2*np.pi*target.f_high_hz*np.sqrt(throat_area/np.pi)/343.
+        if throat_ka > THROAT_KA_FIRST_ASYMMETRIC_MODE:
+            missing.append("throat_above_first_asymmetric_mode")
     operating_limits = {}
     if driver is not None and operating_point is not None:
         for quantity, limit, reason in [("displacement_peak_m",driver.xmax_m,"driver_excursion_exceeded"),
@@ -106,10 +120,25 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
             if limit is not None and peak > limit:
                 reasons.append(reason)
         operating_limits["operating_limit_scope"] = "Linear model at requested voltage; not a validated maximum-output or thermal prediction"
-    score = .5*coverage + .25*max(0, 1-ripple/target.max_ripple_db) + .25*float(np.clip((average-60)/60, 0, 1))
+        if getattr(target, "test_power_w", None) is not None:
+            from horn_analysis.electrical_output import stress_assessment
+            stress, stress_reasons = stress_assessment(f, operating_point, driver, target)
+            operating_limits.update(stress)
+            reasons.extend(stress_reasons)
+    from horn_analysis.scoring import score_terms, weighted_score
+    terms = score_terms(target, average, ripple, extension, mouth_radius, length)
+    score = weighted_score(target, terms)
+    interface = {} if driver is None else {"driver_interface": interface_summary(driver, throat_area)}
     return {
-        **operating_limits,
-        "bandwidth_coverage": coverage, "passband_ripple_db": ripple,
+        **operating_limits, **interface,
+        "passband_ripple_db": ripple,
+        "f3_low_hz": f3_low, "f3_high_hz": f3_high,
+        "f3_low_is_bound": low_bound, "f3_high_is_bound": high_bound,
+        "f3_reference": "target_band_mean_minus_3db",
+        "extension_octaves": extension,
+        # A sweep-bound f3 makes E, and so the extension term, a lower bound.
+        "extension_is_lower_bound": bool(low_bound or high_bound),
+        "score_terms": terms,
         "avg_sensitivity_db": average,  # retained JSON key; reports label actual quantity
         "composite_score": 0.0 if reasons else score,
         "model_feasible": not reasons,
@@ -121,6 +150,99 @@ def evaluate_response(frequencies, levels, target, driver=None, throat_area=None
     }
 
 
+CHAMBER_LIMITED_GAP = "response_limited_by_estimated_front_chamber"
+
+# Limits that do not depend on the front chamber. A row that already fails
+# one of these is rejected whatever the chamber, so it skips the re-evaluation.
+_CHAMBER_INDEPENDENT_REASONS = {
+    "maximum_length_exceeded", "maximum_mouth_radius_exceeded", "driver_larger_than_mouth",
+    "compression_ratio_exceeded", "outside_driver_usable_band",
+}
+
+
+def assess_with_chamber_policy(driver, evaluate, target):
+    """Apply the estimated-front-chamber policy to one driver assessment.
+
+    ``evaluate(driver)`` returns an ``evaluate_response`` dict. A cone driver
+    with no chamber data is evaluated with its geometric front-chamber
+    estimate, so the score and every reported level include that chamber and
+    the search prefers horns that work with it. An estimated chamber does not
+    by itself reject a design: the pair is evaluated again with no front
+    chamber, and reasons that appear only with the estimate are moved to
+    ``estimated_chamber_reasons`` and flagged with the evidence gap
+    ``response_limited_by_estimated_front_chamber``. The no-chamber metrics
+    are kept in ``without_front_chamber``. A user-supplied chamber volume
+    (including 0) is used as given and rejects normally.
+    """
+    from dataclasses import replace
+    from horn_core.driver_interface import resolve_front_chamber
+    from horn_analysis.scoring import weighted_score
+    assessment = evaluate(driver)
+    estimated = resolve_front_chamber(driver)[2] == "estimated"
+    assessment["front_chamber_estimated"] = estimated
+    assessment["estimated_chamber_reasons"] = []
+    reasons = assessment["rejection_reasons"]
+    if not estimated or (reasons and set(reasons) & _CHAMBER_INDEPENDENT_REASONS):
+        return assessment
+    ideal = evaluate(replace(driver, front_chamber_volume_m3=0.0, front_chamber_area_m2=None))
+    assessment["without_front_chamber"] = {k: ideal[k] for k in (
+        "passband_ripple_db", "avg_sensitivity_db", "extension_octaves", "f3_low_hz", "f3_high_hz",
+        "rejection_reasons")}
+    chamber_only = [r for r in reasons if r not in ideal["rejection_reasons"]]
+    if not chamber_only:
+        return assessment
+    kept = [r for r in reasons if r not in chamber_only]
+    gaps = list(assessment["evidence_gaps"]) + [CHAMBER_LIMITED_GAP]
+    assessment.update(
+        rejection_reasons=kept,
+        estimated_chamber_reasons=chamber_only,
+        evidence_gaps=gaps,
+        model_feasible=not kept,
+        composite_score=0.0 if kept else weighted_score(target, assessment["score_terms"]),
+        eligibility_status="infeasible" if kept else "insufficient_evidence",
+    )
+    return assessment
+
+
+def assess_driver(frequencies, target, driver, throat_area, response, length=None, mouth_radius=None):
+    """``assess_with_chamber_policy`` for a ``response(driver) -> (levels, operating_point)`` callback."""
+    def evaluate(model):
+        levels, point = response(model)
+        return evaluate_response(frequencies, levels, target, model, throat_area, length, mouth_radius,
+                                 operating_point=point)
+    return assess_with_chamber_policy(driver, evaluate, target)
+
+
+def _f3_edge(log_f, levels, log_edge, log_other_edge, threshold, direction):
+    """First crossing of ``threshold`` measured from one target-band edge.
+
+    If the level at the edge is at or above the threshold, walk outward
+    (``direction`` -1 below the band, +1 above) over the full sweep to the
+    first sample below it. Otherwise walk inward towards the other band edge
+    to the first sample at or above it. Crossings are interpolated linearly
+    against log frequency. Returns (f3_hz, is_sweep_bound).
+    """
+    level_at_edge = float(np.interp(log_edge, log_f, levels))
+    outward = level_at_edge >= threshold
+    step = direction if outward else -direction
+    if step > 0:
+        mask = (log_f > log_edge) if outward else (log_f > log_edge) & (log_f < log_other_edge)
+        path_x, path_y = log_f[mask], levels[mask]
+    else:
+        mask = (log_f < log_edge) if outward else (log_f < log_edge) & (log_f > log_other_edge)
+        path_x, path_y = log_f[mask][::-1], levels[mask][::-1]
+    xs = np.r_[log_edge, path_x]
+    ys = np.r_[level_at_edge, path_y]
+    for i in range(1, len(xs)):
+        crossed = ys[i] < threshold if outward else ys[i] >= threshold
+        if crossed:
+            fraction = (ys[i-1]-threshold)/(ys[i-1]-ys[i])
+            return float(np.exp(xs[i-1] + fraction*(xs[i]-xs[i-1]))), False
+    if outward:
+        return float(np.exp(xs[-1])), True
+    return float(np.exp(log_other_edge)), False
+
+
 def radiation_domain_rejection(frequencies, mouth_radius, radiation_model, flange_width=0.):
     """Reject unsupported geometries without masking invalid inputs/solver errors."""
     if radiation_model=='modal_baffled' and np.max(2*np.pi*np.asarray(frequencies)*mouth_radius/343.)>30:
@@ -129,7 +251,7 @@ def radiation_domain_rejection(frequencies, mouth_radius, radiation_model, flang
                 "rejection_reasons":["radiation_model_out_of_domain"],
                 "rejection_detail":"Modal aperture quadrature requires ka <= 30",
                 "evidence_gaps":[],"validation_status":"outside_supported_model_domain",
-                "bandwidth_coverage":0.,"passband_ripple_db":None,"avg_sensitivity_db":None}
+                "extension_octaves":None,"passband_ripple_db":None,"avg_sensitivity_db":None}
     if radiation_model not in {"finite_flange", "unflanged", "unflanged_piston"}:
         return None
     from horn_core.duct import DEFAULT_AIR, RadiationDomainError, circular_pipe_radiation
@@ -141,6 +263,6 @@ def radiation_domain_rejection(frequencies, mouth_radius, radiation_model, flang
                 "rejection_reasons": ["radiation_model_out_of_domain"],
                 "rejection_detail": str(error), "evidence_gaps": [],
                 "validation_status": "outside_supported_model_domain",
-                "bandwidth_coverage": 0., "passband_ripple_db": None,
+                "extension_octaves": None, "passband_ripple_db": None,
                 "avg_sensitivity_db": None}
     return None

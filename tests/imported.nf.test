@@ -31,6 +31,7 @@ nextflow_pipeline {
                 max_freq = 1000
                 num_bands = 1
                 num_intervals = 3
+                min_points_per_octave = 0
                 mesh_size = 0.01
                 outdir = "${outputDir}"
             }

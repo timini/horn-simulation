@@ -17,6 +17,7 @@ nextflow_pipeline {
                 num_lengths = 2
                 drivers_db = "${projectDir}/tests/data/my drivers ' database.json"
                 num_intervals = 12
+                min_points_per_octave = 0
                 num_bands = 2
                 lem_top_n = 2
                 top_n = 1
@@ -75,6 +76,7 @@ nextflow_pipeline {
                 length = 0.08
                 drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
                 num_intervals = 12
+                min_points_per_octave = 0
                 num_bands = 2
                 lem_top_n = 1
                 refinement_budget = 1
@@ -88,7 +90,10 @@ nextflow_pipeline {
             assert ranking.status == "no_feasible_design"
             assert ranking.results == []
             assert ranking.rejected.size() > 0
-            assert ranking.refinement.reason == "no_feasible_seed"
+            // Refinement now starts from the least-infeasible FEM candidate. Every
+            // dimension is user-fixed here, so it has no room to move.
+            assert ranking.refinement.seed_source == "least_infeasible"
+            assert ranking.refinement.new_evaluations == 0
             assert new File("${outputDir}/auto/report/auto_report.html").length() > 0
         }
     }
@@ -103,6 +108,7 @@ nextflow_pipeline {
                 length = 0.055
                 drivers_db = "${projectDir}/data/drivers-curated"
                 num_intervals = 30
+                min_points_per_octave = 0
                 num_bands = 2
                 lem_top_n = 2
                 refinement_budget = 0
@@ -123,13 +129,47 @@ nextflow_pipeline {
         }
     }
 
-    test("A valid tight size cap produces an explicit empty report") {
+    test("An oversized mesh rejects that candidate instead of stopping the run") {
+        when {
+            params {
+                mode = "auto"
+                target_f_low = 700
+                target_f_high = 1200
+                throat_radius = 0.025
+                mouth_radius = 0.05
+                length = 0.08
+                drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
+                num_intervals = 12
+                min_points_per_octave = 0
+                num_bands = 2
+                lem_top_n = 1
+                refinement_budget = 1
+                max_mesh_nodes = 20
+                outdir = "${outputDir}"
+            }
+        }
+        then {
+            assert workflow.success
+            def ranking = new groovy.json.JsonSlurper().parse(new File("${outputDir}/auto/ranked_results.json"))
+            assert ranking.status == "no_feasible_design"
+            assert ranking.solver_rejected_candidates.size() == 1
+            assert ranking.rejected.any { it.rejection_reasons.contains("mesh_node_limit_exceeded") }
+            assert new File("${outputDir}/auto/report/auto_report.html").length() > 0
+            def spec = new groovy.json.JsonSlurper().parse(new File("${outputDir}/resolved_specification.json"))
+            assert spec.parameters.radiation_model == "modal_baffled"
+        }
+    }
+
+    // A max_length below the heuristic range is now searched up to the cap with a
+    // stated shortfall (horn_core test_size_cap_below_heuristic_range_searches_up_to_the_cap_and_states_shortfall).
+    // A minimum above the range still excludes every size, so it keeps the empty-report path covered.
+    test("A size floor above the search range produces an explicit empty report") {
         when {
             params {
                 mode = "auto"
                 target_f_low = 500
                 target_f_high = 2000
-                max_length = 0.1
+                min_length = 1.0
                 drivers_db = "${projectDir}/tests/data/smoke_drivers.json"
                 outdir = "${outputDir}"
             }

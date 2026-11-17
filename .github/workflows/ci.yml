@@ -21,16 +21,68 @@ jobs:
           chmod +x nextflow
           ./nextflow -version
           sudo mv nextflow /usr/local/bin/
-      - name: Install nf-test
-        uses: nf-core/setup-nf-test@v1
-        with:
-          version: 0.9.5
       - name: Install just
         uses: extractions/setup-just@v2
       - name: Build Docker images
         run: just build
-      - name: Run nf-test
+      - name: Run nf-test 0.9.5 (fetched and checksum-verified by scripts/nf_test.sh)
         run: just test-nextflow
+
+  launcher_end_to_end:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Install Nextflow
+        run: |
+          curl -fL https://github.com/nextflow-io/nextflow/releases/download/v24.10.5/nextflow -o nextflow
+          chmod +x nextflow
+          sudo mv nextflow /usr/local/bin/
+      - name: Install just
+        uses: extractions/setup-just@v2
+      - name: Build Docker images
+        run: just build
+      - name: Run a tiny single-mode case through the launcher
+        run: |
+          python3 scripts/run_pipeline.py --run-dir results/ci-single --require-current-images \
+            --profile conical --throat_radius 0.025 --mouth_radius 0.1 --length 0.2 \
+            --min_freq 200 --max_freq 400 --num_bands 1 --num_intervals 2 \
+            --min_points_per_octave 0 --mesh_size 0.08 --num_sections 8
+          python3 scripts/check_run.py results/ci-single \
+            --expect horn.step --expect final_results.csv --expect kpis.json \
+            --expect frequency_response.png --expect impedance.png \
+            --expect single_report.html --expect resolved_specification.json
+      - name: Run a tiny auto case (two drivers, two lengths) from a params file
+        run: |
+          python3 scripts/run_pipeline.py --run-dir results/ci-auto --require-current-images \
+            -params-file tests/data/ci_auto_params.json
+          python3 scripts/check_run.py results/ci-auto --params-file tests/data/ci_auto_params.json \
+            --expect auto/refinement/ranked_results.json --expect auto/report/auto_ranking.json \
+            --expect auto/report/auto_report.html --expect resolved_specification.json \
+            --min-scored 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: launcher-end-to-end
+          path: |
+            results/*/manifest.json
+            results/*/nextflow.log
+            results/*/outputs
+
+  check_lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.8.2'
+      - name: Docker images install from uv.lock, so it must match the pyproject files
+        run: uv lock --check
 
   test_pure_python:
     runs-on: ubuntu-latest
@@ -49,6 +101,21 @@ jobs:
           pip install pytest
       - name: Run tests
         run: pytest packages/${{ matrix.package }}/tests -v
+
+  validate_driver_databases:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install driver tools
+        run: pip install -e packages/horn-core -e packages/horn-drivers
+      - name: Validate shipped driver databases (zero errors allowed)
+        run: |
+          horn-validate-drivers --db data/drivers > validate-drivers.log || { grep -E 'ERROR|Results' validate-drivers.log; exit 1; }
+          tail -3 validate-drivers.log
+          horn-validate-drivers --db data/drivers-curated
 
   test_reference_audit:
     runs-on: ubuntu-latest
@@ -91,11 +158,17 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Hash image sources for the label
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        id: source
+        run: echo "sha256=$(python3 scripts/image_source.py ${{ matrix.package }})" >> "$GITHUB_OUTPUT"
       - name: Build and push production image
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./packages/${{ matrix.package }}/Dockerfile
+          target: production
+          labels: horn.source_sha256=${{ steps.source.outputs.sha256 }}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.package }}:latest

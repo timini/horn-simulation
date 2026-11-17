@@ -4,7 +4,7 @@ This is a bounded comparison of the production horn solver with measured acousti
 
 ## Reference and scope
 
-John Post's 1994 [*A Modeling and Measurement Study of Acoustic Horns*](https://audioroundtable.com/misc/post_hixson_horns.pdf), chapter 4, describes fiberglass exponential and tractrix horns mounted in an effectively infinite floor baffle. Figures 4.26 and 4.27 (printed pages 108–109, PDF pages 120–121) show measured resistance and reactance using the two-microphone technique. The blue lines are measurements; the circular markers are the author's numerical model and are not used as measured data.
+John Post's 1994 [*A Modeling and Measurement Study of Acoustic Horns*](https://audioroundtable.com/misc/post_hixson_horns.pdf), chapter 4, describes fiberglass exponential and tractrix horns mounted in an effectively infinite floor baffle. Figures 4.26 and 4.27 (printed pages 108 to 109, PDF pages 120 to 121) show measured resistance and reactance using the two-microphone technique. The blue lines are measurements; the circular markers are the author's numerical model and are not used as measured data.
 
 The exponential horn's nominal throat radius is 25.4 mm, mouth radius 271 mm and axial length 559 mm. The measured throat area was 2.5% larger than nominal; the paper has already applied its 1.025 normalization correction to the plotted measurements. We do not apply that correction again or fit any level, phase, frequency or geometry shift. Mouth dimensions were within 2 mm. The full as-built interior contour is unavailable, so comparison with nominal CAD includes construction uncertainty.
 
@@ -14,7 +14,7 @@ The tractrix prototype is excluded from this matched comparison: the author foun
 
 The script extracts the blue vector coordinates from the source PDF, with chart axes checked against the rendered pages. These are **digitized published traces**, not the original 1,601 analyzer samples. The approximately 0.005 normalized-impedance line thickness indicates digitization resolution; it is not a complete measurement uncertainty estimate. Numeric observations and source identity are archived; the copyrighted thesis and figure artwork are not redistributed.
 
-The declared range is `1 ≤ ka ≤ 5`, where `a` is mouth radius. It lies above the paper's sub-100 Hz calibration concerns and below its documented wall resonances at `ka > 6`. Comparison uses dimensionless frequency and impedance to avoid assigning an unreported measurement temperature. At the simulation's 343 m/s this corresponds to approximately 201–1,007 Hz.
+The declared range is `1 ≤ ka ≤ 5`, where `a` is mouth radius. It lies above the paper's sub-100 Hz calibration concerns and below its documented wall resonances at `ka > 6`. Comparison uses dimensionless frequency and impedance to avoid assigning an unreported measurement temperature. At the simulation's 343 m/s this corresponds to approximately 201 to 1,007 Hz.
 
 The existing production STEP entry point validates circular ports and axisymmetry, then uses a prescribed uniform inlet velocity, lossless P1 FEM and the optional 16-mode baffled mouth. It generates the nominal exponential contour with 40 loft sections and separately solves meshes of 24, 18 and 14 mm, each at 81 logarithmically spaced frequencies. Solver results use `Z_acoustic S_throat / (rho c)`, matching the published normalization.
 
@@ -34,8 +34,8 @@ These are engineering comparison limits for this component, not the absolute-SPL
 | --- | --- | --- |
 | Finest mesh vs measurement, 95th percentile | 0.417 dB | 1.795 degrees |
 | Finest mesh vs measurement, maximum | 0.497 dB | 1.873 degrees |
-| Mesh 24 → 18 mm, maximum | 0.392 dB | 1.315 degrees |
-| Mesh 18 → 14 mm, maximum | 0.300 dB | 0.929 degrees |
+| Mesh 24 to 18 mm, maximum | 0.392 dB | 1.315 degrees |
+| Mesh 18 to 14 mm, maximum | 0.300 dB | 0.929 degrees |
 
 Maximum complex normalized-impedance error is 0.051 against the frozen 0.25 limit. Maximum solver residual is 2.02e-12 and power imbalance 5.28e-14. Phase error does not decrease monotonically with refinement; the finest result still meets its limit. Nominal geometry and digitization uncertainty remain part of the interpretation.
 

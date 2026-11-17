@@ -24,6 +24,7 @@ _BADGE_STYLES = {
     "hyperbolic":  {"badge_bg": "#fef3c7", "badge_fg": "#92400e"},
     "tractrix":    {"badge_bg": "#ede9fe", "badge_fg": "#5b21b6"},
     "os":          {"badge_bg": "#ccfbf1", "badge_fg": "#115e59"},
+    "scaled_tractrix": {"badge_bg": "#fce7f3", "badge_fg": "#9d174d"},
     "lecleach":    {"badge_bg": "#fce7f3", "badge_fg": "#9d174d"},
     "cd":          {"badge_bg": "#e2e8f0", "badge_fg": "#334155"},
 }
@@ -195,6 +196,36 @@ def _diagnostics_section(df) -> str:
             '<p>These numerical checks do not establish physical model accuracy.</p></div>')
 
 
+def _radiation_caveat(df) -> str:
+    """State the known flanged_piston error when the solver used that mouth model."""
+    if "radiation_model" not in df or not (df.radiation_model.astype(str) == "flanged_piston").any():
+        return ""
+    from horn_analysis.html_report import FLANGED_PISTON_CAVEAT
+    return ('<h2>Radiation model</h2><div class="design-summary"><p>'
+            + html.escape(FLANGED_PISTON_CAVEAT) + '</p></div>')
+
+
+def _coupled_status(ck: dict) -> str:
+    """Experimental-prediction label, target band, evidence status and chamber for the coupled result."""
+    if "eligibility_status" not in ck:
+        return ""
+    band = ck.get("target_band_hz") or []
+    interface = ck.get("driver_interface") or {}
+    chamber = interface.get("front_chamber_source", "not recorded")
+    volume = interface.get("front_chamber_volume_cm3")
+    text = (f"<strong>Experimental prediction.</strong> Same observer path and KPIs as auto mode. "
+            f"Target band {_fmt(band[0] if band else None, '.0f')} to {_fmt(band[1] if len(band) > 1 else None, '.0f')} Hz"
+            + (" (clipped to the sweep)" if ck.get("target_band_clipped_to_sweep") else "")
+            + (" (outside the sweep; whole sweep assessed)" if ck.get("target_band_outside_sweep") else "")
+            + f". Evidence status: {html.escape(str(ck['eligibility_status']).replace('_', ' '))}"
+            + (f"; rejected: {html.escape(', '.join(ck['rejection_reasons']))}" if ck.get("rejection_reasons") else "")
+            + f". Front chamber: {html.escape(chamber)}" + (f" {volume:.1f} cm3" if volume else "")
+            + (" (front_chamber_estimated; over the limit only because of the estimate: "
+               + html.escape(", ".join(ck["estimated_chamber_reasons"])) + ")" if ck.get("estimated_chamber_reasons") else "")
+            + ".")
+    return f'<div class="design-summary" style="margin-bottom:12px;">{text}</div>'
+
+
 def generate_single_report(
     throat_radius: float,
     mouth_radius: float,
@@ -224,11 +255,13 @@ def generate_single_report(
     # Freq range from CSV if available
     freq_range = ""
     diagnostics_section = "<h2>Solver checks</h2><p>Solver diagnostics are not available for this result.</p>"
+    radiation_caveat = ""
     if final_csv:
         try:
             import pandas as pd
             df = pd.read_csv(final_csv)
             diagnostics_section = _diagnostics_section(df)
+            radiation_caveat = _radiation_caveat(df)
             fmin = df["frequency"].min()
             fmax = df["frequency"].max()
             freq_range = f"{fmin:.0f} \u2014 {fmax:.0f} Hz &nbsp;|&nbsp; "
@@ -260,8 +293,9 @@ def generate_single_report(
   <div class="card"><div class="label">f3 Low (Hz; ≤ = sweep bound)</div><div class="value">{format_kpi(ck, 'f3_low_hz')}</div></div>
   <div class="card"><div class="label">f3 High (Hz; ≥ = sweep bound)</div><div class="value">{format_kpi(ck, 'f3_high_hz')}</div></div>
   <div class="card"><div class="label">Ripple (dB)</div><div class="value">{_fmt(ck.get('passband_ripple_db'), '.1f')}</div></div>
-  <div class="card"><div class="label">Mean mouth level (dB)</div><div class="value">{_fmt(ck.get('average_sensitivity_db'), '.1f')}</div></div>
+  <div class="card"><div class="label">{"Mean mouth level (dB)" if ck.get("output_metric", "legacy_mouth_pressure") == "legacy_mouth_pressure" else "Mean on-axis level (dB)"}</div><div class="value">{_fmt(ck.get('average_sensitivity_db'), '.1f')}</div></div>
 </div>
+{_coupled_status(ck)}
 <div class="plot"><img src="{_img_b64(coupled_png)}" alt="Coupled SPL response"></div>
 <p class="subtitle"><strong>Note:</strong> the FEM models acoustic horn loading only; cone-breakup
 above the driver's published linear range is not modelled. Real high-frequency response
@@ -346,7 +380,7 @@ will roll off according to the driver's diaphragm physics.</p>
         # Conditional sections
         "coupled_section": coupled_section,
         "directivity_section": directivity_section,
-        "diagnostics_section": diagnostics_section,
+        "diagnostics_section": radiation_caveat + diagnostics_section,
     })
 
 

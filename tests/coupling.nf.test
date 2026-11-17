@@ -25,8 +25,15 @@ nextflow_process {
             def kpi = new groovy.json.JsonSlurper().parse(new File(process.out[2][0]))
             assert kpi.drive_voltage_v == 5.66
             def first = new File(process.out[0][0]).text.readLines()[1].split(',')[1].toDouble()
-            // Independent two-equation motor balance, using the fixture's .01 m² inlet.
-            assert Math.abs(first - 127.17639864923825) < 0.000001
+            // Single mode now reports the on-axis observer level, as auto mode does.
+            // Independent check at 100 Hz: the two-equation motor balance (Rms and Cms
+            // from fs, Mms and Qms; ideal Sd to St transformer into the fixture's
+            // 420 Pa s/m resistive load on the .01 m² inlet) gives a throat pressure of
+            // 127.15579873595863 dB. The fixture's mouth volume velocity is 1e-4 m³/s
+            // per Pa of throat pressure, and the exact on-axis baffled-piston formula
+            // rho c U / S |exp(-ikr) - exp(-ik sqrt(r² + a²))| at r = 1 m over the
+            // .02 m² mouth gives the level below.
+            assert Math.abs(first - 88.904717107647) < 0.000001
         }
     }
 }

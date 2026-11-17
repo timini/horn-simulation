@@ -86,10 +86,10 @@ class TestDeriveLengthRange:
 
 
 class TestDeriveSimulationFreqRange:
-    def test_extends_half_octave(self):
-        """Should extend by +/-0.5 octave."""
+    def test_extends_one_octave_below_and_half_an_octave_above(self):
+        """The low side reaches the octave at which the extension term saturates."""
         sim_min, sim_max = derive_simulation_freq_range(500, 4000)
-        assert sim_min == pytest.approx(500 / math.sqrt(2), rel=1e-6)
+        assert sim_min == pytest.approx(250, rel=1e-6)
         assert sim_max == pytest.approx(4000 * math.sqrt(2), rel=1e-6)
 
     def test_sim_range_brackets_target(self):
@@ -107,8 +107,8 @@ class TestGenerateFullautoCandidates:
             throat_radii=[0.025],
         )
         # All 63 should pass since derived mouth radii >> 0.025
-        assert len(candidates) == 63
-        assert derived.candidate_count == 63
+        assert len(candidates) == 62  # the shortest tractrix is below its natural length and skipped
+        assert derived.candidate_count == 62
 
     def test_all_profiles_represented(self):
         candidates, _ = generate_fullauto_candidates(
@@ -117,7 +117,7 @@ class TestGenerateFullautoCandidates:
             throat_radii=[0.025],
         )
         profiles = {c.profile for c in candidates}
-        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"}
+        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "cd"}
 
     def test_mouth_exceeds_throat(self):
         """Every candidate must have mouth_radius > throat_radius."""
@@ -172,7 +172,7 @@ class TestGenerateFullautoCandidates:
             num_mouth_radii=2,
             num_lengths=2,
         )
-        assert len(candidates) == 28
+        assert len(candidates) == 27  # one tractrix point is below its natural length
 
     def test_multiple_throat_radii(self):
         """Two throat radii should roughly double the candidates."""
@@ -247,8 +247,8 @@ class TestGenerateAutoCandidates:
             target_f_high=4000,
             throat_radii=[0.025],
         )
-        assert len(candidates) == 63
-        assert derived.candidate_count == 63
+        assert len(candidates) == 62  # one tractrix point is below its natural length
+        assert derived.candidate_count == 62
 
     def test_fixed_mouth_radius(self):
         """Fixed mouth radius → 7×1×1×3 = 21."""
@@ -258,7 +258,7 @@ class TestGenerateAutoCandidates:
             throat_radii=[0.025],
             mouth_radius=0.15,
         )
-        assert len(candidates) == 21
+        assert len(candidates) == 20  # one tractrix point is below its natural length
         # All candidates should have the fixed mouth radius
         for c in candidates:
             assert c.mouth_radius == pytest.approx(0.15)
@@ -289,7 +289,7 @@ class TestGenerateAutoCandidates:
         )
         assert len(candidates) == 7
         profiles = {c.profile for c in candidates}
-        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "lecleach", "cd"}
+        assert profiles == {"conical", "exponential", "hyperbolic", "tractrix", "os", "scaled_tractrix", "cd"}
 
     def test_multiple_throat_radii_fixed_geom(self):
         """3 throat radii with fixed mouth+length → 7×3×1×1 = 21."""
@@ -327,18 +327,58 @@ class TestGenerateAutoCandidates:
         assert derived.sim_freq_range[1] > 4000
 
 
-@pytest.mark.parametrize('kwargs', [{'max_length':.1},{'max_mouth_radius':.02}])
-def test_valid_size_cap_below_heuristic_range_returns_empty_design(kwargs):
+@pytest.mark.parametrize('kwargs,field,cap', [({'max_length':.1},'length',.1),({'max_mouth_radius':.02},'mouth_radius',.02)])
+def test_size_cap_below_heuristic_range_searches_up_to_the_cap_and_states_shortfall(kwargs,field,cap):
+    # A cap below the heuristic range used to return no design at all.
     candidates,design=generate_auto_candidates(500,2000,[.01],**kwargs)
+    assert candidates and design.status == 'candidates_generated'
+    values = [getattr(c, field) for c in candidates]
+    assert max(values) == pytest.approx(cap)
+    searched = design.length_range if field == 'length' else design.mouth_radius_range
+    assert searched == pytest.approx((.4*cap, cap))
+    assert design.bound_sources[field] == {'low':'size_cap_fraction','high':'user'}
+    compromise = design.size_compromise
+    assert compromise['shortfall_octaves'] > 0
+    assert compromise['expected_f_low_hz'] > 500
+    assert field in compromise['limits']
+
+
+def test_minimum_above_heuristic_range_returns_empty_design():
+    candidates,design=generate_auto_candidates(500,2000,[.01],min_length=1.)
     assert candidates == []
     assert design.candidate_count == 0
     assert design.status == 'no_feasible_design'
     assert design.reason == 'size_constraints_exclude_search_range'
 
 
+def test_max_length_0_1_at_800_1600_states_quarter_wave_shortfall():
+    candidates,design=generate_auto_candidates(800,1600,[.02],max_length=.1)
+    assert candidates and max(c.length for c in candidates) <= .1
+    limit = design.size_compromise['limits']['length']
+    assert limit['supported_f_low_hz'] == pytest.approx(343/(4*.1))
+    assert design.size_compromise['shortfall_octaves'] == pytest.approx(math.log2(857.5/800))
+    assert 'mouth_radius' not in design.size_compromise['limits']
+
+
+def test_no_size_compromise_without_binding_cap():
+    _,design=generate_auto_candidates(800,1600,[.02])
+    assert design.size_compromise is None
+    assert design.bound_sources == {'mouth_radius':{'low':'heuristic','high':'heuristic'},
+                                    'length':{'low':'heuristic','high':'heuristic'}}
+
+
 def test_mouth_not_larger_than_throat_is_an_empty_search():
     candidates,design=generate_auto_candidates(500,2000,[.05],mouth_radius=.04,length=.1)
     assert candidates == [] and design.reason == 'no_mouth_larger_than_throat'
+
+
+def test_tractrix_only_below_natural_length_reports_profile_reason():
+    from horn_core.profiles import natural_tractrix_length
+    short = 0.5 * natural_tractrix_length(.025, .15)
+    candidates,design=generate_auto_candidates(500,2000,[.025],mouth_radius=.15,length=short,profiles=['tractrix'])
+    assert candidates == []
+    assert design.status == 'no_feasible_design'
+    assert design.reason == 'profile_geometry_infeasible'
 
 
 @pytest.mark.parametrize('kwargs',[{'max_length':-1},{'min_length':.2,'max_length':.1},{'max_mouth_radius':float('nan')}])
@@ -362,3 +402,24 @@ def test_fixed_throat_obeys_high_frequency_acoustic_cap():
     assert candidates and all(c.throat_radius <= cap for c in candidates)
     with pytest.raises(ValueError, match="acoustic ka cap"):
         generate_auto_candidates(1000, 4000, [cap], mouth_radius=.3, ka_max=math.pi)
+
+
+def test_cli_profiles_option_restricts_the_search(tmp_path, monkeypatch):
+    import csv
+    import json
+    import sys
+    from horn_core import geometry_designer
+    prescreen = tmp_path / "prescreen.json"
+    prescreen.write_text(json.dumps({"throat_radius_m": 0.0125, "throat_radii_m": [0.0125]}))
+    output = tmp_path / "candidates.csv"
+    monkeypatch.setattr(sys, "argv", ["designer", "--target-f-low", "800", "--target-f-high", "1600",
+                                      "--prescreen-json", str(prescreen), "--profiles", "os, conical",
+                                      "--output", str(output), "--design-json", str(tmp_path / "d.json")])
+    geometry_designer.main()
+    with output.open() as handle:
+        profiles = {row["profile"] for row in csv.DictReader(handle)}
+    assert profiles == {"os", "conical"}
+    monkeypatch.setattr(sys, "argv", ["designer", "--target-f-low", "800", "--target-f-high", "1600",
+                                      "--prescreen-json", str(prescreen), "--profiles", "lecleach"])
+    with pytest.raises(SystemExit):
+        geometry_designer.main()
