@@ -27,6 +27,7 @@ Start with the [README](../README.md) for installation and a first run.
 | Page | What it covers |
 | --- | --- |
 | [STATUS](STATUS.md) | What works, what is experimental, open issues and remaining work. |
+| [ROADMAP](ROADMAP.md) | Progress to date, near-term work in order, and the design of the planned Pareto design database and web page. |
 | [VALIDATION](VALIDATION.md) | Index of every validation record, script and CI job, with results. |
 | [DESCOPED](DESCOPED.md) | Items from the original brief that were not built, and why. |
 

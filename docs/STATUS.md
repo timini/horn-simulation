@@ -1,6 +1,6 @@
-# Status and roadmap
+# Status
 
-Updated 2026-11-16. This page replaces the earlier implementation status (7 September 2026) and single-horn roadmap (9 September 2026), which are kept in [history](history/).
+Updated 2026-11-17. This page replaces the earlier implementation status (7 September 2026) and single-horn roadmap (9 September 2026), which are kept in [history](history/).
 
 ## Summary
 
@@ -49,7 +49,7 @@ The full openwind and bempp-cl comparison was not rerun at that merge (about 90 
 
 ## Remaining work
 
-In order:
+[ROADMAP](ROADMAP.md) has the near-term software work (automatic finer mesh in upper bands, the widest-band objective, a maximum SPL metric, more price sources, the front chamber estimate) and the planned Pareto design database and web page. This section keeps the physical qualification plan, in order:
 
 1. **Choose a physical reference and a comparison.** Two horn and driver assemblies with exact air and interface geometry, driver variant, rear load, drive voltage, microphone position, environment and reuse terms. [PHYSICAL_REFERENCE_AUDIT](PHYSICAL_REFERENCE_AUDIT.md) lists the candidates; none is complete yet. If the data cannot be found, record what is missing and the measurement that would supply it.
 2. **Qualify the driver interface.** Model the chosen adapter and rear load at the fidelity the reference needs, check it against an independent circuit or solver, and qualify a small driver set before growing the catalogue.
@@ -72,8 +72,7 @@ Until step 4 passes, results stay labelled experimental. Adding more profiles, a
 
 Other known gaps:
 
-- 376 Faital, B&C and 18Sound records with copied pages were removed from `data/drivers` and not yet re-fetched; the source site returned HTTP 429 on 2026-11-15.
-- The new CI jobs (`launcher_end_to_end`, `check_lockfile`) have not yet run on GitHub.
+- Driver and price coverage, and the sources that are blocked, are in [DRIVER_COVERAGE](DRIVER_COVERAGE.md).
 - The 3D FEM with `flanged_piston` differs from the 1D codes by up to about 1.5 dB between mouth ka 0.5 and 1.5, which is not explained ([CROSS_SOFTWARE_VALIDATION](CROSS_SOFTWARE_VALIDATION.md)).
 - The archived examples were made before the front chamber estimate; under the current coupling their ranking and ripple differ. See [WORKED_EXAMPLE](WORKED_EXAMPLE.md) and [examples](../examples/README.md).
 
