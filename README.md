@@ -127,7 +127,7 @@ All commands and parameters: [USAGE](docs/USAGE.md).
 
 ## Documentation
 
-The [documentation index](docs/index.md) lists every page. Items from the original brief that were not built are in [DESCOPED](docs/DESCOPED.md).
+The [documentation index](docs/index.md) lists every page. Items from the original brief that were not built are in [DESCOPED](docs/DESCOPED.md). Planned work, including a searchable database of driver and horn trade-offs, is in [ROADMAP](docs/ROADMAP.md).
 
 ## Contributing
 
