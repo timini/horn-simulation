@@ -91,7 +91,7 @@ Each row in `ranked_results.json`, `refinement/ranked_results.json` and `auto_ra
 | `evidence_gaps` | Missing driver or interface data, for example `driver_interface_unverified` or `front_chamber_volume_estimated`. |
 | `front_chamber_estimated`, `estimated_chamber_reasons`, `without_front_chamber` | Front chamber policy; see [DRIVERS](DRIVERS.md#front-and-rear-chambers). |
 | `max_displacement_peak_m`, `max_input_power_w` | Peak excursion and input power over the band at the drive voltage. |
-| `test_power_*` | With `test_power_w`: excursion and Xmax margin at that power, over the band and the whole sweep. |
+| `test_power_*` | With `test_power_w`: the test voltage, excursion and Xmax margin at that power over the band and the whole sweep, and the largest in-band input power with its margin to the driver rating. |
 | `radiation_model`, `output_metric`, `loss_model`, `element_degree` | Model used. `output_metric` is `modal_baffled_on_axis` or `uniform_baffled_piston_on_axis`. |
 | `kpi` | Older peak-lobe metrics, as in single-mode `kpis.json`. |
 | `validation_status` | Always `experimental_prediction`. |
@@ -116,7 +116,7 @@ Each row in `ranked_results.json`, `refinement/ranked_results.json` and `auto_ra
 
 `auto_rejections.json` has the stage (`FEM` or `analytical prescreen`), the number of rejected pairs and one entry per reason, most frequent first, with a description, the count and `closest_excess` and `largest_excess` in `unit` where a margin is defined. For example a ripple rejection gives dB above `max_ripple_db`; an excursion rejection gives mm above Xmax.
 
-Rejection reasons: `target_band_ripple_exceeded`, `minimum_output_not_met`, `maximum_length_exceeded`, `maximum_mouth_radius_exceeded`, `compression_ratio_exceeded`, `driver_larger_than_mouth`, `outside_driver_usable_band`, `driver_excursion_exceeded`, `driver_nominal_power_exceeded`, `test_power_excursion_exceeded`, `radiation_model_out_of_domain`, `profile_geometry_infeasible`, `loft_accuracy_unmet`, `cad_geometry_rejected`, and the solver's `mesh_node_limit_exceeded` and `throat_area_guard_failed`.
+Rejection reasons: `target_band_ripple_exceeded`, `minimum_output_not_met`, `maximum_length_exceeded`, `maximum_mouth_radius_exceeded`, `compression_ratio_exceeded`, `driver_larger_than_mouth`, `outside_driver_usable_band`, `driver_excursion_exceeded`, `driver_nominal_power_exceeded`, `test_power_excursion_exceeded`, `test_power_nominal_power_exceeded`, `radiation_model_out_of_domain`, `profile_geometry_infeasible`, `loft_accuracy_unmet`, `cad_geometry_rejected`, and the solver's `mesh_node_limit_exceeded` and `throat_area_guard_failed`.
 
 ## STEP files
 

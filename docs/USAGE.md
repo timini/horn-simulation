@@ -155,7 +155,7 @@ Every parameter is set with `--name value`. The defaults below are the values in
 | `max_compression_ratio` | `10.0` | Largest allowed ratio of diaphragm area to throat area. |
 | `min_output_db` | unset | Optional floor on the lowest level anywhere in the target band, dB. |
 | `score_weights` | unset | Preference weights, for example `sensitivity=0.625,ripple=0.25,extension=0.125,size=0`. Unset uses those values. Weights are normalised to sum to 1. |
-| `test_power_w` | unset | Optional stress power, W into the nominal impedance. Checks excursion over the whole sweep and reports the Xmax margin. |
+| `test_power_w` | unset | Optional stress power, W into the nominal impedance (Re when none is recorded). Reports excursion and the Xmax margin over the band and the whole sweep. Rejects a design whose in-band excursion exceeds Xmax or whose in-band input power exceeds the driver rating at that level. Drive voltage, SPL and score are unchanged. |
 | `driver_id` | unset | Single mode: couple this driver from `drivers_db` to the horn and add the coupled response to the report. |
 
 ### Solver

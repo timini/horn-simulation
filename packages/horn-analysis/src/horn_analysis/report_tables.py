@@ -61,6 +61,7 @@ REASON_DESCRIPTIONS = {
     "driver_excursion_exceeded": "Excursion above Xmax at the drive voltage",
     "driver_nominal_power_exceeded": "Input power above the driver rating at the drive voltage",
     "test_power_excursion_exceeded": "In-band excursion above Xmax at the test power",
+    "test_power_nominal_power_exceeded": "In-band input power above the driver rating at the test power",
     "radiation_model_out_of_domain": "Outside the radiation model's valid range",
     "profile_geometry_infeasible": "Profile cannot reach the mouth in this length",
     "loft_accuracy_unmet": "STEP loft could not follow the profile closely enough",
@@ -93,6 +94,9 @@ def _excess(reason, row, target, driver):
     if reason == "test_power_excursion_exceeded":
         margin = row.get("test_power_xmax_margin_mm")
         return (None if margin is None else -margin), "mm"
+    if reason == "test_power_nominal_power_exceeded":
+        margin = row.get("test_power_rating_margin_w")
+        return (None if margin is None else -margin), "W"
     return None, ""
 
 

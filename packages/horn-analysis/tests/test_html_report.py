@@ -128,6 +128,18 @@ class TestHtmlReport:
         # Check score values appear
         assert "0.85" in result or "0.850" in result
 
+    def test_html_states_the_stress_power(self, report_inputs):
+        """With test_power_w the page states the level and each candidate's stress results."""
+        assert "Stress check" not in generate_html_report(**report_inputs)
+        report_inputs["target"] = TargetSpec(f_low_hz=500, f_high_hz=4000, test_power_w=50.)
+        report_inputs["all_ranked"][0].update({
+            "test_power_w": 50., "test_voltage_rms": 20., "test_power_band_max_excursion_mm": 0.2,
+            "test_power_xmax_margin_mm": 2.8, "test_power_band_max_input_power_w": 72.4,
+            "test_power_rating_margin_w": 127.6})
+        result = generate_html_report(**report_inputs)
+        assert "Stress check: 50 W into each driver's nominal impedance" in result
+        assert "in-band excursion 0.20 mm, Xmax margin 2.80 mm; in-band input power up to 72.4 W, rating margin 127.6 W" in result
+
     def test_html_has_four_embedded_images(self, report_inputs):
         """Report should contain exactly 4 base64-embedded PNG images."""
         result = generate_html_report(**report_inputs)

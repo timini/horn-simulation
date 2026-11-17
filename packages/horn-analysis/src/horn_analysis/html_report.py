@@ -431,6 +431,7 @@ _HTML_TEMPLATE = """\
 Raw horn plots show mouth-plane pressure. Legacy inputs contain mouth-plane levels only.</p>
 <p>Drive: {drive_voltage} V RMS. Observer: {observer_distance} m on axis from mouth plane.
 Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume, not manufacturing walls.</p>
+{stress_summary}
 <p>Acoustic models used: {physics_summary}. Scores within 0.02 are near-ties for comparison; physical uncertainty remains unquantified.</p>
 {radiation_caveat}
 {evidence_summary}</div>
@@ -761,6 +762,30 @@ def _render_directivity(directivity_tables, target, top_results) -> str:
     return ""
 
 
+
+def _render_stress_summary(target, top_results) -> str:
+    """State the test power and each shown candidate's excursion and power at it."""
+    power = getattr(target, "test_power_w", None)
+    if power is None:
+        return ""
+    lines = []
+    for rank, result in enumerate(top_results, 1):
+        if result.get("test_power_band_max_excursion_mm") is None:
+            continue
+        xmax = result.get("test_power_xmax_margin_mm")
+        rating = result.get("test_power_rating_margin_w")
+        lines.append(
+            f"<li>#{rank} {html.escape(str(result.get('horn_label')))} + {html.escape(str(result.get('driver_id')))}: "
+            f"{result['test_voltage_rms']:.2f} V RMS; in-band excursion {result['test_power_band_max_excursion_mm']:.2f} mm"
+            + (f", Xmax margin {xmax:.2f} mm" if xmax is not None else ", Xmax unknown")
+            + f"; in-band input power up to {result['test_power_band_max_input_power_w']:.1f} W"
+            + (f", rating margin {rating:.1f} W" if rating is not None else ", rating unknown")
+            + "</li>")
+    return (f"<p>Stress check: {power:g} W into each driver's nominal impedance (Re when none is recorded). "
+            "In-band excursion above Xmax or in-band input power above the driver rating at this level rejects a design. "
+            "Linear model, no crossover high-pass; not a thermal or large-signal prediction.</p>"
+            + (f"<ul>{''.join(lines)}</ul>" if lines else ""))
+
 def generate_html_report(
     all_ranked: List[dict],
     solver_csvs: Dict[str, str],
@@ -978,6 +1003,7 @@ def generate_html_report(
                              else "The observer estimate assumes a uniformly moving circular aperture in an infinite baffle."),
         "physics_summary": html.escape(", ".join(sorted({str(r.get("loss_model", "lossless"))+" / "+str(r.get("radiation_model", "legacy unknown")) for r in top_results})) or "No candidates"),
         "drive_voltage": target.voltage_rms,
+        "stress_summary": _render_stress_summary(target, top_results),
         "observer_distance": target.observation_distance_m,
         "ripple_limit": target.max_ripple_db,
         "evidence_summary": _render_evidence_summary(top_results),

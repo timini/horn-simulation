@@ -247,7 +247,9 @@ def generate_auto_report(
         if result.get("test_power_w") is not None:
             margin = result.get("test_power_xmax_margin_mm")
             lines.append(f"     At {result['test_power_w']:g} W: max in-band excursion {result['test_power_band_max_excursion_mm']:.2f} mm"
-                         + (f", Xmax margin {margin:.2f} mm" if margin is not None else ", Xmax unknown"))
+                         + (f", Xmax margin {margin:.2f} mm" if margin is not None else ", Xmax unknown")
+                         + (f"; max in-band input power {result['test_power_band_max_input_power_w']:.1f} W"
+                            if result.get("test_power_band_max_input_power_w") is not None else ""))
         if "kpi" in result:
             kpi = result["kpi"]
             f3l = format_kpi(result, "f3_low_hz")

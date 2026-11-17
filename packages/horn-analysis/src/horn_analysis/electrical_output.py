@@ -33,11 +33,14 @@ def _band_grid(frequencies, low, high):
 
 
 def stress_assessment(frequencies, operating_point, driver, target):
-    """Excursion at the test power over the full sweep and in the target band.
+    """Excursion and input power at the test power, over the sweep and in the band.
 
     Returns (metrics, rejection_reasons). Exceeding Xmax inside the target band
     rejects the design; exceeding it only below the band is reported as the
-    frequency a high-pass crossover has to sit above.
+    frequency a high-pass crossover has to sit above. In-band input power above
+    the driver's power rating also rejects. The input power is the real power
+    the coupled load draws at the test voltage, which differs from the nominal
+    test power wherever |Ze| differs from the nominal impedance.
     test_power_xmax_exceeded_up_to_hz is the highest swept frequency at which
     excursion exceeds Xmax, which may lie inside the band when it rejects.
     """
@@ -47,6 +50,8 @@ def stress_assessment(frequencies, operating_point, driver, target):
     excursion = np.asarray(operating_point["displacement_peak_m"]) * scale
     grid = _band_grid(f, target.f_low_hz, target.f_high_hz)
     band_max = float(np.max(np.interp(grid, np.log(f), excursion)))
+    power = np.asarray(operating_point["input_power_w"]) * scale**2
+    band_power = float(np.max(np.interp(grid, np.log(f), power)))
     peak_index = int(np.argmax(excursion))
     metrics = {
         "test_power_w": target.test_power_w,
@@ -58,6 +63,8 @@ def stress_assessment(frequencies, operating_point, driver, target):
         "test_power_xmax_margin_mm": None,
         "test_power_sweep_xmax_margin_mm": None,
         "test_power_xmax_exceeded_up_to_hz": None,
+        "test_power_band_max_input_power_w": band_power,
+        "test_power_rating_margin_w": None if driver.power_w is None else driver.power_w - band_power,
         "test_power_scope": "Linear model over the full simulated sweep; no crossover high-pass applied",
     }
     reasons = []
@@ -69,6 +76,8 @@ def stress_assessment(frequencies, operating_point, driver, target):
             metrics["test_power_xmax_exceeded_up_to_hz"] = float(f[np.flatnonzero(over)[-1]])
         if band_max > driver.xmax_m:
             reasons.append("test_power_excursion_exceeded")
+    if driver.power_w is not None and band_power > driver.power_w:
+        reasons.append("test_power_nominal_power_exceeded")
     return metrics, reasons
 
 

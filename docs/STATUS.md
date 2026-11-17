@@ -13,7 +13,7 @@ The scope is conventional single-driver, rigid, axisymmetric, front-loaded horns
 - Single mode: one horn from parameters or an imported STEP (units honoured), optional coupling of one driver. See [USAGE](USAGE.md).
 - Auto mode: driver screen, throat sampling, geometry grid over seven profiles, Webster screen, FEM shortlist with profile diversity, bounded refinement with bound widening, ranking with hard limits and a documented score. See [SEARCH_AND_SCORING](SEARCH_AND_SCORING.md).
 - Size caps, minimum output, fixed dimensions, profile restriction and custom score weights.
-- Driver coupling with front chamber (supplied or estimated for cones), optional chamber duct and sealed rear chamber. Linear excursion and power checks at the drive voltage, and an optional stress power over the whole sweep.
+- Driver coupling with front chamber (supplied or estimated for cones), optional chamber duct and sealed rear chamber. Linear excursion and power checks at the drive voltage, and an optional stress power: excursion over the whole sweep, with excursion and input power checked in the band.
 - Per-candidate electrical impedance, excursion, input power and group delay, builder profile CSVs, true-size STEP files, rejection summary with margins, and experimental directivity for `modal_baffled` horns. See [OUTPUTS](OUTPUTS.md).
 - `modal_baffled` mouth radiation as the default for generated horns, with `flanged_piston` and other local models as options. Optional thermoviscous wall losses.
 - Isolated runs with manifest, source snapshot, input and image hashes; checked resume; run lookup; stale-image warnings.

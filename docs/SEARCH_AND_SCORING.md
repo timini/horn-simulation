@@ -29,6 +29,7 @@ A pair is feasible only when all of these hold. Infeasible pairs score 0 and app
 | Peak excursion at most Xmax at `voltage_rms` | `driver_excursion_exceeded` |
 | Input power at most the rated power at `voltage_rms` | `driver_nominal_power_exceeded` |
 | In-band excursion at most Xmax at `test_power_w`, when set | `test_power_excursion_exceeded` |
+| In-band input power at most the driver rating at `test_power_w`, when set | `test_power_nominal_power_exceeded` |
 
 A feasible pair with missing driver or interface data is labelled `insufficient_evidence` rather than rejected. The gaps are listed in `evidence_gaps`.
 

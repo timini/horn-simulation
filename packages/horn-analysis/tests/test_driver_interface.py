@@ -237,6 +237,30 @@ def test_stress_power_is_separate_from_drive_voltage():
     assert "test_power_excursion_exceeded" in loud["rejection_reasons"] and loud["composite_score"] == 0
 
 
+def test_stress_power_checks_input_power_against_the_rating():
+    driver = cone(front_chamber_volume_m3=0.)
+    f = np.geomspace(50, 4000, 300)
+    z = np.full(f.shape, RHO0 * C0)
+    levels = np.full(f.shape, 100.)
+    point = compute_driver_operating_point(driver, f, z, 0 * z, AREA, 2.83)
+    stressed = evaluate_response(f, levels, TargetSpec(800, 1600, test_power_w=50.), driver, AREA, operating_point=point)
+    # The input power at the test voltage is the drive-level power scaled by the voltage ratio squared.
+    scale = math.sqrt(50 * 8.) / 2.83
+    band = (f >= 800) & (f <= 1600)
+    band_power = np.asarray(point["input_power_w"])[band].max() * scale**2
+    assert stressed["test_power_band_max_input_power_w"] == pytest.approx(band_power, rel=1e-2)
+    assert stressed["test_power_band_max_input_power_w"] == pytest.approx(stressed["max_input_power_w"] * scale**2, rel=1e-12)
+    assert stressed["test_power_rating_margin_w"] == pytest.approx(200. - stressed["test_power_band_max_input_power_w"])
+    assert stressed["model_feasible"]
+    # The same 50 W level is above a 30 W rating, even though excursion stays inside Xmax.
+    small = cone(front_chamber_volume_m3=0., power_w=30.)
+    point = compute_driver_operating_point(small, f, z, 0 * z, AREA, 2.83)
+    base = evaluate_response(f, levels, TargetSpec(800, 1600), small, AREA, operating_point=point)
+    assert base["model_feasible"]
+    over = evaluate_response(f, levels, TargetSpec(800, 1600, test_power_w=50.), small, AREA, operating_point=point)
+    assert over["rejection_reasons"] == ["test_power_nominal_power_exceeded"] and over["composite_score"] == 0
+
+
 def test_group_delay_removes_time_of_flight():
     f = np.geomspace(100, 10000, 2000)
     w = 2 * np.pi * f
