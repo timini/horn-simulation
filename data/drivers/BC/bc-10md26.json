@@ -14,8 +14,7 @@
         "nominal_impedance_ohm": 8.0,
         "xmax_m": 0.0015,
         "qms": 4.8,
-        "qes": 0.22,
-        "power_w": 350.0
+        "qes": 0.22
     },
     "nominal_diameter": "10in",
     "parameter_source": "https://loudspeakerdatabase.com/BC/10MD26",
@@ -28,44 +27,7 @@
         "known_limitations": [
             "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
             "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
-            "Sensitivity, rms not captured."
-        ],
-        "supplemented_fields": [
-            "power_w",
-            "usable_f_high_hz",
-            "usable_f_low_hz"
-        ],
-        "supplemented_from": "driver-base (CC BY 4.0) values read from the manufacturer page; see field_provenance for each field."
-    },
-    "usable_f_low_hz": 80.0,
-    "usable_f_high_hz": 4000.0,
-    "field_provenance": {
-        "power_w": {
-            "source_id": "driver-base",
-            "url": "https://www.bcspeakers.com/en/products/lf-driver/10/8/10MD26",
-            "retrieved_on": "2026-10-18",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "power_aes_watts",
-            "upstream_spec_source": "html_grid"
-        },
-        "usable_f_low_hz": {
-            "source_id": "driver-base",
-            "url": "https://www.bcspeakers.com/en/products/lf-driver/10/8/10MD26",
-            "retrieved_on": "2026-10-18",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "freq_low_hz",
-            "upstream_spec_source": "html_grid"
-        },
-        "usable_f_high_hz": {
-            "source_id": "driver-base",
-            "url": "https://www.bcspeakers.com/en/products/lf-driver/10/8/10MD26",
-            "retrieved_on": "2026-10-18",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "freq_high_hz",
-            "upstream_spec_source": "html_grid"
-        }
+            "Band, power handling, Rms and sensitivity were not captured."
+        ]
     }
 }

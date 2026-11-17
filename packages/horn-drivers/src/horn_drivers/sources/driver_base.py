@@ -20,6 +20,13 @@ What the import does:
   matched scraped record (``data/drivers``, version 1) that lacks power,
   sensitivity or band gets those fields added, but only when Fs, Re, Bl and
   Sd agree, so both records clearly describe the same driver;
+- checks each record for internal consistency: Fs against Mms and Cms
+  (10 %), Qes against Fs, Mms, Re and Bl (20 %), and the page's Vas
+  against Sd, Fs and Mms (a factor of 1.5). A Cms that disagrees
+  while Qes agrees is dropped; any other disagreement sends the record to
+  the incomplete folder with the reason;
+- copies driver-base's warn_flags into the record notes and marks a power
+  rating it flags as not AES in that field's provenance;
 - writes compression drivers without a full Thiele/Small set to the
   incomplete folder, and skips passive radiators, shakers and makers not on
   the canonical list.
@@ -28,6 +35,7 @@ What the import does:
 import csv
 import json
 import math
+import re
 from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Sequence, Tuple
 
@@ -50,7 +58,7 @@ ATTRIBUTION = ("Data from driver-base (https://github.com/JonathanDCohen/driver-
 PAGE_SOURCES = frozenset({"html_table", "html_div_pairs", "html_prose", "html_grid", "inline_js", "json_api"})
 PDF_SOURCES = frozenset({"pdf_table", "pdf_text"})
 
-# driver-base field -> (our parameter, scale to SI)
+# driver-base field, our parameter, scale to SI
 FIELD_MAP: Tuple[Tuple[str, str, float], ...] = (
     ("fs_hz", "fs_hz", 1.0),
     ("re_ohm", "re_ohm", 1.0),
@@ -89,6 +97,23 @@ IDENTITY_FIELDS = ("fs_hz", "re_ohm", "bl_tm", "sd_m2")
 SAME_VALUES_TOLERANCE = 0.01
 SAME_VALUES_FIELDS = ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg")
 FILL_FIELDS = ("power_w", "peak_power_w", "sensitivity_db_1w1m")
+# Internal consistency gate: Fs = 1 / (2 pi sqrt(Mms Cms)) and
+# Qes = 2 pi Fs Mms Re / Bl^2, each within this relative tolerance.
+FS_CONSISTENCY_TOLERANCE = 0.10
+QES_CONSISTENCY_TOLERANCE = 0.20
+# Vas = rho c^2 Sd^2 Cms, with Cms from Fs and Mms: the page's Vas (used only
+# for this check, not stored) must agree within this factor. It catches Sd or
+# Mms parse slips by a factor of ten.
+VAS_CONSISTENCY_FACTOR = 1.5
+RHO_C2 = 1.204 * 343.0 ** 2
+# A page nominal size is used when the effective cone diameter from Sd is
+# this fraction of it; otherwise the size is guessed from Sd.
+NOMINAL_SIZE_SD_RATIO = (0.6, 1.0)
+NON_AES_POWER_FLAG = "power_std_non_aes"
+# Nominal sizes (inches) used when driver-base read the size from the page.
+NOMINAL_SIZES_IN = (2, 3, 4, 5, 6, 6.5, 7, 8, 10, 12, 15, 18, 21, 24)
+PREFIX_REVIEW_COLUMNS = ("canonical_id", "driver_base_model", "existing_driver_id", "path", "extra_suffix",
+                         "driver_base_url", "reason")
 CONFLICT_COLUMNS = ("driver_id", "path", "field", "existing", "driver_base", "relative_difference",
                     "tolerance", "driver_base_url", "note")
 
@@ -106,6 +131,44 @@ def _method(spec_source: Optional[str]) -> Optional[str]:
     if spec_source in PDF_SOURCES:
         return "pdf"
     return None  # derived, inferred, override or missing: not imported
+
+
+def consistency_problems(parameters: Dict[str, float], vas_m3: Optional[float] = None) -> Dict[str, str]:
+    """Checks that fail, as {"fs_cms" | "qes" | "vas": description}. Checks whose inputs are missing are skipped."""
+    problems = {}
+    fs, mms, cms = parameters.get("fs_hz"), parameters.get("mms_kg"), parameters.get("cms_m_per_n")
+    if fs and mms and cms:
+        computed = 1.0 / (2.0 * math.pi * math.sqrt(mms * cms))
+        if abs(computed - fs) / fs > FS_CONSISTENCY_TOLERANCE:
+            problems["fs_cms"] = f"Fs {fs:g} Hz but Mms and Cms give {computed:.3g} Hz"
+    re_ohm, bl, qes = parameters.get("re_ohm"), parameters.get("bl_tm"), parameters.get("qes")
+    if fs and mms and re_ohm and bl and qes:
+        computed = 2.0 * math.pi * fs * mms * re_ohm / bl ** 2
+        if abs(computed - qes) / qes > QES_CONSISTENCY_TOLERANCE:
+            problems["qes"] = f"Qes {qes:g} but Fs, Mms, Re and Bl give {computed:.3g}"
+    sd = parameters.get("sd_m2")
+    if fs and mms and sd and vas_m3:
+        computed = RHO_C2 * sd ** 2 / ((2.0 * math.pi * fs) ** 2 * mms)
+        if max(computed / vas_m3, vas_m3 / computed) > VAS_CONSISTENCY_FACTOR:
+            problems["vas"] = f"page Vas {vas_m3 * 1e3:.3g} L but Sd, Fs and Mms give {computed * 1e3:.3g} L"
+    return problems
+
+
+def nominal_size_label(size_mm: Optional[float], sd_m2: Optional[float] = None) -> Optional[str]:
+    """The nearest standard nominal size, as "8in" or "6.5in", for a size in mm.
+
+    None when the size is missing, or when Sd is given and its effective
+    diameter is not a plausible fraction of the size (a misread size).
+    """
+    if size_mm is None:
+        return None
+    if sd_m2 is not None:
+        ratio = 2.0 * math.sqrt(sd_m2 / math.pi) * 1e3 / size_mm
+        if not NOMINAL_SIZE_SD_RATIO[0] <= ratio <= NOMINAL_SIZE_SD_RATIO[1]:
+            return None
+    inches = size_mm / 25.4
+    best = min(NOMINAL_SIZES_IN, key=lambda size: abs(size - inches))
+    return f"{best:g}in"
 
 
 def convert_entry(entry: dict, *, impedance_in_id: bool = False, dataset_url: str = DATASET_URL) -> DriverResult:
@@ -166,6 +229,21 @@ def convert_entry(entry: dict, *, impedance_in_id: bool = False, dataset_url: st
     if "peak_power_w" in parameters and parameters["peak_power_w"] < parameters.get("power_w", 0.0):
         parameters.pop("peak_power_w")
         provenance.pop("peak_power_w")
+    warn_flags = [str(flag) for flag in entry.get("warn_flags") or []]
+    if "power_w" in provenance and NON_AES_POWER_FLAG in warn_flags:
+        provenance["power_w"]["power_standard"] = "not AES (driver-base warn flag power_std_non_aes)"
+
+    vas_l = _number(entry.get("vas_liters")) if _method(sources.get("vas_liters")) else None
+    problems = consistency_problems(parameters, vas_l * 1e-3 if vas_l else None)
+    inconsistent = None
+    dropped_cms = None
+    if "fs_cms" in problems and "qes" not in problems and "qes" in parameters:
+        # Mms agrees with Fs, Re, Bl and Qes, so the stated Cms is the bad value.
+        dropped_cms = problems.pop("fs_cms")
+        parameters.pop("cms_m_per_n")
+        provenance.pop("cms_m_per_n")
+    if problems:
+        inconsistent = "inconsistent Thiele/Small values: " + "; ".join(problems[k] for k in sorted(problems))
 
     driver_type = DRIVER_TYPES.get(kind, "unknown")
     type_source = (f"driver-base driver_kind {kind!r}, from the manufacturer's product category"
@@ -177,10 +255,17 @@ def convert_entry(entry: dict, *, impedance_in_id: bool = False, dataset_url: st
         notes.append("Coaxial driver: the parameters are for the low-frequency section.")
     if dropped:
         notes.append("Derived or inferred driver-base values not imported: " + ", ".join(sorted(dropped)) + ".")
+    if dropped_cms:
+        notes.append(f"Cms not imported: {dropped_cms}, while Qes agrees with Mms.")
+    if warn_flags:
+        notes.append("driver-base warn_flags: " + ", ".join(warn_flags) + ".")
     nominal_diameter = None
-    if driver_type == "cone" and "sd_m2" in parameters:
-        from horn_drivers.scraper import infer_nominal_diameter
-        nominal_diameter = infer_nominal_diameter(parameters["sd_m2"])
+    if driver_type == "cone":
+        if _method((entry.get("spec_source") or {}).get("nominal_size_mm")) is not None:
+            nominal_diameter = nominal_size_label(_number(entry.get("nominal_size_mm")), parameters.get("sd_m2"))
+        if nominal_diameter is None and "sd_m2" in parameters:
+            from horn_drivers.scraper import infer_nominal_diameter
+            nominal_diameter = infer_nominal_diameter(parameters["sd_m2"])
     try:
         record = make_record(manufacturer=manufacturer, model=model, parameters=parameters,
                              field_provenance=provenance, driver_type=driver_type, impedance_ohm=impedance,
@@ -198,6 +283,8 @@ def convert_entry(entry: dict, *, impedance_in_id: bool = False, dataset_url: st
         if driver_type == "compression":
             return DriverResult(ref, record, "missing Thiele/Small fields: " + ", ".join(missing), incomplete=True)
         return DriverResult(ref, None, "missing Thiele/Small fields: " + ", ".join(missing))
+    if inconsistent:
+        return DriverResult(ref, record, inconsistent, incomplete=True)
     return DriverResult(ref, record)
 
 
@@ -237,23 +324,66 @@ def record_key(record: dict) -> Optional[Tuple[str, str, Optional[float]]]:
         return None
 
 
-def same_driver_by_values(existing: dict, new: dict) -> bool:
-    """True when one model name extends the other and the core values agree.
-
-    Catches the same driver filed under a coil or impedance suffix ("HSB322"
-    and "HSB322-22") or under a different nominal impedance convention for a
-    dual-coil driver. Both checks must hold.
-    """
+def model_suffix(existing: dict, new: dict) -> Optional[str]:
+    """The text one normalised model name adds to the other, or None when neither extends the other."""
     old_key, new_key = record_key(existing), record_key(new)
     if old_key is None or new_key is None or old_key[0] != new_key[0]:
+        return None
+    longer, shorter = sorted((old_key[1], new_key[1]), key=len, reverse=True)
+    return longer[len(shorter):] if longer.startswith(shorter) else None
+
+
+def is_impedance_suffix(suffix: str, impedances: Sequence[Optional[float]]) -> bool:
+    """True for "" or an impedance or dual-coil code ("4", "22", "8OHM") naming one of *impedances*."""
+    if suffix == "":
+        return True
+    match = re.fullmatch(r"(\d{1,2})(OHM)?", suffix)
+    if not match:
         return False
-    if not (old_key[1].startswith(new_key[1]) or new_key[1].startswith(old_key[1])):
-        return False
+    digits = match.group(1)
+    for impedance in impedances:
+        if impedance and float(impedance).is_integer():
+            code = str(int(impedance))
+            if digits in (code, code * 2):
+                return True
+    return False
+
+
+def _impedances(record: dict) -> List[Optional[float]]:
+    variant = (record_identity(record).get("variant") or {})
+    return [variant.get("impedance_ohm"), (record.get("parameters") or {}).get("nominal_impedance_ohm")]
+
+
+def same_values(existing: dict, new: dict) -> bool:
+    """Fs, Re, Bl, Sd and Mms all present and within SAME_VALUES_TOLERANCE."""
     for name in SAME_VALUES_FIELDS:
         old, value = _value(existing, name), _value(new, name)
         if old is None or value is None or abs(value - old) / old > SAME_VALUES_TOLERANCE:
             return False
     return True
+
+
+def same_driver_by_values(existing: dict, new: dict) -> bool:
+    """True when the model names differ only by an impedance or coil code and the core values agree.
+
+    Catches the same driver filed under a coil or impedance suffix ("HSB322"
+    and "HSB322-22") or under a different nominal impedance convention for a
+    dual-coil driver. A suffix that is not an impedance code ("EVO", "WP",
+    "-2" on an 8 ohm driver) may name a different revision, so it does not
+    match; see prefix_candidate.
+    """
+    suffix = model_suffix(existing, new)
+    if suffix is None or not is_impedance_suffix(suffix, _impedances(existing) + _impedances(new)):
+        return False
+    return same_values(existing, new)
+
+
+def prefix_candidate(existing: dict, new: dict) -> Optional[str]:
+    """The suffix when the names differ by a non-impedance suffix but the core values agree, else None."""
+    suffix = model_suffix(existing, new)
+    if suffix is None or is_impedance_suffix(suffix, _impedances(existing) + _impedances(new)):
+        return None
+    return suffix if same_values(existing, new) else None
 
 
 def _value(record: dict, name: str) -> Optional[float]:
@@ -296,8 +426,12 @@ def fill_missing(existing: dict, new: dict) -> Tuple[Optional[dict], List[str]]:
             params[name] = new["parameters"][name]
             provenance[name] = new_provenance[name]
             filled.append(name)
-    if existing.get("power_w") is None and "power_w" in filled and params.get("peak_power_w", math.inf) < params["power_w"]:
-        params.pop("peak_power_w", None)
+    # A filled peak rating below the filled nominal one is dropped; an
+    # existing peak rating is never touched.
+    if "power_w" in filled and "peak_power_w" in filled and params["peak_power_w"] < params["power_w"]:
+        params.pop("peak_power_w")
+        provenance.pop("peak_power_w")
+        filled.remove("peak_power_w")
     updated = {**existing, "parameters": params}
     if existing.get("usable_f_low_hz") is None and existing.get("usable_f_high_hz") is None \
             and new.get("usable_f_low_hz") is not None:
@@ -330,11 +464,13 @@ class ImportSummary(RunSummary):
         self.filled = 0
         self.conflicts = 0
         self.duplicates = 0
+        self.prefix_review = 0
         self.skip_reasons: Dict[str, int] = {}
 
     def to_dict(self) -> dict:
         return {**super().to_dict(), "matched_existing": self.matched, "filled_existing": self.filled,
                 "conflicting_fields": self.conflicts, "ambiguous_in_dataset": self.duplicates,
+                "prefix_matches_for_review": self.prefix_review,
                 "skip_reasons": dict(sorted(self.skip_reasons.items(), key=lambda item: -item[1]))}
 
 
@@ -413,6 +549,7 @@ class DriverBaseSource(DriverSource):
         summary = ImportSummary(self.source_id)
         conflicts: List[dict] = []
         matches: List[dict] = []
+        review: List[dict] = []
         imported: Dict[Tuple, str] = {}
         for ref, page in self._pages(limit, summary):
             result = self.parse_driver(page, ref)
@@ -434,7 +571,22 @@ class DriverBaseSource(DriverSource):
             how = "manufacturer, model and impedance"
             if hit is None:
                 hit = next((item for item in by_maker.get(key[0], []) if same_driver_by_values(item[1], record)), None)
-                how = "model prefix and Fs, Re, Bl, Sd, Mms within 1 %"
+                how = "impedance or coil suffix and Fs, Re, Bl, Sd, Mms within 1 %"
+            if hit is None:
+                candidate = next(((item, suffix) for item in by_maker.get(key[0], [])
+                                  if (suffix := prefix_candidate(item[1], record)) is not None), None)
+                if candidate is not None:
+                    (path, old), suffix = candidate
+                    review.append({"canonical_id": ref.hint("canonical_id"), "driver_base_model": record["model_name"],
+                                   "existing_driver_id": old.get("driver_id"), "path": str(path),
+                                   "extra_suffix": suffix, "driver_base_url": ref.url,
+                                   "reason": "model names differ by a suffix that is not an impedance code; "
+                                             "Fs, Re, Bl, Sd and Mms agree within 1 %. Possibly a revision "
+                                             "or the same driver: not filled, not imported."})
+                    summary.prefix_review += 1
+                    summary.skipped.append((ref.hint("canonical_id"),
+                                            f"prefix match for review: {old.get('driver_id')} (suffix {suffix!r})"))
+                    continue
             if hit is not None:
                 path, old = hit
                 summary.matched += 1
@@ -468,7 +620,7 @@ class DriverBaseSource(DriverSource):
                 summary.skipped.append((ref.hint("canonical_id"), f"duplicate of {imported[key]} in the dataset"))
                 continue
             target = db_dir / record["manufacturer"] / f"{record['driver_id']}.json"
-            if target.resolve() in taken_paths and not result.incomplete:
+            if target.resolve() in taken_paths:
                 impedance = (record["identity"]["variant"] or {}).get("impedance_ohm")
                 record["driver_id"] = driver_id_for(record["manufacturer"], record["model_name"], impedance)
                 target = db_dir / record["manufacturer"] / f"{record['driver_id']}.json"
@@ -499,7 +651,7 @@ class DriverBaseSource(DriverSource):
                 cls = reason.split(":")[0]
                 summary.skip_reasons[cls] = summary.skip_reasons.get(cls, 0) + 1
         if summary.pages:
-            write_reports(report_dir, summary, conflicts, matches)
+            write_reports(report_dir, summary, conflicts, matches, review)
         return summary
 
 
@@ -509,9 +661,15 @@ def _conflict_note(existing: dict, field: str) -> str:
     return ""
 
 
-def write_reports(report_dir: Path, summary: ImportSummary, conflicts: List[dict], matches: List[dict]) -> None:
-    """conflicts.csv, matches.json and summary.json under *report_dir*."""
+def write_reports(report_dir: Path, summary: ImportSummary, conflicts: List[dict], matches: List[dict],
+                  review: Sequence[dict] = ()) -> None:
+    """conflicts.csv, prefix_review.csv, matches.json and summary.json under *report_dir*."""
     report_dir.mkdir(parents=True, exist_ok=True)
+    with (report_dir / "prefix_review.csv").open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=PREFIX_REVIEW_COLUMNS)
+        writer.writeheader()
+        for row in sorted(review, key=lambda r: (r["path"], r["canonical_id"])):
+            writer.writerow({k: row.get(k) for k in PREFIX_REVIEW_COLUMNS})
     with (report_dir / "conflicts.csv").open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=CONFLICT_COLUMNS)
         writer.writeheader()
@@ -529,4 +687,5 @@ def write_reports(report_dir: Path, summary: ImportSummary, conflicts: List[dict
     }, indent=1) + "\n")
 
 
-__all__ = ["DriverBaseSource", "convert_entry", "compare_records", "fill_missing", "DATASET_URL", "ATTRIBUTION"]
+__all__ = ["DriverBaseSource", "convert_entry", "compare_records", "consistency_problems", "fill_missing",
+           "same_driver_by_values", "prefix_candidate", "DATASET_URL", "ATTRIBUTION"]

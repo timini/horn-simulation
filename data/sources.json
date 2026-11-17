@@ -572,14 +572,15 @@
       "robots_url": "https://raw.githubusercontent.com/robots.txt",
       "robots_snapshot_date": "2026-11-17",
       "terms_url": "https://github.com/JonathanDCohen/driver-base/blob/main/LICENSE-DATA",
-      "approval_note": "Dataset licensed CC BY 4.0 (LICENSE-DATA): reuse allowed with attribution and a note of changes. One file, pinned to a commit.",
+      "approval_note": "Dataset licensed CC BY 4.0: reuse allowed with attribution and a note of changes. One file, pinned to a commit. LICENSE-DATA names \"the JSON files under `data/`\"; the README names the published file: \"**Dataset** (`web/drivers.json` and the schema/compilation it represents) ... [Creative Commons Attribution 4.0](LICENSE-DATA) (CC BY 4.0).\" The README also lists `web/` under the Apache License 2.0 for code; both licences allow reuse with attribution.",
       "region": null,
       "currency": null,
       "vat_included": null,
       "status_note": "Imported 2026-11-17 from commit f0fc602; see data/sources/driver-base/.",
       "notes": [
         "raw.githubusercontent.com has no robots.txt (HTTP 404 on 2026-11-17), so no rules apply.",
-        "Attribution: Data from driver-base (https://github.com/JonathanDCohen/driver-base), licensed under CC BY 4.0."
+        "Attribution: Data from driver-base (https://github.com/JonathanDCohen/driver-base), licensed under CC BY 4.0.",
+        "No snapshot under data/sources/robots/: there is no robots.txt to store. The 404 response is cached under results/cache/driver-base/."
       ]
     }
   ]

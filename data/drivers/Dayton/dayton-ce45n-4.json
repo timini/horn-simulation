@@ -14,8 +14,7 @@
         "nominal_impedance_ohm": 4.0,
         "xmax_m": 0.0011,
         "qms": 4.23,
-        "qes": 1.12,
-        "power_w": 5.0
+        "qes": 1.12
     },
     "parameter_source": "https://loudspeakerdatabase.com/Dayton/CE45N-4",
     "record_schema_version": 1,
@@ -27,44 +26,7 @@
         "known_limitations": [
             "driver_type came from an Sd threshold, not a sourced category; compression labels were reset to unknown.",
             "mms_kg may be the dry moving mass Mmd where the page showed no Mms.",
-            "Sensitivity, rms not captured."
-        ],
-        "supplemented_fields": [
-            "power_w",
-            "usable_f_high_hz",
-            "usable_f_low_hz"
-        ],
-        "supplemented_from": "driver-base (CC BY 4.0) values read from the manufacturer page; see field_provenance for each field."
-    },
-    "usable_f_low_hz": 150.0,
-    "usable_f_high_hz": 20000.0,
-    "field_provenance": {
-        "power_w": {
-            "source_id": "driver-base",
-            "url": "https://www.daytonaudio.com/product/1923/ce45n-4-1-75-dual-neo-full-range-speaker-driver-8w-4-ohm",
-            "retrieved_on": "2026-08-22",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "power_aes_watts",
-            "upstream_spec_source": "html_table"
-        },
-        "usable_f_low_hz": {
-            "source_id": "driver-base",
-            "url": "https://www.daytonaudio.com/product/1923/ce45n-4-1-75-dual-neo-full-range-speaker-driver-8w-4-ohm",
-            "retrieved_on": "2026-08-22",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "freq_low_hz",
-            "upstream_spec_source": "html_table"
-        },
-        "usable_f_high_hz": {
-            "source_id": "driver-base",
-            "url": "https://www.daytonaudio.com/product/1923/ce45n-4-1-75-dual-neo-full-range-speaker-driver-8w-4-ohm",
-            "retrieved_on": "2026-08-22",
-            "method": "page",
-            "via": "https://raw.githubusercontent.com/JonathanDCohen/driver-base/f0fc602b2fb4154b20b90d4cae03fa82296b249a/web/drivers.json",
-            "upstream_field": "freq_high_hz",
-            "upstream_spec_source": "html_table"
-        }
+            "Band, power handling, Rms and sensitivity were not captured."
+        ]
     }
 }
