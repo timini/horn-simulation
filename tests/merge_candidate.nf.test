@@ -1,0 +1,36 @@
+nextflow_process {
+
+    name "Test Process merge_candidate_results"
+    script "../main.nf"
+    process "merge_candidate_results"
+    config "nextflow.config"
+    profile "docker"
+
+    test("Bands that do not join reject the candidate instead of failing the run") {
+        when {
+            params {
+                num_intervals = 6
+                min_points_per_octave = 0
+                num_bands = 2
+                outdir = "${outputDir}"
+            }
+            process {
+                """
+                input[0] = tuple("mismatch",
+                    [file("${projectDir}/tests/data/results_mismatch_0.csv"),
+                     file("${projectDir}/tests/data/results_mismatch_1.csv")],
+                    100.0, 1000.0)
+                """
+            }
+        }
+        then {
+            assert process.success
+            def outputs = process.out[0].collect { it[1].toString() }
+            assert outputs.size() == 1 && outputs[0].endsWith("mismatch_rejected.json")
+            def record = new groovy.json.JsonSlurper().parse(new File(outputs[0]))
+            assert record.rejection_reasons == ["band_boundary_mismatch"]
+            assert record.band_boundary_mismatch.quantity == "mouth_p"
+            assert record.band_boundary_mismatch.excess_ratio > 1
+        }
+    }
+}

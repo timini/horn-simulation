@@ -122,7 +122,8 @@ def lem_prescreen_candidates(
                     frequencies, transfer["mouth_volume_velocity_transfer"]*point["throat_pressure"],
                     transfer["mouth_area_m2"], target.observation_distance_m))
                 return evaluate_response(frequencies, coupled_spl, target, model, throat_area,
-                                         cand.length, cand.mouth_radius, operating_point=point)
+                                         cand.length, cand.mouth_radius, operating_point=point,
+                                         flat_bands=False)
             assessment = assess_with_chamber_policy(drv, evaluate, target)
 
             all_scores.append({

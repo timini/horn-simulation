@@ -71,13 +71,16 @@ def generate_auto_report(
         scoring = describe_scoring(target, derived_geometry)
 
     from horn_analysis.report_tables import (candidate_label, horn_legend, chamber_assumption, has_parametric_geometry,
-                                             profile_table, rejection_summary)
+                                             mesh_rejection_note, profile_table, rejection_summary)
     rejected = list(rejected or []) + [r for r in all_ranked if r.get("model_feasible") is False]
     all_ranked = [r for r in all_ranked if r.get("model_feasible") is not False]
     step_files = step_files or {}
+    mesh_note = mesh_rejection_note(rejected)
     if not all_ranked and rejected and not no_feasible_reason:
         no_feasible_reason = ("Every evaluated driver-horn pair failed at least one hard limit; "
                               "see the rejection table for the reasons and how close they came.")
+    if not all_ranked and mesh_note:
+        no_feasible_reason = mesh_note + " " + (no_feasible_reason or "")
 
     # Sort all results by composite score
     all_ranked.sort(key=lambda r: r["composite_score"], reverse=True)
@@ -179,10 +182,11 @@ def generate_auto_report(
         "=" * 40,
         f"Target: {target.f_low_hz:.0f} Hz - {target.f_high_hz:.0f} Hz",
         "Throat radii: see each candidate below" if derived_geometry else (f"Throat radius: {throat_radius:.4f} m" if throat_radius is not None else "Throat radius: not available"),
-        f"Horns evaluated: {', '.join(solver_csvs.keys())}",
+        f"Horns evaluated: {', '.join(solver_csvs.keys()) or 'none'}",
         f"Total candidates scored: {scored_display}",
     ]
 
+    from horn_analysis.flat_band import format_flat_bands
     weights = scoring["weights"]
     lines.extend(["", "Score: " + scoring["formula"],
                   "Weights: " + ", ".join(f"{k} {v:.3f}" for k, v in weights.items()) + f" ({scoring['weights_source']})"])
@@ -226,6 +230,9 @@ def generate_auto_report(
                       f"Extension: {result['extension_octaves']:+.2f} oct  "
                       f"Ripple: {result['passband_ripple_db']:.1f} dB  "
                       f"Mean output level: {result['avg_sensitivity_db']:.1f} dB")
+        flat = format_flat_bands(result)
+        if flat:
+            lines.append(f"     Widest flat band over the sweep: {flat}")
         if all(result.get(key) is not None for key in ("throat_radius", "mouth_radius", "length")):
             lines.append(f"     Throat radius: {result['throat_radius']*1e3:.2f} mm; mouth radius: {result['mouth_radius']*1e3:.2f} mm; length: {result['length']*1e3:.2f} mm")
         files = builder_files.get(result["horn_label"], {})
@@ -268,6 +275,8 @@ def generate_auto_report(
         lines.append("Directivity: not available; it needs the modal_baffled radiation model.")
     if no_feasible_reason and not all_ranked:
         lines.append("Reason: " + no_feasible_reason)
+    elif mesh_note:
+        lines.append("Warning: " + mesh_note)
     if summary:
         lines.extend(["", f"Rejected pairs: {len(rejected)}" + (f" ({rejection_stage})" if rejection_stage else ""),
                       "  reason: count, closest miss, largest excess"])
