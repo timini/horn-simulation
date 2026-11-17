@@ -98,7 +98,9 @@ def rejection_rows(record, candidate, driver_ids):
              "model_feasible": False, "simulation_eligible": False, "composite_score": 0.,
              "extension_octaves": None, "passband_ripple_db": None, "avg_sensitivity_db": None,
              "rejection_reasons": list(record["rejection_reasons"]),
-             "rejection_detail": record.get("rejection_detail", ""), "evidence_gaps": []}
+             "rejection_detail": record.get("rejection_detail", ""), "evidence_gaps": [],
+             **({"band_boundary_mismatch": record["band_boundary_mismatch"]}
+                if record.get("band_boundary_mismatch") else {})}
             for driver_id in sorted(driver_ids)]
 
 

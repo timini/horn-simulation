@@ -109,3 +109,31 @@ def test_other_merge_faults_still_stop_the_run(tmp_path, monkeypatch):
                                                  "--rejection-file", str(tmp_path / "r.json")))
     with pytest.raises(ValueError, match="Incomplete simulation"):
         merge.main()
+
+
+def test_mesh_rejections_are_reported_as_a_mesh_problem_not_an_empty_brief(tmp_path):
+    from horn_analysis.auto_report import generate_auto_report
+    from horn_analysis.report_tables import mesh_rejection_note, rejection_summary
+    from horn_analysis.scoring import TargetSpec
+    record = merge.boundary_rejection(
+        merge.BandBoundaryMismatch(("mouth_p", 3830.41, .156, 1.6), 4), candidate_id="auto_exp_0068")
+    worse = merge.boundary_rejection(
+        merge.BandBoundaryMismatch(("spl", 3830.38, 39.2, 78.4), 2), candidate_id="auto_tra_0150")
+    rows = (rejection_rows(record, {"profile": "exponential"}, {"a", "b"})
+            + rejection_rows(worse, {"profile": "tractrix"}, {"a"}))
+    assert rows[0]["band_boundary_mismatch"]["excess_ratio"] == pytest.approx(1.6)
+
+    target = TargetSpec(500, 4000)
+    [entry] = rejection_summary(rows, target)
+    assert entry["closest_excess"] == pytest.approx(1.6) and entry["largest_excess"] == pytest.approx(78.4)
+    assert entry["unit"] == "times allowed"
+    note = mesh_rejection_note(rows)
+    assert note.startswith("2 simulated horns were rejected") and "3830 Hz" in note and "--mesh_size" in note
+    assert mesh_rejection_note([{"rejection_reasons": ["target_band_ripple_exceeded"]}]) is None
+
+    generate_auto_report([], {}, {}, None, target, str(tmp_path), rejected=rows, rejection_stage="FEM")
+    summary = (tmp_path / "auto_summary.txt").read_text()
+    assert "Horns evaluated: none" in summary
+    assert "Reason: 2 simulated horns were rejected" in summary
+    assert "band_boundary_mismatch: 3, 1.60 times allowed, 78.40 times allowed" in summary
+    assert "--mesh_size" in (tmp_path / "auto_report.html").read_text()

@@ -116,7 +116,7 @@ def main():
                                  **rejection} for drv in drivers)
                 cache[key] = REJECTED_GEOMETRY_OBJECTIVE
                 return REJECTED_GEOMETRY_OBJECTIVE
-            def reject(reason, detail):
+            def reject(reason, detail, extra=None):
                 # Drop this geometry for every driver with one stated reason.
                 geometry_rejected.append(c.candidate_id)
                 rejected.extend({"horn_label": c.candidate_id, "driver_id": drv.driver_id,
@@ -126,7 +126,7 @@ def main():
                     "composite_score": 0., "extension_octaves": None,
                     "passband_ripple_db": None, "avg_sensitivity_db": None,
                     "rejection_reasons": [reason],
-                    "rejection_detail": detail, "evidence_gaps": []} for drv in drivers)
+                    "rejection_detail": detail, "evidence_gaps": [], **(extra or {})} for drv in drivers)
                 cache[key] = REJECTED_GEOMETRY_OBJECTIVE
                 return REJECTED_GEOMETRY_OBJECTIVE
             from horn_core.profiles import profile_geometry_error
@@ -158,7 +158,7 @@ def main():
                 merge_bands(paths,num_bands=a.num_bands,min_freq=low,max_freq=high,points_per_band=points,output=csv)
             except BandBoundaryMismatch as error:
                 # Bands that do not join mean an unresolved mesh: reject this candidate.
-                return reject(error.reason, str(error))
+                return reject(error.reason, str(error), {"band_boundary_mismatch": error.summary()})
             rows=rank_horn_drivers(str(csv),c.candidate_id,c.throat_radius,drivers,target,top_n=max(1,len(drivers)),length=c.length)
             for row in rows:
                 row.update({'profile':c.profile,'throat_radius':c.throat_radius,'mouth_radius':c.mouth_radius,'length':c.length})

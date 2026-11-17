@@ -66,7 +66,8 @@ REASON_DESCRIPTIONS = {
     "profile_geometry_infeasible": "Profile cannot reach the mouth in this length",
     "loft_accuracy_unmet": "STEP loft could not follow the profile closely enough",
     "cad_geometry_rejected": "STEP geometry rejected",
-    "band_boundary_mismatch": "Solver bands disagree where they join; mesh not resolved",
+    "band_boundary_mismatch": ("Solver bands disagree where they join; mesh not resolved. "
+                               "Not a property of the design: rerun with a smaller --mesh_size"),
 }
 
 
@@ -98,6 +99,8 @@ def _excess(reason, row, target, driver):
     if reason == "test_power_nominal_power_exceeded":
         margin = row.get("test_power_rating_margin_w")
         return (None if margin is None else -margin), "W"
+    if reason == "band_boundary_mismatch":
+        return (row.get("band_boundary_mismatch") or {}).get("excess_ratio"), "times allowed"
     return None, ""
 
 
@@ -127,6 +130,30 @@ def rejection_summary(rejected, target, drivers=None):
         entry["largest_excess"] = max(excess) if excess else None
         out.append(entry)
     return out
+
+
+def mesh_rejection_note(rejected):
+    """Plain warning when the solver mesh, not the brief, rejected candidates; None otherwise.
+
+    A band boundary mismatch means the mesh was not resolved where two solver
+    bands join. Without this note a run whose every candidate failed that way
+    reads as "no design fits the brief".
+    """
+    horns, frequencies = set(), set()
+    for row in rejected:
+        if "band_boundary_mismatch" in (row.get("rejection_reasons") or []):
+            horns.add(row.get("horn_label"))
+            frequency = (row.get("band_boundary_mismatch") or {}).get("frequency_hz")
+            if frequency is not None:
+                frequencies.add(round(float(frequency), 1))
+    if not horns:
+        return None
+    where = ""
+    if frequencies:
+        where = " at " + ", ".join(f"{f:.0f}" for f in sorted(frequencies)) + " Hz"
+    return (f"{len(horns)} simulated horn{'s were' if len(horns) != 1 else ' was'} rejected because the solver mesh "
+            f"was not resolved where two frequency bands join{where}. This says nothing about whether a design "
+            "fits the brief. Rerun with a smaller --mesh_size to evaluate them.")
 
 
 def chamber_assumption(row):
