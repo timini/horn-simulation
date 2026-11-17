@@ -49,7 +49,7 @@
 <pre><code>python3 scripts/run_pipeline.py --mode auto --target_f_low 500 --target_f_high 4000 \
   --max_length 0.25 --max_mouth_radius 0.175 --max_ripple_db 3 --mesh_size 0.006</code></pre>
 <h3>Result</h3>
-<p>LaVoce FSN041.00-4 on a scaled tractrix horn (<code>refine_scaled_tractrix_0004</code>).</p>
+<p><strong>Driver:</strong> LaVoce FSN041.00-4.<br><strong>Horn profile:</strong> scaled tractrix (<code>refine_scaled_tractrix_0004</code>).</p>
 <div class="stats">
   <div class="stat"><b>88.8 mm</b><span>Throat</span></div>
   <div class="stat"><b>245 mm</b><span>Mouth</span></div>
@@ -58,6 +58,10 @@
   <div class="stat"><b>101.9 dB</b><span>Mean level</span></div>
   <div class="stat"><b>280 Hz to at least 5657 Hz</b><span>f3 points</span></div>
 </div>
+<figure class="plot">
+  <img src="img/pa-mid-horn-profile.svg" alt="Side section of the scaled tractrix horn for the LaVoce FSN041.00-4, drawn to scale with throat, mouth and length marked" loading="lazy" width="640" height="340">
+  <figcaption>The horn, drawn to scale. The driver bolts to the throat on the left. The scaled tractrix profile is a tractrix curve stretched to fit the length. It opens slowly near the throat and quickly near the mouth.</figcaption>
+</figure>
 <figure class="plot">
   <img src="img/pa-mid-winner-spl.svg" alt="Predicted level of the LaVoce FSN041.00-4 on the scaled tractrix horn from 250 to 5657 Hz, between about 101 and 104 dB across the shaded 500 to 4000 Hz band" loading="lazy" width="640" height="300">
   <figcaption>Predicted level of the winner. The shaded area is the target band.</figcaption>
@@ -98,13 +102,18 @@
 <p>All 3616 pairs the 3D model scored were rejected, every one for ripple. Nothing else failed. The closest miss:</p>
 <div class="stats">
   <div class="stat"><b>Ciare NDI3.21</b><span>Driver</span></div>
+  <div class="stat"><b>Scaled tractrix</b><span>Horn profile</span></div>
   <div class="stat"><b>52.0 mm</b><span>Throat</span></div>
   <div class="stat"><b>132.2 mm</b><span>Mouth</span></div>
   <div class="stat"><b>120 mm</b><span>Length, at the limit</span></div>
   <div class="stat"><b>3.37 dB</b><span>Ripple, 0.37 dB over</span></div>
   <div class="stat"><b>95.1 dB</b><span>Mean level</span></div>
 </div>
-<p>There is no plot, because nothing passed and the report only draws ranked pairs.</p>
+<figure class="plot">
+  <img src="img/hifi-upper-horn-profile.svg" alt="Side section of the scaled tractrix horn for the Ciare NDI3.21, drawn to scale with throat, mouth and length marked" loading="lazy" width="640" height="340">
+  <figcaption>The closest-miss horn, drawn to scale. The driver bolts to the throat on the left. The scaled tractrix profile is a tractrix curve stretched to fit the length. It opens slowly near the throat and quickly near the mouth.</figcaption>
+</figure>
+<p>There is no response plot, because nothing passed and the report only draws ranked pairs.</p>
 <h3>Why this is still a useful answer</h3>
 <p>The near misses all use the full 120 mm length and the widest throat the driver screen allowed. The mouth never came near its 250 mm limit; smaller mouths did better. So the length limit is what blocks a pass, not the mouth. If you can allow a deeper waveguide, or accept about 3.5 dB of ripple, try again. The Ciare NDI3.21 had the lowest ripple on every one of the 16 horns solved in 3D, so it is the driver to look at first.</p>
 <div class="table-wrap"><table>
@@ -136,7 +145,7 @@
 <pre><code>python3 scripts/run_pipeline.py --mode auto --target_f_low 250 --target_f_high 1000 \
   --drivers_db data/drivers --max_length 0.6 --max_mouth_radius 0.3 --max_ripple_db 4</code></pre>
 <h3>Result</h3>
-<p>Ciare CM206ND, an 8 inch cone, on a hyperbolic horn (<code>refine_hyperbolic_0004</code>).</p>
+<p><strong>Driver:</strong> Ciare CM206ND, an 8 inch cone.<br><strong>Horn profile:</strong> hyperbolic (<code>refine_hyperbolic_0004</code>).</p>
 <div class="stats">
   <div class="stat"><b>93.3 mm</b><span>Throat</span></div>
   <div class="stat"><b>462 mm</b><span>Mouth</span></div>
@@ -145,6 +154,10 @@
   <div class="stat"><b>111.2 dB</b><span>Mean level</span></div>
   <div class="stat"><b>219 Hz to at least 1414 Hz</b><span>f3 points</span></div>
 </div>
+<figure class="plot">
+  <img src="img/low-mid-horn-profile.svg" alt="Side section of the hyperbolic horn for the Ciare CM206ND, drawn to scale with throat, mouth and length marked" loading="lazy" width="640" height="340">
+  <figcaption>The horn, drawn to scale. The driver bolts to the throat on the left. The hyperbolic profile is also called catenoidal. It stays narrow for longer near the throat, then opens out. This loads the driver harder just above the cutoff than an exponential flare does.</figcaption>
+</figure>
 <figure class="plot">
   <img src="img/low-mid-winner-spl.svg" alt="Predicted level of the Ciare CM206ND on the hyperbolic horn from 125 to 1414 Hz, between about 110.5 and 112 dB across the shaded 250 to 1000 Hz band" loading="lazy" width="640" height="300">
   <figcaption>Predicted level of the winner. The shaded area is the target band.</figcaption>
@@ -186,7 +199,7 @@
   --mesh_size 0.008</code></pre>
 <div class="note"><strong>This brief is not strictly met.</strong> No pair reaches 106 dB across the band. The pairs below are ranked only because their failures depend on the estimated front chamber, and the tool flags such failures instead of rejecting them. Read the result as "the closest the database gets, if the real chamber is small".</div>
 <h3>Result</h3>
-<p>Ciare 6.38MR3, a 6.5 inch cone, on a hyperbolic horn (<code>refine_hyperbolic_0002</code>).</p>
+<p><strong>Driver:</strong> Ciare 6.38MR3, a 6.5 inch cone.<br><strong>Horn profile:</strong> hyperbolic (<code>refine_hyperbolic_0002</code>).</p>
 <div class="stats">
   <div class="stat"><b>71.4 mm</b><span>Throat</span></div>
   <div class="stat"><b>177.4 mm</b><span>Mouth</span></div>
@@ -195,6 +208,10 @@
   <div class="stat"><b>105.6 dB</b><span>Mean level</span></div>
   <div class="stat"><b>6.17 dB</b><span>Ripple, over the 6 dB limit</span></div>
 </div>
+<figure class="plot">
+  <img src="img/loud-vocal-horn-profile.svg" alt="Side section of the hyperbolic horn for the Ciare 6.38MR3, drawn to scale with throat, mouth and length marked" loading="lazy" width="640" height="340">
+  <figcaption>The horn, drawn to scale. The driver bolts to the throat on the left. The hyperbolic profile is also called catenoidal. It stays narrow for longer near the throat, then opens out. This loads the driver harder just above the cutoff than an exponential flare does.</figcaption>
+</figure>
 <figure class="plot">
   <img src="img/loud-vocal-winner-spl.svg" alt="Predicted level of the Ciare 6.38MR3 on the hyperbolic horn from 400 to 4243 Hz. Across the shaded 800 to 3000 Hz band it falls from about 108 dB to about 102 dB" loading="lazy" width="640" height="300">
   <figcaption>Predicted level of the top pair, with the estimated front chamber. The level falls across the band, which is why it misses the 106 dB floor at the top.</figcaption>
@@ -227,7 +244,7 @@
   --drivers_db data/drivers --max_ripple_db 2 --max_length 0.4 --max_mouth_radius 0.225 \
   --score_weights sensitivity=0.25,ripple=0.625,extension=0.125,size=0</code></pre>
 <h3>Result</h3>
-<p>Ciare CM135ND on an exponential horn (<code>refine_exponential_0003</code>).</p>
+<p><strong>Driver:</strong> Ciare CM135ND.<br><strong>Horn profile:</strong> exponential (<code>refine_exponential_0003</code>).</p>
 <div class="stats">
   <div class="stat"><b>106.3 mm</b><span>Throat</span></div>
   <div class="stat"><b>315 mm</b><span>Mouth</span></div>
@@ -236,6 +253,10 @@
   <div class="stat"><b>105.0 dB</b><span>Mean level</span></div>
   <div class="stat"><b>359 Hz to at least 2828 Hz</b><span>f3 points</span></div>
 </div>
+<figure class="plot">
+  <img src="img/flat-mid-horn-profile.svg" alt="Side section of the exponential horn for the Ciare CM135ND, drawn to scale with throat, mouth and length marked" loading="lazy" width="640" height="340">
+  <figcaption>The horn, drawn to scale. The driver bolts to the throat on the left. The exponential profile is the radius grows by the same ratio for every millimetre along the horn.</figcaption>
+</figure>
 <figure class="plot">
   <img src="img/flat-mid-winner-spl.svg" alt="Predicted level of the Ciare CM135ND on the exponential horn from 200 to 2828 Hz, between about 104 and 106 dB across the shaded 400 to 2000 Hz band" loading="lazy" width="640" height="300">
   <figcaption>Predicted level of the winner. The shaded area is the target band.</figcaption>
