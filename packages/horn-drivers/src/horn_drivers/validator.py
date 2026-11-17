@@ -43,6 +43,9 @@ Q_IDENTITY_WARNING = 0.03
 # not a family of variants (impedance or cone variants share at most a few).
 MAX_SHARED_TUPLE = 3
 DUPLICATE_KEY_FIELDS = ("fs_hz", "re_ohm", "bl_tm", "sd_m2", "mms_kg")
+# Stated 1 W/1 m sensitivity further than this from the Thiele-Small reference
+# efficiency is worth a look (datasheets mix 1 W and 2.83 V conventions).
+SENSITIVITY_WARNING_DB = 4.0
 # UTF-8 text decoded as Latin-1, e.g. "Ω" -> "Î©".
 _MOJIBAKE = ("Î©", "Ã", "Â", "â€")
 
@@ -269,6 +272,12 @@ def validate_driver(driver: dict) -> ValidationResult:
         )
         penalties += 0.05
 
+    from horn_drivers.records import check_structure
+    schema_errors, schema_warnings = check_structure(driver)
+    result.errors.extend(schema_errors)
+    result.warnings.extend(schema_warnings)
+    penalties += 0.1 * len(schema_errors) + 0.01 * len(schema_warnings)
+
     model_name = driver.get("model_name") or ""
     if any(marker in model_name for marker in _MOJIBAKE):
         result.errors.append(f"model_name {model_name!r} contains mojibake (UTF-8 read as Latin-1)")
@@ -316,6 +325,19 @@ def validate_driver(driver: dict) -> ValidationResult:
                     f"(delta={abs(spl_a - spl_b):.2f} dB)"
                 )
                 penalties += 0.05
+
+    # Datasheet sensitivity against the half-space reference efficiency.
+    # Sheets quote 1 W or 2.83 V (3 dB apart at 4 ohm) and often measure
+    # well above the Thiele-Small limit, so only a large gap is reported.
+    # Compression driver sheets quote the level on a horn or plane-wave
+    # tube, which this direct-radiator reference cannot check.
+    stated = params.get("sensitivity_db_1w1m")
+    if isinstance(stated, (int, float)) and "SPL_1W" in derived and driver_type != "compression":
+        if abs(stated - derived["SPL_1W"]) > SENSITIVITY_WARNING_DB:
+            result.warnings.append(
+                f"Sensitivity cross-check: stated {stated:.1f} dB, T/S reference efficiency gives "
+                f"{derived['SPL_1W']:.1f} dB (limit {SENSITIVITY_WARNING_DB:g} dB)")
+            penalties += 0.02
 
     # --- Tier 3: Size-aware plausibility ---
 
@@ -477,10 +499,26 @@ def main():
         "--db", type=str, default="data/drivers",
         help="Path to driver database directory or JSON file (default: data/drivers)",
     )
+    parser.add_argument(
+        "--prices", type=str, default=None,
+        help="Also check price snapshots in this folder (e.g. data/prices): schema errors, "
+             "and warnings for offers older than 30 days or naming drivers not in --db.",
+    )
     args = parser.parse_args()
 
     results = validate_database(args.db)
     errors = sum(len(r.errors) for r in results)
+    if args.prices:
+        from horn_drivers.loader import load_drivers_raw
+        from horn_drivers.prices import validate_prices
+        known = {str(d.get("driver_id")) for d in load_drivers_raw(args.db)}
+        price_errors, price_warnings = validate_prices(args.prices, known_driver_ids=known)
+        for msg in price_errors:
+            print(f"  ERROR [prices]: {msg}")
+        for msg in price_warnings:
+            print(f"  WARN  [prices]: {msg}")
+        print(f"Prices: {len(price_errors)} errors, {len(price_warnings)} warnings")
+        errors += len(price_errors)
     sys.exit(1 if errors > 0 else 0)
 
 
