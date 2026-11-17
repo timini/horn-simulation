@@ -159,7 +159,7 @@ def _parse_site_page(path):
 
 
 def test_site_pages_exist():
-    assert {"index.html", "example.html"} <= {p.name for p in (ROOT / "site").glob("*.html")}
+    assert {"index.html", "basics.html", "example.html", "examples.html"} <= {p.name for p in (ROOT / "site").glob("*.html")}
 
 
 def test_site_local_links_and_anchors_resolve():
@@ -178,7 +178,20 @@ def test_site_local_links_and_anchors_resolve():
     assert not broken, "Broken site links:\n" + "\n".join(broken)
 
 
-def test_site_pages_have_no_long_dashes():
-    offending = [p.name for p in sorted((ROOT / "site").glob("*.html"))
-                 if p.parent.name == "site" and re.search("[\u2013\u2014]|&[mn]dash;", p.read_text(encoding="utf-8"))]
-    assert not offending, f"Em or en dashes in: {offending}"
+def test_site_pages_have_no_long_dashes_or_arrows():
+    offending = [str(p.relative_to(ROOT / "site")) for p in sorted((ROOT / "site").rglob("*.html"))
+                 if re.search("[\u2013\u2014\u2192]|&[mn]dash;|&rarr;", p.read_text(encoding="utf-8"))]
+    assert not offending, f"Em or en dashes or arrows in: {offending}"
+
+
+def test_site_does_not_link_run_folders():
+    offending = [f"{page.name}: {ref}" for page in sorted((ROOT / "site").glob("*.html"))
+                 for ref in _parse_site_page(page).refs if re.match(r"^(\./)?results/", ref)]
+    assert not offending, "Links to uncommitted run folders:\n" + "\n".join(offending)
+
+
+def test_every_site_report_and_image_is_used():
+    used = {ref.partition("#")[0] for page in (ROOT / "site").glob("*.html") for ref in _parse_site_page(page).refs}
+    unused = [str(p.relative_to(ROOT / "site")) for folder in ("reports", "img")
+              for p in sorted((ROOT / "site" / folder).iterdir()) if str(p.relative_to(ROOT / "site")) not in used]
+    assert not unused, f"Files in site/ that no page references: {unused}"
