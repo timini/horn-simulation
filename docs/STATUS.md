@@ -4,7 +4,7 @@ Updated 2026-11-16. This page replaces the earlier implementation status (7 Sept
 
 ## Summary
 
-The software works end to end. Give it a band and it returns ranked driver and horn pairs, dimensions, acoustic STEP files, response, impedance and excursion predictions, rejection reasons and a report, with full run provenance. The predictions are **experimental**: the numerical solver has been checked against independent codes and one measured horn, but no complete horn and driver assembly has been compared with measurement. Every result is labelled accordingly, and a run may legitimately return no feasible design. [Issue #81](https://github.com/timini/horn-simulation/issues/81) tracks the remaining physical qualification.
+The software works end to end. Give it a band and it returns ranked driver and horn pairs, dimensions, acoustic STEP files, response, impedance and excursion predictions, rejection reasons and a report, with full run provenance. The predictions are experimental: the numerical solver has been checked against independent codes and one measured horn, but no complete horn and driver assembly has been compared with measurement. Every result is labelled accordingly, and a run may legitimately return no feasible design. [Issue #81](https://github.com/timini/horn-simulation/issues/81) tracks the remaining physical qualification.
 
 The scope is conventional single-driver, rigid, axisymmetric, front-loaded horns. Multiple-entry horns belong in [MEH Design Studio](https://github.com/timini/meh-design-studio). Items from the original brief that were not built are listed in [DESCOPED](DESCOPED.md).
 

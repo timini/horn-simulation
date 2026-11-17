@@ -34,8 +34,8 @@ These are engineering comparison limits for this component, not the absolute-SPL
 | --- | --- | --- |
 | Finest mesh vs measurement, 95th percentile | 0.417 dB | 1.795 degrees |
 | Finest mesh vs measurement, maximum | 0.497 dB | 1.873 degrees |
-| Mesh 24 → 18 mm, maximum | 0.392 dB | 1.315 degrees |
-| Mesh 18 → 14 mm, maximum | 0.300 dB | 0.929 degrees |
+| Mesh 24 to 18 mm, maximum | 0.392 dB | 1.315 degrees |
+| Mesh 18 to 14 mm, maximum | 0.300 dB | 0.929 degrees |
 
 Maximum complex normalized-impedance error is 0.051 against the frozen 0.25 limit. Maximum solver residual is 2.02e-12 and power imbalance 5.28e-14. Phase error does not decrease monotonically with refinement; the finest result still meets its limit. Nominal geometry and digitization uncertainty remain part of the interpretation.
 

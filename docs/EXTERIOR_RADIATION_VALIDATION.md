@@ -31,7 +31,7 @@ The host needs NumPy, SciPy and pandas. The adapter generates and preserves Bess
 
 ### Executed result
 
-All five reference sweeps (165 frequency solves) and the 33-point production sweep completed. The reference passes its declared refinement checks: 32→64 modes changes pressure by at most 0.0257 dB and impedance by 0.0399 dB; 500→1,000 axial sections changes them by 0.0073 and 0.0112 dB. Increasing radial integration from 201 to 401 points changes pressure by less than 0.000006 dB. These are observed refinement changes, not an asymptotic error bound.
+All five reference sweeps (165 frequency solves) and the 33-point production sweep completed. The reference passes its declared refinement checks: going from 32 to 64 modes changes pressure by at most 0.0257 dB and impedance by 0.0399 dB; going from 500 to 1,000 axial sections changes them by 0.0073 and 0.0112 dB. Increasing radial integration from 201 to 401 points changes pressure by less than 0.000006 dB. These are observed refinement changes, not an asymptotic error bound.
 
 **The strict model comparison fails.** Production versus the final reference differs by at most 0.39194 dB / 3.1725 degrees in on-axis pressure, and 1.04964 dB / 5.7307 degrees in throat impedance. Output pressure meets its frozen targets; throat impedance exceeds both its 0.5 dB and 5-degree limits. The approximation must not be promoted to a high-accuracy horn-loading model on the strength of its closer pressure result. The discrepancy can affect driver coupling and recommendation ordering.
 

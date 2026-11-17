@@ -6,12 +6,12 @@ The protocol and integrity checks are the same as the [default-model study](CAND
 
 | Refinement | Maximum output change (dB) | Maximum impedance change (dB) | Maximum phase change (degrees) |
 | --- | ---: | ---: | ---: |
-| Original ranking → 201-point baseline | 0.004801 | 0.016741 | 0.08760 |
-| Mesh 10 → 6 mm | 0.062262 | 0.145505 | 0.53024 |
-| Mesh 6 → 4 mm | 0.020956 | 0.048957 | 0.17421 |
-| Loft 20 → 40 sections | 0.000738 | 0.001257 | 0.00455 |
-| Loft 40 → 80 sections | 0.0000240 | 0.0000274 | 0.000778 |
-| Frequency 101 → 201 points | 0.002834 | 0.009952 | 0.05184 |
+| Original ranking to 201-point baseline | 0.004801 | 0.016741 | 0.08760 |
+| Mesh 10 to 6 mm | 0.062262 | 0.145505 | 0.53024 |
+| Mesh 6 to 4 mm | 0.020956 | 0.048957 | 0.17421 |
+| Loft 20 to 40 sections | 0.000738 | 0.001257 | 0.00455 |
+| Loft 40 to 80 sections | 0.0000240 | 0.0000274 | 0.000778 |
+| Frequency 101 to 201 points | 0.002834 | 0.009952 | 0.05184 |
 
 Target-band ripple changes are 0.002571 dB from the originating grid to the baseline, and 0.001700 dB from 101 to 201 frequencies on the finest geometry. Both use the stricter 0.2 dB / 2 degree frequency limits and 0.2 dB ripple limit. Spatial limits remain 0.5 dB / 5 degrees. All seven health records pass residual, grid, passivity and acoustic power checks; meshes span 5,333 to 74,334 cells.
 

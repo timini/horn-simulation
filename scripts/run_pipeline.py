@@ -124,7 +124,7 @@ def input_file_hashes(forwarded):
 
 
 def java_environment():
-    """Select an available Java 17–22 for Nextflow without global changes."""
+    """Select an available Java 17 to 22 for Nextflow without global changes."""
     environment = os.environ.copy()
     candidates = []
     for key in ("NXF_JAVA_HOME", "JAVA_HOME"):

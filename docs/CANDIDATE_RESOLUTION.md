@@ -10,7 +10,7 @@ Before solving, the study freezes these engineering gates:
 | --- | --- | --- | --- |
 | Each successive mesh pair | 0.5 dB | 0.5 dB | 5 degrees |
 | Each successive loft pair | 0.5 dB | 0.5 dB | 5 degrees |
-| Frequency grid, including original ranking → baseline | 0.2 dB | 0.2 dB | 2 degrees |
+| Frequency grid, including original ranking to baseline | 0.2 dB | 0.2 dB | 2 degrees |
 
 Frequency refinement also limits the change in target-band ripple to 0.2 dB. Comparisons interpolate SPL and complex impedance components against logarithmic frequency on the **union of both grids**, preserving every original and refined sample even when the band-partition grids are not nested. Target-band ripple includes both band edges with the same logarithmic-frequency interpolation used by the production ranking. Each solve must have a complete frequency grid, finite values, the specified model/phase contract, residual at most 1e-8, positive convergence reason, passive input load and relative acoustic power imbalance at most 1e-7.
 
@@ -52,12 +52,12 @@ All six new solves, the originating response and all six comparisons passed for 
 
 | Refinement | Maximum output change (dB) | Maximum throat impedance change (dB) | Maximum phase change (degrees) |
 | --- | --- | --- | --- |
-| Original ranking → 201-point baseline | 0.004254 | 0.014654 | 0.07581 |
-| Mesh 10 → 6 mm | 0.03969 | 0.11677 | 0.52536 |
-| Mesh 6 → 4 mm | 0.01299 | 0.03757 | 0.16794 |
-| Loft 20 → 40 sections | 0.0006692 | 0.001197 | 0.005445 |
-| Loft 40 → 80 sections | 0.00001863 | 0.00001896 | 0.0007732 |
-| Frequency 101 → 201 points | 0.002499 | 0.008825 | 0.04528 |
+| Original ranking to 201-point baseline | 0.004254 | 0.014654 | 0.07581 |
+| Mesh 10 to 6 mm | 0.03969 | 0.11677 | 0.52536 |
+| Mesh 6 to 4 mm | 0.01299 | 0.03757 | 0.16794 |
+| Loft 20 to 40 sections | 0.0006692 | 0.001197 | 0.005445 |
+| Loft 40 to 80 sections | 0.00001863 | 0.00001896 | 0.0007732 |
+| Frequency 101 to 201 points | 0.002499 | 0.008825 | 0.04528 |
 
 Target-band ripple changed by 0.000885 dB from the originating grid to the baseline, and by 0.001501 dB when doubling frequency sampling on the finest geometry. Both comparisons use the stricter frequency gates. Meshes contained 5,333 to 74,334 tetrahedra. All residuals were below 1e-15 and relative power imbalance below 1e-13. These changes establish stability of the evaluated model at these resolutions; they do not bound physical model error.
 

@@ -6,14 +6,14 @@ The supported automatic path is an experimental, linear, rigid-wall interior FEM
 
 - Complex amplitudes are RMS, with time dependence `exp(+iωt)`. Pressure: Pa; particle velocity: m/s; volume velocity: m³/s.
 - Inlet velocity is positive into the horn; mouth velocity is positive outward. Specific acoustic impedance is `p/v`, in Pa·s/m. Acoustic impedance is `p/U = Z_specific / area`.
-- Solver excitation is 1 Pa at the inlet. `spl` is the spatial RMS **mouth-plane pressure level**, not listening-distance sensitivity. `mouth_p_real/imag` is the complex area-mean mouth pressure; `mouth_u_real/imag` is integrated outward volume velocity.
+- Solver excitation is 1 Pa at the inlet. `spl` is the spatial RMS mouth-plane pressure level, not listening-distance sensitivity. `mouth_p_real/imag` is the complex area-mean mouth pressure; `mouth_u_real/imag` is integrated outward volume velocity.
 - `inlet_area_m2` and `mouth_area_m2` are physical areas of the tagged CAD boundaries, including annular openings. Separate `mesh_*_area_m2` fields preserve the triangulated areas. FEM flux is integrated on the mesh; specific impedance is normalized by the physical inlet area so the conversion to `p/U` is consistent across meshes. Mesh-only API callers use their tagged mesh areas.
 - Local normalized radiation impedance is `z = Z_specific/(ρc)`. The FEM Robin term is `+ik/z`, not `+ik*z`. With the adopted convention, pressure propagates as `exp(-ikz)` in a matched tube.
 - Dirichlet inlet volume flux is recovered from the variational boundary reaction. Averaged linear-element boundary gradients produced large impedance errors near resonances and are not used for the local-model inlet transfer.
 
 ## Driver and observer
 
-Without chambers, the motor equations are `V = Ze I + BL v` and `BL I = (Zm + Z_specific Sd²/Sthroat) v`. A front chamber (supplied, or estimated for cone drivers) and a sealed rear chamber change the load; see `horn_core.driver_interface` and [DRIVERS](DRIVERS.md#front-and-rear-chambers). A force-balance test checks these independently and checks electrical input against resistive, mechanical and acoustic power. Defaults are 2.83 V RMS and 1 m from the mouth plane. **2.83 V is only 1 W for a purely resistive 8 Ω load.**
+Without chambers, the motor equations are `V = Ze I + BL v` and `BL I = (Zm + Z_specific Sd²/Sthroat) v`. A front chamber (supplied, or estimated for cone drivers) and a sealed rear chamber change the load; see `horn_core.driver_interface` and [DRIVERS](DRIVERS.md#front-and-rear-chambers). A force-balance test checks these independently and checks electrical input against resistive, mechanical and acoustic power. Defaults are 2.83 V RMS and 1 m from the mouth plane. 2.83 V is only 1 W for a purely resistive 8 Ω load.
 
 The analytical screen, and the final FEM ranking with a local mouth model, use mouth volume velocity, then the on-axis Rayleigh result for a uniformly vibrating circular piston:
 

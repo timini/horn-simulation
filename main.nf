@@ -7,7 +7,7 @@
 // ========================================================================
 params.mode = "single"
 
-// Horn Geometry — null means "derive from frequency" in auto mode,
+// Horn Geometry: null means "derive from frequency" in auto mode,
 // or use sensible defaults in single mode
 params.throat_radius = null
 params.mouth_radius = null
@@ -819,7 +819,7 @@ workflow single {
     def mouth_r = params.mouth_radius ?: 0.2
     def horn_len = params.length ?: 0.5
 
-    // 1. Generate geometry once — or use a user-supplied STEP file if provided
+    // 1. Generate geometry once, or use a user-supplied STEP file if provided
     if (params.step_file) {
         ch_step_file = Channel.value(file(params.step_file))
     } else {
@@ -857,7 +857,7 @@ workflow single {
     // 9. Combined dashboard
     generate_dashboard(ch_merged_results)
 
-    // 9b. Optional driver coupling — produces coupled_spl.csv/.png + KPI JSON
+    // 9b. Optional driver coupling: produces coupled_spl.csv/.png + KPI JSON
     ch_coupled_png = null
     ch_coupled_kpis = null
     if (params.driver_id) {
@@ -871,7 +871,7 @@ workflow single {
         ch_coupled_kpis = couple_outputs[2]
     }
 
-    // 10. 3D horn geometry render — use a pre-rendered PNG if supplied,
+    // 10. 3D horn geometry render: use a pre-rendered PNG if supplied,
     //     otherwise generate one parametrically from the profile.
     if (params.horn_3d_png) {
         ch_horn_3d_png = Channel.value(file(params.horn_3d_png))
@@ -932,7 +932,7 @@ workflow auto {
     ch_candidates_csv = ch_geometry_branches.eligible.map { csv, json -> csv }
     ch_design_json = ch_geometry_branches.eligible.map { csv, json -> json }
 
-    // 3. LEM/Webster prescreening — score all candidates analytically,
+    // 3. LEM/Webster prescreening: score all candidates analytically,
     //    pass only the top N to expensive STEP + FEM stages
     ch_lem = lem_prescreen(
         ch_candidates_csv,
