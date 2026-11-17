@@ -146,7 +146,7 @@ def main():
                 cache[key] = REJECTED_GEOMETRY_OBJECTIVE
                 return REJECTED_GEOMETRY_OBJECTIVE
             csv=out/f'{c.candidate_id}_results.csv'
-            from horn_analysis.merge import merge_bands
+            from horn_analysis.merge import BandBoundaryMismatch, merge_bands
             band_dir=out/f'{c.candidate_id}_bands';band_dir.mkdir()
             paths=[]
             try:
@@ -171,7 +171,21 @@ def main():
                     "rejection_detail": str(error), "evidence_gaps": []} for drv in drivers)
                 cache[key] = REJECTED_GEOMETRY_OBJECTIVE
                 return REJECTED_GEOMETRY_OBJECTIVE
-            merge_bands(paths,num_bands=a.num_bands,min_freq=low,max_freq=high,points_per_band=points,output=csv)
+            try:
+                merge_bands(paths,num_bands=a.num_bands,min_freq=low,max_freq=high,points_per_band=points,output=csv)
+            except BandBoundaryMismatch as error:
+                # Bands that do not join mean an unresolved mesh: reject this candidate.
+                geometry_rejected.append(c.candidate_id)
+                rejected.extend({"horn_label": c.candidate_id, "driver_id": drv.driver_id,
+                    "profile": c.profile, "throat_radius": c.throat_radius,
+                    "mouth_radius": c.mouth_radius, "length": c.length,
+                    "model_feasible": False, "simulation_eligible": False,
+                    "composite_score": 0., "extension_octaves": None,
+                    "passband_ripple_db": None, "avg_sensitivity_db": None,
+                    "rejection_reasons": [error.reason],
+                    "rejection_detail": str(error), "evidence_gaps": []} for drv in drivers)
+                cache[key] = REJECTED_GEOMETRY_OBJECTIVE
+                return REJECTED_GEOMETRY_OBJECTIVE
             rows=rank_horn_drivers(str(csv),c.candidate_id,c.throat_radius,drivers,target,top_n=max(1,len(drivers)),length=c.length)
             for row in rows:
                 row.update({'profile':c.profile,'throat_radius':c.throat_radius,'mouth_radius':c.mouth_radius,'length':c.length})

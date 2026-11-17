@@ -57,7 +57,7 @@ Everything is under `outputs/auto/`.
 | `candidates.csv` | The full geometry grid: `candidate_id`, `profile`, `throat_radius`, `mouth_radius`, `length`. |
 | `lem_results.json`, `lem_filtered_candidates.csv` | Webster screen of every grid geometry with every driver, the shortlist policy and the geometries sent to FEM. |
 | `geometry/horn_<id>.step` | STEP for each shortlisted geometry. |
-| `<id>_results.csv` | Solver output per shortlisted geometry (columns above). `<id>_rejected.json` instead when meshing or CAD checks rejected it. |
+| `<id>_results.csv` | Solver output per shortlisted geometry (columns above). `<id>_rejected.json` instead when meshing, CAD or band boundary checks rejected it. |
 | `ranked_results.json` | Ranking after the FEM shortlist, before refinement. |
 | `refinement/ranked_results.json` | Final ranking after refinement. |
 | `refinement/refine_<profile>_<n>.step`, `refinement/*_results.csv` | Geometry and solver output for each refinement evaluation. |
@@ -116,7 +116,7 @@ Each row in `ranked_results.json`, `refinement/ranked_results.json` and `auto_ra
 
 `auto_rejections.json` has the stage (`FEM` or `analytical prescreen`), the number of rejected pairs and one entry per reason, most frequent first, with a description, the count and `closest_excess` and `largest_excess` in `unit` where a margin is defined. For example a ripple rejection gives dB above `max_ripple_db`; an excursion rejection gives mm above Xmax.
 
-Rejection reasons: `target_band_ripple_exceeded`, `minimum_output_not_met`, `maximum_length_exceeded`, `maximum_mouth_radius_exceeded`, `compression_ratio_exceeded`, `driver_larger_than_mouth`, `outside_driver_usable_band`, `driver_excursion_exceeded`, `driver_nominal_power_exceeded`, `test_power_excursion_exceeded`, `test_power_nominal_power_exceeded`, `radiation_model_out_of_domain`, `profile_geometry_infeasible`, `loft_accuracy_unmet`, `cad_geometry_rejected`, and the solver's `mesh_node_limit_exceeded` and `throat_area_guard_failed`.
+Rejection reasons: `target_band_ripple_exceeded`, `minimum_output_not_met`, `maximum_length_exceeded`, `maximum_mouth_radius_exceeded`, `compression_ratio_exceeded`, `driver_larger_than_mouth`, `outside_driver_usable_band`, `driver_excursion_exceeded`, `driver_nominal_power_exceeded`, `test_power_excursion_exceeded`, `test_power_nominal_power_exceeded`, `radiation_model_out_of_domain`, `profile_geometry_infeasible`, `loft_accuracy_unmet`, `cad_geometry_rejected`, the solver's `mesh_node_limit_exceeded` and `throat_area_guard_failed`, and the band merge's `band_boundary_mismatch`. The last means two neighbouring solver bands, solved on separate meshes, disagree at their shared frequency by more than 0.5 dB in SPL or more than 5 % (plus 1 % of a reference scale) in a complex transfer such as mouth pressure. The candidate's `*_rejected.json` gives the worst quantity, frequency, jump and how many times the allowed difference it is.
 
 ## STEP files
 
