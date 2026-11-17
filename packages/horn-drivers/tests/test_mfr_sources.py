@@ -138,12 +138,14 @@ def test_bc_page_without_product_data_is_skipped():
 
 # -- 18 Sound ----------------------------------------------------------------
 
-def test_eighteensound_listing_dedupes_case_and_filters_sizes():
+def test_eighteensound_listing_dedupes_exact_paths_and_filters_sizes():
     refs = list(EighteenSoundSource.refs_from_listing((FIXTURES / "eighteensound-listing.html").read_text()))
+    # 10NTLW2000 and 10ntlw2000 are different pages on the site (10NTLS2000 and
+    # 10NTLW2000), so paths that differ only in case are both kept.
     assert [r.url.rsplit("/lf-driver/", 1)[1] for r in refs] == [
-        "15-0/8/15LW1401", "15-0/4/15lw1401%20-%204ohm", "10-0/8/10nmb420", "10-0/16/10NMB420",
-        "6-5/8/6NMB420", "5-0/8/5W430"]
-    assert refs[4].hint("inches") == "6.5"
+        "15-0/8/15LW1401", "15-0/4/15lw1401%20-%204ohm", "10-0/8/10nmb420", "10-0/8/10NTLW2000",
+        "10-0/8/10ntlw2000", "10-0/16/10NMB420", "6-5/8/6NMB420", "5-0/8/5W430"]
+    assert refs[6].hint("inches") == "6.5"
 
 
 def test_eighteensound_product_page():
@@ -175,6 +177,46 @@ def test_celestion_product_page():
     assert record["field_provenance"]["sensitivity_db_1w1m"]["method"] == "page"
     assert record["nominal_diameter"] == "12in"
     assert_loadable(record)
+
+
+def test_wrong_unit_and_inconsistent_cms_are_not_stored():
+    # Two real page errors: Rms shown in mm/N (celestion-cf1025bmb) and a Cms
+    # ten times too high (celestion-tsq1545).
+    url = "https://celestion.com/product/tf1220/"
+    html = (FIXTURES / "celestion-tf1220.html").read_text()
+    html = html.replace("<div>4.69kg/s</div>", "<div>4.69mm/N</div>").replace("<div>0.18mm/N</div>",
+                                                                            "<div>1.8mm/N</div>")
+    fetched = FetchResult(url, 200, html.encode(), "text/html", "2026-11-17T10:00:00+00:00", False)
+    record = adapter(CelestionSource).parse_driver(fetched, ProductRef(url)).record
+    params, notes = record["parameters"], record["provenance"]["notes"]
+    assert "rms_kg_per_s" not in params and "rms_kg_per_s" not in record["field_provenance"]
+    assert "cms_m_per_n" not in params and "cms_m_per_n" not in record["field_provenance"]
+    assert any("rms_kg_per_s shown as 4.69 mm/N" in note for note in notes)
+    assert any("page Cms 0.0018 m/N gives Fs 17.8 Hz" in note for note in notes)
+    assert params["fs_hz"] == 55.8
+    assert_loadable(record)
+
+
+def test_inconsistent_rms_is_not_stored():
+    url = "https://celestion.com/product/tf1220/"
+    html = (FIXTURES / "celestion-tf1220.html").read_text().replace("<div>4.69kg/s</div>", "<div>6.1kg/s</div>")
+    fetched = FetchResult(url, 200, html.encode(), "text/html", "2026-11-17T10:00:00+00:00", False)
+    record = adapter(CelestionSource).parse_driver(fetched, ProductRef(url)).record
+    assert "rms_kg_per_s" not in record["parameters"]
+    assert record["parameters"]["cms_m_per_n"] == pytest.approx(0.00018)
+    assert any("page Rms 6.1 kg/s" in note for note in record["provenance"]["notes"])
+
+
+def test_run_counts_parser_errors(tmp_path):
+    class Broken(BCSource):
+        def parse_driver(self, page, ref):
+            raise KeyError("bug")
+    listing_url = "https://www.bcspeakers.com/en/products/lf-driver"
+    pages = {listing_url: (200, (FIXTURES / "bc-listing.html").read_text())}
+    pages.update({ref.url: (200, "x") for ref in BCSource.refs_from_listing(pages[listing_url][1])})
+    summary = adapter(Broken, pages).run(tmp_path / "db", tmp_path / "incomplete")
+    assert summary.parse_errors == summary.pages == 5
+    assert summary.too_many_parse_errors() and summary.to_dict()["parse_errors"] == 5
 
 
 def test_celestion_outside_size_range_is_skipped():
@@ -268,6 +310,12 @@ def test_merge_keeps_id_records_conflicts_and_writes_report(tmp_path):
     assert again.conflicts == [] and again.updated == ["bc-8ndl51-16"]
     rerun = json.loads((db / "BC" / "bc-8ndl51-16.json").read_text())
     assert rerun["field_provenance"]["bl_tm"]["conflicts"] == conflicts
+    # ... and keeps the field carried over from the older source, with its provenance and note.
+    assert rerun["parameters"]["rms_kg_per_s"] == 1.5
+    assert rerun["field_provenance"]["rms_kg_per_s"] == merged["field_provenance"]["rms_kg_per_s"]
+    assert any(note.startswith("Replaces the loudspeakerdatabase record")
+               for note in rerun["provenance"]["notes"])
+    assert_loadable(rerun)
 
 
 def test_merge_ids_for_new_models(tmp_path):

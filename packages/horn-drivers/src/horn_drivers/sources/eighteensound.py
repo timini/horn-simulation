@@ -54,7 +54,9 @@ class EighteenSoundSource(DriverSource):
         count = 0
         for path, whole, frac, ohms, slug in _LINK.findall(html):
             inches = float(f"{whole}.{frac}")
-            key = path.lower().replace("%20", "").replace(" ", "")
+            # Exact path: the site serves different models at paths that differ
+            # only in case (10NTLW2000 is the 10NTLS2000 page, 10ntlw2000 is not).
+            key = path.replace("%20", "").replace(" ", "")
             if key in seen or not MIN_INCHES <= inches <= MAX_INCHES:
                 continue
             seen.add(key)
@@ -95,7 +97,12 @@ class EighteenSoundSource(DriverSource):
             spl, _ = split_value_unit(values["sensitivity"][0])
             index = values["sensitivity"][1]
             note = notes[int(index) - 1] if index.isdigit() and 0 < int(index) <= len(notes) else ""
-            drive = stated_drive(note) or next(filter(None, map(stated_drive, notes)), None)
+            drive = stated_drive(note)
+            if drive is None:
+                drive = next(filter(None, map(stated_drive, notes)), None)
+                if drive is not None:
+                    sheet.notes.append(f"Sensitivity footnote states no drive level; used {drive[0]:g} V for "
+                                       f"{drive[1]:g} ohm from another footnote on the page.")
             impedance = sheet.parameters.get("nominal_impedance_ohm")
             if spl is not None and drive and impedance and abs(drive[1] - impedance) > 0.01:
                 sheet.notes.append(f"Sensitivity {spl:g} dB: the drive note names {drive[1]:g} ohm for a "

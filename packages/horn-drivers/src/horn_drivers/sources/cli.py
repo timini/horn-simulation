@@ -34,6 +34,9 @@ def snapshot_robots(entry: SourceEntry, fetcher, robots_dir: Path = ROBOTS_DIR) 
         # Some sites answer /robots.txt with their home page. That is not a
         # robots file (no rules apply) and its content is not stored.
         outcome["note"] = "served an HTML page, not a robots file"
+        (robots_dir / f"{entry.id}.no-robots.txt").write_text(
+            f"{url} returned HTTP {result.status} with an HTML page, not a robots file, on "
+            f"{result.retrieved_on}. No robots rules apply; the fetcher treats the host as allow-all.\n")
     elif result.ok:
         (robots_dir / f"{entry.id}.txt").write_bytes(result.content)
     return outcome
@@ -126,7 +129,12 @@ def main(argv=None):
         summary = adapter.run(args.db, args.incomplete, limit=args.limit)
     print(json.dumps({**summary.to_dict(), "skipped_detail": summary.skipped, "fetch": adapter.fetcher.status()},
                      indent=2))
-    return 0 if summary.blocked_reason is None else 2
+    if summary.blocked_reason is not None:
+        return 2
+    if summary.too_many_parse_errors():
+        print(f"{summary.parse_errors} pages raised parser errors; check the adapter.", file=sys.stderr)
+        return 3
+    return 0
 
 
 if __name__ == "__main__":

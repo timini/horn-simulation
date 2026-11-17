@@ -102,10 +102,22 @@ def merge_one(new: dict, old: dict) -> Tuple[dict, List[dict]]:
     same_source = old.get("record_schema_version") == 2 and old_source == new_source
     rows = []
     if same_source:
-        # A rerun of the same adapter: keep conflicts found earlier, add none.
-        for name, entry in (old.get("field_provenance") or {}).items():
+        # A rerun of the same adapter: keep conflicts found earlier, add none,
+        # and keep what the first merge carried over from an older source.
+        old_provenance = old.get("field_provenance") or {}
+        for name, entry in old_provenance.items():
             if entry.get("conflicts") and name in provenance:
                 provenance[name]["conflicts"] = entry["conflicts"]
+        for name in CARRIED_FIELDS:
+            entry = old_provenance.get(name) or {}
+            if params.get(name) is None and old_params.get(name) is not None \
+                    and entry.get("source_id") not in (None, new_source):
+                params[name] = old_params[name]
+                provenance[name] = json.loads(json.dumps(entry))
+        new_notes = list((merged.get("provenance") or {}).get("notes", []))
+        kept = [note for note in (old.get("provenance") or {}).get("notes", [])
+                if note.startswith("Replaces the ") and note not in new_notes]
+        merged["provenance"] = {**(merged.get("provenance") or {}), "notes": new_notes + kept}
     else:
         for name in COMPARED_FIELDS:
             new_value, old_value = params.get(name), old_params.get(name)

@@ -35,6 +35,35 @@ _UNIT_FACTORS: Dict[str, float] = {
 }
 
 
+# Units each stored parameter may be stated in. A value whose unit belongs to
+# another quantity ("Rms 1.804 mm/N") is a page error and is not stored.
+_ALLOWED_UNITS: Dict[str, Tuple[str, ...]] = {
+    "fs_hz": ("hz", "khz"),
+    "re_ohm": ("ohm", "ohms", "ω", "Ω"),
+    "nominal_impedance_ohm": ("ohm", "ohms", "ω", "Ω"),
+    "bl_tm": ("tm", "txm", "t.m", "n/a"),
+    "sd_m2": ("cm2", "cm²", "m2", "m²", "mm2"),
+    "mms_kg": ("g", "gr", "kg"),
+    "le_h": ("mh", "uh", "µh", "μh", "h"),
+    "xmax_m": ("mm", "m", "cm"),
+    "power_w": ("w",),
+    "peak_power_w": ("w",),
+    "cms_m_per_n": ("mm/n", "m/n", "um/n", "µm/n", "μm/n"),
+    "rms_kg_per_s": ("kg/s", "ns/m", "n.s/m"),
+    "vas_m3": ("dm3", "dm³", "l", "litres", "liters"),
+}
+
+# A supplied Cms or Rms must agree with Fs, Mms and Qms within this fraction;
+# the simulation uses a supplied value as given.
+CONSISTENCY_TOLERANCE = 0.10
+
+
+def unit_allowed(name: str, unit: str) -> bool:
+    """True when *unit* is a unit *name* may be stated in (unknown names pass)."""
+    allowed = _ALLOWED_UNITS.get(name)
+    return allowed is None or _unit_key(unit) in allowed
+
+
 def _unit_key(unit: str) -> str:
     return unit.strip().lower().replace("·", ".").replace(" ", "")
 
@@ -137,7 +166,37 @@ class SpecSheet:
         if not unit and name not in UNITLESS:
             self.notes.append(f"{name} shown as {number:g} without a unit; not stored.")
             return
+        if unit and not unit_allowed(name, unit):
+            self.notes.append(f"{name} shown as {number:g} {unit}, a unit of another quantity; not stored.")
+            return
         self.put(name, to_si(number, unit))
+
+    def drop_inconsistent(self) -> None:
+        """Drop a supplied Cms or Rms that disagrees with Fs, Mms and Qms.
+
+        Cms must give Fs = 1/(2 pi sqrt(Mms Cms)) and Rms must equal
+        2 pi Fs Mms / Qms, each within CONSISTENCY_TOLERANCE. A value that
+        does not is left out with a note; the loader derives it instead.
+        """
+        p = self.parameters
+        fs, mms, qms = p.get("fs_hz"), p.get("mms_kg"), p.get("qms")
+        cms = p.get("cms_m_per_n")
+        if cms and fs and mms:
+            implied = 1.0 / (2 * math.pi * math.sqrt(mms * cms))
+            if abs(implied - fs) / fs > CONSISTENCY_TOLERANCE:
+                self._drop("cms_m_per_n", f"page Cms {cms:.4g} m/N gives Fs {implied:.1f} Hz against the "
+                                          f"stated {fs:g} Hz")
+        rms = p.get("rms_kg_per_s")
+        if rms and fs and mms and qms:
+            expected = 2 * math.pi * fs * mms / qms
+            if abs(rms - expected) / expected > CONSISTENCY_TOLERANCE:
+                self._drop("rms_kg_per_s", f"page Rms {rms:.4g} kg/s against {expected:.3g} kg/s from "
+                                           f"Fs, Mms and Qms")
+
+    def _drop(self, name: str, why: str) -> None:
+        self.parameters.pop(name, None)
+        self.methods.pop(name, None)
+        self.notes.append(f"{why}; differs by more than {100 * CONSISTENCY_TOLERANCE:g} %, so not stored.")
 
     def band(self, low: Optional[float], high: Optional[float]) -> None:
         if low and high and 0 < low < high:
@@ -148,6 +207,7 @@ class SpecSheet:
 
     def record(self, *, driver_type: str = "cone", nominal_diameter: Optional[str] = None,
                aliases=(), coil: Optional[str] = None) -> dict:
+        self.drop_inconsistent()
         provenance = {name: provenance_entry(self.source_id, self.url, self.retrieved_on, method)
                       for name, method in self.methods.items()}
         if self.usable_f_low_hz is not None:
