@@ -336,6 +336,7 @@ def _render_rankings_rows(
             f"{geom_cols}"
             f"<td><strong>{_fmt(r.get('composite_score'), '.3f')}</strong>{' (near tie)' if r.get('comparison_status') == 'near_tie' else ''}</td>"
             f"<td>{'≥' if r.get('extension_is_lower_bound') else ''}{_fmt(r.get('extension_octaves'), '+.2f')}</td>"
+            f"<td>{_flat_band_cell(r)}</td>"
             f"<td>{_fmt(r.get('passband_ripple_db'), '.1f')}{_chamber_note(r)}</td>"
             f"<td>{_fmt(r.get('avg_sensitivity_db'), '.1f')}</td>"
             f"<td>{f3l} \u2014 {f3h}</td>"
@@ -345,6 +346,17 @@ def _render_rankings_rows(
             f"</tr>"
         )
     return "\n".join(rows)
+
+
+def _flat_band_cell(r) -> str:
+    """Widest +-3 dB flat band over the sweep, for example '≥1.45 (566-1543)'."""
+    if "flat_band_3db_octaves" not in r:
+        return "n/a"
+    low, high = r.get("flat_band_3db_low_hz"), r.get("flat_band_3db_high_hz")
+    if low is None or high is None:
+        return "none"
+    mark = "≥" if r.get("flat_band_3db_is_lower_bound") else ""
+    return f"{mark}{r['flat_band_3db_octaves']:.2f} ({low:.0f}-{high:.0f})"
 
 
 def _render_drivers_rows(drivers: Dict[str, DriverParameters]) -> str:
@@ -470,7 +482,7 @@ Maximum target-band ripple: {ripple_limit} dB. Acoustic CAD describes air volume
   <th>#</th><th>Candidate ID (horn + driver)</th><th>Manufacturer</th><th>Model</th><th>Type</th><th>Size</th><th>Power (W)</th><th>Profile</th>
   {geometry_header_cols}
   <th>Score</th>
-  <th>Extension (oct; ≥ = lower bound)</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz; ≤/≥ = sweep bound)</th><th>Peak (dB)</th><th>Front chamber</th><th>Evidence status</th>
+  <th>Extension (oct; ≥ = lower bound)</th><th>&plusmn;3 dB flat band (oct, Hz; ≥ = lower bound)</th><th>Ripple (dB)</th><th>Mean output (dB)</th><th>f3 range (Hz; ≤/≥ = sweep bound)</th><th>Peak (dB)</th><th>Front chamber</th><th>Evidence status</th>
 </tr>
 </thead>
 <tbody>

@@ -59,6 +59,33 @@ Because each term is linear, the weights set fixed exchange rates. With the defa
 
 Rows within 0.02 of the best score are marked as near ties. This margin is a search policy, not a measured uncertainty.
 
+## Widest flat band
+
+Every ranking row also reports, for tolerances of +-1, +-2 and +-3 dB, the widest contiguous frequency range over the whole simulated sweep where the response stays within that tolerance (`horn_analysis.flat_band`). These figures are reported only. They do not enter the score or feasibility yet.
+
+- "Within +-N dB" means the peak-to-peak level over the range is at most 2N dB, so the response fits a 2N dB corridor centred between its highest and lowest level. This is the same measure as the ripple limit: a 6 dB `max_ripple_db` corresponds to +-3 dB.
+- The response is interpolated linearly in log frequency onto every solver sample plus a 1/96 octave grid. An edge that falls between two solver samples comes from that interpolation, so its accuracy is set by the solver point density (about 1/24 octave in FEM, about 1/38 octave in the Webster screen with 100 points). The 1/96 octave step is only the grid quantisation. Every original sample counts and nothing is smoothed, so a narrow notch splits a band, as it does for ripple.
+- A two-pointer sweep with running maximum and minimum finds the widest window in linear time, about 1.5 ms per row. Equal widths go to the louder band.
+- A band needs at least three solver samples inside it. Wider windows with fewer samples are skipped, so a narrower valid band is still found. When none qualifies, the row reports no band (`*_low_hz` null, `*_octaves` 0).
+- When `min_output_db` is set, levels below it break the band, so the result is the widest flat band that is also loud enough.
+- A band that reaches either end of the sweep may continue beyond it, so it is a lower bound on the true width (`*_is_lower_bound`). With the auto sweep, one octave below `target_f_low` and half an octave above `target_f_high`, this is common for wide tolerances.
+
+The Webster screen, the FEM ranking, refinement and single mode with a driver all compute these fields, because they all go through `evaluation.evaluate_response`. Rows rejected before a response exists (CAD, mesh, radiation domain) have none.
+
+## Planned: widest-band objective
+
+The aim is to let the search find the widest +-N dB band inside an outer window, instead of scoring against a fixed target band. Not implemented yet. The design:
+
+1. **Parameters.** `--objective widest_band` (default `target_band`, today's behaviour) and `--flat_band_tolerance_db` (default 3). The user gives an outer search window with `target_f_low` and `target_f_high`, for example 100 Hz to 10 kHz, and optionally `min_output_db`.
+2. **Sweep.** With `widest_band` the window is the sweep itself: `sim_freq_range` equals the window, with no octave margin. A band that touches the window edge is then a full credit inside the window, and its `*_is_lower_bound` flag means "reaches the window", not "limited by the sweep". `min_points_per_octave` keeps resolution across the wider sweep. The FEM cost rises with sweep width, so the default band count may need to rise.
+3. **Geometry grid.** Mouth and length ranges are derived from `target_f_low`, the bottom of the window. That gives large horns. Without a size cap the widest band always comes from the largest horn allowed, so `max_length` and `max_mouth_radius` (or a size-class parameter) should be required, or strongly advised, in this mode.
+4. **Feasibility.** The target-band ripple limit and `outside_driver_usable_band` do not apply over the whole window. In this mode they are replaced by: the flat band must be at least `min_flat_band_octaves` wide (default 1), and driver limits (excursion, power, usable band) are checked over the flat band found, not the window. Size caps and compression ratio stay as they are.
+5. **Score.** `score = flat_band_octaves(N) / log2(f_high / f_low)` on 0 to 1, with the band's mean level as a small tie-break term, for example 0.9 band plus 0.1 times the existing sensitivity term. Sensitivity and size weights stay available through `--score_weights`, with a new `flat_band` weight. `describe_scoring` records the mode, tolerance and window.
+6. **Webster screen and shortlist.** The screen already computes the fields, so it ranks by the same score. One-dimensional models overstate the high end of the band because they miss mouth and throat modes, so the shortlist should keep geometric diversity (already the last 20 % of slots) and rely on FEM for the final band.
+7. **Refinement.** The coordinate search maximises the same score. The flat-band width changes in steps of the grid resolution and can jump when a notch appears, so the score is piecewise constant. Ties are broken by mean level, which keeps the search moving.
+   One sharp FEM sample (a mode or a numerical artefact) can split the band and halve a design's score. The objective should therefore take an optional fractional-octave smoothing (for example 1/6 octave) or a notch-width allowance (ignore excursions narrower than a set fraction of an octave) before the flat-band search. Both stay off for the reported `flat_band_*` fields, which keep the raw response.
+8. **Pareto database.** Each design row stores `flat_band_1db/2db/3db` low, high, octaves, mean level and bound flag, next to sensitivity, size and later price and maximum SPL. The database then picks Pareto fronts across any subset of these, with no single score needed. The `widest_band` objective is the single-objective entry point for one driver at one tolerance and one size cap.
+
 ## Search quality evidence
 
 The shortlist was checked against exhaustive FEM over a fixed grid of 20 horns, three motors and four bands, for both the `flanged_piston` and `modal_baffled` models. In every case the screen kept all top-ten pairs and the winner, with zero score regret. See [VALIDATION](VALIDATION.md#search-and-workflow). This shows the screen does not lose good designs on that grid. It says nothing about physical ranking.

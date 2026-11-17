@@ -62,8 +62,8 @@ Everything is under `outputs/auto/`.
 | `refinement/ranked_results.json` | Final ranking after refinement. |
 | `refinement/refine_<profile>_<n>.step`, `refinement/*_results.csv` | Geometry and solver output for each refinement evaluation. |
 | `refinement/search_audit.json` | Refinement seed and its source, every evaluation, budget use, bounds reached and widened. |
-| `report/auto_report.html` | Self-contained report. Start here. |
-| `report/auto_summary.txt` | Plain-text summary. |
+| `report/auto_report.html` | Self-contained report. Start here. The rankings table shows each design's widest +-3 dB flat band; a leading ≥ marks a band that reaches the end of the sweep. |
+| `report/auto_summary.txt` | Plain-text summary. Each ranked design lists its widest +-1, +-2 and +-3 dB bands; `>=` marks a band that reaches the end of the sweep. |
 | `report/auto_ranking.json` | Feasible rows, sorted by score, with near-tie notes. |
 | `report/auto_comparison.png` | Coupled response of the top candidates. |
 | `report/coupled_<rank>_<driver>_<horn>.csv` | Per ranked candidate: response and electrical columns, below. |
@@ -86,6 +86,8 @@ Each row in `ranked_results.json`, `refinement/ranked_results.json` and `auto_ra
 | `passband_ripple_db` | Peak-to-peak level over the target band. |
 | `target_min_level_db`, `target_max_level_db` | Lowest and highest level in the band. |
 | `f3_low_hz`, `f3_high_hz`, `f3_*_is_bound`, `extension_octaves` | f3 points 3 dB below the band mean, found over the full sweep. A `_is_bound` flag means no crossing was found and the value is the sweep limit. |
+| `flat_band_<N>db_low_hz`, `_high_hz`, `_octaves`, `_mean_level_db`, `_is_lower_bound` | For N = 1, 2 and 3: the widest contiguous range over the whole sweep where the level stays within +-N dB (peak to peak at most 2N dB), its width in octaves and mean level. `_is_lower_bound` means the band reaches the end of the sweep. No band gives null edges and 0 octaves. Reported only, not scored. See [SEARCH_AND_SCORING](SEARCH_AND_SCORING.md#widest-flat-band). |
+| `flat_band_min_level_db` | `min_output_db` when set: levels below it break a flat band. Otherwise null. |
 | `model_feasible`, `rejection_reasons` | Whether every hard limit is met, and which are not. |
 | `eligibility_status` | `model_feasible`, `insufficient_evidence` (feasible but with evidence gaps) or `infeasible`. |
 | `evidence_gaps` | Missing driver or interface data, for example `driver_interface_unverified` or `front_chamber_volume_estimated`. |
